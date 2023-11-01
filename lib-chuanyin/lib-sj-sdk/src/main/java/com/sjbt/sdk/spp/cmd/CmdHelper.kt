@@ -1979,14 +1979,16 @@ object CmdHelper {
         val eSecond = calendar.get(Calendar.SECOND)
 
         val byteBuffer = ByteBuffer.allocate(14)
-        byteBuffer.putShort(sYear.toShort())
-        byteBuffer.put(sMonth.toByte())
-        byteBuffer.put(sDay.toByte())
-        byteBuffer.put(sHour.toByte())
-        byteBuffer.put(sMinute.toByte())
-        byteBuffer.put(sSecond.toByte())
+        if (startTime != 0L) {
+            byteBuffer.putShort(sYear.toShort())
+            byteBuffer.put(sMonth.toByte())
+            byteBuffer.put(sDay.toByte())
+            byteBuffer.put(sHour.toByte())
+            byteBuffer.put(sMinute.toByte())
+            byteBuffer.put(sSecond.toByte())
+        }
 
-        if(endTime != 0L){
+        if (endTime != 0L) {
             byteBuffer.putShort(eYear.toShort())
             byteBuffer.put(eMonth.toByte())
             byteBuffer.put(eDay.toByte())
