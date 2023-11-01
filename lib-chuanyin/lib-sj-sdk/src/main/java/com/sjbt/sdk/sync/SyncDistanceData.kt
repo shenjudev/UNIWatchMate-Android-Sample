@@ -35,8 +35,8 @@ class SyncDistanceData(val sjUniWatch: SJUniWatch) : AbSyncData<List<WmDistanceD
         return Single.create { emitter ->
             activityObserveEmitter = emitter
             sjUniWatch.sendReadSubPkObserveNode(
-                CmdHelper.getReadSportSyncData(
-                    URN_SPORT_DISTANCE
+                CmdHelper.getReadSportSyncData(  startTime, lastSyncTime,
+                    childUrn =  URN_SPORT_DISTANCE
                 )
             )
         }

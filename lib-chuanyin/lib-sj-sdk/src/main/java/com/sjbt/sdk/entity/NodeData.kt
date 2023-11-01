@@ -46,18 +46,16 @@ class NodeData(
         return "BaseNodeData(urn=${urn.contentToString()}, dataFmt=$dataFmt, dataLen=$dataLen, data=$data)"
     }
 
-    fun toBytes(request_type: Int): ByteArray {
-        val size = 4 + (if (request_type != RequestType.REQ_TYPE_READ.type) 3 + data.size else 0)
+    fun toBytes(): ByteArray {
+        val size = 4 + 3 + data.size
         val bytes: ByteBuffer = ByteBuffer.allocate(size)
         bytes.order(java.nio.ByteOrder.LITTLE_ENDIAN)
         bytes.put(urn)
-        if (request_type != RequestType.REQ_TYPE_READ.type) {
             bytes.put(dataFmt.ordinal.toByte())
             bytes.putShort(dataLen)
             for (item in data) {
                 bytes.put(item)
             }
-        }
 
         return bytes.array()
     }

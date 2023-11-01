@@ -26,16 +26,18 @@ class SyncActivityData(val sjUniWatch: SJUniWatch) : AbSyncData<List<WmActivityD
     override fun latestSyncTime(): Long {
         return lastSyncTime
     }
+
     fun onTimeOut(nodeData: NodeData) {
-        TODO("Not yet implemented")
     }
+
     override fun syncData(startTime: Long): Single<List<WmActivityData>> {
 
         return Single.create { emitter ->
             activityObserveEmitter = emitter
             sjUniWatch.sendReadSubPkObserveNode(
                 CmdHelper.getReadSportSyncData(
-                    URN_SPORT_ACTIVITY_LEN
+                    startTime, lastSyncTime,
+                    childUrn = URN_SPORT_ACTIVITY_LEN
                 )
             )
         }

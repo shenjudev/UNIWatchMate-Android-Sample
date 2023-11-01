@@ -36,8 +36,9 @@ class SyncRealtimeRateData(val sjUniWatch: SJUniWatch) : AbSyncData<List<WmRealt
 
         return Single.create { emitter ->
             activityObserveEmitter = emitter
-            sjUniWatch.sendReadSubPkObserveNode(CmdHelper.getReadSportSyncData(URN_SPORT_RATE,
-                URN_SPORT_RATE_REALTIME))
+            sjUniWatch.sendReadSubPkObserveNode(CmdHelper.getReadSportSyncData(  startTime, lastSyncTime,
+                childUrn = URN_SPORT_RATE,
+                grandSon = URN_SPORT_RATE_REALTIME))
         }
     }
 

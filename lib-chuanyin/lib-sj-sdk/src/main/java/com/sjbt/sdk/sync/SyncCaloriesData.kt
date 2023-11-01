@@ -35,7 +35,8 @@ class SyncCaloriesData (val sjUniWatch: SJUniWatch): AbSyncData<List<WmCaloriesD
             activityObserveEmitter = emitter
             sjUniWatch.sendReadSubPkObserveNode(
                 CmdHelper.getReadSportSyncData(
-                    URN_SPORT_CALORIES
+                    startTime, lastSyncTime,
+                    childUrn = URN_SPORT_CALORIES
                 )
             )
         }

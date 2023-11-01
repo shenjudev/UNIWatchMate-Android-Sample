@@ -34,7 +34,7 @@ class SyncSleepData(val sjUniWatch: SJUniWatch) : AbSyncData<List<WmSleepData>>(
 
         return Single.create { emitter ->
             activityObserveEmitter = emitter
-            sjUniWatch.sendReadSubPkObserveNode(CmdHelper.getReadSportSyncData(URN_SPORT_SLEEP))
+            sjUniWatch.sendReadSubPkObserveNode(CmdHelper.getReadSportSyncData(  startTime, lastSyncTime,childUrn = URN_SPORT_SLEEP))
         }
     }
 

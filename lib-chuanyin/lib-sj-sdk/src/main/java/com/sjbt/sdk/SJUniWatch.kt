@@ -1058,16 +1058,14 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(), Li
         mPayloadMap.putPayload(payloadPackage)
 
         payloadPackage.toByteArray(requestType = RequestType.REQ_TYPE_READ).forEach {
-            var payload: ByteArray = it
-
             val cmdArray = CmdHelper.constructCmd(
                 HEAD_NODE_TYPE,
                 CMD_ID_8001,
                 DIVIDE_N_2,
                 0,
                 0,
-                BtUtils.getCrc(HEX_FFFF, payload, payload.size),
-                payload
+                BtUtils.getCrc(HEX_FFFF, it, it.size),
+                it
             )
 
             sendNormalMsg(cmdArray)
@@ -1082,16 +1080,14 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(), Li
      */
     fun sendExecuteNodeCmdList(payloadPackage: PayloadPackage) {
         payloadPackage.toByteArray(requestType = RequestType.REQ_TYPE_EXECUTE).forEach {
-            var payload: ByteArray = it
-
             val cmdArray = CmdHelper.constructCmd(
                 HEAD_NODE_TYPE,
                 CMD_ID_8001,
                 DIVIDE_N_2,
                 0,
                 0,
-                BtUtils.getCrc(HEX_FFFF, payload, payload.size),
-                payload
+                BtUtils.getCrc(HEX_FFFF, it, it.size),
+                it
             )
 
             sendNormalMsg(cmdArray)
@@ -1107,7 +1103,6 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(), Li
     fun sendResponseNodeCmdList(payloadPackage: PayloadPackage) {
         payloadPackage.toResponseByteArray(requestType = ResponseResultType.RESPONSE_ALL_OK)
             .forEach {
-                var payload: ByteArray = it
 
                 val cmdArray = CmdHelper.constructCmd(
                     HEAD_NODE_TYPE,
@@ -1115,8 +1110,8 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(), Li
                     DIVIDE_N_2,
                     0,
                     0,
-                    BtUtils.getCrc(HEX_FFFF, payload, payload.size),
-                    payload
+                    BtUtils.getCrc(HEX_FFFF, it, it.size),
+                    it
                 )
 
                 sendNormalMsg(cmdArray)

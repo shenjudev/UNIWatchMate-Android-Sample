@@ -36,9 +36,9 @@ class SyncHeartRateData(val sjUniWatch: SJUniWatch) : AbSyncData<List<WmHeartRat
         return Single.create { emitter ->
             activityObserveEmitter = emitter
             sjUniWatch.sendReadSubPkObserveNode(
-                CmdHelper.getReadSportSyncData(
-                    URN_SPORT_RATE,
-                    URN_SPORT_RATE_RECORD
+                CmdHelper.getReadSportSyncData(  startTime, lastSyncTime,
+                    childUrn =  URN_SPORT_RATE,
+                    grandSon = URN_SPORT_RATE_RECORD
                 )
             )
         }

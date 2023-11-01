@@ -33,8 +33,8 @@ class SyncOxygenData(val sjUniWatch: SJUniWatch) : AbSyncData<List<WmOxygenData>
         return Single.create { emitter ->
             activityObserveEmitter = emitter
             sjUniWatch.sendReadSubPkObserveNode(
-                CmdHelper.getReadSportSyncData(
-                    URN_SPORT_OXYGEN
+                CmdHelper.getReadSportSyncData(  startTime, lastSyncTime,
+                    childUrn = URN_SPORT_OXYGEN
                 )
             )
         }

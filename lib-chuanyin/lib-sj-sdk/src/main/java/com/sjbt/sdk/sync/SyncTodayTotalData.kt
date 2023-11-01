@@ -33,7 +33,13 @@ class SyncTodayTotalData(val sjUniWatch: SJUniWatch) : AbSyncData<WmTodayTotalDa
     override fun syncData(startTime: Long): Single<WmTodayTotalData> {
         return Single.create { emitter ->
             activityObserveEmitter = emitter
-            sjUniWatch.sendReadSubPkObserveNode(CmdHelper.getReadSportSyncData(URN_SPORT_TODAY))
+            sjUniWatch.sendReadSubPkObserveNode(
+                CmdHelper.getReadSportSyncData(
+                    startTime,
+                    lastSyncTime,
+                    childUrn = URN_SPORT_TODAY
+                )
+            )
         }
     }
 

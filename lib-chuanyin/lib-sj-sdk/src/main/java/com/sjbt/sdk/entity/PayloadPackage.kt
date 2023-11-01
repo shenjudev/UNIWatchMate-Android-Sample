@@ -119,7 +119,7 @@ class PayloadPackage {
         var total_item_count = 0
         var count = 1
         itemList.mapIndexed() { index, item ->
-            val nextNode = item.toBytes(actionType)
+            val nextNode = item.toBytes()
             //count++
             total_item_count++
             //如果现有的payload长度加上当前item的长度超过了限制，则将现有的payload加入到payloadList中，
@@ -179,7 +179,7 @@ class PayloadPackage {
         var total_item_count = 0
         var count = 0
         itemList.mapIndexed() { index, item ->
-            val nextNode = item.toBytes(actionType)
+            val nextNode = item.toBytes()
             count++
             total_item_count++
             //如果现有的payload长度加上当前item的长度超过了限制，则将现有的payload加入到payloadList中，
