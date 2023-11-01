@@ -41,7 +41,7 @@ afterEvaluate {
                 copy {
                     from outputFile
                     into "../../app-Sample/libs"
-                    rename outputFile.name, "lib-api.aar"
+                    rename outputFile.name, "lib-api-1.0.2.aar"
                 }
             }
         }
