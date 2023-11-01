@@ -613,5 +613,8 @@
 
     <string name="local_dial">安装本地表盘</string>
     <string name="ds_sport_at_most">最多12个</string>
+    <string name="hourly_data">每小时数据</string>
+    <string name="data_every_5_minutes">每5分钟数据</string>
+
 
 </resources>

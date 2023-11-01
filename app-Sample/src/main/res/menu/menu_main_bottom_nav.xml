@@ -8,11 +8,11 @@
         android:title="@string/device_module"
         app:showAsAction="ifRoom" />
 
-    <item
-        android:id="@+id/syncFragment"
-        android:icon="@mipmap/ic_sync_black_18dp"
-        android:title="@string/module_sync"
-        app:showAsAction="ifRoom" />
+<!--    <item-->
+<!--        android:id="@+id/syncFragment"-->
+<!--        android:icon="@mipmap/ic_sync_black_18dp"-->
+<!--        android:title="@string/module_sync"-->
+<!--        app:showAsAction="ifRoom" />-->
 
     <item
         android:id="@+id/combineFragment"

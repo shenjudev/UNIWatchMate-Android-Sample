@@ -132,7 +132,7 @@ class SyncFragment : BaseFragment(R.layout.fragment_sync) {
             }
 
             viewBind.itemHeartRate -> {
-                findNavController().navigate(SyncFragmentDirections.toHeartRate())
+                findNavController().navigate(SyncFragmentDirections.toHeartRateHomePage())
             }
 
             viewBind.itemOxygen -> {

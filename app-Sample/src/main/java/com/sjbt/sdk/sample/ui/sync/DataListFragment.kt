@@ -80,7 +80,7 @@ abstract class DataListFragment<T> : BaseFragment() {
     private fun loadData(date: Date) {
         this.selectDate = date
         btnDate.text = dateFormat.format(date)
-        applicationScope.launchWithLog {
+        applicationScope.launch {
             adapter.sources = queryData(date)
             withContext(Dispatchers.Main){
                 adapter.notifyDataSetChanged()

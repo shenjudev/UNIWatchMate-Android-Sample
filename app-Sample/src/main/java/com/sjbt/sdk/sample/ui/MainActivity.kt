@@ -26,14 +26,14 @@ class MainActivity : BaseActivity() {
         setContentView(R.layout.activity_main)
         navController = findNavControllerInNavHost(R.id.nav_host)
         appBarConfiguration = AppBarConfiguration.Builder(
-            R.id.deviceFragment,R.id.syncFragment, R.id.combineFragment
+            R.id.deviceFragment, R.id.combineFragment
         ).build()
         bottomNavigationView = findViewById(R.id.bottom_nav_view)
         bottomNavigationView.setupWithNavController(navController)
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration)
         navController.addOnDestinationChangedListener { _, destination, _ ->
             val id = destination.id
-            val shouldVisible = id == R.id.deviceFragment  || id == R.id.combineFragment  || id == R.id.syncFragment
+            val shouldVisible = id == R.id.deviceFragment  || id == R.id.combineFragment
             bottomNavigationView.isVisible = shouldVisible
         }
         Toast.makeText(this, "v" + BuildConfig.VERSION_NAME, Toast.LENGTH_LONG).show()
