@@ -128,11 +128,13 @@
             android:id="@+id/to5MinutesHeartRateFragment"
             app:destination="@id/fiveMinutesHeartRateFragment" />
     </fragment>
+
     <fragment
         android:id="@+id/hourHeartRateFragment"
         android:name="com.sjbt.sdk.sample.ui.sync.HeartRateHourlyFragment"
         android:label="@string/hourly_data"
         tools:layout="@layout/fragment_data_list" />
+
     <fragment
         android:id="@+id/fiveMinutesHeartRateFragment"
         android:name="com.sjbt.sdk.sample.ui.sync.HeartRateFiveMinutesFragment"
@@ -171,9 +173,9 @@
         android:name="com.sjbt.sdk.sample.ui.sync.SportDetailFragment"
         android:label="@string/data_sport"
         tools:layout="@layout/fragment_sport_detail">
-        <argument
-            android:name="wmSportSummaryData"
-            app:argType="WmSport" />
+<!--                <argument-->
+<!--                    android:name="wmSportSummaryData"-->
+<!--                    app:argType="com.base.sdk.entity.apps.WmValueTypeData.WmSportSummaryData" />-->
     </fragment>
 
     <fragment
