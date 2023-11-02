@@ -620,9 +620,9 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(), Li
                                 CMD_ID_8003 -> {
                                     val frameSuccess = msgBean.payload[0]
 
-                                    wmLog.logD(TAG, "发送成功：$frameSuccess")
+                                    wmLog.logD(TAG, "send success：$frameSuccess")
                                     wmLog.logD(
-                                        TAG, "发送下一帧：" + appCamera.mH264FrameMap.frameCount
+                                        TAG, "next frame：" + appCamera.mH264FrameMap.frameCount
                                     )
 
                                     wmLog.logD(
@@ -709,7 +709,7 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(), Li
                                 }
 
                                 CMD_ID_8004 -> {
-                                    wmLog.logD(TAG, "收到通讯层消息：" + msgBean.payload.size)
+                                    wmLog.logD(TAG, "transfer back msg：" + msgBean.payload.size)
                                     node04Emitter?.onSuccess(msgBean.cmdOrder.toInt())
                                 }
                             }
@@ -1017,7 +1017,7 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(), Li
             val cmdId: Short = byteBuffer[2].toShort()
 
             if (isMsgStopped(head, cmdId)) {
-                wmLog.logD(TAG, "正在 传输文件中...:" + BtUtils.bytesToHexString(msg))
+                wmLog.logD(TAG, "sending...:" + BtUtils.bytesToHexString(msg))
                 return
             }
         }

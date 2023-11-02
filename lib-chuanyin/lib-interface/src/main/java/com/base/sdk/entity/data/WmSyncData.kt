@@ -1,34 +1,55 @@
 package com.base.sdk.entity.data
 
 import com.base.sdk.entity.apps.WmValueTypeData
+import com.base.sdk.entity.settings.WmSleepSettings
 
 abstract class WmBaseSyncData(
+)
+
+/**
+ * Sync Value 同步数据
+ */
+class WmSyncData(
+    /**
+     * data type
+     */
+    val type: WmSyncDataType,
+
     /**
      * Timestamp of this data
      */
     val timestamp: Long,
+
+    /**
+     * time interval type
+     */
+    val intervalType: WmIntervalType,//间隔时间类型
+
+    /**
+     * Sync value
+     */
+    val value: List<WmBaseSyncData>,
 )
 
 /**
  * 运动小结
  */
 class WmSportSummaryData(
-    timestamp: Long,//开始时间，运动时长在valueType中
+    /**
+     * 运动Id
+     */
     val sportId: Int,
+
     /**
      * 基本参数类型
      */
     val valueType: List<WmValueTypeData>
-) : WmBaseSyncData(timestamp) {
-
-}
+) : WmBaseSyncData()
 
 /**
  * 平均 value 血氧数据
  */
 class WmHeartRateData(
-    timestamp: Long,
-    val  intervalTime: Long,
     /**
      * heart rate value (beats per minute)
      */
@@ -41,63 +62,50 @@ class WmHeartRateData(
      */
     val duration: Int
 
-) : WmBaseSyncData(timestamp)
+) : WmBaseSyncData()
 
 /**
  * Oxygen value 血氧数据
  */
 class WmOxygenData(
-    timestamp: Long,
-    val intervalTime: Long,
     /**
      * Oxygen value (SpO2)，0~100
      */
     val oxygen: Int
-) : WmBaseSyncData(timestamp)
+) : WmBaseSyncData()
 
 /**
  * Step value 步数数据
  */
 class WmStepData(
-    timestamp: Long,
-    val intervalTime: Long,//间隔时间5分钟或1小时，单位：秒
     /**
      * Step value
      */
     val step: Int,
 
-    ) : WmBaseSyncData(timestamp)
+    ) : WmBaseSyncData()
 
 /**
  * distance value 距离数据
  */
 class WmDistanceData(
-    timestamp: Long,
-    val intervalTime: Long,
     /**
      * distance value
      */
     val distance: Int,
-
-    ) : WmBaseSyncData(timestamp)
+) : WmBaseSyncData()
 
 /**
  * calorie value 卡路里数据
  */
 class WmCaloriesData(
-    timestamp: Long,
-    val intervalTime: Long,
     /**
      * calorie value
      */
     val calorie: Int,
-
-    ) : WmBaseSyncData(timestamp)
-
+) : WmBaseSyncData()
 
 class WmBloodPressureData(
-    timestamp: Long,
-    val intervalTime: Long,
     /**
      * systolic blood pressure (unit mmHg)
      */
@@ -107,11 +115,9 @@ class WmBloodPressureData(
      * diastolic blood pressure (unit mmHg)
      */
     val dbp: Int //舒张压值
-) : WmBaseSyncData(timestamp)
+) : WmBaseSyncData()
 
 class WmBloodPressureMeasureData(
-    timestamp: Long,
-    val intervalTime: Long,
     /**
      * systolic blood pressure (unit mmHg)
      */
@@ -127,30 +133,24 @@ class WmBloodPressureMeasureData(
      * This value exists only if [WmDeviceInfo.Feature.BLOOD_PRESSURE_AIR_PUMP] is support
      */
     val heartRate: Int
-) : WmBaseSyncData(timestamp)
+) : WmBaseSyncData()
 
 class WmRealtimeRateData(
-    timestamp: Long,
-    val intervalTime: Long,
     /**
      * Respiratory rate value (breaths per minute)
      */
     val rate: Int
-) : WmBaseSyncData(timestamp)
+) : WmBaseSyncData()
 
 class WmPressureData(
-    timestamp: Long,
-    val intervalTime: Long,
     /**
      * Pressure value. Limit(0,256)
      */
     val pressure: Int
-) : WmBaseSyncData(timestamp)
+) : WmBaseSyncData()
 
 
 class WmTemperatureData(
-    timestamp: Long,
-    val intervalTime: Long,
     /**
      * Temperature of your body(unit ℃)。
      * This value is generally in the normal body temperature range[36℃-42℃].
@@ -161,15 +161,10 @@ class WmTemperatureData(
      * The range of this value is wider, because it is related to the ambient temperature, in extreme cases it may be below 0℃.
      */
     val wrist: Float
-) : WmBaseSyncData(timestamp)
+) : WmBaseSyncData()
 
 
 class WmGameData(
-    /**
-     * Game start time
-     */
-    timestamp: Long,
-    val intervalTime: Long,
     /**
      * Game Type
      */
@@ -181,16 +176,14 @@ class WmGameData(
     val duration: Int,
     val score: Int,
     val level: Int
-) : WmBaseSyncData(timestamp)
+) : WmBaseSyncData()
 
 /**
  * 活动时长
  */
 class WmActivityData(
-    timestamp: Long,
-    val intervalTime: Long,
     val duration: Int
-) : WmBaseSyncData(timestamp) {
+) : WmBaseSyncData() {
     override fun toString(): String {
         return "WmActivityData(activity=$duration, duration=$duration)"
     }
@@ -202,8 +195,6 @@ class WmActivityData(
  * If [WmDeviceInfo.Feature.TI_ECG] is supported, you can adjust the speed and amplitude of ECG data.
  */
 class WmEcgData(
-    timestamp: Long,
-    val intervalTime: Long,
     /**
      * Sampling rate (number of ECG values per second)
      *
@@ -214,10 +205,168 @@ class WmEcgData(
      * Ecg values
      */
     val items: List<Int>,
-) : WmBaseSyncData(timestamp) {
+) : WmBaseSyncData() {
     companion object {
         const val DEFAULT_SAMPLING_RATE = 100
     }
 
+}
+
+/**
+ * 睡眠同步数据
+ */
+class WmSleepData(
+    val wmSleepSettings: WmSleepSettings,
+    val wmSleepSummary: WmSleepSummary,
+    val wmSleepData: List<WmSleepItem>
+) : WmBaseSyncData()
+
+/**
+ * 睡眠概览
+ */
+data class WmSleepSummary(
+    var dateStamp: Long,// 日期时间戳 (毫秒)
+    var bedTime: Long,// 入睡时间时间戳（毫秒）
+    var getUpTime: Long,// 起床时间时间戳（毫秒）
+    var totalSleepMinutes: Int,// 睡眠时长
+
+    var sleepType: Int,// 睡眠类型 0：白天睡眠， 1：夜晚睡眠
+
+    var deepSleepMinutes: Short,// 深睡时长(毫秒)
+    var lightSleepMinutes: Short,// 浅睡时长(毫秒)
+    var awakeSleepMinutes: Short,// 清醒时长(毫秒)
+    var remSleepMinutes: Short,// 快速眼动时长(毫秒)
+
+    var deepSleepCount: Int,// 深睡次数
+    var lightSleepCount: Int,// 浅睡次数
+    var awakeSleepCount: Int,// 清醒次数
+    var remSleepCount: Int,// 快速眼动次数
+
+    var awakePercentage: Int,// 清醒百分比
+    var lightSleepPercentage: Int,// 浅睡百分比
+    var deepSleepPercentage: Int,// 深睡百分比
+    var remSleepPercentage: Int,// 眼动百分比
+
+    var sleepScore: Int,// 睡眠得分
+
+)
+
+/**
+ * Today total data(今日总数据)
+ */
+class WmTodayTotalData(
+
+    /**
+     * Total steps
+     */
+    val step: Int, //总步数
+
+    /**
+     * Total distance. (unit m)
+     */
+    val distance: Int,//总数据，单位米
+
+    /**
+     *Total calorie. (unit calorie, not kCal)
+     */
+    val calorie: Int, //总卡路里数，单位卡，不是千卡
+
+    /**
+     * Total deep sleep time. (unit minutes)
+     */
+    val deepSleep: Int,//深睡总时长，单位分钟
+
+    /**
+     * Total light sleep time. (unit minutes)
+     */
+    val lightSleep: Int, //浅睡总时长，单位分钟
+
+    /**
+     * Average heart rate. (beats per minute)
+     */
+    val heartRate: Int, //平均心率
+
+    /**
+     * Step not save in item.
+     */
+    val deltaStep: Int, //未保存在item中的步数
+
+    /**
+     * Distance not save in item. (unit m)
+     */
+    val deltaDistance: Int,//未保存在item中的距离，单位米
+
+    /**
+     * Calorie not save in item. (unit calorie, not kCal)
+     */
+    val deltaCalorie: Int,//未保存在item中的卡路里数，单位卡，不是千卡
+
+) : WmBaseSyncData()
+
+interface ICalculateSleepItem {
+    fun getCalculateStatus(): Int
+    fun getCalculateStartTime(): Short
+}
+
+class WmSleepItem(
+    val status: Int,//状态
+    val duration: Short//开始时间
+) : ICalculateSleepItem {
+    companion object {
+        /**
+         * Sleep status of deep sleep
+         */
+        const val STATUS_DEEP = 1 //深睡
+
+        /**
+         * Sleep status of light sleep
+         */
+        const val STATUS_LIGHT = 2 //浅睡
+
+        /**
+         * Sleep status of sober sleep
+         */
+        const val STATUS_SOBER = 3 //清醒
+
+        /**
+         * Sleep status of REM sleep
+         */
+        const val STATUS_REM = 4 //快速眼动
+
+    }
+
+    //计算状态
+    override fun getCalculateStatus(): Int {
+        return status
+    }
+
+    //计算开始时间
+    override fun getCalculateStartTime(): Short {
+        return duration
+    }
+}
+
+/**
+ * 间隔类型
+ */
+enum class WmIntervalType(val seconds: Int) {
+    UNKNOWN(0),
+    ONE_HOUR(60 * 60),
+    FIVE_MINUTES(5 * 60),
+    TEN_SECONDS(10)
+}
+
+enum class WmSyncDataType {
+    SPORT_SUMMARY,
+    STEP,
+    HEART_RATE,
+    OXYGEN,
+    BLOOD_PRESSURE,
+    BLOOD_PRESSURE_MEASURE,
+    REALTIME_RATE,
+    PRESSURE,
+    TEMPERATURE,
+    GAME,
+    ACTIVITY,
 }
 

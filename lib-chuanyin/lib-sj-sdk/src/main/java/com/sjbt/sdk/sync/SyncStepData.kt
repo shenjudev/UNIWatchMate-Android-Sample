@@ -1,6 +1,7 @@
 package com.sjbt.sdk.sync
 
 import com.base.sdk.entity.data.WmStepData
+import com.base.sdk.entity.data.WmSyncData
 import com.base.sdk.port.sync.AbSyncData
 import com.sjbt.sdk.SJUniWatch
 import com.sjbt.sdk.entity.MsgBean
@@ -11,17 +12,18 @@ import com.sjbt.sdk.utils.BtUtils
 import io.reactivex.rxjava3.core.*
 import io.reactivex.rxjava3.disposables.Disposable
 import java.nio.ByteBuffer
+import java.nio.ByteOrder
 
-class SyncStepData(val sjUniWatch: SJUniWatch) : AbSyncData<List<WmStepData>>() {
+class SyncStepData(val sjUniWatch: SJUniWatch) : AbSyncData<List<WmSyncData>>() {
 
     var isActionSupport: Boolean = true
     var lastSyncTime: Long = 0
-    private var activityObserveEmitter: SingleEmitter<List<WmStepData>>? = null
-    private var observeChangeEmitter: ObservableEmitter<List<WmStepData>>? = null
+    private var activityObserveEmitter: SingleEmitter<List<WmSyncData>>? = null
+    private var observeChangeEmitter: ObservableEmitter<List<WmSyncData>>? = null
     private val TAG = "SyncStepData"
 
     private val msgList = mutableSetOf<MsgBean>()
-    private val byteBuffer = ByteBuffer.allocate(DEFAULT_BUFFER_SIZE)
+    private val byteBufferSyncData = ByteBuffer.allocate(DEFAULT_BUFFER_SIZE).order(ByteOrder.LITTLE_ENDIAN)
 
     override fun isSupport(): Boolean {
         return isActionSupport
@@ -34,7 +36,7 @@ class SyncStepData(val sjUniWatch: SJUniWatch) : AbSyncData<List<WmStepData>>() 
     fun onTimeOut(msg: MsgBean, nodeData: NodeData) {
     }
 
-    override fun syncData(startTime: Long): Single<List<WmStepData>> {
+    override fun syncData(startTime: Long): Single<List<WmSyncData>> {
         msgList.clear()
         return Single.create { emitter ->
             activityObserveEmitter = emitter
@@ -66,15 +68,17 @@ class SyncStepData(val sjUniWatch: SJUniWatch) : AbSyncData<List<WmStepData>>() 
                                 TAG,
                                 "step data:" + BtUtils.bytesToHexString(it.originData)
                             )
-                            byteBuffer.put(it.payload)
+                            byteBufferSyncData.put(it.payload)
                         }
 
                         //0: 只有一个时间戳
                         //1：每天一个时间戳
                         //2：每小时一个时间戳
-                        val timestampType = byteBuffer.get().toInt()
-                        val baseDate = byteBuffer.int
-
+                        val timestampType = byteBufferSyncData.get().toInt()
+                        val baseDate = byteBufferSyncData.int
+                        //时间戳
+                        val timestamp = byteBufferSyncData.int
+                        val dataLen = byteBufferSyncData.short
 
                         sjUniWatch.wmLog.logD(
                             TAG,
@@ -86,7 +90,7 @@ class SyncStepData(val sjUniWatch: SJUniWatch) : AbSyncData<List<WmStepData>>() 
         }
     }
 
-    override var observeSyncData: Observable<List<WmStepData>> =
+    override var observeSyncData: Observable<List<WmSyncData>> =
         Observable.create { emitter -> observeChangeEmitter = emitter }
 
 

@@ -80,25 +80,23 @@ class SJTransferFile(val sjUniWatch: SJUniWatch) : AbWmTransferFile() {
             it.progress = 0
         }
 
-        return Observable.create(object : ObservableOnSubscribe<WmTransferState> {
-            override fun subscribe(emitter: ObservableEmitter<WmTransferState>) {
-                observableTransferEmitter = emitter
+        return Observable.create { emitter ->
+            observableTransferEmitter = emitter
 
-                var fileLen: Long = 0
+            var fileLen: Long = 0
 
-                files.forEach {
-                    fileLen += it.length()
-                }
-
-                sjUniWatch.sendNormalMsg(
-                    CmdHelper.getTransferFile01Cmd(
-                        fileType.type.toByte(),
-                        fileLen.toInt(),
-                        files.size
-                    )
-                )
+            files.forEach {
+                fileLen += it.length()
             }
-        })
+
+            sjUniWatch.sendNormalMsg(
+                CmdHelper.getTransferFile01Cmd(
+                    fileType.type.toByte(),
+                    fileLen.toInt(),
+                    files.size
+                )
+            )
+        }
     }
 
     fun transferFileBuz(msgBean: MsgBean) {
@@ -129,7 +127,7 @@ class SJTransferFile(val sjUniWatch: SJUniWatch) : AbWmTransferFile() {
                     }
 
                 } else {
-                    transferError("device not allow transfer file , resaon:$reason")
+                    transferError("device not allow transfer file , reason:$reason")
                 }
             }
             CMD_ID_8002 -> {
@@ -146,7 +144,7 @@ class SJTransferFile(val sjUniWatch: SJUniWatch) : AbWmTransferFile() {
                             FileUtils.readFileBytes(mTransferFiles!![mSendFileCount])
 
                         mFileDataArray?.let {
-                            sjUniWatch.wmLog.logD(TAG, "开启线程读取文件字节流长度：" + it.size)
+                            sjUniWatch.wmLog.logD(TAG, "start thread to read file array：" + it.size)
                             continueSendFileData(0, it)
                         }
 
@@ -166,12 +164,12 @@ class SJTransferFile(val sjUniWatch: SJUniWatch) : AbWmTransferFile() {
                 mOtaProcess = msgBean.payload[1].toInt()
                 sjUniWatch.wmLog.logD(
                     TAG,
-                    "返回消息状态:$mErrorSend 返回ota_process:$mOtaProcess 总包个数:$mPackageCount"
+                    "back msg state:$mErrorSend ota_process:$mOtaProcess total pk count:$mPackageCount"
                 )
                 if (mErrorSend) { //失败
                     //                                        removeCallBackRunner(mTransferTimeoutRunner)
                     //                                        mOtaProcess = mOtaProcess > 0 ? mOtaProcess - 1 : mOtaProcess;
-                    sjUniWatch.wmLog.logD(TAG, "出错后序号：$mOtaProcess")
+                    sjUniWatch.wmLog.logD(TAG, "error index：$mOtaProcess")
                     if (mTransferRetryCount < MAX_RETRY_COUNT) {
                         sendErrorMsg(mOtaProcess)
                     } else {
@@ -179,7 +177,7 @@ class SJTransferFile(val sjUniWatch: SJUniWatch) : AbWmTransferFile() {
                     }
                 } else { //成功
                     mTransferRetryCount = 0
-                    sjUniWatch.wmLog.logD(TAG, "掰正的消息：$mOtaProcess")
+                    sjUniWatch.wmLog.logD(TAG, "Straighten up msg：$mOtaProcess")
 
                     Thread {
                         // 执行耗时操作
@@ -274,7 +272,7 @@ class SJTransferFile(val sjUniWatch: SJUniWatch) : AbWmTransferFile() {
                 mTransferring = false
                 mCanceledSend = true
                 val reasonCancel = msgBean.payload[0]
-                sjUniWatch.wmLog.logD(TAG, "设备取消传输原因：$reasonCancel")
+                sjUniWatch.wmLog.logD(TAG, "device cancel reason：$reasonCancel")
                 transferEnd()
                 transferError("file transfer error reason:06 Error")
             }
