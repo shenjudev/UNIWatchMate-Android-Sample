@@ -517,6 +517,8 @@
     <string name="sport_installed_tip">Already added sports, up to 12</string>
 
     <string name="data_step">Step</string>
+    <string name="data_calorie">Calories</string>
+    <string name="data_activity_duration">Activity Duration</string>
     <string name="data_sleep">Sleep</string>
     <string name="data_heart_rate">Heart Rate</string>
     <string name="data_oxygen">Oxygen</string>

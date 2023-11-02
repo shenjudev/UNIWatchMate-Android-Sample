@@ -3,31 +3,42 @@ package com.sjbt.sdk.sample.ui.sync
 import android.content.Context
 import android.os.Bundle
 import android.view.View
+import android.widget.TextView
 import androidx.core.view.isVisible
 import com.base.api.UNIWatchMate
 import com.base.sdk.entity.data.WmSportSummaryData
 import com.blankj.utilcode.util.GsonUtils
 import com.blankj.utilcode.util.ResourceUtils
+import com.sjbt.sdk.sample.R
 import com.sjbt.sdk.sample.model.LocalSportLibrary
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.rx3.await
 import java.text.SimpleDateFormat
 import java.util.*
 
-class SportFragment : DataListFragment<WmSportSummaryData>(),DataListAdapter.Listener<WmSportSummaryData> {
-
+class SportDetailFragment : DataListFragment<WmSportSummaryData>(),
+    DataListAdapter.Listener<WmSportSummaryData> {
+    override val layoutId: Int = R.layout.fragment_sleep
     private val dateTimeFormat = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault())
-    private var localSportLibrary: LocalSportLibrary? = null
+    var localSportLibrary: LocalSportLibrary? = null
+    var tvDataSport: TextView? = null
+    private var wmSporSummData:WmSportSummaryData?=null
 
-    override val valueFormat: DataListAdapter.ValueFormat<WmSportSummaryData> = object : DataListAdapter.ValueFormat<WmSportSummaryData> {
-        override fun format(context: Context, obj: WmSportSummaryData): String {
-            return dateTimeFormat.format(obj.timestamp) + "    " + sportTypeText(obj.sportId)+"  "+obj.valueType
+    override val valueFormat: DataListAdapter.ValueFormat<WmSportSummaryData> =
+        object : DataListAdapter.ValueFormat<WmSportSummaryData> {
+            override fun format(context: Context, obj: WmSportSummaryData): String {
+                return dateTimeFormat.format(obj.timestamp) + "    " + sportTypeText(obj.sportId) + "  " + obj.valueType
+            }
         }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
     }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        tvDataSport = view.findViewById(R.id.tv_data_sport)
         btnDate.isVisible = false
-        adapter.listener=this
+        adapter.listener = this
     }
 
     override fun queryData(date: Date): List<WmSportSummaryData>? {
@@ -38,7 +49,8 @@ class SportFragment : DataListFragment<WmSportSummaryData>(),DataListAdapter.Lis
                     GsonUtils.fromJson<LocalSportLibrary>(sportsData, LocalSportLibrary::class.java)
             }
 
-            UNIWatchMate.wmSync.syncSportSummaryData.syncData(date.time).await() }
+            UNIWatchMate.wmSync.syncSportSummaryData.syncData(date.time).await()
+        }
     }
 
     //TODO Only part game types are listed here.
@@ -49,9 +61,9 @@ class SportFragment : DataListFragment<WmSportSummaryData>(),DataListAdapter.Lis
 
     private fun getSportName(sportId: Int): String {
         localSportLibrary?.let {
-            it.sports.forEach {localSport->
+            it.sports.forEach { localSport ->
                 if (sportId == localSport.id) {
-                  return it.getNameById(sportId)+it.getTypeById(sportId)
+                    return it.getNameById(sportId) + it.getTypeById(sportId)
                 }
             }
         }

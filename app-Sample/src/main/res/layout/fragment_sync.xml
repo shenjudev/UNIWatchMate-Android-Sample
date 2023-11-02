@@ -29,7 +29,14 @@
                 android:id="@+id/item_step"
                 style="@style/Widget.Sample.PreferenceView.Item.Text"
                 app:preferenceTitle="@string/data_step" />
-
+            <com.github.kilnn.tool.widget.item.PreferenceItem
+                android:id="@+id/item_calories"
+                style="@style/Widget.Sample.PreferenceView.Item.Text"
+                app:preferenceTitle="@string/data_calorie" />
+            <com.github.kilnn.tool.widget.item.PreferenceItem
+                android:id="@+id/item_activity_duration"
+                style="@style/Widget.Sample.PreferenceView.Item.Text"
+                app:preferenceTitle="@string/data_activity_duration" />
             <com.github.kilnn.tool.widget.item.PreferenceItem
                 android:id="@+id/item_sleep"
                 style="@style/Widget.Sample.PreferenceView.Item.Text"
