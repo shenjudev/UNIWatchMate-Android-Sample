@@ -2,6 +2,7 @@ package com.base.sdk.entity.data
 
 import com.base.sdk.entity.apps.WmValueTypeData
 import com.base.sdk.entity.settings.WmSleepSettings
+import java.io.Serializable
 
 abstract class WmBaseSyncData(
 )
@@ -44,7 +45,7 @@ class WmSportSummaryData(
      * 基本参数类型
      */
     val valueType: List<WmValueTypeData>
-) : WmBaseSyncData()
+) : WmBaseSyncData(), Serializable
 
 /**
  * 平均 value 血氧数据
