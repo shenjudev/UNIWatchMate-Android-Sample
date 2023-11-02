@@ -194,7 +194,7 @@ class AppContact(val sjUniWatch: SJUniWatch) : AbAppContact() {
                     payload
                 )
 
-                val msgBean = CmdHelper.getPayLoadJson(false, cmdArray)
+                val msgBean = MsgBean.fromByteArrayToMsgBean(cmdArray)
 
                 val order = msgBean.cmdOrder
                 msgPkMap[order] = msgBean

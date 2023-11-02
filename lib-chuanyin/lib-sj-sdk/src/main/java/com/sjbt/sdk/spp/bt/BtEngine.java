@@ -15,7 +15,6 @@ import android.os.Message;
 import com.sjbt.sdk.SJUniWatch;
 import com.sjbt.sdk.entity.MsgBean;
 import com.sjbt.sdk.log.SJLog;
-import com.sjbt.sdk.spp.cmd.CmdHelper;
 import com.sjbt.sdk.utils.BtUtils;
 
 import java.io.DataOutputStream;
@@ -284,7 +283,7 @@ public class BtEngine {
      */
     public void sendMsgOnWorkThread(byte[] bytes) {
         if (deviceBusing) {
-            MsgBean msgBean = CmdHelper.getPayLoadJson(false, bytes);
+            MsgBean msgBean = MsgBean.Companion.fromByteArrayToMsgBean(bytes);
             notifyUI(Listener.BUSY, msgBean);
             return;
         }
@@ -297,7 +296,7 @@ public class BtEngine {
         isSending = true;
         lock.unlock();
         try {
-            MsgBean msgBean = CmdHelper.getPayLoadJson(false, bytes);
+            MsgBean msgBean = MsgBean.Companion.fromByteArrayToMsgBean( bytes);
 
             if (!msgBean.isNotTimeOut()) {
                 String msgTimeCode = msgBean.getTimeOutCode();
@@ -511,7 +510,7 @@ public class BtEngine {
         int payloadLen = ((lenArray[2]) & 0XFF) | ((lenArray[3] & 0XFF) << 8);
 
         if (payloadLen == msg.length - BT_MSG_BASE_LEN) {
-            MsgBean msgBean = CmdHelper.getPayLoadJson(true, msg);
+            MsgBean msgBean = MsgBean.Companion.fromByteArrayToMsgBean( msg);
 
             String msgTimeCode = msgBean.getTimeOutCode();
             logD("back message timeout code 1：" + msgTimeCode);
@@ -541,7 +540,7 @@ public class BtEngine {
 
                 logD("suplit msg：" + BtUtils.bytesToHexString(singleMsg));
 
-                MsgBean msgBean = CmdHelper.getPayLoadJson(true, singleMsg);
+                MsgBean msgBean = MsgBean.Companion.fromByteArrayToMsgBean(singleMsg);
                 String msgTimeCode = msgBean.getTimeOutCode();
 
                 logD("back message timeout code 2：" + msgTimeCode);

@@ -117,15 +117,7 @@ const val DIVIDE_Y_M_JSON: Byte = 6
 const val DIVIDE_Y_E_JSON: Byte = 7
 
 const val DIAL_MSG_LEN = 17
-const val CONTACT_MSG_LEN = 80
-const val CONTACT_NAME_LEN = 60
-const val CONTACT_PHONE_LEN = 20
 const val BT_MSG_BASE_LEN = 16
-const val TIME_SYNC_SET = 1 //设置自动同步时间
-const val TIME_SYNC_SEARCH = 2 //查询是否打开时间同步
-const val CONTACT_ACTION_LIST = 1
-const val CONTACT_ACTION_ADD = 2
-const val CONTACT_ACTION_DELETE = 3
 
 /**
  * 节点类型数据配置
