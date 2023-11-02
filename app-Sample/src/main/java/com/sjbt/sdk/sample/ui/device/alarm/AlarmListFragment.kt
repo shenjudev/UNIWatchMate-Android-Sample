@@ -68,6 +68,7 @@ class AlarmListFragment : BaseFragment(R.layout.fragment_alarm_list) {
                 DividerItemDecoration.VERTICAL
             )
         )
+
         adapter = AlarmListAdapter()
         adapter.listener = object : AlarmListAdapter.Listener {
 
@@ -85,9 +86,9 @@ class AlarmListFragment : BaseFragment(R.layout.fragment_alarm_list) {
                     promptProgress.showProgress("")
                     viewModel.deleteAlarm(position)
                 }
-
             }
         }
+
         adapter.registerAdapterDataObserver(adapterDataObserver)
         viewBind.recyclerView.adapter = adapter
 

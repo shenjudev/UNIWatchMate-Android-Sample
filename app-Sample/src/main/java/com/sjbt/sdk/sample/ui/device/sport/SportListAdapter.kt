@@ -27,7 +27,7 @@ class SportListAdapter(val viewModel: SportInstalledViewModel) :
         val sport = sources?.get(position) ?: return
         val name = viewModel.getNameById(sport.id)
         holder.viewBind.tvSportId.text = "${sport.id} $name"
-        holder.viewBind.imgDelete.visibility=if(sport.buildIn) View.GONE else View.VISIBLE
+        holder.viewBind.imgDelete.visibility=if(sport.buildIn||sources!!.size<2) View.GONE else View.VISIBLE
         holder.viewBind.tvDialBuiltIn.visibility=if(sport.buildIn) View.VISIBLE else View.GONE
         holder.viewBind.imgDelete.setOnClickListener {
             listener?.onItemDelete(holder.bindingAdapterPosition)

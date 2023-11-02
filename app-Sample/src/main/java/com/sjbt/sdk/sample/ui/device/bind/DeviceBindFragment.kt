@@ -32,6 +32,7 @@ import com.base.sdk.entity.common.WmTimeUnit
 import com.github.kilnn.tool.dialog.prompt.PromptDialogFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
+import com.sjbt.sdk.sample.BuildConfig
 import com.sjbt.sdk.sample.R
 import com.sjbt.sdk.sample.base.BaseFragment
 import com.sjbt.sdk.sample.data.device.DeviceManager
@@ -191,6 +192,9 @@ class DeviceBindFragment : BaseFragment(R.layout.fragment_device_bind),
                 }
             }
         }
+        if (BuildConfig.DEBUG) {
+//            viewBind.editFilter.visibility=View.VISIBLE
+        }
         requireActivity().addMenuProvider(object : MenuProvider {
             override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
                 menuInflater.inflate(R.menu.menu_device_bind, menu)
@@ -287,6 +291,7 @@ class DeviceBindFragment : BaseFragment(R.layout.fragment_device_bind),
 
     private fun startDiscover() {
         startScan = true
+//       val filterTag= viewBind.editFilter.text.trim().toString()
         viewLifecycle.launchRepeatOnStarted {
             launch {
                 UNIWatchMate.startDiscovery(
