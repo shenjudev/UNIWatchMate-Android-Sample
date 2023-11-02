@@ -41,12 +41,12 @@ class MyApplication : Application() {
         super.onCreate()
         instance = this
         applicationScope = Injector.getApplicationScope()
-        //第一步：初始化，需要传入支持的sdk实例
+
         uniWatchInit(this)
 
-        observeState()
+        observeDeviceState()
         Utils.init(instance)
-        //监听sdk变化
+
         UNIWatchMate.observeUniWatchChange().subscribe {
             it.setLogEnable(true)
         }
@@ -65,7 +65,7 @@ class MyApplication : Application() {
         FormatterUtil.init(Resources.getSystem().configuration.locale)
     }
 
-    private fun observeState() {
+    private fun observeDeviceState() {
 
         UNIWatchMate.observeConnectState.subscribe {
 
@@ -78,7 +78,7 @@ class MyApplication : Application() {
 
                 WmConnectState.VERIFIED -> {
                     UNIWatchMate.wmApps.appCamera.observeCameraOpenState.subscribe {
-                        Timber.e( "设备相机状态1：$it")
+                        Timber.e( "Device camera status：$it")
                     }
                 }
 
@@ -127,7 +127,7 @@ class MyApplication : Application() {
                 UNIWatchMate.wmApps.appCamera.observeCameraOpenState.asFlow().collect {
                     if (it) {//
                         if (ActivityUtils.getTopActivity() != null) {
-                            Timber.e( "设备相机状态1：$it")
+                            Timber.e( "Device camera status：$it")
                             CacheDataHelper.cameraLaunchedByDevice = true
                             CameraActivity.launchActivity(ActivityUtils.getTopActivity())
                         }

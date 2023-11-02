@@ -5,7 +5,7 @@ import com.sjbt.sdk.sample.entity.DeviceBindEntity
 
 
 /**
- * ToNote:Avoid declare as a data class, because the [DeviceManager.rebind] need trigger connection, even when the device is not changed
+ * ToNote:Avoid declare as a data class, because sometimes  need trigger connection, even when the device is not changed
  */
 class ConnectorDevice(
     /**

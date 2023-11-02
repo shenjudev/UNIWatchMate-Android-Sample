@@ -20,10 +20,7 @@ import kotlinx.coroutines.rx3.asFlow
 class DeviceConfigFragment : BaseFragment(R.layout.fragment_device_config) {
 
     private val viewBind: FragmentDeviceConfigBinding by viewBinding()
-
     //    private val deviceManager = Injector.getDeviceManager()
-    private var wistRaiseConfig: WmWistRaise? = null
-    private var dateTimeConfig: WmDateTime? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -36,14 +33,7 @@ class DeviceConfigFragment : BaseFragment(R.layout.fragment_device_config) {
         viewBind.itemAppView.setOnClickListener(blockClick)
         viewBind.itemLanguage.setOnClickListener(blockClick)
         viewBind.itemHeartRate.setOnClickListener(blockClick)
-//      viewBind.itemWristLightingEnabled.getSwitchView()
-//            .setOnCheckedChangeListener { buttonView, isChecked ->
-//
-//            }
-//        viewBind.itemSynchronizeDateAndTimeEnabled.getSwitchView()
-//            .setOnCheckedChangeListener { buttonView, isChecked ->
-//
-//            }
+
         viewLifecycle.launchRepeatOnStarted {
                 launch {
                     UNIWatchMate.observeConnectState.asFlow().collect {
@@ -91,9 +81,7 @@ class DeviceConfigFragment : BaseFragment(R.layout.fragment_device_config) {
             viewBind.itemSleep -> {
                 findNavController().navigate(DeviceConfigFragmentDirections.toSleepConfig())
             }
-//            viewBind.itemScreenVibrate -> {
-//                findNavController().navigate(DeviceConfigFragmentDirections.toScreenVibrateConfig())
-//            }
+
         }
     }
 

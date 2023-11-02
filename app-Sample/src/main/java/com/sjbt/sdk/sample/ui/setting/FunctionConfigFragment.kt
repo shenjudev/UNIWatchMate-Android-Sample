@@ -20,18 +20,7 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.rx3.asFlow
 import kotlinx.coroutines.rx3.await
 
-/**
- * **Document**
- * https://github.com/htangsmart/FitCloudPro-SDK-Android/wiki/04.Device-info-and-configs#fcfunctionconfig
- *
- * ***Description**
- * Display and modify the simple functions on the device
- *
- * **Usage**
- * 1. [FunctionConfigFragment]
- * Display and modify
- */
-//不需要连接也可以设置的
+
 class FunctionConfigFragment : BaseFragment(R.layout.fragment_function_config),
     CompoundButton.OnCheckedChangeListener {
 

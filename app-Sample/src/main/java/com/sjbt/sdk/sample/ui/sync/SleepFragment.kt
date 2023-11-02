@@ -33,7 +33,7 @@ class SleepFragment : DataListFragment<WmSleepItem>() {
                 WmSleepItem.STATUS_LIGHT -> context.getString(R.string.light_sleep)
                 else -> context.getString(R.string.awake_sleep)
             }
-            return statusText + "    " + timeFormat.format(obj.startTime) + " ->  " + timeFormat.format(obj.startTime)
+            return statusText + "    " + timeFormat.format(obj.startTime) + " ->  "
         }
     }
 

@@ -55,7 +55,7 @@ internal class InternalStorageImpl(
     }
 
     /**
-     * 是否是有效的用户ID
+     * 是否是有效的用户ID(Whether it is a valid user ID)
      */
     private fun Long.isValidUserId(): Boolean {
         return this > 0
@@ -68,4 +68,5 @@ internal class InternalStorageImpl(
     companion object {
         const val PREFERENCE_NAME = "internalDataStore"
     }
+
 }

@@ -5,8 +5,6 @@ import androidx.navigation.fragment.NavHostFragment
 import com.sjbt.sdk.sample.R
 
 /**
- * **Document**
- * https://github.com/htangsmart/FitCloudPro-SDK-Android/wiki/10.Other-Features#setting-alarms
  *
  * ***Description**
  * Display and modify alarms
@@ -15,9 +13,6 @@ import com.sjbt.sdk.sample.R
  * 1. [AlarmListFragment]
  * Display all alarms and sort it.
  * [AlarmHelper] [AlarmListAdapter]
- *
- * And wait alarm changes saving.
- * [SetAlarmsDialogFragment]
  *
  * 2. [AlarmViewModel]
  * Show how to request alarms and set alarms

@@ -16,9 +16,6 @@ import com.sjbt.sdk.sample.R
 import com.sjbt.sdk.sample.base.Constant
 import com.sjbt.sdk.sample.model.WeatherCode
 
-/**
- * 用于操作确认弹窗
- */
 class WeatherCodeTestDialog(
     val mContext: Context, val callBack: CallBack<WeatherCode>,
 ) : BaseDialog(mContext) {

@@ -108,38 +108,8 @@ class DeviceBindFragment : BaseFragment(R.layout.fragment_device_bind),
             )
 
             DeviceConnectDialogFragment().show(childFragmentManager, null)
-
         }
     }
-
-//    fun parseSjScanQr(qrString: String): WmDevice? {
-//        var wmScanDevice: WmDevice? = null
-//
-////        val params = UrlParse.getUrlParams(qrString)
-//        val urlParams = qrString.split("?")
-//
-//        if (urlParams.isNotEmpty()) {
-//            val params = urlParams[1].split("&")
-//            if (params.isNotEmpty() && params.size >= 3) {
-//                wmScanDevice = WmDevice(WmDeviceModel.SJ_WATCH)
-//
-//                val schemeMacAddress = params[0]
-//                val schemeDeviceName = params[1]
-//                val random = params[2]
-//
-//                wmScanDevice.randomCode = random
-//
-//                wmScanDevice.address = schemeMacAddress
-//                wmScanDevice.isRecognized =
-//                    !TextUtils.isEmpty(schemeMacAddress) &&
-//                            !TextUtils.isEmpty(schemeDeviceName) &&
-//                            !TextUtils.isEmpty(random) &&
-//                            isLegalMacAddress(schemeMacAddress)
-//            }
-//        }
-//
-//        return wmScanDevice
-//    }
 
     private fun isLegalMacAddress(address: String?): Boolean {
         return !TextUtils.isEmpty(address)
@@ -212,7 +182,6 @@ class DeviceBindFragment : BaseFragment(R.layout.fragment_device_bind),
         }, viewLifecycleOwner)
 
 //        viewLifecycle.addObserver(scannerHelper)
-//
         viewBind.refreshLayout.setOnRefreshListener {
             //Clear data when using pull to refresh. This is a different strategy than fabScan click event
             if (!startScan) {

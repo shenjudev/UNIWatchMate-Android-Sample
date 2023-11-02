@@ -5,7 +5,11 @@ import com.sjbt.sdk.sample.db.AppDatabase
 import com.sjbt.sdk.sample.entity.UserEntity
 import com.sjbt.sdk.sample.model.user.UserInfo
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.stateIn
 
 interface UserInfoRepository {
 

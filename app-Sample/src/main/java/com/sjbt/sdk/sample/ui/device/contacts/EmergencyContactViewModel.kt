@@ -86,9 +86,6 @@ class EmergencyContactViewModel :
     suspend fun setEmergencyCall(call: WmEmergencyCall) {
         runCatchingWithLog {
             val result = UNIWatchMate.wmApps.appContact.updateEmergencyContact(call).await()
-//            call.isEnabled = result.isEnabled
-//            call.emergencyContacts.clear()
-//            call.emergencyContacts.addAll(result.emergencyContacts)
             Timber.d(  "result=$result")
         }.onSuccess {
             EmergencyCallEvent.setEmergencyContactSuccess(call).newEvent()

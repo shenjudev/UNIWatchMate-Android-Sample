@@ -8,9 +8,7 @@ import android.view.View
 import android.widget.TextView
 import com.sjbt.sdk.sample.R
 
-/**
- * 用于操作确认弹窗
- */
+
 class InfoDialog : BaseDialog {
     private var mTip: String?
     private var mContext: Context

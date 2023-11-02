@@ -75,8 +75,6 @@ class DialLibraryDfuDialogFragment : AppCompatDialogFragment() {
             viewBind.tvName.text = FileUtils.getFileName(dialPacket.dialAssert)
         }
 
-        resetStateView()
-
         viewBind.stateView.clickTrigger {
             if (!dfuViewModel.isDfuIng()) {
                 PermissionHelper.requestBle(this) { granted ->
@@ -148,10 +146,6 @@ class DialLibraryDfuDialogFragment : AppCompatDialogFragment() {
         }
     }
 
-    private fun resetStateView() {
-//        viewBind.stateView.isEnabled = adapter?.hasSelectedItem() ?: true
-//        viewBind.stateView.text = getString(R.string.ds_push_start, fileSizeStr(dialPacket.binSize))
-    }
 
     override fun onDestroyView() {
         super.onDestroyView()

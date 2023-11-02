@@ -11,6 +11,7 @@ import com.sjbt.sdk.sample.utils.DateTimeUtils
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.rx3.await
 import java.util.*
+import kotlin.collections.ArrayList
 
 class StepFragment : DataListFragment<WmStepData>() {
 
@@ -22,14 +23,19 @@ class StepFragment : DataListFragment<WmStepData>() {
     }
 
     override fun queryData(date: Date): List<WmStepData>? {
-        return runBlocking {
+
+        val result=
+        runBlocking {
             val calendar = Calendar.getInstance()
             val start: Date = DateTimeUtils.getDayStartTime(calendar, date)
             val end: Date = DateTimeUtils.getDayEndTime(calendar, date)
             UNIWatchMate.wmSync.syncStepData.syncData(start.time)
                 .await()
-
         }
+        if (result is ArrayList) {
+            result.add(WmStepData(System.currentTimeMillis(),10000,1223))
+        }
+        return result
     }
 
 }
