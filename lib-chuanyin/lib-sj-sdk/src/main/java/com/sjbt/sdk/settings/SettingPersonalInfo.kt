@@ -5,8 +5,10 @@ import com.base.sdk.port.setting.AbWmSetting
 import com.sjbt.sdk.SJUniWatch
 import com.sjbt.sdk.entity.MsgBean
 import com.sjbt.sdk.entity.NodeData
+import com.sjbt.sdk.entity.PayloadPackage
 import com.sjbt.sdk.spp.cmd.CmdHelper
 import com.sjbt.sdk.spp.cmd.URN_0
+import com.sjbt.sdk.spp.cmd.URN_2
 import io.reactivex.rxjava3.core.*
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
@@ -29,19 +31,18 @@ class SettingPersonalInfo(val sjUniWatch: SJUniWatch) : AbWmSetting<WmPersonalIn
         personalInfo = obj
         return Single.create { emitter ->
             setEmitter = emitter
-            sjUniWatch.sendWriteNodeCmdList(CmdHelper.getUpdatePersonalInfoAllCmd(obj))
+            sjUniWatch.sendWriteNodeCmdList(getUpdatePersonalInfoAllCmd(obj))
         }
     }
 
     override fun get(): Single<WmPersonalInfo> {
         return Single.create { emitter ->
             getEmitter = emitter
-            sjUniWatch.sendReadNodeCmdList(CmdHelper.getDevicePersonalInfoCmd())
+            sjUniWatch.sendReadNodeCmdList(getDevicePersonalInfoCmd())
         }
     }
 
     fun onTimeOut(msgBean: MsgBean, nodeData: NodeData) {
-        TODO("Not yet implemented")
     }
 
     fun personalInfoBusiness(it: NodeData) {
@@ -78,11 +79,38 @@ class SettingPersonalInfo(val sjUniWatch: SJUniWatch) : AbWmSetting<WmPersonalIn
                     getEmitter?.onSuccess(personalInfo)
                     observeEmitter?.onNext(personalInfo)
                 }
-
             }
-
-
         }
+    }
+
+    /**
+     * 获取设备上体育目标配置
+     */
+    private fun getDevicePersonalInfoCmd(): PayloadPackage {
+        val payloadPackage = PayloadPackage()
+        payloadPackage.putData(CmdHelper.getUrnId(URN_2, URN_2), ByteArray(0))
+        return payloadPackage
+    }
+
+    /**
+     * 获取设置健康信息的命令
+     */
+    private fun getUpdatePersonalInfoAllCmd(
+        personalInfo: WmPersonalInfo
+    ): PayloadPackage {
+
+        val payloadPackage = PayloadPackage()
+
+        val bbSport: ByteBuffer = ByteBuffer.allocate(2 + 2 + 1 + 4).order(ByteOrder.LITTLE_ENDIAN)
+        bbSport.putShort(personalInfo.height)
+        bbSport.putShort(personalInfo.weight)
+        bbSport.put(personalInfo.gender.ordinal.toByte())
+        bbSport.putShort(personalInfo.birthDate.year)
+        bbSport.put(personalInfo.birthDate.month)
+        bbSport.put(personalInfo.birthDate.day)
+        payloadPackage.putData(CmdHelper.getUrnId(URN_2, URN_2), bbSport.array())
+
+        return payloadPackage
     }
 
 }

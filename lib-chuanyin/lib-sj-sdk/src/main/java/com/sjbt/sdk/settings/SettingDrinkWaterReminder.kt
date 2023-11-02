@@ -8,10 +8,14 @@ import com.base.sdk.port.setting.AbWmSetting
 import com.sjbt.sdk.SJUniWatch
 import com.sjbt.sdk.entity.MsgBean
 import com.sjbt.sdk.entity.NodeData
+import com.sjbt.sdk.entity.PayloadPackage
 import com.sjbt.sdk.spp.cmd.CmdHelper
 import com.sjbt.sdk.spp.cmd.URN_0
+import com.sjbt.sdk.spp.cmd.URN_2
+import com.sjbt.sdk.spp.cmd.URN_6
 import io.reactivex.rxjava3.core.*
 import java.nio.ByteBuffer
+import java.nio.ByteOrder
 
 class SettingDrinkWaterReminder(val sjUniWatch: SJUniWatch) : AbWmSetting<WmSedentaryReminder>() {
     private var observeEmitter: ObservableEmitter<WmSedentaryReminder>? = null
@@ -32,7 +36,7 @@ class SettingDrinkWaterReminder(val sjUniWatch: SJUniWatch) : AbWmSetting<WmSede
         return Single.create { emitter ->
             mSedentaryReminder = obj
             setEmitter = emitter
-            sjUniWatch.sendWriteNodeCmdList(CmdHelper.getWriteReadDrinkReminderCmd(obj))
+            sjUniWatch.sendWriteNodeCmdList(getWriteReadDrinkReminderCmd(obj))
         }
     }
 
@@ -40,7 +44,7 @@ class SettingDrinkWaterReminder(val sjUniWatch: SJUniWatch) : AbWmSetting<WmSede
         return Single.create { emitter ->
             isGet = true
             getEmitter = emitter
-            sjUniWatch.sendReadNodeCmdList(CmdHelper.getReadDrinkReminderCmd())
+            sjUniWatch.sendReadNodeCmdList(getReadDrinkReminderCmd())
         }
     }
 
@@ -118,5 +122,49 @@ class SettingDrinkWaterReminder(val sjUniWatch: SJUniWatch) : AbWmSetting<WmSede
                 }
             }
         }
+    }
+
+    /**
+     * 获取喝水提醒设置
+     */
+    private fun getReadDrinkReminderCmd(): PayloadPackage {
+        val payloadPackage = PayloadPackage()
+        payloadPackage.putData(CmdHelper.getUrnId(URN_2, URN_6), ByteBuffer.allocate(0).array())
+        return payloadPackage
+    }
+
+    /**
+     * 设置喝水提醒
+     */
+    private fun getWriteReadDrinkReminderCmd(sedentaryReminder: WmSedentaryReminder): PayloadPackage {
+        val payloadPackage = PayloadPackage()
+        val byteBuffer: ByteBuffer = ByteBuffer.allocate(11).order(ByteOrder.LITTLE_ENDIAN)
+        byteBuffer.put(
+            if (sedentaryReminder.isEnabled) {
+                1.toByte()
+            } else {
+                0.toByte()
+            }
+        )
+        byteBuffer.put(sedentaryReminder.timeRange.startHour.toByte())
+        byteBuffer.put(sedentaryReminder.timeRange.startMinute.toByte())
+        byteBuffer.put(sedentaryReminder.timeRange.endHour.toByte())
+        byteBuffer.put(sedentaryReminder.timeRange.endMinute.toByte())
+        byteBuffer.put(sedentaryReminder.frequency.value.toByte())
+
+        byteBuffer.put(
+            if (sedentaryReminder.noDisturbLunchBreak.isEnabled) {
+                1.toByte()
+            } else {
+                0.toByte()
+            }
+        )
+        byteBuffer.put(sedentaryReminder.noDisturbLunchBreak.timeRange.startHour.toByte())
+        byteBuffer.put(sedentaryReminder.noDisturbLunchBreak.timeRange.startMinute.toByte())
+        byteBuffer.put(sedentaryReminder.noDisturbLunchBreak.timeRange.endHour.toByte())
+        byteBuffer.put(sedentaryReminder.noDisturbLunchBreak.timeRange.endMinute.toByte())
+
+        payloadPackage.putData(CmdHelper.getUrnId(URN_2, URN_6), byteBuffer.array())
+        return payloadPackage
     }
 }

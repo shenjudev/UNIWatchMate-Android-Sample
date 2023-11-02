@@ -6,6 +6,7 @@ import com.sjbt.sdk.SJUniWatch
 import com.sjbt.sdk.entity.ErrorCode
 import com.sjbt.sdk.entity.MsgBean
 import com.sjbt.sdk.entity.NodeData
+import com.sjbt.sdk.entity.PayloadPackage
 import com.sjbt.sdk.spp.cmd.*
 import com.sjbt.sdk.utils.BtUtils
 import io.reactivex.rxjava3.core.Observable
@@ -13,6 +14,7 @@ import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.core.SingleEmitter
 import io.reactivex.rxjava3.subjects.PublishSubject
 import java.nio.ByteBuffer
+import java.nio.ByteOrder
 
 class AppFind(val sjUniWatch: SJUniWatch) : AbAppFind() {
 
@@ -34,7 +36,7 @@ class AppFind(val sjUniWatch: SJUniWatch) : AbAppFind() {
     override fun stopFindMobile(): Single<Boolean> {
 
         return Single.create {
-            sjUniWatch.sendWriteNodeCmdList(CmdHelper.getExecuteStopFindMobile())
+            sjUniWatch.sendWriteNodeCmdList(getExecuteStopFindMobile())
             stopFindMobileEmitter = it
         }
     }
@@ -42,7 +44,7 @@ class AppFind(val sjUniWatch: SJUniWatch) : AbAppFind() {
     override fun findWatch(wmFind: WmFind): Single<Boolean> {
         return Single.create {
             startFindWatchEmitter = it
-            sjUniWatch.sendExecuteNodeCmdList(CmdHelper.getExecuteStartFindDevice(wmFind))
+            sjUniWatch.sendExecuteNodeCmdList(getExecuteStartFindDevice(wmFind))
         }
     }
 
@@ -55,7 +57,7 @@ class AppFind(val sjUniWatch: SJUniWatch) : AbAppFind() {
     override fun stopFindWatch(): Single<Boolean> {
         return Single.create {
             stopFindWatchEmitter = it
-            sjUniWatch.sendExecuteNodeCmdList(CmdHelper.getExecuteStopFindDevice())
+            sjUniWatch.sendExecuteNodeCmdList(getExecuteStopFindDevice())
         }
     }
 
@@ -112,7 +114,8 @@ class AppFind(val sjUniWatch: SJUniWatch) : AbAppFind() {
                         val byteBuffer =
                             ByteBuffer.wrap(nodeData.data)
                         val count = byteBuffer.get().toInt()
-                        val timeSeconds = BtUtils.byte2short(nodeData.data.copyOfRange(1, 3)).toInt()
+                        val timeSeconds =
+                            BtUtils.byte2short(nodeData.data.copyOfRange(1, 3)).toInt()
                         val wmFind = WmFind(count, timeSeconds)
                         sjUniWatch.wmLog.logD(TAG, "findMobile: $wmFind")
                         observeFindMobile.onNext(wmFind)
@@ -126,5 +129,58 @@ class AppFind(val sjUniWatch: SJUniWatch) : AbAppFind() {
             }
         }
     }
+
+    /**
+     * 查找手表
+     */
+    private fun getExecuteStartFindDevice(wmFind: WmFind): PayloadPackage {
+        val payloadPackage = PayloadPackage()
+        val byteBuffer: ByteBuffer = ByteBuffer.allocate(3).order(ByteOrder.LITTLE_ENDIAN)
+        byteBuffer.put(wmFind.count.toByte())
+        byteBuffer.putShort(wmFind.timeSeconds.toShort())
+        payloadPackage.putData(CmdHelper.getUrnId(URN_5, URN_2, URN_1), byteBuffer.array())
+        return payloadPackage
+    }
+
+    /**
+     * 停止查找手机
+     */
+    private fun getExecuteStopFindMobile(): PayloadPackage {
+        val payloadPackage = PayloadPackage()
+        val byteBuffer: ByteBuffer = ByteBuffer.allocate(0)
+        payloadPackage.putData(CmdHelper.getUrnId(URN_5, URN_1, URN_2), byteBuffer.array())
+        return payloadPackage
+    }
+
+    /**
+     * 停止查找手表
+     */
+    private fun getExecuteStopFindDevice(): PayloadPackage {
+        val payloadPackage = PayloadPackage()
+        val byteBuffer: ByteBuffer = ByteBuffer.allocate(0)
+        payloadPackage.putData(CmdHelper.getUrnId(URN_5, URN_2, URN_2), byteBuffer.array())
+        return payloadPackage
+    }
+
+    /**
+     * 回复查找手机
+     */
+    private fun getResponseStartFindPhone(): PayloadPackage {
+        val payloadPackage = PayloadPackage()
+        val byteBuffer: ByteBuffer = ByteBuffer.allocate(0)
+        payloadPackage.putData(CmdHelper.getUrnId(URN_5, URN_1, URN_1), byteBuffer.array())
+        return payloadPackage
+    }
+
+    /**
+     * 回复停止查找手机
+     */
+    private fun getResponseStopFindPhone(): PayloadPackage {
+        val payloadPackage = PayloadPackage()
+        val byteBuffer: ByteBuffer = ByteBuffer.allocate(0)
+        payloadPackage.putData(CmdHelper.getUrnId(URN_5, URN_1, URN_2), byteBuffer.array())
+        return payloadPackage
+    }
+
 }
 

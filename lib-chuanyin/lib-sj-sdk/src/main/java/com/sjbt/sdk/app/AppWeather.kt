@@ -8,13 +8,14 @@ import com.base.sdk.entity.settings.WmUnitInfo
 import com.base.sdk.port.app.AbAppWeather
 import com.sjbt.sdk.SJUniWatch
 import com.sjbt.sdk.entity.*
-import com.sjbt.sdk.spp.cmd.CmdHelper
-import com.sjbt.sdk.spp.cmd.URN_APP_WEATHER_PUSH_SEVEN_DAYS
-import com.sjbt.sdk.spp.cmd.URN_APP_WEATHER_PUSH_TODAY
+import com.sjbt.sdk.spp.cmd.*
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.core.SingleEmitter
 import io.reactivex.rxjava3.subjects.PublishSubject
+import java.nio.ByteBuffer
+import java.nio.ByteOrder
 import java.nio.charset.StandardCharsets
+import java.util.*
 
 class AppWeather(val sjUniWatch: SJUniWatch) : AbAppWeather() {
     private var pushWeatherEmitter: SingleEmitter<Boolean>? = null
@@ -45,7 +46,7 @@ class AppWeather(val sjUniWatch: SJUniWatch) : AbAppWeather() {
             }
 
             sjUniWatch.wmLog.logD(TAG, "today weather payload_len:" + totalLen)
-            val payloadPackage = CmdHelper.getWriteTodayWeatherCmd(
+            val payloadPackage = getWriteTodayWeatherCmd(
                 totalLen,
                 temperatureUnit,
                 weather
@@ -84,7 +85,7 @@ class AppWeather(val sjUniWatch: SJUniWatch) : AbAppWeather() {
 
                 sjUniWatch.wmLog.logD(TAG, "7 days weather total bytes:" + sevenDayLen)
 
-                val payloadPackage = CmdHelper.getWriteSevenDaysWeatherCmd(
+                val payloadPackage = getWriteSevenDaysWeatherCmd(
                     sevenDayLen,
                     temperatureUnit,
                     weather
@@ -153,6 +154,190 @@ class AppWeather(val sjUniWatch: SJUniWatch) : AbAppWeather() {
 
             }
         }
+    }
+
+    /**
+     * 获取当天天气命令
+     * 摄氏度 = (华氏度 - 32°F) ÷ 1.8；华氏度 = 32°F+ 摄氏度 × 1.8
+     */
+    private fun getWriteTodayWeatherCmd(
+        totalLen: Int,
+        temperatureUnit: WmUnitInfo.TemperatureUnit,
+        wmWeather: WmWeather
+    ): PayloadPackage {
+        val payloadPackage = PayloadPackage()
+
+        val byteBuffer: ByteBuffer = ByteBuffer.allocate(totalLen).order(ByteOrder.LITTLE_ENDIAN)
+
+        //时间
+        val calendar = Calendar.getInstance()
+        calendar.timeInMillis = wmWeather.pubDate
+        val year = calendar.get(Calendar.YEAR)
+        val month = calendar.get(Calendar.MONTH) + 1 // 月份从0开始，需要加1
+        val day = calendar.get(Calendar.DAY_OF_MONTH)
+        val hour = calendar.get(Calendar.HOUR_OF_DAY)
+        val minute = calendar.get(Calendar.MINUTE)
+        val second = calendar.get(Calendar.SECOND)
+
+        byteBuffer.putShort(year.toShort())
+        byteBuffer.put(month.toByte())
+        byteBuffer.put(day.toByte())
+        byteBuffer.put(hour.toByte())
+        byteBuffer.put(minute.toByte())
+        byteBuffer.put(second.toByte())
+
+        //位置
+        byteBuffer.put((wmWeather.location.country.toByteArray().size + 1).toByte())
+        byteBuffer.put((wmWeather.location.city.toByteArray().size + 1).toByte())
+
+        byteBuffer.put(wmWeather.location.country.toByteArray())
+        byteBuffer.put(0)//字符串结束符
+        byteBuffer.put(wmWeather.location.city.toByteArray())
+        byteBuffer.put(0)//字符串结束符
+
+
+        //当天
+        wmWeather.todayWeather.forEach {
+
+            val calendar = Calendar.getInstance()
+            calendar.timeInMillis = it.date
+            val year = calendar.get(Calendar.YEAR)
+            val month = calendar.get(Calendar.MONTH) + 1 // 月份从0开始，需要加1
+            val day = calendar.get(Calendar.DAY_OF_MONTH)
+            val hour = calendar.get(Calendar.HOUR_OF_DAY)
+            val minute = calendar.get(Calendar.MINUTE)
+            val second = calendar.get(Calendar.SECOND)
+
+            byteBuffer.putShort(year.toShort())
+            byteBuffer.put(month.toByte())
+            byteBuffer.put(day.toByte())
+            byteBuffer.put(hour.toByte())
+            byteBuffer.put(minute.toByte())
+            byteBuffer.put(second.toByte())
+
+            val currTemp = when (temperatureUnit) {
+                WmUnitInfo.TemperatureUnit.CELSIUS -> {//摄氏度
+                    it.curTemp
+                }
+
+                WmUnitInfo.TemperatureUnit.FAHRENHEIT -> {//华氏度
+//                 摄氏度=(华氏度 - 32°F) ÷ 1.8；
+                    (it.curTemp - 32) / 1.8
+                }
+            }
+
+            byteBuffer.put(currTemp.toByte())
+            byteBuffer.putShort(it.humidity.toShort())
+            byteBuffer.put(it.uvIndex.toByte())
+            byteBuffer.put(it.weatherCode.toByte())
+            byteBuffer.put((it.weatherDesc.toByteArray().size + 1).toByte())
+            byteBuffer.put(it.weatherDesc.toByteArray())
+            byteBuffer.put(0)//字符串结束符
+        }
+
+        payloadPackage.putData(
+            CmdHelper.getUrnId(URN_APP_SETTING, URN_APP_WEATHER, URN_APP_WEATHER_PUSH_TODAY),
+            byteBuffer.array()
+        )
+
+        return payloadPackage
+    }
+
+    /**
+     * 获取当天天气命令
+     * 摄氏度 = (华氏度 - 32°F) ÷ 1.8；华氏度 = 32°F+ 摄氏度 × 1.8
+     */
+    private fun getWriteSevenDaysWeatherCmd(
+        totalLen: Int,
+        temperatureUnit: WmUnitInfo.TemperatureUnit,
+        wmWeather: WmWeather
+    ): PayloadPackage {
+        val payloadPackage = PayloadPackage()
+        val byteBuffer: ByteBuffer = ByteBuffer.allocate(totalLen).order(ByteOrder.LITTLE_ENDIAN)
+
+        //时间
+        val calendar = Calendar.getInstance()
+        calendar.timeInMillis = wmWeather.pubDate
+        val year = calendar.get(Calendar.YEAR)
+        val month = calendar.get(Calendar.MONTH) + 1 // 月份从0开始，需要加1
+        val day = calendar.get(Calendar.DAY_OF_MONTH)
+        val hour = calendar.get(Calendar.HOUR_OF_DAY)
+        val minute = calendar.get(Calendar.MINUTE)
+        val second = calendar.get(Calendar.SECOND)
+
+        byteBuffer.putShort(year.toShort())
+        byteBuffer.put(month.toByte())
+        byteBuffer.put(day.toByte())
+        byteBuffer.put(hour.toByte())
+        byteBuffer.put(minute.toByte())
+        byteBuffer.put(second.toByte())
+
+        //位置
+        byteBuffer.put((wmWeather.location.country.toByteArray().size + 1).toByte())
+        byteBuffer.put((wmWeather.location.city.toByteArray().size + 1).toByte())
+        byteBuffer.put(wmWeather.location.country.toByteArray())
+        byteBuffer.put(0)//字符串结束符
+        byteBuffer.put(wmWeather.location.city.toByteArray())
+        byteBuffer.put(0)//字符串结束符
+
+        wmWeather.weatherForecast.forEach {
+
+            //时间
+            val calendar = Calendar.getInstance()
+            calendar.timeInMillis = it.date
+            val year = calendar.get(Calendar.YEAR)
+            val month = calendar.get(Calendar.MONTH) + 1 // 月份从0开始，需要加1
+            val day = calendar.get(Calendar.DAY_OF_MONTH)
+            val hour = calendar.get(Calendar.HOUR_OF_DAY)
+            val minute = calendar.get(Calendar.MINUTE)
+            val second = calendar.get(Calendar.SECOND)
+            val week = calendar.get(Calendar.WEEK_OF_MONTH)
+
+            byteBuffer.putShort(year.toShort())
+            byteBuffer.put(month.toByte())
+            byteBuffer.put(day.toByte())
+            byteBuffer.put(hour.toByte())
+            byteBuffer.put(minute.toByte())
+            byteBuffer.put(second.toByte())
+//            byteBuffer.put(week.toByte())
+            byteBuffer.put(it.week.ordinal.toByte())
+
+            when (temperatureUnit) {
+                WmUnitInfo.TemperatureUnit.CELSIUS -> {//摄氏度
+                    byteBuffer.put(it.lowTemp.toByte())
+                    byteBuffer.put(it.highTemp.toByte())
+                    byteBuffer.put(it.curTemp.toByte())
+                }
+
+                WmUnitInfo.TemperatureUnit.FAHRENHEIT -> {//华氏度
+//                 摄氏度=(华氏度 - 32°F) ÷ 1.8；
+                    byteBuffer.put(((it.lowTemp - 32) / 1.8).toInt().toByte())
+                    byteBuffer.put(((it.highTemp - 32) / 1.8).toInt().toByte())
+                    byteBuffer.put(((it.highTemp - 32) / 1.8).toInt().toByte())
+                }
+            }
+
+            byteBuffer.putShort(it.humidity.toShort())
+            byteBuffer.put(it.uvIndex.toByte())
+            byteBuffer.put(it.dayCode.toByte())
+            byteBuffer.put(it.nightCode.toByte())
+
+            byteBuffer.put((it.dayDesc.toByteArray().size + 1).toByte())
+            byteBuffer.put((it.nightDesc.toByteArray().size + 1).toByte())
+
+            byteBuffer.put(it.dayDesc.toByteArray())
+            byteBuffer.put(0)//字符串结束符
+            byteBuffer.put(it.nightDesc.toByteArray())
+            byteBuffer.put(0)//字符串结束符
+
+        }
+
+        payloadPackage.putData(
+            CmdHelper.getUrnId(URN_APP_SETTING, URN_APP_WEATHER, URN_APP_WEATHER_PUSH_SEVEN_DAYS),
+            byteBuffer.array()
+        )
+
+        return payloadPackage
     }
 
 }

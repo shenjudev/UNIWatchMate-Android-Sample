@@ -10,6 +10,7 @@ import com.sjbt.sdk.spp.cmd.URN_SPORT_STEP
 import com.sjbt.sdk.utils.BtUtils
 import io.reactivex.rxjava3.core.*
 import io.reactivex.rxjava3.disposables.Disposable
+import java.nio.ByteBuffer
 
 class SyncStepData(val sjUniWatch: SJUniWatch) : AbSyncData<List<WmStepData>>() {
 
@@ -20,6 +21,8 @@ class SyncStepData(val sjUniWatch: SJUniWatch) : AbSyncData<List<WmStepData>>() 
     private val TAG = "SyncStepData"
 
     private val msgList = mutableSetOf<MsgBean>()
+    private val byteBuffer = ByteBuffer.allocate(DEFAULT_BUFFER_SIZE)
+
     override fun isSupport(): Boolean {
         return isActionSupport
     }
@@ -48,7 +51,7 @@ class SyncStepData(val sjUniWatch: SJUniWatch) : AbSyncData<List<WmStepData>>() 
                     }
 
                     override fun onNext(t: MsgBean) {
-                        sjUniWatch.wmLog.logE(TAG, "back msg:" + t)
+                        sjUniWatch.wmLog.logE(TAG, "step back msg:" + t)
                         msgList.add(t)
                     }
 
@@ -63,7 +66,20 @@ class SyncStepData(val sjUniWatch: SJUniWatch) : AbSyncData<List<WmStepData>>() 
                                 TAG,
                                 "step data:" + BtUtils.bytesToHexString(it.originData)
                             )
+                            byteBuffer.put(it.payload)
                         }
+
+                        //0: 只有一个时间戳
+                        //1：每天一个时间戳
+                        //2：每小时一个时间戳
+                        val timestampType = byteBuffer.get().toInt()
+                        val baseDate = byteBuffer.int
+
+
+                        sjUniWatch.wmLog.logD(
+                            TAG,
+                            "timestampType:$timestampType --> baseDate:$baseDate"
+                        )
 
                     }
                 })

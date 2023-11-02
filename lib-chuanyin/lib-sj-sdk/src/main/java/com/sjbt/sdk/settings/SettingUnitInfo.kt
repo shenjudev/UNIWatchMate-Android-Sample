@@ -6,10 +6,14 @@ import com.sjbt.sdk.SJUniWatch
 import com.sjbt.sdk.entity.ErrorCode
 import com.sjbt.sdk.entity.MsgBean
 import com.sjbt.sdk.entity.NodeData
+import com.sjbt.sdk.entity.PayloadPackage
 import com.sjbt.sdk.spp.cmd.CmdHelper
 import com.sjbt.sdk.spp.cmd.URN_0
+import com.sjbt.sdk.spp.cmd.URN_2
+import com.sjbt.sdk.spp.cmd.URN_3
 import io.reactivex.rxjava3.core.*
 import java.nio.ByteBuffer
+import java.nio.ByteOrder
 
 class SettingUnitInfo(val sjUniWatch: SJUniWatch) : AbWmSetting<WmUnitInfo>() {
     private var observeEmitter: ObservableEmitter<WmUnitInfo>? = null
@@ -30,7 +34,7 @@ class SettingUnitInfo(val sjUniWatch: SJUniWatch) : AbWmSetting<WmUnitInfo>() {
         wmUnitInfo = obj
         return Single.create { emitter ->
             setEmitter = emitter
-            sjUniWatch.sendWriteNodeCmdList(CmdHelper.getWriteUnitSettingCmd(obj))
+            sjUniWatch.sendWriteNodeCmdList(getWriteUnitSettingCmd(obj))
         }
     }
 
@@ -38,7 +42,7 @@ class SettingUnitInfo(val sjUniWatch: SJUniWatch) : AbWmSetting<WmUnitInfo>() {
         return Single.create { emitter ->
             isGet = true
             getEmitter = emitter
-            sjUniWatch.sendReadNodeCmdList(CmdHelper.getReadUnitSettingCmd())
+            sjUniWatch.sendReadNodeCmdList(getReadUnitSettingCmd())
         }
     }
 
@@ -98,6 +102,37 @@ class SettingUnitInfo(val sjUniWatch: SJUniWatch) : AbWmSetting<WmUnitInfo>() {
                 }
             }
         }
+    }
+
+    /**
+     * 获取设置单位信息的命令
+     */
+    private fun getWriteUnitSettingCmd(
+        wmUnitInfo: WmUnitInfo
+    ): PayloadPackage {
+
+        val payloadPackage = PayloadPackage()
+        val bbSport: ByteBuffer = ByteBuffer.allocate(4).order(ByteOrder.LITTLE_ENDIAN)
+        bbSport.put(wmUnitInfo.timeFormat.ordinal.toByte())
+        bbSport.put(wmUnitInfo.distanceUnit.ordinal.toByte())
+        bbSport.put(wmUnitInfo.temperatureUnit.ordinal.toByte())
+        bbSport.put(wmUnitInfo.weightUnit.ordinal.toByte())
+
+        payloadPackage.putData(CmdHelper.getUrnId(URN_2, URN_3), bbSport.array())
+
+        return payloadPackage
+    }
+
+    /**
+     * 获取设置单位信息的命令
+     */
+    private fun getReadUnitSettingCmd(): PayloadPackage {
+        val payloadPackage = PayloadPackage()
+        val bbSport: ByteBuffer = ByteBuffer.allocate(0)
+
+        payloadPackage.putData(CmdHelper.getUrnId(URN_2, URN_3), bbSport.array())
+
+        return payloadPackage
     }
 
 }

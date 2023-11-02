@@ -8,17 +8,21 @@ import com.base.sdk.port.setting.AbWmSetting
 import com.sjbt.sdk.SJUniWatch
 import com.sjbt.sdk.entity.MsgBean
 import com.sjbt.sdk.entity.NodeData
+import com.sjbt.sdk.entity.PayloadPackage
 import com.sjbt.sdk.spp.cmd.CmdHelper
 import com.sjbt.sdk.spp.cmd.URN_0
+import com.sjbt.sdk.spp.cmd.URN_2
+import com.sjbt.sdk.spp.cmd.URN_5
 import io.reactivex.rxjava3.core.*
 import java.nio.ByteBuffer
+import java.nio.ByteOrder
 
 class SettingSedentaryReminder(val sjUniWatch: SJUniWatch) : AbWmSetting<WmSedentaryReminder>() {
     private var observeEmitter: ObservableEmitter<WmSedentaryReminder>? = null
     private var setEmitter: SingleEmitter<WmSedentaryReminder>? = null
     private var getEmitter: SingleEmitter<WmSedentaryReminder>? = null
     private var isGet = false
-    private var mSedentaryReminder:WmSedentaryReminder? = null
+    private var mSedentaryReminder: WmSedentaryReminder? = null
 
     override fun isSupport(): Boolean {
         return true
@@ -32,7 +36,7 @@ class SettingSedentaryReminder(val sjUniWatch: SJUniWatch) : AbWmSetting<WmSeden
         return Single.create { emitter ->
             mSedentaryReminder = obj
             setEmitter = emitter
-            sjUniWatch.sendWriteNodeCmdList(CmdHelper.getWriteSedentaryReminderCmd(obj))
+            sjUniWatch.sendWriteNodeCmdList(getWriteSedentaryReminderCmd(obj))
         }
     }
 
@@ -40,7 +44,7 @@ class SettingSedentaryReminder(val sjUniWatch: SJUniWatch) : AbWmSetting<WmSeden
         return Single.create { emitter ->
             isGet = true
             getEmitter = emitter
-            sjUniWatch.sendReadNodeCmdList(CmdHelper.getReadSedentaryReminderCmd())
+            sjUniWatch.sendReadNodeCmdList(getReadSedentaryReminderCmd())
         }
     }
 
@@ -103,7 +107,7 @@ class SettingSedentaryReminder(val sjUniWatch: SJUniWatch) : AbWmSetting<WmSeden
 
                     val noDisturb = WmNoDisturb(noDisturbEnable, noTimeRange)
 
-                     mSedentaryReminder =
+                    mSedentaryReminder =
                         WmSedentaryReminder(enabled, timeRange, timeFrequency, noDisturb)
 
                     if (isGet) {
@@ -115,6 +119,50 @@ class SettingSedentaryReminder(val sjUniWatch: SJUniWatch) : AbWmSetting<WmSeden
                 }
             }
         }
+    }
+
+    /**
+     * 获取久坐提醒设置
+     */
+    private fun getReadSedentaryReminderCmd(): PayloadPackage {
+        val payloadPackage = PayloadPackage()
+        payloadPackage.putData(CmdHelper.getUrnId(URN_2, URN_5), ByteBuffer.allocate(0).array())
+        return payloadPackage
+    }
+
+    /**
+     * 设置久坐提醒
+     */
+    private fun getWriteSedentaryReminderCmd(sedentaryReminder: WmSedentaryReminder): PayloadPackage {
+        val payloadPackage = PayloadPackage()
+        val byteBuffer: ByteBuffer = ByteBuffer.allocate(11).order(ByteOrder.LITTLE_ENDIAN)
+        byteBuffer.put(
+            if (sedentaryReminder.isEnabled) {
+                1.toByte()
+            } else {
+                0.toByte()
+            }
+        )
+        byteBuffer.put(sedentaryReminder.timeRange.startHour.toByte())
+        byteBuffer.put(sedentaryReminder.timeRange.startMinute.toByte())
+        byteBuffer.put(sedentaryReminder.timeRange.endHour.toByte())
+        byteBuffer.put(sedentaryReminder.timeRange.endMinute.toByte())
+        byteBuffer.put(sedentaryReminder.frequency.value.toByte())
+
+        byteBuffer.put(
+            if (sedentaryReminder.noDisturbLunchBreak.isEnabled) {
+                1.toByte()
+            } else {
+                0.toByte()
+            }
+        )
+        byteBuffer.put(sedentaryReminder.noDisturbLunchBreak.timeRange.startHour.toByte())
+        byteBuffer.put(sedentaryReminder.noDisturbLunchBreak.timeRange.startMinute.toByte())
+        byteBuffer.put(sedentaryReminder.noDisturbLunchBreak.timeRange.endHour.toByte())
+        byteBuffer.put(sedentaryReminder.noDisturbLunchBreak.timeRange.endMinute.toByte())
+
+        payloadPackage.putData(CmdHelper.getUrnId(URN_2, URN_5), byteBuffer.array())
+        return payloadPackage
     }
 
 }

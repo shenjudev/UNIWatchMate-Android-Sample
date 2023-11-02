@@ -23,18 +23,19 @@ import java.nio.charset.StandardCharsets
 class AppContact(val sjUniWatch: SJUniWatch) : AbAppContact() {
     private var contactListEmitter: ObservableEmitter<List<WmContact>>? = null
     private var updateContactEmitter: SingleEmitter<Boolean>? = null
-
-    //    private var contactCountSetEmitter: SingleEmitter<Boolean>? = null
     private var updateEmergencyEmitter: SingleEmitter<WmEmergencyCall>? = null
     private var emergencyNumberEmitter: ObservableEmitter<WmEmergencyCall>? = null
-
     private var mEmergencyCall: WmEmergencyCall = WmEmergencyCall(false, mutableListOf())
     private val mContacts = mutableListOf<WmContact>()
-
     private val msgList = mutableSetOf<MsgBean>()
-
+    //    private val businessMap: LinkedHashMap<Int, LinkedHashMap<Int, MsgBean>> =
+//        linkedMapOf<Int, LinkedHashMap<Int, MsgBean>>()
+    private val msgPkMap = LinkedHashMap<Int, MsgBean>()
+    /**
+     * 分包发送写入类型Node节点消息
+     */
+    private var firstPkOrder = 0
     private var hasNext = false
-
     private val TAG = "AppContact"
     override fun isSupport(): Boolean {
         return true
@@ -48,19 +49,12 @@ class AppContact(val sjUniWatch: SJUniWatch) : AbAppContact() {
         return hasNext
     }
 
-//    override fun setContactCount(count: Int): Single<Boolean> {
-//        return Single.create {
-//            contactCountSetEmitter = it
-//            sjUniWatch.sendWriteNodeCmdList(CmdHelper.getReadContactCountCmd(count.toByte()))
-//        }
-//    }
-
     override var getContactList: Observable<List<WmContact>> = Observable.create {
         mContacts.clear()
         contactListEmitter = it
         msgList.clear()
 
-        sjUniWatch.sendReadSubPkObserveNode(CmdHelper.getReadContactListCmd())
+        sjUniWatch.sendReadSubPkObserveNode(getReadContactListCmd())
             .subscribe(object : Observer<MsgBean> {
                 override fun onSubscribe(d: Disposable) {
                 }
@@ -116,7 +110,7 @@ class AppContact(val sjUniWatch: SJUniWatch) : AbAppContact() {
 
         sjUniWatch.observableMtu.subscribe { mtu ->
 
-            val payloadPackage = CmdHelper.getWriteContactListCmd(contactList)
+            val payloadPackage = getWriteContactListCmd(contactList)
 
             sendWriteSubpackageNodeCmdList(
                 mtu,
@@ -135,30 +129,21 @@ class AppContact(val sjUniWatch: SJUniWatch) : AbAppContact() {
 
     override fun observableEmergencyContacts(): Observable<WmEmergencyCall> = Observable.create {
         emergencyNumberEmitter = it
-        sjUniWatch.sendReadNodeCmdList(CmdHelper.getReadEmergencyNumberCmd())
+        sjUniWatch.sendReadNodeCmdList(getReadEmergencyNumberCmd())
     }
 
     override fun updateEmergencyContact(emergencyCall: WmEmergencyCall): Single<WmEmergencyCall> =
         Single.create {
             mEmergencyCall = emergencyCall
             updateEmergencyEmitter = it
-            sjUniWatch.sendWriteNodeCmdList(CmdHelper.getWriteEmergencyNumberCmd(emergencyCall))
+            sjUniWatch.sendWriteNodeCmdList(getWriteEmergencyNumberCmd(emergencyCall))
         }
 
     private fun updateEmergencyContactBack(success: Boolean) {
         updateEmergencyEmitter?.onSuccess(mEmergencyCall)
     }
 
-    //    private val businessMap: LinkedHashMap<Int, LinkedHashMap<Int, MsgBean>> =
-//        linkedMapOf<Int, LinkedHashMap<Int, MsgBean>>()
-    private val msgPkMap = LinkedHashMap<Int, MsgBean>()
-
-    /**
-     * 分包发送写入类型Node节点消息
-     */
-
-    private var firstPkOrder = 0
-    fun sendWriteSubpackageNodeCmdList(
+    private fun sendWriteSubpackageNodeCmdList(
         mtu: Int, payloadPackage: PayloadPackage
     ) {
         /**
@@ -184,7 +169,7 @@ class AppContact(val sjUniWatch: SJUniWatch) : AbAppContact() {
                 //传输层分包
                 var payload: ByteArray? = null
 
-                if(count == 1){
+                if (count == 1) {
                     payload = businessArray.copyOfRange(i * mtu, i * mtu + lastCount)
                     divideType = DIVIDE_N_2
                 } else if (i == count - 1) {
@@ -339,5 +324,80 @@ class AppContact(val sjUniWatch: SJUniWatch) : AbAppContact() {
                 }
             }
         }
+    }
+
+    /**
+     * 获取通讯录
+     */
+    private fun getReadContactListCmd(): PayloadPackage {
+        val payloadPackage = PayloadPackage()
+        payloadPackage.putData(CmdHelper.getUrnId(URN_4, URN_3, URN_2), ByteArray(0))
+        return payloadPackage
+    }
+
+    /**
+     * 更新通讯录
+     */
+    private fun getWriteContactListCmd(contacts: List<WmContact>): PayloadPackage {
+        val payloadPackage = PayloadPackage()
+
+        val count = MAX_BUSINESS_BUFFER_SIZE / (NAME_BYTES_LIMIT + NUMBER_BYTES_LIMIT)
+
+        val contactGroup = contacts.chunked(count)
+
+        for (i in 0 until contactGroup.size) {
+
+            val byteBuffer: ByteBuffer =
+                ByteBuffer.allocate(contactGroup[i].size * (NAME_BYTES_LIMIT + NUMBER_BYTES_LIMIT))
+
+            contactGroup[i].forEach {
+                byteBuffer.put(
+                    it.name.toByteArray().copyOf(NAME_BYTES_LIMIT)
+                )
+
+                byteBuffer.put(
+                    it.number.toByteArray().copyOf(NUMBER_BYTES_LIMIT)
+                )
+            }
+
+            payloadPackage.putData(CmdHelper.getUrnId(URN_4, URN_3, URN_2), byteBuffer.array())
+        }
+
+        return payloadPackage
+    }
+
+    /**
+     * 更新紧急联系人
+     */
+    private fun getWriteEmergencyNumberCmd(number: WmEmergencyCall): PayloadPackage {
+        val payloadPackage = PayloadPackage()
+        val byteBuffer: ByteBuffer =
+            ByteBuffer.allocate(1 + (NAME_BYTES_LIMIT + NUMBER_BYTES_LIMIT) * number.emergencyContacts.size)
+        byteBuffer.put(
+            if (number.isEnabled) {
+                1
+            } else {
+                0
+            }.toByte()
+        )
+
+        number.emergencyContacts.forEach {
+            byteBuffer.put(it.name.toByteArray().copyOf(NAME_BYTES_LIMIT))
+            byteBuffer.put(it.number.toByteArray().copyOf(NUMBER_BYTES_LIMIT))
+        }
+
+        payloadPackage.putData(CmdHelper.getUrnId(URN_4, URN_3, URN_3), byteBuffer.array())
+
+        return payloadPackage
+    }
+
+    /**
+     * 获取紧急联系人
+     */
+    private fun getReadEmergencyNumberCmd(): PayloadPackage {
+        val payloadPackage = PayloadPackage()
+        val byteBuffer: ByteBuffer = ByteBuffer.allocate(0)
+        payloadPackage.putData(CmdHelper.getUrnId(URN_4, URN_3, URN_3), byteBuffer.array())
+        return payloadPackage
     }
 }

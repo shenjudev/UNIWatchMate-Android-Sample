@@ -6,9 +6,11 @@ import com.sjbt.sdk.SJUniWatch
 import com.sjbt.sdk.entity.ErrorCode
 import com.sjbt.sdk.entity.MsgBean
 import com.sjbt.sdk.entity.NodeData
+import com.sjbt.sdk.entity.PayloadPackage
 import com.sjbt.sdk.spp.cmd.*
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.core.SingleEmitter
+import java.nio.ByteBuffer
 import java.nio.charset.StandardCharsets
 
 class AppLanguage(val sjUniWatch: SJUniWatch) : AbAppLanguage() {
@@ -26,19 +28,19 @@ class AppLanguage(val sjUniWatch: SJUniWatch) : AbAppLanguage() {
 
     override var syncLanguageList: Single<List<WmLanguage>> = Single.create {
         languageListEmitter = it
-        sjUniWatch.sendReadNodeCmdList(CmdHelper.getReadLanguageListCmd())
+        sjUniWatch.sendReadNodeCmdList(getReadLanguageListCmd())
     }
 
     override fun setLanguage(language: WmLanguage): Single<WmLanguage> {
         wmLanguage = language
         return Single.create {
             languageSetEmitter = it
-            sjUniWatch.sendWriteNodeCmdList(CmdHelper.getWriteLanguageCmd(language.bcp))
+            sjUniWatch.sendWriteNodeCmdList(getWriteLanguageCmd(language.bcp))
         }
     }
 
     fun onTimeOut(msgBean: MsgBean,nodeData: NodeData) {
-        TODO("Not yet implemented")
+
     }
 
     fun languageBusiness(
@@ -90,5 +92,31 @@ class AppLanguage(val sjUniWatch: SJUniWatch) : AbAppLanguage() {
                 }
             }
         }
+    }
+
+    /**
+     * 获取语言列表的命令
+     */
+    private fun getReadLanguageListCmd(): PayloadPackage {
+
+        val payloadPackage = PayloadPackage()
+        val byteBuffer: ByteBuffer = ByteBuffer.allocate(0)
+        payloadPackage.putData(CmdHelper.getUrnId(URN_2, URN_4, URN_1), byteBuffer.array())
+
+        return payloadPackage
+    }
+
+    /**
+     * 获取设置语言命令
+     */
+    private fun getWriteLanguageCmd(bcp: String): PayloadPackage {
+        val payloadPackage = PayloadPackage()
+        val bbSport: ByteBuffer = ByteBuffer.allocate(6)
+        if (bcp.length <= 6) {
+            bbSport.put(bcp.toByteArray(StandardCharsets.UTF_8))
+            payloadPackage.putData(CmdHelper.getUrnId(URN_2, URN_4, URN_2), bbSport.array())
+        }
+
+        return payloadPackage
     }
 }

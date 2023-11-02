@@ -6,6 +6,7 @@ import com.sjbt.sdk.SJUniWatch
 import com.sjbt.sdk.entity.ErrorCode
 import com.sjbt.sdk.entity.MsgBean
 import com.sjbt.sdk.entity.NodeData
+import com.sjbt.sdk.entity.PayloadPackage
 import com.sjbt.sdk.spp.cmd.*
 import io.reactivex.rxjava3.core.*
 import java.nio.ByteBuffer
@@ -33,7 +34,7 @@ class SettingSportGoal(val sjUniWatch: SJUniWatch) : AbWmSetting<WmSportGoal>() 
         wmSportGoal = obj
         return Single.create { emitter ->
             setEmitter = emitter
-            val payloadPackage = CmdHelper.getUpdateSportGoalAllCmd(obj)
+            val payloadPackage = getUpdateSportGoalAllCmd(obj)
 
             sjUniWatch.sendWriteNodeCmdList(payloadPackage)
         }
@@ -44,7 +45,7 @@ class SettingSportGoal(val sjUniWatch: SJUniWatch) : AbWmSetting<WmSportGoal>() 
         return Single.create { emitter ->
             isGet = true
             getEmitter = emitter
-            sjUniWatch.sendReadNodeCmdList(CmdHelper.getDeviceSportGoalCmd())
+            sjUniWatch.sendReadNodeCmdList(getDeviceSportGoalCmd())
         }
     }
 
@@ -106,5 +107,33 @@ class SettingSportGoal(val sjUniWatch: SJUniWatch) : AbWmSetting<WmSportGoal>() 
 
             }
         }
+    }
+
+    /**
+     * 获取设备上体育目标配置
+     */
+    private fun getDeviceSportGoalCmd(): PayloadPackage {
+        val payloadPackage = PayloadPackage()
+        payloadPackage.putData(CmdHelper.getUrnId(URN_2, URN_1), ByteArray(0))
+        return payloadPackage
+    }
+
+    /**
+     * 获取设置体育目标的命令
+     */
+    private fun getUpdateSportGoalAllCmd(
+        sportGoal: WmSportGoal
+    ): PayloadPackage {
+
+        val payloadPackage = PayloadPackage()
+
+        val bbSport: ByteBuffer = ByteBuffer.allocate(4 + 4 + 4 + 2).order(ByteOrder.LITTLE_ENDIAN)
+        bbSport.putInt(sportGoal.steps)
+        bbSport.putInt(sportGoal.calories)
+        bbSport.putInt(sportGoal.distance)
+        bbSport.putShort(sportGoal.activityDuration)
+        payloadPackage.putData(CmdHelper.getUrnId(URN_2, URN_1), bbSport.array())
+
+        return payloadPackage
     }
 }
