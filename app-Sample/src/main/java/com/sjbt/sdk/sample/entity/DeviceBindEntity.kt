@@ -13,19 +13,19 @@ data class DeviceBindEntity(
     @PrimaryKey
     val userId: Long,
     /**
-     * 设备地址
+     * 设备地址(device address)
      */
     val address: String,
     /**
-     * 设备名称
+     * 设备名称(device name)
      */
     val name: String,
     /**
-     * 设备厂家
+     * 设备厂家(equipment manufacturer)
      */
     val deviceMode: Int,
     /**
-     * 设备连接状态
+     * 设备连接状态(Device connection status)
      */
     val deviceConnectState: Int,
 )

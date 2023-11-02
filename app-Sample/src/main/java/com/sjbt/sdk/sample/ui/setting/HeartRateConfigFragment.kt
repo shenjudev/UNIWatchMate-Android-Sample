@@ -20,20 +20,7 @@ import kotlinx.coroutines.rx3.asFlow
 import kotlinx.coroutines.rx3.await
 import timber.log.Timber
 
-/**
- * **Document**
- * https://github.com/htangsmart/FitCloudPro-SDK-Android/wiki/10.Other-Features#setting-exercise-goal
- *
- * ***Description**
- * Display and modify the exercise goal
- *
- * **Usage**
- * 1. [ExerciseGoalFragment]
- * Display and modify
- *
- * 2.[DeviceManager]
- * Set the exercise goal to device when device connected or goal changed.
- */
+
 class HeartRateConfigFragment : BaseFragment(R.layout.fragment_heart_rate_config),
     SelectIntDialogFragment.Listener {
 

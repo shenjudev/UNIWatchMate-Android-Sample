@@ -51,35 +51,35 @@ class DeviceCustomQrFragment : BaseFragment(R.layout.fragment_device_custom_qr),
         scan_view_type = QrConfig.SCANVIEW_TYPE_QRCODE
 
         options = QrConfig.Builder()
-            .setDesText("扫描设备") //扫描框下文字
-            .setShowDes(false) //是否显示扫描框下面文字
-            .setShowLight(true) //显示手电筒按钮
-            .setShowTitle(false) //显示Title
-            .setShowAlbum(false) //显示从相册选择按钮
-            .setNeedCrop(false) //是否从相册选择后裁剪图片
-            .setCornerColor(Color.parseColor("#FFFFFF")) //设置扫描框颜色
-            .setLineColor(Color.parseColor("#e631436c")) //设置扫描线颜色
-            .setLineSpeed(QrConfig.LINE_MEDIUM) //设置扫描线速度
-            .setScanType(scan_type) //设置扫码类型（二维码，条形码，全部，自定义，默认为二维码）
-            .setScanViewType(scan_view_type) //设置扫描框类型（二维码还是条形码，默认为二维码）
-            .setCustombarcodeformat(QrConfig.BARCODE_PDF417) //此项只有在扫码类型为TYPE_CUSTOM时才有效
-            .setPlaySound(true) //是否扫描成功后bi~的声音
-            .setDingPath(R.raw.qrcode) //设置提示音(不设置为默认的Ding~)
-            .setIsOnlyCenter(false) //是否只识别框中内容(默认为全屏识别)
-            .setTitleText("") //设置Tilte文字
-            .setTitleBackgroudColor(Color.parseColor("#FFFFFF")) //设置状态栏颜色
-            .setTitleTextColor(Color.WHITE) //设置Title文字颜色
-            .setShowZoom(false) //是否开始滑块的缩放
-            .setAutoZoom(false) //是否开启自动缩放(实验性功能，不建议使用)
-            .setFingerZoom(false) //是否开始双指缩放
-            .setDoubleEngine(true) //是否开启双引擎识别(仅对识别二维码有效，并且开启后只识别框内功能将失效)
-            .setScreenOrientation(screen) //设置屏幕方式
-            .setOpenAlbumText("") //打开相册的文字
-            .setLooperScan(false) //是否连续扫描二维码
-            .setLooperWaitTime(5 * 1000) //连续扫描间隔时间
-            .setScanLineStyle(line_style) //扫描线样式
-            .setAutoLight(false) //自动灯光
-            .setShowVibrator(true) //是否震动提醒
+            .setDesText(getString(R.string.scan_device))
+            .setShowDes(false)
+            .setShowLight(true)
+            .setShowTitle(false)
+            .setShowAlbum(false)
+            .setNeedCrop(false)
+            .setCornerColor(Color.parseColor("#FFFFFF"))
+            .setLineColor(Color.parseColor("#e631436c"))
+            .setLineSpeed(QrConfig.LINE_MEDIUM)
+            .setScanType(scan_type)
+            .setScanViewType(scan_view_type)
+            .setCustombarcodeformat(QrConfig.BARCODE_PDF417)
+            .setPlaySound(true)
+            .setDingPath(R.raw.qrcode)
+            .setIsOnlyCenter(false)
+            .setTitleText("")
+            .setTitleBackgroudColor(Color.parseColor("#FFFFFF"))
+            .setTitleTextColor(Color.WHITE)
+            .setShowZoom(false)
+            .setAutoZoom(false)
+            .setFingerZoom(false)
+            .setDoubleEngine(true)
+            .setScreenOrientation(screen)
+            .setOpenAlbumText("")
+            .setLooperScan(false)
+            .setLooperWaitTime(5 * 1000)
+            .setScanLineStyle(line_style)
+            .setAutoLight(false)
+            .setShowVibrator(true)
             .create()
         initView(view)
     }

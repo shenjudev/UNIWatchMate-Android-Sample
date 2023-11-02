@@ -36,7 +36,6 @@ class SportlLibraryAdapter : RecyclerView.Adapter<SportlLibraryAdapter.DialLibra
         holder.itemView.setOnClickListener {
             listener?.onItemClick(item,position)
         }
-//        glideShowMipmapImage(holder.viewBind.imgView, item.dialCoverRes)
     }
 
     private fun getName(names: HashMap<String, String>): String {
@@ -52,7 +51,6 @@ class SportlLibraryAdapter : RecyclerView.Adapter<SportlLibraryAdapter.DialLibra
                 return entity.value
             }
         }
-//        如果没有的话，就去获取en的
         return names["en"]?:""
     }
 

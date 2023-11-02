@@ -7,9 +7,7 @@ import androidx.appcompat.app.AppCompatDialog
 import com.blankj.utilcode.util.ScreenUtils
 import com.sjbt.sdk.sample.R
 
-/**
- * 统一设置了所有dialog的宽度属性
- */
+
 abstract class BaseDialog : AppCompatDialog {
     constructor(context: Context) : super(context, R.style.CustomDialogTrans)
     constructor(context: Context, fullscreen: Boolean) : super(

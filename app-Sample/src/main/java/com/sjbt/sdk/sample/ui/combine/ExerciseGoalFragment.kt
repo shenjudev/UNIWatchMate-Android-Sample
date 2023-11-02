@@ -1,49 +1,28 @@
 package com.sjbt.sdk.sample.ui.combine
 
-import android.app.Dialog
 import android.os.Bundle
 import android.view.View
-import androidx.appcompat.app.AppCompatDialogFragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import com.base.api.UNIWatchMate
 import com.base.sdk.entity.apps.WmConnectState
-import com.base.sdk.entity.settings.WmSedentaryReminder
 import com.base.sdk.entity.settings.WmSportGoal
-import com.blankj.utilcode.util.LogUtils
-import com.github.kilnn.wheellayout.OneWheelLayout
-import com.github.kilnn.wheellayout.WheelIntConfig
-import com.github.kilnn.wheellayout.WheelIntFormatter
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.sjbt.sdk.sample.R
 import com.sjbt.sdk.sample.base.BaseFragment
 import com.sjbt.sdk.sample.databinding.FragmentExerciseGoalBinding
-import com.sjbt.sdk.sample.utils.viewbinding.viewBinding
-import com.sjbt.sdk.sample.base.storage.InternalStorage
-import com.sjbt.sdk.sample.data.device.flowStateConnected
 import com.sjbt.sdk.sample.di.Injector
-import com.sjbt.sdk.sample.dialog.*
-import com.sjbt.sdk.sample.utils.FormatterUtil
+import com.sjbt.sdk.sample.dialog.DIALOG_EXERCISE_ACTIVITY_DURATION
+import com.sjbt.sdk.sample.dialog.DIALOG_EXERCISE_CALORIE
+import com.sjbt.sdk.sample.dialog.DIALOG_EXERCISE_STEP
+import com.sjbt.sdk.sample.dialog.SelectIntDialogFragment
+import com.sjbt.sdk.sample.dialog.showExerciseCalorieDialog
+import com.sjbt.sdk.sample.dialog.showExerciseDurationDialog
+import com.sjbt.sdk.sample.dialog.showExerciseStepDialog
 import com.sjbt.sdk.sample.utils.launchWithLog
-import kotlinx.coroutines.launch
+import com.sjbt.sdk.sample.utils.viewbinding.viewBinding
 import kotlinx.coroutines.rx3.await
 import timber.log.Timber
 
 
-/**
- * **Document**
- * https://github.com/htangsmart/FitCloudPro-SDK-Android/wiki/10.Other-Features#setting-exercise-goal
- *
- * ***Description**
- * Display and modify the exercise goal
- *
- * **Usage**
- * 1. [ExerciseGoalFragment]
- * Display and modify
- *
- * 2.[DeviceManager]
- * Set the exercise goal to device when device connected or goal changed.
- */
 class ExerciseGoalFragment : BaseFragment(R.layout.fragment_exercise_goal),
     SelectIntDialogFragment.Listener {
 
@@ -63,12 +42,12 @@ class ExerciseGoalFragment : BaseFragment(R.layout.fragment_exercise_goal),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         lifecycleScope.launchWhenStarted {
-                exerciseGoal = exerciseGoalRepository.flowCurrent.value
-                UNIWatchMate.wmSettings.settingSportGoal.get().subscribe{ it->
-                    UNIWatchMate.wmLog.logE("体育消息",""+it)
-                    exerciseGoal = it
-                }
-                updateUI()
+            exerciseGoal = exerciseGoalRepository.flowCurrent.value
+            UNIWatchMate.wmSettings.settingSportGoal.get().subscribe { it ->
+                UNIWatchMate.wmLog.logE("体育消息", "" + it)
+                exerciseGoal = it
+            }
+            updateUI()
         }
         viewBind.itemStep.setOnClickListener(blockClick)
         viewBind.itemCalories.setOnClickListener(blockClick)
@@ -86,7 +65,7 @@ class ExerciseGoalFragment : BaseFragment(R.layout.fragment_exercise_goal),
     private fun WmSportGoal.saveConfig() {
         applicationScope.launchWithLog {
             if (deviceManager.flowConnectorState.value == WmConnectState.VERIFIED) {
-                Timber.i( "${this@saveConfig}")
+                Timber.i("${this@saveConfig}")
                 UNIWatchMate.wmSettings.settingSportGoal.set(this@saveConfig).await()
             }
         }

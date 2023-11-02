@@ -36,6 +36,7 @@ abstract class AppDatabase : RoomDatabase() {
             return database
         }
 
+        //添加字段、表等具体的版本迁移策略(Add specific version migration policies such as fields and tables)
         val MIGRATION_2_3 = Migration(2, 3) {
             it.execSQL("ALTER TABLE DeviceBindEntity ADD COLUMN deviceMode INTEGER NOT NULL DEFAULT 0");
         }
@@ -55,7 +56,7 @@ abstract class AppDatabase : RoomDatabase() {
         }
     }
 
-    //添加字段 具体的版本迁移策略
+
 
 
 }

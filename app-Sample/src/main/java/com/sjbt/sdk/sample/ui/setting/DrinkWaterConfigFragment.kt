@@ -36,15 +36,6 @@ import kotlinx.coroutines.rx3.await
 import timber.log.Timber
 
 /**
- * **Document**
- * https://github.com/htangsmart/FitCloudPro-SDK-Android/wiki/04.Device-info-and-configs#fcdrinkwaterconfig
- *
- * ***Description**
- * Display and modify the config of drink water reminder
- *
- * **Usage**
- * 1. [DrinkWaterConfigFragment]
- * Display and modify
  */
 class DrinkWaterConfigFragment : BaseFragment(R.layout.fragment_drink_water_config),
     CompoundButton.OnCheckedChangeListener,

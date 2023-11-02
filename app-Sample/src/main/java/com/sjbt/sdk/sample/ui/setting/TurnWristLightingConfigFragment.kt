@@ -19,17 +19,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.rx3.asFlow
 import kotlinx.coroutines.rx3.await
 
-/**
- * **Document**
- * https://github.com/htangsmart/FitCloudPro-SDK-Android/wiki/04.Device-info-and-configs#fcturnwristlightingconfig
- *
- * ***Description**
- * Display and modify the config of raise hand to lighting the device
- *
- * **Usage**
- * 1. [TurnWristLightingConfigFragment]
- * Display and modify
- */
 class TurnWristLightingConfigFragment : BaseFragment(R.layout.fragment_turn_wrist_lighting_config),
     CompoundButton.OnCheckedChangeListener {
 

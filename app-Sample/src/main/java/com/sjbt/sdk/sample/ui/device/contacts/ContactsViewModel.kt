@@ -109,7 +109,7 @@ class ContactsViewModel() : StateEventViewModel<ContactsState, ContactsEvent>(Co
     }
 
     /**
-     * @param position 要删除的位置
+     * @param position 要删除的位置(The location to delete)
      */
     fun deleteContacts(position: Int) {
         viewModelScope.launch {

@@ -19,51 +19,8 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.rx3.asFlow
 
 /**
- * **Document**
- * https://github.com/htangsmart/FitCloudPro-SDK-Android/wiki/05.Sync-Data
- *
  * ***Description**
  * Show how to sync data, observer sync state, save sync data
- *
- * **Usage**
- * 1. [SyncFragment]
- * Observer sync state and display available data types
- *
- * 2. [DeviceManager]
- * Execute [FcDataFeature.syncData] and emit [FcDataFeature.observerSyncState]
- *
- * 3. [SyncDataRepository]
- * Save sync data
- *
- * 4. [StepFragment]
- * Display step data
- *
- * 5. [SleepFragment]
- * Display sleep data
- *
- * 6. [HeartRateFragment]
- * Display heart rate data
- *
- * 7. [OxygenFragment]
- * Display oxygen data
- *
- * 8. [BloodPressureFragment]
- * Display blood pressure data
- *
- * 9. [TemperatureFragment]
- * Display temperature data
- *
- * 10. [PressureFragment]
- * Display pressure data
- *
- * 11. [EcgFragment]
- * Display ECG data
- *
- * 12. [SportFragment]
- * Display sport data
- *
- * 13. [GameFragment]
- * Display game data
  */
 class SyncFragment : BaseFragment(R.layout.fragment_sync) {
 
@@ -76,8 +33,7 @@ class SyncFragment : BaseFragment(R.layout.fragment_sync) {
         viewBind.refreshLayout.setOnRefreshListener {
             deviceManager.syncData()
         }
-        viewBind.refreshLayout.setOnRefreshListener {
-        }
+
         viewBind.itemStep.clickTrigger(block = blockClick)
         viewBind.itemSleep.clickTrigger(block = blockClick)
         viewBind.itemCalories.clickTrigger(block = blockClick)
@@ -88,6 +44,11 @@ class SyncFragment : BaseFragment(R.layout.fragment_sync) {
         viewBind.itemSport.clickTrigger(block = blockClick)
 
         viewLifecycle.launchRepeatOnStarted {
+            val result = launch {
+                deviceManager.flowStateConnected().collect {
+                    viewBind.refreshLayout.setAllChildEnabled(it)
+                }
+            }
 //            launch {
 //                deviceManager.flowSyncState.collect { state ->
 //                    if (state == null || state == FcSyncState.SUCCESS) {//refresh none or success
@@ -129,14 +90,17 @@ class SyncFragment : BaseFragment(R.layout.fragment_sync) {
             viewBind.itemStep -> {
                 findNavController().navigate(SyncFragmentDirections.toStep())
             }
+
             viewBind.itemCalories -> {
                 findNavController().navigate(SyncFragmentDirections.toCalories())
             }
+
             viewBind.itemActivityDuration -> {
                 findNavController().navigate(SyncFragmentDirections.toActivityDuration())
             }
+
             viewBind.itemSleep -> {
-              findNavController().navigate(SyncFragmentDirections.toSleep())
+                findNavController().navigate(SyncFragmentDirections.toSleep())
             }
 
             viewBind.itemHeartRate -> {

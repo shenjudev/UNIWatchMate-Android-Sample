@@ -1,12 +1,8 @@
 package com.sjbt.sdk.sample.ui
 
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
 import android.view.View
 import androidx.annotation.StringRes
-import androidx.core.view.MenuProvider
 import androidx.navigation.fragment.findNavController
 import com.base.api.UNIWatchMate
 import com.base.sdk.entity.apps.WmConnectState
@@ -19,14 +15,18 @@ import com.sjbt.sdk.sample.base.BaseFragment
 import com.sjbt.sdk.sample.databinding.FragmentDeviceBinding
 import com.sjbt.sdk.sample.di.Injector
 import com.sjbt.sdk.sample.di.internal.CoroutinesInstance.applicationScope
-import com.sjbt.sdk.sample.dialog.CallBack
 import com.sjbt.sdk.sample.dialog.WeatherCodeTestDialog
-import com.sjbt.sdk.sample.model.WeatherCode
 import com.sjbt.sdk.sample.ui.bind.DeviceConnectDialogFragment
 import com.sjbt.sdk.sample.ui.camera.CameraActivity
-import com.sjbt.sdk.sample.ui.device.bind.DeviceBindFragmentDirections
 import com.sjbt.sdk.sample.ui.fileTrans.FileTransferActivity
-import com.sjbt.sdk.sample.utils.*
+import com.sjbt.sdk.sample.utils.CacheDataHelper
+import com.sjbt.sdk.sample.utils.PermissionHelper
+import com.sjbt.sdk.sample.utils.ToastUtil
+import com.sjbt.sdk.sample.utils.getTestWeatherdata
+import com.sjbt.sdk.sample.utils.launchRepeatOnStarted
+import com.sjbt.sdk.sample.utils.launchWithLog
+import com.sjbt.sdk.sample.utils.setAllChildEnabled
+import com.sjbt.sdk.sample.utils.viewLifecycle
 import com.sjbt.sdk.sample.utils.viewbinding.viewBinding
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.rx3.asFlow
@@ -128,10 +128,6 @@ class DeviceFragment : BaseFragment(R.layout.fragment_device),
             }
         }
 
-        UNIWatchMate.wmApps.appCamera.observeCameraOpenState.subscribe { aBoolean: Boolean ->
-            Timber.e( "设备相机状态3：$aBoolean")
-        }
-
     }
 
     private val blockClick: (View) -> Unit = { view ->
@@ -231,14 +227,15 @@ class DeviceFragment : BaseFragment(R.layout.fragment_device),
 
     private fun showChooseWeatherDialog() {
         context?.let {
-            WeatherCodeTestDialog(it
+            WeatherCodeTestDialog(
+                it
             ) { weatherCode ->
                 applicationScope.launchWithLog {
                     val result = UNIWatchMate?.wmApps?.appWeather?.pushTodayWeather(
                         getTestWeatherdata(WmWeatherTime.TODAY, weatherCode.code),
                         WmUnitInfo.TemperatureUnit.CELSIUS
                     )?.await()
-                    Timber.e( "push today weather result = $result")
+                    Timber.e("push today weather result = $result")
                     ToastUtil.showToast(
                         "push today weather test ${
                             if (result) getString(R.string.tip_success) else getString(
@@ -250,7 +247,7 @@ class DeviceFragment : BaseFragment(R.layout.fragment_device),
                         getTestWeatherdata(WmWeatherTime.SEVEN_DAYS, weatherCode.code),
                         WmUnitInfo.TemperatureUnit.CELSIUS
                     )?.await()
-                    Timber.e( "push seven_days weather result = $result2")
+                    Timber.e("push seven_days weather result = $result2")
                     ToastUtil.showToast(
                         "push seven_days weather test ${
                             if (result2) getString(R.string.tip_success) else getString(

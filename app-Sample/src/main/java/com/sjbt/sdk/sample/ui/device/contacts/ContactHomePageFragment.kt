@@ -16,7 +16,6 @@ class ContactHomePageFragment : BaseFragment(R.layout.fragment_contact_home_page
     private val viewBind: FragmentContactHomePageBinding by viewBinding()
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        //Check which dial feature the device supports
 
         viewBind.btnContact.clickTrigger {
             findNavController().navigate(ContactHomePageFragmentDirections.toContacts())

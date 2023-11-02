@@ -86,22 +86,6 @@ class DfuViewModel : ViewModel() {
         }
     }
 
-    fun setGUICustomDialComponent(spaceIndex: Int, styleIndex: Int) {
-        applicationScope.launch {
-            try {
-//                withTimeout(90 * 1000) {
-//                    deviceManager.flowState.filter { it == ConnectorState.CONNECTED }.first()
-//                }
-//                deviceManager.settingsFeature.setDialComponent(
-//                    spaceIndex,
-//                    byteArrayOf(styleIndex.toByte())
-//                ).await()
-            } catch (e: Exception) {
-                Timber.w(e)
-            }
-        }
-    }
-
     fun isDfuIng(): Boolean {
         return dfuJob?.isActive == true
     }

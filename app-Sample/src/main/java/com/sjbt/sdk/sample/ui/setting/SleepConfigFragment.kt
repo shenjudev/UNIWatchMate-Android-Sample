@@ -17,20 +17,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.rx3.asFlow
 import kotlinx.coroutines.rx3.await
 
-/**
- * **Document**
- * https://github.com/htangsmart/FitCloudPro-SDK-Android/wiki/04.Device-info-and-configs#fcdndconfig
- *
- * ***Description**
- * Display and modify the dnd config
- *
- * **Usage**
- * 1. [DeviceConfigFragment]
- * According to whether [FcDeviceInfo.Feature.DND] supports, show or hide the entrance
- *
- * 2.[DNDConfigFragment]
- * Display and modify
- */
 class SleepConfigFragment : BaseFragment(R.layout.fragment_sleep_config),
     CompoundButton.OnCheckedChangeListener, TimePickerDialogFragment.Listener {
 

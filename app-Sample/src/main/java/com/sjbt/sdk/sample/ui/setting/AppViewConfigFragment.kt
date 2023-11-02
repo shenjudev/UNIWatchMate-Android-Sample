@@ -20,22 +20,12 @@ import kotlinx.coroutines.rx3.asFlow
 import kotlinx.coroutines.rx3.await
 
 /**
- * **Document**
- * https://github.com/htangsmart/FitCloudPro-SDK-Android/wiki/04.Device-info-and-configs#fcturnwristlightingconfig
- *
- * ***Description**
- * Display and modify the config of raise hand to lighting the device
- *
- * **Usage**
- * 1. [AppViewConfigFragment]
- * Display and modify
  */
 const val APP_VIEW_GRID_ID = 1
 const val APP_VIEW_LIST_ID = 3
 class AppViewConfigFragment : BaseFragment(R.layout.fragment_app_view) {
     private val viewBind: FragmentAppViewBinding by viewBinding()
 
-    private val deviceManager = Injector.getDeviceManager()
     private val applicationScope = Injector.getApplicationScope()
 
     private var config: WmAppView? = null
@@ -106,7 +96,7 @@ class AppViewConfigFragment : BaseFragment(R.layout.fragment_app_view) {
     }
 
     private fun updateUI() {
-//        1是瀑布刘3是列表
+//        1是瀑布刘3是列表(1 is the waterfall flow and 3 is the list)
         hideAllView()
         config?.let {
             for (bean in it.appViewList) {

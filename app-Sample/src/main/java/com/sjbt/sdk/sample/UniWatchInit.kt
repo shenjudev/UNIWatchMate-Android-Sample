@@ -8,8 +8,8 @@ import com.sjbt.sdk.SJUniWatch
 import timber.log.Timber
 
 fun uniWatchInit(application: Application) {
-    //1.设置log输出
-    //"UNIWatchMate"使用Timber作为日志输出，所以需要配置Timber
+    //1.设置log输出(Set log output)
+    //"UNIWatchMate"使用Timber作为日志输出，所以需要配置Timber ("UNIWatchMate" uses Timber as log output, so you need to configure Timber)
     if (BuildConfig.DEBUG) {
         if (Timber.treeCount == 0) {
             Timber.plant(Timber.DebugTree())
@@ -22,11 +22,11 @@ fun uniWatchInit(application: Application) {
         })
     }
 
-    //2.配置支持不同厂商的手表
+    //2.配置支持不同厂商的手表(Configurations Support watches from different manufacturers)
     UNIWatchMate.init(
         application, listOf(
-            SJUniWatchImpl(application, 10000),//绅聚设备操作对象
-//            FcUniWatchImpl(application)//拓步设备操作对象
+            SJUniWatchImpl(application, 10000),//绅聚设备操作对象(shenju device operation objects)
+//            FcUniWatchImpl(application)//拓步设备操作对象( device operation objects)
         )
     )
 }

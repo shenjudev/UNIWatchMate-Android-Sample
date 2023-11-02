@@ -1,6 +1,7 @@
 package com.base.sdk.entity.data
 
 import com.base.sdk.entity.apps.WmValueTypeData
+import java.io.Serializable
 
 abstract class WmBaseSyncData(
     /**
@@ -18,8 +19,8 @@ class WmSportSummaryData(
     /**
      * 基本参数类型
      */
-    val valueType: List<WmValueTypeData>
-) : WmBaseSyncData(timestamp) {
+    val valueType: List<WmValueTypeData>,
+) : WmBaseSyncData(timestamp), Serializable {
 
 }
 
@@ -28,7 +29,7 @@ class WmSportSummaryData(
  */
 class WmHeartRateData(
     timestamp: Long,
-    val  intervalTime: Long,
+    val intervalTime: Long,
     /**
      * heart rate value (beats per minute)
      */
@@ -39,9 +40,9 @@ class WmHeartRateData(
     /**
      * activity duration, in seconds
      */
-    val duration: Int
+    val duration: Int,
 
-) : WmBaseSyncData(timestamp)
+    ) : WmBaseSyncData(timestamp)
 
 /**
  * Oxygen value 血氧数据
@@ -52,7 +53,7 @@ class WmOxygenData(
     /**
      * Oxygen value (SpO2)，0~100
      */
-    val oxygen: Int
+    val oxygen: Int,
 ) : WmBaseSyncData(timestamp)
 
 /**
@@ -106,7 +107,7 @@ class WmBloodPressureData(
     /**
      * diastolic blood pressure (unit mmHg)
      */
-    val dbp: Int //舒张压值
+    val dbp: Int, //舒张压值
 ) : WmBaseSyncData(timestamp)
 
 class WmBloodPressureMeasureData(
@@ -126,7 +127,7 @@ class WmBloodPressureMeasureData(
      * Additional heart rate values.
      * This value exists only if [WmDeviceInfo.Feature.BLOOD_PRESSURE_AIR_PUMP] is support
      */
-    val heartRate: Int
+    val heartRate: Int,
 ) : WmBaseSyncData(timestamp)
 
 class WmRealtimeRateData(
@@ -135,7 +136,7 @@ class WmRealtimeRateData(
     /**
      * Respiratory rate value (breaths per minute)
      */
-    val rate: Int
+    val rate: Int,
 ) : WmBaseSyncData(timestamp)
 
 class WmPressureData(
@@ -144,7 +145,7 @@ class WmPressureData(
     /**
      * Pressure value. Limit(0,256)
      */
-    val pressure: Int
+    val pressure: Int,
 ) : WmBaseSyncData(timestamp)
 
 
@@ -160,7 +161,7 @@ class WmTemperatureData(
      * Temperature of your wrist(unit ℃)。
      * The range of this value is wider, because it is related to the ambient temperature, in extreme cases it may be below 0℃.
      */
-    val wrist: Float
+    val wrist: Float,
 ) : WmBaseSyncData(timestamp)
 
 
@@ -180,7 +181,7 @@ class WmGameData(
      */
     val duration: Int,
     val score: Int,
-    val level: Int
+    val level: Int,
 ) : WmBaseSyncData(timestamp)
 
 /**
@@ -189,7 +190,7 @@ class WmGameData(
 class WmActivityData(
     timestamp: Long,
     val intervalTime: Long,
-    val duration: Int
+    val duration: Int,
 ) : WmBaseSyncData(timestamp) {
     override fun toString(): String {
         return "WmActivityData(activity=$duration, duration=$duration)"

@@ -17,7 +17,6 @@ class HeartRateHomePageFragment : BaseFragment(R.layout.fragment_heartrate_home_
     private val viewBind: FragmentHeartrateHomePageBinding by viewBinding()
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        //Check which dial feature the device supports
 
         viewBind.btnHourlyData.clickTrigger {
             findNavController().navigate(HeartRateHomePageFragmentDirections.toHourHeartRateFragment())

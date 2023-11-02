@@ -3,6 +3,7 @@ package com.sjbt.sdk.sample.ui.sync
 import android.content.Context
 import android.os.Bundle
 import android.view.View
+import android.widget.Button
 import android.widget.TextView
 import androidx.core.view.isVisible
 import com.base.api.UNIWatchMate
@@ -10,19 +11,20 @@ import com.base.sdk.entity.data.WmSportSummaryData
 import com.blankj.utilcode.util.GsonUtils
 import com.blankj.utilcode.util.ResourceUtils
 import com.sjbt.sdk.sample.R
+import com.sjbt.sdk.sample.entity.SportSummaryEntity
 import com.sjbt.sdk.sample.model.LocalSportLibrary
+import com.sjbt.sdk.sample.utils.getParcelableCompat
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.rx3.await
 import java.text.SimpleDateFormat
 import java.util.*
 
-class SportDetailFragment : DataListFragment<WmSportSummaryData>(),
-    DataListAdapter.Listener<WmSportSummaryData> {
-    override val layoutId: Int = R.layout.fragment_sleep
+class SportDetailFragment : DataListFragment<WmSportSummaryData>() {
+    override val layoutId: Int = R.layout.fragment_sport_detail
     private val dateTimeFormat = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault())
     var localSportLibrary: LocalSportLibrary? = null
     var tvDataSport: TextView? = null
-    private var wmSporSummData:WmSportSummaryData?=null
+    private var sportSummaryEntity: SportSummaryEntity? = null
 
     override val valueFormat: DataListAdapter.ValueFormat<WmSportSummaryData> =
         object : DataListAdapter.ValueFormat<WmSportSummaryData> {
@@ -31,14 +33,13 @@ class SportDetailFragment : DataListFragment<WmSportSummaryData>(),
             }
         }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        sportSummaryEntity =
+            arguments?.getParcelableCompat<SportSummaryEntity>("wmSportSummaryData")
         tvDataSport = view.findViewById(R.id.tv_data_sport)
         btnDate.isVisible = false
-        adapter.listener = this
+        tvDataSport?.text = "${sportSummaryEntity?.sportId}"
     }
 
     override fun queryData(date: Date): List<WmSportSummaryData>? {
@@ -48,7 +49,7 @@ class SportDetailFragment : DataListFragment<WmSportSummaryData>(),
                 localSportLibrary =
                     GsonUtils.fromJson<LocalSportLibrary>(sportsData, LocalSportLibrary::class.java)
             }
-
+            //detail里面获取每10秒的数据
             UNIWatchMate.wmSync.syncSportSummaryData.syncData(date.time).await()
         }
     }
@@ -68,10 +69,6 @@ class SportDetailFragment : DataListFragment<WmSportSummaryData>(),
             }
         }
         return ""
-    }
-
-    override fun onItemClick(item: WmSportSummaryData) {
-
     }
 
 }

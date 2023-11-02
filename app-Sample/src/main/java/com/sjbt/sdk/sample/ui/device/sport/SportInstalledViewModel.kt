@@ -44,12 +44,6 @@ class SportInstalledViewModel : StateEventViewModel<SportState, SportEvent>(Spor
     fun requestInstallSports() {
         viewModelScope.launch {
             state.copy(requestSports = Loading()).newState()
-//            UNIWatchMate.wmApps.appSport.syncSportList.asFlow().catch {
-//                state.copy(requestSports = Fail(it)).newState()
-//                SportEvent.RequestFail(it).newEvent()
-//            }.collect{
-//
-//            }
             runCatchingWithLog {
                 val sportsData = ResourceUtils.readAssets2String("sports_data.json")
                 localSportLibrary =

@@ -9,7 +9,7 @@ import android.widget.TextView
 import com.sjbt.sdk.sample.R
 
 /**
- * 用于操作确认弹窗
+ * 用于操作确认弹窗(For operation confirmation popup)
  */
 class ConfirmDialog : BaseDialog {
     private var mTip: String?
