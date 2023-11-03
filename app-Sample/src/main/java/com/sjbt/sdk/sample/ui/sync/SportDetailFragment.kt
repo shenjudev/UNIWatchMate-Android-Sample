@@ -14,6 +14,7 @@ import com.sjbt.sdk.sample.R
 import com.sjbt.sdk.sample.entity.SportSummaryEntity
 import com.sjbt.sdk.sample.model.LocalSportLibrary
 import com.sjbt.sdk.sample.utils.getParcelableCompat
+import com.sjbt.sdk.sample.utils.getSportLibrary
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.rx3.await
 import java.text.SimpleDateFormat
@@ -44,10 +45,9 @@ class SportDetailFragment : DataListFragment<WmSportSummaryData>() {
 
     override fun queryData(date: Date): List<WmSportSummaryData>? {
         return runBlocking {
-            if (localSportLibrary != null) {
-                val sportsData = ResourceUtils.readAssets2String("sports_data.json")
-                localSportLibrary =
-                    GsonUtils.fromJson<LocalSportLibrary>(sportsData, LocalSportLibrary::class.java)
+            if (localSportLibrary == null) {
+
+                localSportLibrary = getSportLibrary()
             }
             //detail里面获取每10秒的数据
             UNIWatchMate.wmSync.syncSportSummaryData.syncData(date.time).await().value

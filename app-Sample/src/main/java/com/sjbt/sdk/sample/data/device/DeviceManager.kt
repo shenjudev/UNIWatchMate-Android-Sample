@@ -20,6 +20,7 @@ import com.sjbt.sdk.sample.entity.toModel
 import com.sjbt.sdk.sample.model.device.ConnectorDevice
 import com.sjbt.sdk.sample.model.device.deviceModeToInt
 import com.sjbt.sdk.sample.model.user.UserInfo
+import com.sjbt.sdk.sample.ui.device.bind.DeviceBindFragment.Companion.UNKNOWN_DEVICE_NAME
 import com.sjbt.sdk.sample.utils.CacheDataHelper
 import com.sjbt.sdk.sample.utils.ToastUtil
 import com.sjbt.sdk.sample.utils.launchWithLog
@@ -146,7 +147,7 @@ internal class DeviceManagerImpl(
      */
     override val flowDevice: StateFlow<ConnectorDevice?> =
         deviceFromMemory.combine(deviceFromStorage) { fromMemory, fromStorage ->
-            Timber.e( "device fromMemory:$fromMemory , fromStorage:$fromStorage")
+            Timber.e("device fromMemory:$fromMemory , fromStorage:$fromStorage")
             check(fromStorage == null || !fromStorage.isTryingBind)//device fromStorage, isTryingBind must be false
 
             //Use device fromMemory first
@@ -163,12 +164,21 @@ internal class DeviceManagerImpl(
             .asFlow().distinctUntilChanged()
     ) { device, connectorState ->
         //Device trying bind success,save it
-        Timber.e("flowConnectorState flowDevice == ${flowDevice.value}  connectorState == $connectorState"
-        )
+        Timber.e("flowConnectorState flowDevice == ${flowDevice.value}  connectorState == $connectorState" + Thread.currentThread().name)
         if (device != null && device.isTryingBind && connectorState == WmConnectState.VERIFIED) {
-            val deviceInfo =
-                UNIWatchMate.getDeviceInfo().await()
-            saveDevice(device,deviceInfo.deviceName)
+            saveDevice(device, device.name)
+            Timber.d("saveDevice" + Thread.currentThread().name)
+            if (device.name == UNKNOWN_DEVICE_NAME) {
+                try {
+                    val deviceInfo = UNIWatchMate.getDeviceInfo().await()
+                    CacheDataHelper.setCurrentDeviceInfo(deviceInfo)
+                    saveDevice(device, deviceInfo.deviceName)
+                    Timber.d("getDeviceInfo=$deviceInfo" + Thread.currentThread().name)
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    ToastUtil.showToast(e.message)
+                }
+            }
         }
         connectorState
     }.stateIn(applicationScope, SharingStarted.Eagerly, WmConnectState.DISCONNECTED)
@@ -180,13 +190,13 @@ internal class DeviceManagerImpl(
         applicationScope.launch {
             //Connect or disconnect when device changed
             deviceFromStorage.collect { device ->
-                Timber.e( "it.device == $device")
-                if (deviceFromMemory.value == null||!deviceFromMemory.value!!.isTryingBind) {
+                Timber.e("it.device == $device" + Thread.currentThread().name)
+                if (deviceFromMemory.value == null) {
                     internalStorage.flowAuthedUserId.value?.let {
                         val userInfo = userInfoRepository.getUserInfo(it)
                         userInfo?.let { userInfo ->
                             device?.let { storageDevice ->
-                                Timber.i(  "UNIWatchMate.connect")
+                                Timber.i("UNIWatchMate.connect")
                                 UNIWatchMate.connect(
                                     address = device!!.address,
                                     WmBindInfo(
@@ -205,7 +215,7 @@ internal class DeviceManagerImpl(
 
         applicationScope.launch {
             flowConnectorState.collect {
-                Timber.i( "onConnected if verified state:$it")
+                Timber.i("onConnected if verified state:$it" + Thread.currentThread().name)
                 if (it == WmConnectState.VERIFIED) {
                     onConnected()
                 }
@@ -223,20 +233,20 @@ internal class DeviceManagerImpl(
                 }
                 CacheDataHelper.setSynchronizingData(true)
 //                showLoadingDialog()
-                runCatchingWithLog {
-                    val deviceInfo =
-                        UNIWatchMate.getDeviceInfo()
-                            .await()
-                    Timber.d("getDeviceInfo=$deviceInfo")
-                    CacheDataHelper.setCurrentDeviceInfo(deviceInfo)
-                }.onFailure {
-                    ToastUtil.showToast(it.message,true)
-                }
+//                runCatchingWithLog {
+//                    val deviceInfo =
+//                        UNIWatchMate.getDeviceInfo()
+//                            .await()
+//                    Timber.d("getDeviceInfo=$deviceInfo")
+//                    CacheDataHelper.setCurrentDeviceInfo(deviceInfo)
+//                }.onFailure {
+//                    ToastUtil.showToast(it.message,true)
+//                }
                 runCatchingWithLog {
                     val result = UNIWatchMate?.wmApps?.appDateTime?.setDateTime(null).await()
-                    Timber.d(  "settingDateTime wmDateTime=${result}")
+                    Timber.d("settingDateTime wmDateTime=${result}")
                 }.onFailure {
-                    ToastUtil.showToast(it.message,true)
+                    ToastUtil.showToast(it.message, true)
                 }
                 runCatchingWithLog {
                     //first check has data,if not ,get from watch
@@ -246,16 +256,16 @@ internal class DeviceManagerImpl(
                                 val sportGoal =
                                     UNIWatchMate.wmSettings.settingSportGoal.get().await()
                                 sportGoalRepository.modify(userId, sportGoal)
-                                Timber.d( "modify sportGoal= $sportGoal")
+                                Timber.d("modify sportGoal= $sportGoal")
                             } else {
                                 val result =
                                     UNIWatchMate.wmSettings.settingSportGoal.set(it).await()
-                                Timber.d(  "setExerciseGoal $result")
+                                Timber.d("setExerciseGoal $result")
                             }
                         }
                     }
                 }.onFailure {
-                    ToastUtil.showToast(it.message,true)
+                    ToastUtil.showToast(it.message, true)
                 }
                 runCatchingWithLog {
                     userInfoRepository.flowCurrent.value?.let {
@@ -270,13 +280,13 @@ internal class DeviceManagerImpl(
                             if (it.sex) WmPersonalInfo.Gender.MALE else WmPersonalInfo.Gender.FEMALE,
                             birthDate
                         )
-                        Timber.i(  "setUserInfo $wmPersonalInfo")
+                        Timber.i("setUserInfo $wmPersonalInfo")
                         UNIWatchMate?.wmSettings?.settingPersonalInfo?.set(wmPersonalInfo)?.await()
                     }
                 }.onFailure {
-                    ToastUtil.showToast(it.message,true)
+                    ToastUtil.showToast(it.message, true)
                 }
-                Timber.i(  "onConnected over")
+                Timber.i("onConnected over")
                 hideLoadingDialog()
                 CacheDataHelper.setSynchronizingData(false)
             }
@@ -319,10 +329,10 @@ internal class DeviceManagerImpl(
     override fun bind(address: String, name: String, wmDeviceMode: WmDeviceModel) {
         val userId = internalStorage.flowAuthedUserId.value
         if (userId == null) {
-            Timber.e( "bind error because no authed user")
+            Timber.e("bind error because no authed user")
             return
         }
-        deviceFromMemory.value = ConnectorDevice(address, name, wmDeviceMode, true,0)
+        deviceFromMemory.value = ConnectorDevice(address, name, wmDeviceMode, true, 0)
         applicationScope.launchWithLog {
             settingDao.clearDeviceBind(userId)
         }
@@ -340,7 +350,7 @@ internal class DeviceManagerImpl(
     }
 
     override suspend fun reset() {
-        Timber.d(  "reset")
+        Timber.d("reset")
         UNIWatchMate.reset().onErrorReturn {
             Completable.create { emitter -> emitter.onComplete() }
         }.awaitSingleOrNull()
@@ -353,11 +363,11 @@ internal class DeviceManagerImpl(
     private suspend fun saveDevice(device: ConnectorDevice, deviceName: String) {
         val userId = internalStorage.flowAuthedUserId.value
         if (userId == null) {
-            Timber.w( "saveDevice error because no authed user")
+            Timber.w("saveDevice error because no authed user")
             deviceFromMemory.value = null
         } else {
             deviceFromMemory.value = ConnectorDevice(
-                device.address, deviceName, device.wmDeviceMode, false,1
+                device.address, deviceName, device.wmDeviceMode, false, 1
             )
             val entity = DeviceBindEntity(
                 userId,

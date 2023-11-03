@@ -15,6 +15,7 @@ import com.sjbt.sdk.sample.base.Success
 import com.sjbt.sdk.sample.base.Uninitialized
 import com.sjbt.sdk.sample.model.LocalSportLibrary
 import com.sjbt.sdk.sample.utils.ToastUtil
+import com.sjbt.sdk.sample.utils.getSportLibrary
 import com.sjbt.sdk.sample.utils.runCatchingWithLog
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.rx3.await
@@ -45,9 +46,7 @@ class SportInstalledViewModel : StateEventViewModel<SportState, SportEvent>(Spor
         viewModelScope.launch {
             state.copy(requestSports = Loading()).newState()
             runCatchingWithLog {
-                val sportsData = ResourceUtils.readAssets2String("sports_data.json")
-                localSportLibrary =
-                    GsonUtils.fromJson<LocalSportLibrary>(sportsData, LocalSportLibrary::class.java)
+                localSportLibrary = getSportLibrary()
                 refreshInstallState(
                     UNIWatchMate.wmApps.appSport.getSportList.await(),
                     localSportLibrary

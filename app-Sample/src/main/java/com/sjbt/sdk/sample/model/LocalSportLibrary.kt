@@ -14,6 +14,7 @@ class LocalSportLibrary {
         var buildIn = false
         var installed = false
         val type = 0
+        val sportType = 0
         val names = hashMapOf<String, String>()
     }
 

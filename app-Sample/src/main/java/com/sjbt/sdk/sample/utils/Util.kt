@@ -29,6 +29,8 @@ import com.base.sdk.entity.apps.WmWeatherForecast
 import com.base.sdk.entity.apps.WmWeatherTime
 import com.base.sdk.entity.common.WmWeek
 import com.base.sdk.entity.settings.WmUnitInfo
+import com.blankj.utilcode.util.GsonUtils
+import com.blankj.utilcode.util.ResourceUtils
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.DrawableImageViewTarget
@@ -37,6 +39,7 @@ import com.github.kilnn.tool.dialog.prompt.PromptDialogHolder
 import com.github.kilnn.tool.system.SystemUtil
 import com.github.kilnn.tool.widget.item.PreferenceItem
 import com.sjbt.sdk.sample.R
+import com.sjbt.sdk.sample.model.LocalSportLibrary
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.functions.Action
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -304,6 +307,13 @@ fun step2Km(step: Int, stepLength: Float): Float {
     return stepLength * step / 1000
 }
 
+fun getSportLibrary(): LocalSportLibrary {
+    val sportsData = ResourceUtils.readAssets2String("sports_data.json")
+    val localSportLibrary =
+        GsonUtils.fromJson(sportsData, LocalSportLibrary::class.java)
+    return localSportLibrary
+}
+
 fun glideShowImage(
     imageView: ImageView,
     uri: Any?,
@@ -355,7 +365,7 @@ fun getTestWeatherdata(wmWeatherTime: WmWeatherTime, code: Int): WmWeather {
                 10,
                 30,
                 20,
-                 WmUnitInfo.TemperatureUnit.CELSIUS,
+                WmUnitInfo.TemperatureUnit.CELSIUS,
                 90,
                 5,
                 code,

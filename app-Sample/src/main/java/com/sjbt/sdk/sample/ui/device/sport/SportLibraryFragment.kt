@@ -25,6 +25,7 @@ import com.sjbt.sdk.sample.databinding.FragmentSportLibraryBinding
 import com.sjbt.sdk.sample.di.Injector
 import com.sjbt.sdk.sample.model.LocalSportLibrary
 import com.sjbt.sdk.sample.utils.ToastUtil
+import com.sjbt.sdk.sample.utils.getSportLibrary
 import com.sjbt.sdk.sample.utils.showFailed
 import com.sjbt.sdk.sample.utils.launchRepeatOnStarted
 import com.sjbt.sdk.sample.utils.runCatchingWithLog
@@ -187,9 +188,7 @@ class SportLibraryViewModel(
     }
 
     private fun getWmportLibrarys(requestSports: MutableList<WmSport>?): MutableList<LocalSportLibrary.LocalSport> {
-        val sportsData = ResourceUtils.readAssets2String("sports_data.json")
-        val localSportLibrary =
-            GsonUtils.fromJson<LocalSportLibrary>(sportsData, LocalSportLibrary::class.java)
+        val localSportLibrary = getSportLibrary()
         requestSports?.let {
             for (wmSport in it) {
                 for (localSport in localSportLibrary.sports) {
