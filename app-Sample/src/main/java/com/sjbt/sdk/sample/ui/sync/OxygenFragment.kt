@@ -19,6 +19,6 @@ class OxygenFragment : DataListFragment<WmOxygenData>() {
         }
 
     override fun queryData(date: Date): List<WmOxygenData>? {
-        return runBlocking { UNIWatchMate.wmSync.syncOxygenData.syncData(date.time).await() }
+        return runBlocking { UNIWatchMate.wmSync.syncOxygenData.syncData(date.time).await().value }
     }
 }

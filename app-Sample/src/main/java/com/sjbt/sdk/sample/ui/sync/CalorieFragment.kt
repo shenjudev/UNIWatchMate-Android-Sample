@@ -28,7 +28,7 @@ class CalorieFragment : DataListFragment<WmCaloriesData>() {
             val start: Date = DateTimeUtils.getDayStartTime(calendar, date)
             val end: Date = DateTimeUtils.getDayEndTime(calendar, date)
             UNIWatchMate.wmSync.syncCaloriesData.syncData(start.time)
-                .await()
+                .await().value
 
         }
     }

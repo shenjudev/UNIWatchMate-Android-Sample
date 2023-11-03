@@ -4,6 +4,7 @@ import android.content.Context
 import com.base.api.UNIWatchMate
 import com.base.sdk.entity.data.WmHeartRateData
 import com.base.sdk.entity.data.WmStepData
+import com.base.sdk.entity.data.WmSyncData
 import com.base.sdk.entity.settings.WmHeartRateAlerts
 import com.sjbt.sdk.sample.R
 import com.sjbt.sdk.sample.entity.HeartRateItemEntity
@@ -32,10 +33,11 @@ class StepFragment : DataListFragment<WmStepData>() {
             UNIWatchMate.wmSync.syncStepData.syncData(start.time)
                 .await()
         }
-        if (result is ArrayList) {
-            result.add(WmStepData(System.currentTimeMillis(),10000,1223))
-        }
-        return result
+//        WmSyncData<WmStepData>
+//        if (result is ArrayList) {
+//            result.add(WmStepData(System.currentTimeMillis(),10000,1223))
+//        }
+        return result.value
     }
 
 }

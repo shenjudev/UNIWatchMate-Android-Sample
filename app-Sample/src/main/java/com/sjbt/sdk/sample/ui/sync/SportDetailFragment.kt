@@ -50,7 +50,7 @@ class SportDetailFragment : DataListFragment<WmSportSummaryData>() {
                     GsonUtils.fromJson<LocalSportLibrary>(sportsData, LocalSportLibrary::class.java)
             }
             //detail里面获取每10秒的数据
-            UNIWatchMate.wmSync.syncSportSummaryData.syncData(date.time).await()
+            UNIWatchMate.wmSync.syncSportSummaryData.syncData(date.time).await().value
         }
     }
 

@@ -23,9 +23,9 @@ interface SyncDataRepository {
     suspend fun saveHeartRate(userId: Long, data: List<WmHeartRateData>?)
 
     suspend fun queryStep(userId: Long, date: Date): List<StepItemEntity>?
-
-    //    suspend fun queryTodayStep(userId: Long): TodayStepData?
-    suspend fun queryHeartRate(userId: Long, date: Date): List<HeartRateItemEntity>?
+//
+//    //    suspend fun queryTodayStep(userId: Long): TodayStepData?
+//    suspend fun queryHeartRate(userId: Long, date: Date): List<HeartRateItemEntity>?
 }
 
 internal class SyncDataRepositoryImpl(
@@ -40,30 +40,32 @@ internal class SyncDataRepositoryImpl(
         data: List<WmStepData>?,
         isSupportStepExtra: Boolean,
     ) {
-        if (data.isNullOrEmpty()) return
-        return if (isSupportStepExtra) {
-            syncDao.insertStep(
-                data.map { StepItemEntity(userId, Date(it.timestamp), it.step, 0f, 0f) }
-            )
-        } else {
-            val userInfo = userInfoRepository.flowCurrent.value
-            val stepLength = userInfo.getStepLength()
-            val weight = userInfo.getWeight()
-            syncDao.insertStep(
-                data.map {
-                    val distance = step2Km(it.step, stepLength).roundHalfUp3()
-                    val calories = km2Calories(distance, weight).roundHalfUp3()
-                    StepItemEntity(userId, Date(it.timestamp), it.step, distance, calories)
-                }
-            )
-        }
+//        if (data.isNullOrEmpty()) return
+//        return if (isSupportStepExtra) {
+//            syncDao.insertStep(
+//                data.map { StepItemEntity(userId, Date(it.timestamp), it.step, 0f, 0f) }
+//            )
+//        } else {
+//            val userInfo = userInfoRepository.flowCurrent.value
+//            val stepLength = userInfo.getStepLength()
+//            val weight = userInfo.getWeight()
+//            syncDao.insertStep(
+//                data.map {
+//                    val distance = step2Km(it.step, stepLength).roundHalfUp3()
+//                    val calories = km2Calories(distance, weight).roundHalfUp3()
+//
+//                    StepItemEntity(userId, Date(it.timestamp), it.step, distance, calories)
+//                }
+//            )
+//        }
     }
 
     override suspend fun saveHeartRate(userId: Long, data: List<WmHeartRateData>?) {
-        if (data.isNullOrEmpty()) return
-        syncDao.insertHeartRate(
-            data.map { HeartRateItemEntity(userId, Date(it.timestamp), it.avgHeartRate) }
-        )
+//        if (data.isNullOrEmpty()) return
+//        syncDao.insertHeartRate(
+//            data.map { HeartRateItemEntity(userId, Date(
+//                it.timestamp), it.avgHeartRate) }
+//        )
     }
     //    override suspend fun saveTodayStep(userId: Long, data: FcTodayTotalData?) {
 //        if (data == null) {
@@ -96,11 +98,11 @@ internal class SyncDataRepositoryImpl(
 //        return stringTypedDao.getTodayStepData(userId)
 //    }
 
-    override suspend fun queryHeartRate(userId: Long, date: Date): List<HeartRateItemEntity>? {
-        val calendar = Calendar.getInstance()
-        val start: Date = DateTimeUtils.getDayStartTime(calendar, date)
-        val end: Date = DateTimeUtils.getDayEndTime(calendar, date)
-        return syncDao.queryHeartRateBetween(userId, start, end)
-    }
+//    override suspend fun queryHeartRate(userId: Long, date: Date): List<HeartRateItemEntity>? {
+//        val calendar = Calendar.getInstance()
+//        val start: Date = DateTimeUtils.getDayStartTime(calendar, date)
+//        val end: Date = DateTimeUtils.getDayEndTime(calendar, date)
+//        return syncDao.queryHeartRateBetween(userId, start, end)
+//    }
 
 }

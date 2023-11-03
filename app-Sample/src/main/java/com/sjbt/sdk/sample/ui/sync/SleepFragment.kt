@@ -33,15 +33,16 @@ class SleepFragment : DataListFragment<WmSleepItem>() {
                 WmSleepItem.STATUS_LIGHT -> context.getString(R.string.light_sleep)
                 else -> context.getString(R.string.awake_sleep)
             }
-            return statusText + "    " + timeFormat.format(obj.startTime) + " ->  "
+//            return statusText + "    " + timeFormat.format(obj.) + " ->  "
+            return statusText + "    "
         }
     }
 
     override fun queryData(date: Date): List<WmSleepItem>? {
-        val data = runBlocking { UNIWatchMate.wmSync.syncSleepData.syncData(date.time).await() }
+        val data = runBlocking { UNIWatchMate.wmSync.syncSleepData.syncData(date.time).await().value }
         val sleepItemDatas = mutableListOf<WmSleepItem>()
         data.forEach {
-            sleepItemDatas.addAll(it.items)
+//            sleepItemDatas.addAll(it.items)
         }
 
 //        tvDeepSleep.text = FormatterUtil.second2Hmm(duration[0])

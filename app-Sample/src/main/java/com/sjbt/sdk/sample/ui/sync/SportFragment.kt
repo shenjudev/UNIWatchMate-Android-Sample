@@ -48,9 +48,9 @@ class SportFragment : DataListFragment<WmSportSummaryData>(),
 //           UNIWatchMate.wmSync.syncSportSummaryData.syncData(date.time).await()
 //        }
         val result = arrayListOf<WmSportSummaryData>()
-        if (result is ArrayList) {
-            result.add(WmSportSummaryData(System.currentTimeMillis(),9, mutableListOf()))
-        }
+//        if (result is ArrayList) {
+//            result.add(WmSportSummaryData(System.currentTimeMillis(),9, mutableListOf()))
+//        }
         return result
     }
 

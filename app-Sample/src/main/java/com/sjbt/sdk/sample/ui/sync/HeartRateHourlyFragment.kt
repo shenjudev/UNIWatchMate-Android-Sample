@@ -21,7 +21,7 @@ class HeartRateHourlyFragment : DataListFragment<WmHeartRateData>() {
     override fun queryData(date: Date): List<WmHeartRateData>? {
         return runBlocking {
             UNIWatchMate.wmSync.syncHeartRateData.syncData(System.currentTimeMillis() - 1000 * 60 * 60 * 24)
-                .await()
+                .await().value
         }
     }
 
