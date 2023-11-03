@@ -5,6 +5,7 @@ import com.base.sdk.entity.settings.WmSleepSettings
 import java.io.Serializable
 
 abstract class WmBaseSyncData(
+    val timestamp: Long = 0
 )
 
 /**
