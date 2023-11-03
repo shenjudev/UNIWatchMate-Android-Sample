@@ -38,7 +38,7 @@ class SJTransferFile(val sjUniWatch: SJUniWatch) : AbWmTransferFile() {
     var mTransferring = false
 
     val mSportMap = HashMap<FileType, Boolean>()
-    var cancelTransfer: SingleEmitter<Boolean>? = null
+    var cancelTransferEmitter: SingleEmitter<Boolean>? = null
     var observableTransferEmitter: ObservableEmitter<WmTransferState>? = null
 
     var transferState: WmTransferState? = null
@@ -49,7 +49,7 @@ class SJTransferFile(val sjUniWatch: SJUniWatch) : AbWmTransferFile() {
 
     override fun cancelTransfer(): Single<Boolean> {
         return Single.create { emitter ->
-            cancelTransfer = emitter
+            cancelTransferEmitter = emitter
 
             sjUniWatch.sendNormalMsg(CmdHelper.transferCancelCmd)
         }
@@ -264,7 +264,7 @@ class SJTransferFile(val sjUniWatch: SJUniWatch) : AbWmTransferFile() {
                 mTransferring = false
                 mCanceledSend = true
 
-                cancelTransfer?.onSuccess(true)
+                cancelTransferEmitter?.onSuccess(true)
                 transferEnd()
             }
 
@@ -279,8 +279,9 @@ class SJTransferFile(val sjUniWatch: SJUniWatch) : AbWmTransferFile() {
         }
     }
 
-    private fun transferError(errMsg: String) {
-        if (observableTransferEmitter?.isDisposed == false) {
+    fun transferError(errMsg: String) {
+        if (observableTransferEmitter?.isDisposed == false && mTransferring) {
+            mTransferring = false
             observableTransferEmitter?.onError(
                 RuntimeException(errMsg)
             )
@@ -396,7 +397,7 @@ class SJTransferFile(val sjUniWatch: SJUniWatch) : AbWmTransferFile() {
         return info
     }
 
-    fun timeOut(msgBean:MsgBean) {
+    fun timeOut(msgBean: MsgBean) {
         if (mCanceledSend) {
             sjUniWatch.clearMsg()
             return

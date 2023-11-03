@@ -1,6 +1,7 @@
 package com.sjbt.sdk.sync
 
 import com.base.sdk.entity.data.WmSportSummaryData
+import com.base.sdk.entity.data.WmSyncData
 import com.base.sdk.port.sync.AbSyncData
 import com.sjbt.sdk.SJUniWatch
 import com.sjbt.sdk.entity.MsgBean
@@ -12,11 +13,11 @@ import io.reactivex.rxjava3.core.ObservableEmitter
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.core.SingleEmitter
 
-class SyncSportSummaryData(val sjUniWatch: SJUniWatch) : AbSyncData<List<WmSportSummaryData>>() {
+class SyncSportSummaryData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmSportSummaryData>>() {
     var isActionSupport: Boolean = true
     var lastSyncTime: Long = 0
-    private var activityObserveEmitter: SingleEmitter<List<WmSportSummaryData>>? = null
-    private var observeChangeEmitter: ObservableEmitter<List<WmSportSummaryData>>? = null
+    private var activityObserveEmitter: SingleEmitter<WmSyncData<WmSportSummaryData>>? = null
+    private var observeChangeEmitter: ObservableEmitter<WmSyncData<WmSportSummaryData>>? = null
     override fun isSupport(): Boolean {
         return isActionSupport
     }
@@ -29,7 +30,7 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) : AbSyncData<List<WmSport
         TODO("Not yet implemented")
     }
 
-    override fun syncData(startTime: Long): Single<List<WmSportSummaryData>> {
+    override fun syncData(startTime: Long): Single<WmSyncData<WmSportSummaryData>> {
 
         return Single.create { emitter ->
             activityObserveEmitter = emitter
@@ -43,7 +44,7 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) : AbSyncData<List<WmSport
         }
     }
 
-    override var observeSyncData: Observable<List<WmSportSummaryData>> =
+    override var observeSyncData: Observable<WmSyncData<WmSportSummaryData>> =
         Observable.create { emitter -> observeChangeEmitter = emitter }
 
 }

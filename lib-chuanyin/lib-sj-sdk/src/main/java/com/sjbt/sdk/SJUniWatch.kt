@@ -172,12 +172,7 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(), Li
 
                 if (device == mCurrDevice) {
                     btStateChange(WmConnectState.DISCONNECTED)
-                    wmTransferFile.mTransferring = false
-                    mBtEngine.clearMsgQueue()
-                    mBtEngine.clearStateMap()
-
-                    appCamera.stopCameraPreview()
-                    disconnect()
+                    btDisconnectSet()
 
                     //                        removeCallBackRunner(mConnectTimeoutRunner)
                 }
@@ -201,14 +196,8 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(), Li
 
             override fun onClassicBtDisabled() {
                 wmLog.logD(TAG, "onClassicBtDisabled")
-                mBtEngine.clearMsgQueue()
-                mBtEngine.clearStateMap()
-
                 btStateChange(WmConnectState.BT_DISABLE)
-                disconnect()
-
-                appCamera.stopCameraPreview()
-                wmTransferFile.transferEnd()
+                btDisconnectSet()
 
 //                removeCallBackRunner(mConnectTimeoutRunner)
             }
@@ -263,6 +252,14 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(), Li
         )
 
         appCamera.startCameraThread()
+    }
+
+    private fun btDisconnectSet() {
+        wmTransferFile.transferError("bt disconnect")
+        mBtEngine.clearMsgQueue()
+        mBtEngine.clearStateMap()
+        appCamera.stopCameraPreview()
+        disconnect()
     }
 
     override fun getDeviceInfo(): Single<WmDeviceInfo> {

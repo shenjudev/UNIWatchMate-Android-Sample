@@ -1,5 +1,6 @@
 package com.sjbt.sdk.sync
 
+import com.base.sdk.entity.data.WmSyncData
 import com.base.sdk.entity.data.WmTodayTotalData
 import com.base.sdk.port.sync.AbSyncData
 import com.sjbt.sdk.SJUniWatch
@@ -12,12 +13,12 @@ import io.reactivex.rxjava3.core.ObservableEmitter
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.core.SingleEmitter
 
-class SyncTodayTotalData(val sjUniWatch: SJUniWatch) : AbSyncData<WmTodayTotalData>() {
+class SyncTodayTotalData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmTodayTotalData>>() {
 
     var isActionSupport: Boolean = true
     var lastSyncTime: Long = 0
-    private var activityObserveEmitter: SingleEmitter<WmTodayTotalData>? = null
-    private var observeChangeEmitter: ObservableEmitter<WmTodayTotalData>? = null
+    private var activityObserveEmitter: SingleEmitter<WmSyncData<WmTodayTotalData>>? = null
+    private var observeChangeEmitter: ObservableEmitter<WmSyncData<WmTodayTotalData>>? = null
     override fun isSupport(): Boolean {
         return isActionSupport
     }
@@ -30,7 +31,7 @@ class SyncTodayTotalData(val sjUniWatch: SJUniWatch) : AbSyncData<WmTodayTotalDa
         TODO("Not yet implemented")
     }
 
-    override fun syncData(startTime: Long): Single<WmTodayTotalData> {
+    override fun syncData(startTime: Long): Single<WmSyncData<WmTodayTotalData>> {
         return Single.create { emitter ->
             activityObserveEmitter = emitter
             sjUniWatch.sendReadSubPkObserveNode(
@@ -43,7 +44,7 @@ class SyncTodayTotalData(val sjUniWatch: SJUniWatch) : AbSyncData<WmTodayTotalDa
         }
     }
 
-    override var observeSyncData: Observable<WmTodayTotalData> =
+    override var observeSyncData: Observable<WmSyncData<WmTodayTotalData>> =
         Observable.create { emitter -> observeChangeEmitter = emitter }
 
 }

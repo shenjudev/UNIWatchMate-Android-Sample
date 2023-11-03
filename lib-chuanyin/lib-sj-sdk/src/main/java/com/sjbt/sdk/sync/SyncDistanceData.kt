@@ -1,6 +1,8 @@
 package com.sjbt.sdk.sync
 
 import com.base.sdk.entity.data.WmDistanceData
+import com.base.sdk.entity.data.WmStepData
+import com.base.sdk.entity.data.WmSyncData
 import com.base.sdk.port.sync.AbSyncData
 import com.sjbt.sdk.SJUniWatch
 import com.sjbt.sdk.entity.MsgBean
@@ -13,12 +15,12 @@ import io.reactivex.rxjava3.core.ObservableEmitter
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.core.SingleEmitter
 
-class SyncDistanceData(val sjUniWatch: SJUniWatch) : AbSyncData<List<WmDistanceData>>() {
+class SyncDistanceData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmDistanceData>>() {
 
     var isActionSupport: Boolean = true
     var lastSyncTime: Long = 0
-    private var activityObserveEmitter: SingleEmitter<List<WmDistanceData>>? = null
-    private var observeChangeEmitter: ObservableEmitter<List<WmDistanceData>>? = null
+    private var activityObserveEmitter: SingleEmitter<WmSyncData<WmDistanceData>>? = null
+    private var observeChangeEmitter: ObservableEmitter<WmSyncData<WmDistanceData>>? = null
     override fun isSupport(): Boolean {
         return isActionSupport
     }
@@ -31,7 +33,7 @@ class SyncDistanceData(val sjUniWatch: SJUniWatch) : AbSyncData<List<WmDistanceD
         TODO("Not yet implemented")
     }
 
-    override fun syncData(startTime: Long): Single<List<WmDistanceData>> {
+    override fun syncData(startTime: Long): Single<WmSyncData<WmDistanceData>> {
         return Single.create { emitter ->
             activityObserveEmitter = emitter
             sjUniWatch.sendReadSubPkObserveNode(
@@ -42,7 +44,7 @@ class SyncDistanceData(val sjUniWatch: SJUniWatch) : AbSyncData<List<WmDistanceD
         }
     }
 
-    override var observeSyncData: Observable<List<WmDistanceData>> =
+    override var observeSyncData: Observable<WmSyncData<WmDistanceData>> =
         Observable.create { emitter -> observeChangeEmitter = emitter }
 
 

@@ -14,12 +14,12 @@ import io.reactivex.rxjava3.disposables.Disposable
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 
-class SyncStepData(val sjUniWatch: SJUniWatch) : AbSyncData<List<WmSyncData>>() {
+class SyncStepData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmStepData>>() {
 
     var isActionSupport: Boolean = true
     var lastSyncTime: Long = 0
-    private var activityObserveEmitter: SingleEmitter<List<WmSyncData>>? = null
-    private var observeChangeEmitter: ObservableEmitter<List<WmSyncData>>? = null
+    private var activityObserveEmitter: SingleEmitter<WmSyncData<WmStepData>>? = null
+    private var observeChangeEmitter: ObservableEmitter<WmSyncData<WmStepData>>? = null
     private val TAG = "SyncStepData"
 
     private val msgList = mutableSetOf<MsgBean>()
@@ -36,7 +36,7 @@ class SyncStepData(val sjUniWatch: SJUniWatch) : AbSyncData<List<WmSyncData>>() 
     fun onTimeOut(msg: MsgBean, nodeData: NodeData) {
     }
 
-    override fun syncData(startTime: Long): Single<List<WmSyncData>> {
+    override fun syncData(startTime: Long): Single<WmSyncData<WmStepData>> {
         msgList.clear()
         return Single.create { emitter ->
             activityObserveEmitter = emitter
@@ -90,8 +90,7 @@ class SyncStepData(val sjUniWatch: SJUniWatch) : AbSyncData<List<WmSyncData>>() 
         }
     }
 
-    override var observeSyncData: Observable<List<WmSyncData>> =
+    override var observeSyncData: Observable<WmSyncData<WmStepData>> =
         Observable.create { emitter -> observeChangeEmitter = emitter }
-
 
 }

@@ -1,6 +1,7 @@
 package com.sjbt.sdk.sync
 
 import com.base.sdk.entity.data.WmSleepData
+import com.base.sdk.entity.data.WmSyncData
 import com.base.sdk.port.sync.AbSyncData
 import com.sjbt.sdk.SJUniWatch
 import com.sjbt.sdk.entity.MsgBean
@@ -13,11 +14,11 @@ import io.reactivex.rxjava3.core.ObservableEmitter
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.core.SingleEmitter
 
-class SyncSleepData(val sjUniWatch: SJUniWatch) : AbSyncData<List<WmSleepData>>() {
+class SyncSleepData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmSleepData>>() {
     var isActionSupport: Boolean = true
     var lastSyncTime: Long = 0
-    private var activityObserveEmitter: SingleEmitter<List<WmSleepData>>? = null
-    private var observeChangeEmitter: ObservableEmitter<List<WmSleepData>>? = null
+    private var activityObserveEmitter: SingleEmitter<WmSyncData<WmSleepData>>? = null
+    private var observeChangeEmitter: ObservableEmitter<WmSyncData<WmSleepData>>? = null
     override fun isSupport(): Boolean {
         return isActionSupport
     }
@@ -30,7 +31,7 @@ class SyncSleepData(val sjUniWatch: SJUniWatch) : AbSyncData<List<WmSleepData>>(
         TODO("Not yet implemented")
     }
 
-    override fun syncData(startTime: Long): Single<List<WmSleepData>> {
+    override fun syncData(startTime: Long): Single<WmSyncData<WmSleepData>> {
 
         return Single.create { emitter ->
             activityObserveEmitter = emitter
@@ -38,7 +39,7 @@ class SyncSleepData(val sjUniWatch: SJUniWatch) : AbSyncData<List<WmSleepData>>(
         }
     }
 
-    override var observeSyncData: Observable<List<WmSleepData>> =
+    override var observeSyncData: Observable<WmSyncData<WmSleepData>> =
         Observable.create { emitter -> observeChangeEmitter = emitter }
 
 }

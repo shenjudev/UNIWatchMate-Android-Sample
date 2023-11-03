@@ -12,24 +12,24 @@ internal class AbWmSyncDelegate(
    private val watchObservable: BehaviorObservable<AbUniWatch>
 ) : AbWmSyncs() {
 
-    override val syncStepData: AbSyncData<List<WmStepData>>
+    override val syncStepData: AbSyncData<WmSyncData<WmStepData>>
         get() = watchObservable.value!!.wmSync.syncStepData
-    override val syncOxygenData: AbSyncData<List<WmOxygenData>>
+    override val syncOxygenData: AbSyncData<WmSyncData<WmOxygenData>>
         get() = watchObservable.value!!.wmSync.syncOxygenData
-    override val syncCaloriesData: AbSyncData<List<WmCaloriesData>>
+    override val syncCaloriesData: AbSyncData<WmSyncData<WmCaloriesData>>
         get() = watchObservable.value!!.wmSync.syncCaloriesData
-    override val syncSleepData: AbSyncData<List<WmSleepData>>
+    override val syncSleepData: AbSyncData<WmSyncData<WmSleepData>>
         get() = watchObservable.value!!.wmSync.syncSleepData
-    override val syncRealtimeRateData: AbSyncData<List<WmRealtimeRateData>>
+    override val syncRealtimeRateData: AbSyncData<WmSyncData<WmRealtimeRateData>>
         get() = watchObservable.value!!.wmSync.syncRealtimeRateData
-    override val syncHeartRateData: AbSyncData<List<WmHeartRateData>>
+    override val syncHeartRateData: AbSyncData<WmSyncData<WmHeartRateData>>
         get() = watchObservable.value!!.wmSync.syncHeartRateData
-    override val syncDistanceData: AbSyncData<List<WmDistanceData>>
+    override val syncDistanceData: AbSyncData<WmSyncData<WmDistanceData>>
         get() = watchObservable.value!!.wmSync.syncDistanceData
-    override val syncActivityData: AbSyncData<List<WmActivityData>>
+    override val syncActivityData: AbSyncData<WmSyncData<WmActivityData>>
         get() = watchObservable.value!!.wmSync.syncActivityData
-    override val syncSportSummaryData: AbSyncData<List<WmSportSummaryData>>
+    override val syncSportSummaryData: AbSyncData<WmSyncData<WmSportSummaryData>>
         get() = watchObservable.value!!.wmSync.syncSportSummaryData
-    override val syncTodayInfoData: AbSyncData<WmTodayTotalData>
+    override val syncTodayInfoData: AbSyncData<WmSyncData<WmTodayTotalData>>
         get() = watchObservable.value!!.wmSync.syncTodayInfoData
 }

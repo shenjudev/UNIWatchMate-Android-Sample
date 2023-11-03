@@ -1,6 +1,7 @@
 package com.sjbt.sdk.sync
 
 import com.base.sdk.entity.data.WmCaloriesData
+import com.base.sdk.entity.data.WmSyncData
 import com.base.sdk.port.sync.AbSyncData
 import com.sjbt.sdk.SJUniWatch
 import com.sjbt.sdk.entity.MsgBean
@@ -13,11 +14,11 @@ import io.reactivex.rxjava3.core.ObservableEmitter
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.core.SingleEmitter
 
-class SyncCaloriesData (val sjUniWatch: SJUniWatch): AbSyncData<List<WmCaloriesData>>() {
+class SyncCaloriesData (val sjUniWatch: SJUniWatch): AbSyncData<WmSyncData<WmCaloriesData>>() {
     var isActionSupport: Boolean = true
     var lastSyncTime: Long = 0
-    private var activityObserveEmitter: SingleEmitter<List<WmCaloriesData>>? = null
-    private var observeChangeEmitter: ObservableEmitter<List<WmCaloriesData>>? = null
+    private var activityObserveEmitter: SingleEmitter<WmSyncData<WmCaloriesData>>? = null
+    private var observeChangeEmitter: ObservableEmitter<WmSyncData<WmCaloriesData>>? = null
     override fun isSupport(): Boolean {
         return isActionSupport
     }
@@ -30,7 +31,7 @@ class SyncCaloriesData (val sjUniWatch: SJUniWatch): AbSyncData<List<WmCaloriesD
         TODO("Not yet implemented")
     }
 
-    override fun syncData(startTime: Long): Single<List<WmCaloriesData>> {
+    override fun syncData(startTime: Long): Single<WmSyncData<WmCaloriesData>> {
         return Single.create { emitter ->
             activityObserveEmitter = emitter
             sjUniWatch.sendReadSubPkObserveNode(
@@ -42,7 +43,7 @@ class SyncCaloriesData (val sjUniWatch: SJUniWatch): AbSyncData<List<WmCaloriesD
         }
     }
 
-    override var observeSyncData: Observable<List<WmCaloriesData>> =
+    override var observeSyncData: Observable<WmSyncData<WmCaloriesData>> =
         Observable.create { emitter -> observeChangeEmitter = emitter }
 
 }
