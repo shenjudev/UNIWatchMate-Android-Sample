@@ -1,11 +1,13 @@
 package com.base.sdk.entity.data
 
+import android.text.format.DateFormat
 import com.base.sdk.entity.apps.WmValueTypeData
 import com.base.sdk.entity.settings.WmSleepSettings
 import java.io.Serializable
+import java.util.*
 
 abstract class WmBaseSyncData(
-    val timestamp: Long = 0
+    var timestamp: Long = 0
 )
 
 /**
@@ -31,7 +33,11 @@ class WmSyncData<T : WmBaseSyncData>(
      * Sync value
      */
     val value: List<T>,
-)
+) {
+    override fun toString(): String {
+        return "WmSyncData(type=$type, timestamp=$timestamp, intervalType=$intervalType, value=$value)"
+    }
+}
 
 /**
  * 运动小结
@@ -46,7 +52,11 @@ class WmSportSummaryData(
      * 基本参数类型
      */
     val valueType: List<WmValueTypeData>
-) : WmBaseSyncData(), Serializable
+) : WmBaseSyncData(), Serializable {
+    override fun toString(): String {
+        return "WmSportSummaryData(sportId=$sportId, valueType=$valueType)"
+    }
+}
 
 /**
  * 平均 value 血氧数据
@@ -64,7 +74,11 @@ class WmHeartRateData(
      */
     val duration: Int
 
-) : WmBaseSyncData()
+) : WmBaseSyncData() {
+    override fun toString(): String {
+        return "WmHeartRateData(minHeartRate=$minHeartRate, maxHeartRate=$maxHeartRate, avgHeartRate=$avgHeartRate, duration=$duration)"
+    }
+}
 
 /**
  * Oxygen value 血氧数据
@@ -74,7 +88,11 @@ class WmOxygenData(
      * Oxygen value (SpO2)，0~100
      */
     val oxygen: Int
-) : WmBaseSyncData()
+) : WmBaseSyncData() {
+    override fun toString(): String {
+        return "WmOxygenData(oxygen=$oxygen)"
+    }
+}
 
 /**
  * Step value 步数数据
@@ -85,7 +103,15 @@ class WmStepData(
      */
     val step: Int,
 
-    ) : WmBaseSyncData()
+    ) : WmBaseSyncData() {
+    override fun toString(): String {
+
+        val timestamp = Date(timestamp).time
+        val timeStampFormat = DateFormat.format("yyyy-MM-dd HH:mm:ss", timestamp)
+
+        return "WmStepData(date=${timeStampFormat}  step=$step)"
+    }
+}
 
 /**
  * distance value 距离数据
@@ -95,7 +121,11 @@ class WmDistanceData(
      * distance value
      */
     val distance: Int,
-) : WmBaseSyncData()
+) : WmBaseSyncData() {
+    override fun toString(): String {
+        return "WmDistanceData(distance=$distance)"
+    }
+}
 
 /**
  * calorie value 卡路里数据
@@ -105,7 +135,11 @@ class WmCaloriesData(
      * calorie value
      */
     val calorie: Int,
-) : WmBaseSyncData()
+) : WmBaseSyncData() {
+    override fun toString(): String {
+        return "WmCaloriesData(calorie=$calorie)"
+    }
+}
 
 class WmBloodPressureData(
     /**
@@ -117,7 +151,11 @@ class WmBloodPressureData(
      * diastolic blood pressure (unit mmHg)
      */
     val dbp: Int //舒张压值
-) : WmBaseSyncData()
+) : WmBaseSyncData() {
+    override fun toString(): String {
+        return "WmBloodPressureData(sbp=$sbp, dbp=$dbp)"
+    }
+}
 
 class WmBloodPressureMeasureData(
     /**
@@ -135,21 +173,33 @@ class WmBloodPressureMeasureData(
      * This value exists only if [WmDeviceInfo.Feature.BLOOD_PRESSURE_AIR_PUMP] is support
      */
     val heartRate: Int
-) : WmBaseSyncData()
+) : WmBaseSyncData() {
+    override fun toString(): String {
+        return "WmBloodPressureMeasureData(sbp=$sbp, dbp=$dbp, heartRate=$heartRate)"
+    }
+}
 
 class WmRealtimeRateData(
     /**
      * Respiratory rate value (breaths per minute)
      */
     val rate: Int
-) : WmBaseSyncData()
+) : WmBaseSyncData() {
+    override fun toString(): String {
+        return "WmRealtimeRateData(rate=$rate)"
+    }
+}
 
 class WmPressureData(
     /**
      * Pressure value. Limit(0,256)
      */
     val pressure: Int
-) : WmBaseSyncData()
+) : WmBaseSyncData() {
+    override fun toString(): String {
+        return "WmPressureData(pressure=$pressure)"
+    }
+}
 
 
 class WmTemperatureData(
@@ -163,7 +213,11 @@ class WmTemperatureData(
      * The range of this value is wider, because it is related to the ambient temperature, in extreme cases it may be below 0℃.
      */
     val wrist: Float
-) : WmBaseSyncData()
+) : WmBaseSyncData() {
+    override fun toString(): String {
+        return "WmTemperatureData(body=$body, wrist=$wrist)"
+    }
+}
 
 
 class WmGameData(
@@ -178,7 +232,11 @@ class WmGameData(
     val duration: Int,
     val score: Int,
     val level: Int
-) : WmBaseSyncData()
+) : WmBaseSyncData() {
+    override fun toString(): String {
+        return "WmGameData(type=$type, duration=$duration, score=$score, level=$level)"
+    }
+}
 
 /**
  * 活动时长
@@ -212,6 +270,11 @@ class WmEcgData(
         const val DEFAULT_SAMPLING_RATE = 100
     }
 
+    override fun toString(): String {
+        return "WmEcgData(samplingRate=$samplingRate, items=$items)"
+    }
+
+
 }
 
 /**
@@ -221,7 +284,11 @@ class WmSleepData(
     val wmSleepSettings: WmSleepSettings,
     val wmSleepSummary: WmSleepSummary,
     val wmSleepData: List<WmSleepItem>
-) : WmBaseSyncData()
+) : WmBaseSyncData() {
+    override fun toString(): String {
+        return "WmSleepData(wmSleepSettings=$wmSleepSettings, wmSleepSummary=$wmSleepSummary, wmSleepData=$wmSleepData)"
+    }
+}
 
 /**
  * 睡眠概览
@@ -251,7 +318,11 @@ data class WmSleepSummary(
 
     var sleepScore: Int,// 睡眠得分
 
-)
+) {
+    override fun toString(): String {
+        return "WmSleepSummary(dateStamp=$dateStamp, bedTime=$bedTime, getUpTime=$getUpTime, totalSleepMinutes=$totalSleepMinutes, sleepType=$sleepType, deepSleepMinutes=$deepSleepMinutes, lightSleepMinutes=$lightSleepMinutes, awakeSleepMinutes=$awakeSleepMinutes, remSleepMinutes=$remSleepMinutes, deepSleepCount=$deepSleepCount, lightSleepCount=$lightSleepCount, awakeSleepCount=$awakeSleepCount, remSleepCount=$remSleepCount, awakePercentage=$awakePercentage, lightSleepPercentage=$lightSleepPercentage, deepSleepPercentage=$deepSleepPercentage, remSleepPercentage=$remSleepPercentage, sleepScore=$sleepScore)"
+    }
+}
 
 class WmGpsData(
     timestamp: Long,
@@ -260,7 +331,11 @@ class WmGpsData(
      */
     val sportId: String,
     val items: List<WmGpsItem>
-) : WmBaseSyncData()
+) : WmBaseSyncData() {
+    override fun toString(): String {
+        return "WmGpsData(sportId='$sportId', items=$items)"
+    }
+}
 
 class WmGpsItem(
     /**
@@ -280,7 +355,11 @@ class WmGpsItem(
      * True for yes, false for not.
      */
     val isRestart: Boolean,
-)
+) {
+    override fun toString(): String {
+        return "WmGpsItem(duration=$duration, lng=$lng, lat=$lat, altitude=$altitude, satellites=$satellites, isRestart=$isRestart)"
+    }
+}
 
 /**
  * Today total data(今日总数据)
@@ -332,7 +411,11 @@ class WmTodayTotalData(
      */
     val deltaCalorie: Int,//未保存在item中的卡路里数，单位卡，不是千卡
 
-) : WmBaseSyncData()
+) : WmBaseSyncData() {
+    override fun toString(): String {
+        return "WmTodayTotalData(step=$step, distance=$distance, calorie=$calorie, deepSleep=$deepSleep, lightSleep=$lightSleep, heartRate=$heartRate, deltaStep=$deltaStep, deltaDistance=$deltaDistance, deltaCalorie=$deltaCalorie)"
+    }
+}
 
 interface ICalculateSleepItem {
     fun getCalculateStatus(): Int
@@ -375,6 +458,11 @@ class WmSleepItem(
     override fun getCalculateStartTime(): Short {
         return duration
     }
+
+    override fun toString(): String {
+        return "WmSleepItem(status=$status, duration=$duration)"
+    }
+
 }
 
 /**

@@ -30,14 +30,13 @@ class MsgBean {
     var payloadJson: String? = null
 
     override fun toString(): String {
-        return "BiuMsgBean{" +
-                "head=" + head +
+        return "MsgBean{" +
+                "head=" + Integer.toHexString(head.toInt() and 0XFF) +
                 ", cmdOrder=" + cmdOrder +
                 ", cmdStr='" + cmdIdStr + '\'' +
                 ", divideType=" + divideType +
                 ", payloadLen=" + payloadLen +
-                ", offset=" + offset +
-                ", crc=" + crc +
+                ", payloadPackTotalLen=" + payloadPackTotalLen +
                 '}'
     }
 
@@ -63,12 +62,12 @@ class MsgBean {
                     requestArray[1] = payload!![1]
                     requestId = BtUtils.byte2short(requestArray)
                 }
-                Log.e(TAG_SJ, "node timeout code requestId:$requestId")
-                Log.e(TAG_SJ, "node timeout code not timeout:$isNotTimeOut")
+                Log.d(TAG_SJ, "node timeout code requestId:$requestId")
+                Log.d(TAG_SJ, "node timeout code not timeout:$isNotTimeOut")
                 timeOutCode = "" + head + requestId //节点消息的
             } else {
                 timeOutCode = "" + head + cmdOrder + cmdId
-                Log.e(TAG_SJ, "old timeout code:$timeOutCode cmdId:$cmdId")
+                Log.d(TAG_SJ, "old timeout code:$timeOutCode cmdId:$cmdId")
             }
             return timeOutCode
         }

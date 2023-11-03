@@ -134,8 +134,14 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(), Li
         sendNormalMsg(CmdHelper.getMTUCmd)
     }
 
-    fun sendReadSubPkObserveNode(payloadPackage: PayloadPackage): Observable<MsgBean> {
+    private var mReadSubPkMsg: ReadSubPkMsg? = null
+    fun sendReadSubPkObserveNode(
+        readSubPkMsg: ReadSubPkMsg,
+        payloadPackage: PayloadPackage
+    ): Observable<MsgBean> {
+
         return Observable.create { emitter ->
+            mReadSubPkMsg = readSubPkMsg
             subPkObservableEmitter = emitter
             sendReadNodeCmdList(payloadPackage)
         }
@@ -681,13 +687,17 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(), Li
                                                     TAG, "hasNext:" + payloadPackage.hasNext()
                                                 )
 
-                                                appContact.setHasNext(payloadPackage.hasNext())
+                                                mReadSubPkMsg?.setHasNext(payloadPackage.hasNext())
                                             }
 
                                             subPkObservableEmitter?.onNext(msgBean)
 
                                             if (msgBean.divideType == DIVIDE_Y_E_2) {
-                                                if (!appContact.getHasNext()) {
+                                                mReadSubPkMsg?.let {
+                                                    if (!it.getHasNext()) {
+                                                        subPkObservableEmitter?.onComplete()
+                                                    }
+                                                }?.let {
                                                     subPkObservableEmitter?.onComplete()
                                                 }
                                             }
@@ -757,7 +767,7 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(), Li
 
     private fun msgTimeOut(msgBean: MsgBean) {
 
-        wmLog.logD(TAG, "msg time out：$msgBean")
+        wmLog.logE(TAG, "msg time out：$msgBean")
 
         mBtAdapter?.takeIf { !it.isEnabled }?.let {
             mBtEngine.clearMsgQueue()
@@ -1347,6 +1357,61 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(), Li
                 }
 
                 URN_SPORT_DATA -> {//运动同步
+                    when (it.urn[1]) {
+
+                        URN_SPORT_STEP -> {
+                            syncStepData.syncStepBusiness(it.data)
+                        }
+
+                        URN_SPORT_DISTANCE -> {
+
+                        }
+
+                        URN_SPORT_CALORIES -> {
+
+                        }
+
+                        URN_SPORT_ACTIVITY_LEN -> {
+
+                        }
+
+                        URN_SPORT_DAILY_ACTIVITY_LEN -> {
+
+                        }
+
+                        URN_SPORT_DISTANCE -> {
+
+                        }
+
+                        URN_SPORT_OXYGEN -> {
+
+                        }
+
+                        URN_SPORT_RATE -> {
+
+                        }
+
+                        URN_SPORT_RATE_RECORD -> {
+
+                        }
+
+                        URN_SPORT_RATE_REALTIME -> {
+
+                        }
+
+                        URN_SPORT_SLEEP -> {
+
+                        }
+
+                        URN_SPORT_SUMMARY -> {
+
+                        }
+
+                        URN_SPORT_RATE_10S -> {
+
+                        }
+
+                    }
                 }
             }
         }

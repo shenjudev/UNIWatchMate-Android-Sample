@@ -95,7 +95,6 @@ object CmdHelper {
         //TYPE
         byteBuffer.put(head)
         byteBuffer.put((command_index % MAX_ORDER_ID).toByte())
-        Log.e("SJ_SDK>>>>>", "ORIGIN_ORDER_ID:" + (command_index % MAX_ORDER_ID).toByte())
         byteBuffer.putShort((cmd_id.toInt() and TRANSFER_KEY.toInt()).toShort()) //携带方向
 
         //Length

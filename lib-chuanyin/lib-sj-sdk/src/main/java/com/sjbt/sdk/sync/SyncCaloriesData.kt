@@ -3,6 +3,7 @@ package com.sjbt.sdk.sync
 import com.base.sdk.entity.data.WmCaloriesData
 import com.base.sdk.entity.data.WmSyncData
 import com.base.sdk.port.sync.AbSyncData
+import com.sjbt.sdk.ReadSubPkMsg
 import com.sjbt.sdk.SJUniWatch
 import com.sjbt.sdk.entity.MsgBean
 import com.sjbt.sdk.entity.NodeData
@@ -14,7 +15,7 @@ import io.reactivex.rxjava3.core.ObservableEmitter
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.core.SingleEmitter
 
-class SyncCaloriesData (val sjUniWatch: SJUniWatch): AbSyncData<WmSyncData<WmCaloriesData>>() {
+class SyncCaloriesData (val sjUniWatch: SJUniWatch): AbSyncData<WmSyncData<WmCaloriesData>>(),ReadSubPkMsg {
     var isActionSupport: Boolean = true
     var lastSyncTime: Long = 0
     private var activityObserveEmitter: SingleEmitter<WmSyncData<WmCaloriesData>>? = null
@@ -31,10 +32,18 @@ class SyncCaloriesData (val sjUniWatch: SJUniWatch): AbSyncData<WmSyncData<WmCal
         TODO("Not yet implemented")
     }
 
+    override fun setHasNext(hasNext: Boolean) {
+        TODO("Not yet implemented")
+    }
+
+    override fun getHasNext(): Boolean {
+        TODO("Not yet implemented")
+    }
+
     override fun syncData(startTime: Long): Single<WmSyncData<WmCaloriesData>> {
         return Single.create { emitter ->
             activityObserveEmitter = emitter
-            sjUniWatch.sendReadSubPkObserveNode(
+            sjUniWatch.sendReadSubPkObserveNode(this,
                 CmdHelper.getReadSportSyncData(
                     startTime, lastSyncTime,
                     childUrn = URN_SPORT_CALORIES

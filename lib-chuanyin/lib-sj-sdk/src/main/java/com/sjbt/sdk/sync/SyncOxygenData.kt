@@ -3,6 +3,7 @@ package com.sjbt.sdk.sync
 import com.base.sdk.entity.data.WmOxygenData
 import com.base.sdk.entity.data.WmSyncData
 import com.base.sdk.port.sync.AbSyncData
+import com.sjbt.sdk.ReadSubPkMsg
 import com.sjbt.sdk.SJUniWatch
 import com.sjbt.sdk.entity.MsgBean
 import com.sjbt.sdk.entity.NodeData
@@ -13,7 +14,7 @@ import io.reactivex.rxjava3.core.ObservableEmitter
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.core.SingleEmitter
 
-class SyncOxygenData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmOxygenData>>() {
+class SyncOxygenData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmOxygenData>>(),ReadSubPkMsg {
     var isActionSupport: Boolean = true
     var lastSyncTime: Long = 0
     private var activityObserveEmitter: SingleEmitter<WmSyncData<WmOxygenData>>? = null
@@ -26,13 +27,21 @@ class SyncOxygenData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmOxyge
         return lastSyncTime
     }
 
+    override fun setHasNext(hasNext: Boolean) {
+        TODO("Not yet implemented")
+    }
+
+    override fun getHasNext(): Boolean {
+        TODO("Not yet implemented")
+    }
+
     fun onTimeOut(msg: MsgBean, nodeData: NodeData) {
         TODO("Not yet implemented")
     }
     override fun syncData(startTime: Long): Single<WmSyncData<WmOxygenData>> {
         return Single.create { emitter ->
             activityObserveEmitter = emitter
-            sjUniWatch.sendReadSubPkObserveNode(
+            sjUniWatch.sendReadSubPkObserveNode(this,
                 CmdHelper.getReadSportSyncData(  startTime, lastSyncTime,
                     childUrn = URN_SPORT_OXYGEN
                 )

@@ -6,6 +6,7 @@ import com.base.sdk.entity.apps.WmContact.Companion.NAME_BYTES_LIMIT
 import com.base.sdk.entity.apps.WmContact.Companion.NUMBER_BYTES_LIMIT
 import com.base.sdk.entity.settings.WmEmergencyCall
 import com.base.sdk.port.app.AbAppContact
+import com.sjbt.sdk.ReadSubPkMsg
 import com.sjbt.sdk.SJUniWatch
 import com.sjbt.sdk.entity.*
 import com.sjbt.sdk.spp.cmd.*
@@ -20,7 +21,7 @@ import io.reactivex.rxjava3.disposables.Disposable
 import java.nio.ByteBuffer
 import java.nio.charset.StandardCharsets
 
-class AppContact(val sjUniWatch: SJUniWatch) : AbAppContact() {
+class AppContact(val sjUniWatch: SJUniWatch) : AbAppContact(), ReadSubPkMsg {
     private var contactListEmitter: ObservableEmitter<List<WmContact>>? = null
     private var updateContactEmitter: SingleEmitter<Boolean>? = null
     private var updateEmergencyEmitter: SingleEmitter<WmEmergencyCall>? = null
@@ -43,11 +44,11 @@ class AppContact(val sjUniWatch: SJUniWatch) : AbAppContact() {
         return true
     }
 
-    fun setHasNext(hasNext: Boolean) {
+    override fun setHasNext(hasNext: Boolean) {
         this.hasNext = hasNext
     }
 
-    fun getHasNext(): Boolean {
+    override fun getHasNext(): Boolean {
         return hasNext
     }
 
@@ -56,7 +57,7 @@ class AppContact(val sjUniWatch: SJUniWatch) : AbAppContact() {
         contactListEmitter = it
         msgList.clear()
 
-        sjUniWatch.sendReadSubPkObserveNode(getReadContactListCmd())
+        sjUniWatch.sendReadSubPkObserveNode(this, getReadContactListCmd())
             .subscribe(object : Observer<MsgBean> {
                 override fun onSubscribe(d: Disposable) {
                 }
