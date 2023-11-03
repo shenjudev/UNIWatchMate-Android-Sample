@@ -2,6 +2,7 @@
     "sports": [
         {
             "id": 1,
+            "sport_type": 1,
             "type": 1,
             "names": {
                 "zh-cn": "户外跑步",
@@ -18,6 +19,7 @@
         },
         {
             "id": 2,
+            "sport_type": 2,
             "type": 1,
             "names": {
                 "zh-cn": "户外健走",
@@ -34,6 +36,7 @@
         },
         {
             "id": 4,
+            "sport_type": 5,
             "type": 1,
             "names": {
                 "zh-cn": "登山",
@@ -50,6 +53,7 @@
         },
         {
             "id": 5,
+            "sport_type": 5,
             "type": 1,
             "names": {
                 "zh-cn": "越野跑",
@@ -66,6 +70,7 @@
         },
         {
             "id": 3,
+            "sport_type": 1,
             "type": 4,
             "names": {
                 "zh-cn": "跑步机",
@@ -82,6 +87,7 @@
         },
         {
             "id": 13,
+            "sport_type": 5,
             "type": 1,
             "names": {
                 "zh-cn": "户外徒步",
@@ -98,6 +104,7 @@
         },
         {
             "id": 66,
+            "sport_type": 1,
             "type": 2,
             "names": {
                 "zh-cn": "室内跑步",
@@ -114,6 +121,7 @@
         },
         {
             "id": 6,
+            "sport_type": 3,
             "type": 3,
             "names": {
                 "zh-cn": "户外骑行",
@@ -130,6 +138,7 @@
         },
         {
             "id": 15,
+            "sport_type": 10,
             "type": 3,
             "names": {
                 "zh-cn": "打猎",
@@ -146,6 +155,7 @@
         },
         {
             "id": 17,
+            "sport_type": 5,
             "type": 3,
             "names": {
                 "zh-cn": "滑板",
@@ -162,6 +172,7 @@
         },
         {
             "id": 18,
+            "sport_type": 5,
             "type": 3,
             "names": {
                 "zh-cn": "轮滑",
@@ -178,6 +189,7 @@
         },
         {
             "id": 19,
+            "sport_type": 5,
             "type": 3,
             "names": {
                 "zh-cn": "户外滑冰",
@@ -194,6 +206,7 @@
         },
         {
             "id": 20,
+            "sport_type": 11,
             "type": 3,
             "names": {
                 "zh-cn": "马术",
@@ -210,6 +223,7 @@
         },
         {
             "id": 7,
+            "sport_type": 3,
             "type": 4,
             "names": {
                 "zh-cn": "室内骑行",
@@ -226,6 +240,7 @@
         },
         {
             "id": 8,
+            "sport_type": 4,
             "type": 4,
             "names": {
                 "zh-cn": "自由训练",
@@ -242,6 +257,7 @@
         },
         {
             "id": 9,
+            "sport_type": 6,
             "type": 4,
             "names": {
                 "zh-cn": "篮球",
@@ -258,6 +274,7 @@
         },
         {
             "id": 10,
+            "sport_type": 6,
             "type": 4,
             "names": {
                 "zh-cn": "足球",
@@ -274,6 +291,7 @@
         },
         {
             "id": 11,
+            "sport_type": 6,
             "type": 4,
             "names": {
                 "zh-cn": "乒乓球",
@@ -290,6 +308,7 @@
         },
         {
             "id": 12,
+            "sport_type": 6,
             "type": 4,
             "names": {
                 "zh-cn": "羽毛球",
@@ -306,6 +325,7 @@
         },
         {
             "id": 23,
+            "sport_type": 4,
             "type": 4,
             "names": {
                 "zh-cn": "核心训练",
@@ -322,6 +342,7 @@
         },
         {
             "id": 24,
+            "sport_type": 4,
             "type": 4,
             "names": {
                 "zh-cn": "混合有氧",
@@ -338,6 +359,7 @@
         },
         {
             "id": 25,
+            "sport_type": 4,
             "type": 4,
             "names": {
                 "zh-cn": "力量训练",
@@ -354,6 +376,7 @@
         },
         {
             "id": 26,
+            "sport_type": 4,
             "type": 4,
             "names": {
                 "zh-cn": "拉伸",
@@ -370,6 +393,7 @@
         },
         {
             "id": 28,
+            "sport_type": 7,
             "type": 4,
             "names": {
                 "zh-cn": "普拉提",
@@ -386,6 +410,7 @@
         },
         {
             "id": 31,
+            "sport_type": 4,
             "type": 4,
             "names": {
                 "zh-cn": "踏步机",
@@ -402,6 +427,7 @@
         },
         {
             "id": 33,
+            "sport_type": 4,
             "type": 4,
             "names": {
                 "zh-cn": "体操",
@@ -418,6 +444,7 @@
         },
         {
             "id": 34,
+            "sport_type": 4,
             "type": 4,
             "names": {
                 "zh-cn": "椭圆机",
@@ -434,6 +461,7 @@
         },
         {
             "id": 35,
+            "sport_type": 7,
             "type": 4,
             "names": {
                 "zh-cn": "瑜伽",
@@ -450,6 +478,7 @@
         },
         {
             "id": 36,
+            "sport_type": 10,
             "type": 4,
             "names": {
                 "zh-cn": "钓鱼",
@@ -466,6 +495,7 @@
         },
         {
             "id": 37,
+            "sport_type": 8,
             "type": 4,
             "names": {
                 "zh-cn": "冰壶",
@@ -482,6 +512,7 @@
         },
         {
             "id": 38,
+            "sport_type": 8,
             "type": 4,
             "names": {
                 "zh-cn": "室内滑冰",
@@ -498,6 +529,7 @@
         },
         {
             "id": 39,
+            "sport_type": 6,
             "type": 4,
             "names": {
                 "zh-cn": "板球",
@@ -514,6 +546,7 @@
         },
         {
             "id": 40,
+            "sport_type": 6,
             "type": 4,
             "names": {
                 "zh-cn": "棒球",
@@ -530,6 +563,7 @@
         },
         {
             "id": 41,
+            "sport_type": 6,
             "type": 4,
             "names": {
                 "zh-cn": "保龄球",
@@ -546,6 +580,7 @@
         },
         {
             "id": 42,
+            "sport_type": 6,
             "type": 4,
             "names": {
                 "zh-cn": "壁球",
@@ -562,6 +597,7 @@
         },
         {
             "id": 43,
+            "sport_type": 6,
             "type": 4,
             "names": {
                 "zh-cn": "垒球",
@@ -578,6 +614,7 @@
         },
         {
             "id": 45,
+            "sport_type": 6,
             "type": 4,
             "names": {
                 "zh-cn": "排球",
@@ -594,6 +631,7 @@
         },
         {
             "id": 46,
+            "sport_type": 6,
             "type": 4,
             "names": {
                 "zh-cn": "手球",
@@ -610,6 +648,7 @@
         },
         {
             "id": 47,
+            "sport_type": 9,
             "type": 4,
             "names": {
                 "zh-cn": "芭蕾舞",
@@ -626,6 +665,7 @@
         },
         {
             "id": 50,
+            "sport_type": 9,
             "type": 4,
             "names": {
                 "zh-cn": "街舞",
@@ -642,6 +682,7 @@
         },
         {
             "id": 52,
+            "sport_type": 9,
             "type": 4,
             "names": {
                 "zh-cn": "舞蹈",
@@ -658,6 +699,7 @@
         },
         {
             "id": 55,
+            "sport_type": 11,
             "type": 4,
             "names": {
                 "zh-cn": "空手道",
@@ -674,6 +716,7 @@
         },
         {
             "id": 56,
+            "sport_type": 11,
             "type": 4,
             "names": {
                 "zh-cn": "拳击",
@@ -690,6 +733,7 @@
         },
         {
             "id": 57,
+            "sport_type": 11,
             "type": 4,
             "names": {
                 "zh-cn": "柔道",
@@ -706,6 +750,7 @@
         },
         {
             "id": 58,
+            "sport_type": 11,
             "type": 4,
             "names": {
                 "zh-cn": "摔跤",
@@ -722,6 +767,7 @@
         },
         {
             "id": 59,
+            "sport_type": 11,
             "type": 4,
             "names": {
                 "zh-cn": "太极",
@@ -738,6 +784,7 @@
         },
         {
             "id": 61,
+            "sport_type": 11,
             "type": 4,
             "names": {
                 "zh-cn": "跆拳道",
@@ -754,6 +801,7 @@
         },
         {
             "id": 62,
+            "sport_type": 11,
             "type": 4,
             "names": {
                 "zh-cn": "武术",
@@ -770,6 +818,7 @@
         },
         {
             "id": 63,
+            "sport_type": 11,
             "type": 4,
             "names": {
                 "zh-cn": "自由搏击",
@@ -786,6 +835,7 @@
         },
         {
             "id": 64,
+            "sport_type": 4,
             "type": 4,
             "names": {
                 "zh-cn": "高强度间歇训练",
@@ -802,6 +852,7 @@
         },
         {
             "id": 65,
+            "sport_type": 10,
             "type": 4,
             "names": {
                 "zh-cn": "射箭",
@@ -818,6 +869,7 @@
         },
         {
             "id": 79,
+            "sport_type": 5,
             "type": 4,
             "names": {
                 "zh-cn": "攀岩",
@@ -834,6 +886,7 @@
         },
         {
             "id": 80,
+            "sport_type": 5,
             "type": 4,
             "names": {
                 "zh-cn": "跑酷",
@@ -850,6 +903,7 @@
         },
         {
             "id": 83,
+            "sport_type": 4,
             "type": 4,
             "names": {
                 "zh-cn": "爬楼梯",
@@ -866,6 +920,7 @@
         },
         {
             "id": 84,
+            "sport_type": 4,
             "type": 4,
             "names": {
                 "zh-cn": "交叉训练Crossfit",
@@ -882,6 +937,7 @@
         },
         {
             "id": 85,
+            "sport_type": 4,
             "type": 4,
             "names": {
                 "zh-cn": "健身操",
@@ -898,6 +954,7 @@
         },
         {
             "id": 86,
+            "sport_type": 4,
             "type": 4,
             "names": {
                 "zh-cn": "体能训练",
@@ -914,6 +971,7 @@
         },
         {
             "id": 93,
+            "sport_type": 4,
             "type": 4,
             "names": {
                 "zh-cn": "仰卧起坐",
@@ -930,6 +988,7 @@
         },
         {
             "id": 94,
+            "sport_type": 4,
             "type": 4,
             "names": {
                 "zh-cn": "功能性训练",
@@ -946,6 +1005,7 @@
         },
         {
             "id": 97,
+            "sport_type": 4,
             "type": 4,
             "names": {
                 "zh-cn": "腰腹训练",
@@ -962,6 +1022,7 @@
         },
         {
             "id": 99,
+            "sport_type": 9,
             "type": 4,
             "names": {
                 "zh-cn": "民族舞",
@@ -978,6 +1039,7 @@
         },
         {
             "id": 101,
+            "sport_type": 9,
             "type": 4,
             "names": {
                 "zh-cn": "拉丁舞",
@@ -994,6 +1056,7 @@
         },
         {
             "id": 102,
+            "sport_type": 11,
             "type": 4,
             "names": {
                 "zh-cn": "击剑",
@@ -1010,6 +1073,7 @@
         },
         {
             "id": 103,
+            "sport_type": 6,
             "type": 4,
             "names": {
                 "zh-cn": "橄榄球",
@@ -1026,6 +1090,7 @@
         },
         {
             "id": 104,
+            "sport_type": 6,
             "type": 4,
             "names": {
                 "zh-cn": "曲棍球",
@@ -1042,6 +1107,7 @@
         },
         {
             "id": 105,
+            "sport_type": 6,
             "type": 4,
             "names": {
                 "zh-cn": "网球",
@@ -1058,6 +1124,7 @@
         },
         {
             "id": 109,
+            "sport_type": 8,
             "type": 4,
             "names": {
                 "zh-cn": "雪上运动",
@@ -1074,6 +1141,7 @@
         },
         {
             "id": 111,
+            "sport_type": 8,
             "type": 4,
             "names": {
                 "zh-cn": "冰球",
@@ -1090,6 +1158,7 @@
         },
         {
             "id": 114,
+            "sport_type": 10,
             "type": 4,
             "names": {
                 "zh-cn": "飞镖",
@@ -1106,6 +1175,7 @@
         },
         {
             "id": 116,
+            "sport_type": 10,
             "type": 4,
             "names": {
                 "zh-cn": "呼啦圈",
@@ -1122,6 +1192,7 @@
         },
         {
             "id": 118,
+            "sport_type": 10,
             "type": 4,
             "names": {
                 "zh-cn": "飞盘",
@@ -1138,6 +1209,7 @@
         },
         {
             "id": 119,
+            "sport_type": 11,
             "type": 4,
             "names": {
                 "zh-cn": "田径",
@@ -1154,6 +1226,7 @@
         },
         {
             "id": 121,
+            "sport_type": 4,
             "type": 4,
             "names": {
                 "zh-cn": "划船机",
@@ -1170,6 +1243,7 @@
         },
         {
             "id": 122,
+            "sport_type": 4,
             "type": 4,
             "names": {
                 "zh-cn": "跳绳",
@@ -1186,6 +1260,7 @@
         },
         {
             "id": 126,
+            "sport_type": 8,
             "type": 4,
             "names": {
                 "zh-cn": "滑雪",
@@ -1202,6 +1277,7 @@
         },
         {
             "id": 129,
+            "sport_type": 8,
             "type": 4,
             "names": {
                 "zh-cn": "高山滑雪",
@@ -1217,23 +1293,8 @@
             }
         },
         {
-            "id": 402,
-            "type": 4,
-            "names": {
-                "zh-cn": "开合跳 ",
-                "en": "Jump jack   ",
-                "de": "Hampelmann",
-                "ar": "القفز المفتوح",
-                "it": "jump jack",
-                "es": "saltar",
-                "fr": "jump jack ",
-                "pt": "polichinelo",
-                "fa": "جک پرشی",
-                "ru": "Звездный прыжок   "
-            }
-        },
-        {
             "id": 400,
+            "sport_type": 1,
             "type": 4,
             "names": {
                 "zh-cn": "马拉松",
@@ -1250,6 +1311,7 @@
         },
         {
             "id": 135,
+            "sport_type": 2,
             "type": 4,
             "names": {
                 "zh-cn": "室内健走",
@@ -1266,6 +1328,7 @@
         },
         {
             "id": 401,
+            "sport_type": 4,
             "type": 4,
             "names": {
                 "zh-cn": "最大摄氧量",
@@ -1282,6 +1345,7 @@
         },
         {
             "id": 403,
+            "sport_type": 4,
             "type": 4,
             "names": {
                 "zh-cn": "单杠",
@@ -1298,6 +1362,7 @@
         },
         {
             "id": 404,
+            "sport_type": 4,
             "type": 4,
             "names": {
                 "zh-cn": "双杠",
@@ -1314,6 +1379,7 @@
         },
         {
             "id": 405,
+            "sport_type": 4,
             "type": 4,
             "names": {
                 "zh-cn": "跳高",
@@ -1330,6 +1396,7 @@
         },
         {
             "id": 406,
+            "sport_type": 4,
             "type": 4,
             "names": {
                 "zh-cn": "跳远",
@@ -1346,6 +1413,7 @@
         },
         {
             "id": 407,
+            "sport_type": 4,
             "type": 4,
             "names": {
                 "zh-cn": "引体向上",
@@ -1362,6 +1430,7 @@
         },
         {
             "id": 408,
+            "sport_type": 4,
             "type": 4,
             "names": {
                 "zh-cn": "俯卧撑",
@@ -1378,6 +1447,7 @@
         },
         {
             "id": 409,
+            "sport_type": 4,
             "type": 4,
             "names": {
                 "zh-cn": "平板支撑",
@@ -1394,6 +1464,7 @@
         },
         {
             "id": 410,
+            "sport_type": 4,
             "type": 4,
             "names": {
                 "zh-cn": "泡沫轴筋膜放松",
@@ -1410,6 +1481,7 @@
         },
         {
             "id": 411,
+            "sport_type": 4,
             "type": 4,
             "names": {
                 "zh-cn": "健身游戏",
@@ -1426,6 +1498,7 @@
         },
         {
             "id": 412,
+            "sport_type": 4,
             "type": 4,
             "names": {
                 "zh-cn": "舒缓冥想",
@@ -1442,6 +1515,7 @@
         },
         {
             "id": 413,
+            "sport_type": 4,
             "type": 4,
             "names": {
                 "zh-cn": "漫步机",
@@ -1458,6 +1532,7 @@
         },
         {
             "id": 414,
+            "sport_type": 6,
             "type": 4,
             "names": {
                 "zh-cn": "澳式足球",
@@ -1474,6 +1549,7 @@
         },
         {
             "id": 415,
+            "sport_type": 6,
             "type": 4,
             "names": {
                 "zh-cn": "美式橄榄球",
@@ -1490,6 +1566,7 @@
         },
         {
             "id": 416,
+            "sport_type": 6,
             "type": 4,
             "names": {
                 "zh-cn": "长曲棍球",
@@ -1506,6 +1583,7 @@
         },
         {
             "id": 134,
+            "sport_type": 6,
             "type": 4,
             "names": {
                 "zh-cn": "高尔夫",
@@ -1522,6 +1600,7 @@
         },
         {
             "id": 417,
+            "sport_type": 6,
             "type": 4,
             "names": {
                 "zh-cn": "匹克球",
@@ -1538,6 +1617,7 @@
         },
         {
             "id": 426,
+            "sport_type": 8,
             "type": 4,
             "names": {
                 "zh-cn": "单板滑雪",
@@ -1554,6 +1634,7 @@
         },
         {
             "id": 418,
+            "sport_type": 9,
             "type": 4,
             "names": {
                 "zh-cn": "团体操",
@@ -1570,6 +1651,7 @@
         },
         {
             "id": 419,
+            "sport_type": 9,
             "type": 4,
             "names": {
                 "zh-cn": "搏击操",
@@ -1586,6 +1668,7 @@
         },
         {
             "id": 420,
+            "sport_type": 10,
             "type": 4,
             "names": {
                 "zh-cn": "蹦极",
@@ -1602,6 +1685,7 @@
         },
         {
             "id": 421,
+            "sport_type": 10,
             "type": 4,
             "names": {
                 "zh-cn": "手摇车",
@@ -1618,6 +1702,7 @@
         },
         {
             "id": 422,
+            "sport_type": 10,
             "type": 4,
             "names": {
                 "zh-cn": "平衡车",
@@ -1634,6 +1719,7 @@
         },
         {
             "id": 423,
+            "sport_type": 10,
             "type": 4,
             "names": {
                 "zh-cn": "休闲运动",
@@ -1650,6 +1736,7 @@
         },
         {
             "id": 424,
+            "sport_type": 11,
             "type": 4,
             "names": {
                 "zh-cn": "射击",
@@ -1666,6 +1753,7 @@
         },
         {
             "id": 425,
+            "sport_type": 11,
             "type": 4,
             "names": {
                 "zh-cn": "蹦床",
