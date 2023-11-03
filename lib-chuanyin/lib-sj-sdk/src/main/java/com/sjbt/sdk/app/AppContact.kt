@@ -28,9 +28,11 @@ class AppContact(val sjUniWatch: SJUniWatch) : AbAppContact() {
     private var mEmergencyCall: WmEmergencyCall = WmEmergencyCall(false, mutableListOf())
     private val mContacts = mutableListOf<WmContact>()
     private val msgList = mutableSetOf<MsgBean>()
+
     //    private val businessMap: LinkedHashMap<Int, LinkedHashMap<Int, MsgBean>> =
 //        linkedMapOf<Int, LinkedHashMap<Int, MsgBean>>()
     private val msgPkMap = LinkedHashMap<Int, MsgBean>()
+
     /**
      * 分包发送写入类型Node节点消息
      */
@@ -298,7 +300,8 @@ class AppContact(val sjUniWatch: SJUniWatch) : AbAppContact() {
                         mEmergencyCall.isEnabled = enable
                         mEmergencyCall.emergencyContacts.clear()
                         val name = String(
-                            emergencyByteArray.copyOfRange(1, NAME_BYTES_LIMIT + 1),
+                            emergencyByteArray.copyOfRange(1, NAME_BYTES_LIMIT + 1)
+                                .takeWhile { it.toInt() != 0 }.toByteArray(),
                             StandardCharsets.UTF_8
                         )
 

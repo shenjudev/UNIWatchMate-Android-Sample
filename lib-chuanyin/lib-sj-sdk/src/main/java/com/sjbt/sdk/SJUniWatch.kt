@@ -187,7 +187,7 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(), Li
 
                 if (device.address == mCurrAddress) {
                     mBindInfo?.let {
-                        if(mBtEngine.getSocketState(mCurrAddress) == SOCKET_STATE_NONE) {
+                        if (mBtEngine.getSocketState(mCurrAddress) == SOCKET_STATE_NONE) {
                             connect(device, it)
                         }
                     }
@@ -983,9 +983,12 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(), Li
                     CMD_ID_8001 -> {//请求
                         if (msgBean.payload.size > 10) {//设备应用层回复
 
-                            var payloadPackage: PayloadPackage =
-                                PayloadPackage.fromByteArray(msgBean.payload)
-                            parseTimeOutNode(payloadPackage, msgBean)
+                            if (msgBean.head == HEAD_NODE_TYPE && msgBean.cmdId.toShort() != CMD_ID_8004) {
+                                var payloadPackage: PayloadPackage =
+                                    PayloadPackage.fromByteArray(msgBean.payload)
+
+                                parseTimeOutNode(payloadPackage, msgBean)
+                            }
                         }
                     }
                 }
@@ -1479,7 +1482,7 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(), Li
         wmDevice.address = bluetoothDevice.address
         wmDevice.isRecognized = bindInfo.model == WmDeviceModel.SJ_WATCH
 
-        if(mBtEngine.getSocketState(mCurrAddress) == SOCKET_STATE_NONE){
+        if (mBtEngine.getSocketState(mCurrAddress) == SOCKET_STATE_NONE) {
             mBtStateReceiver?.let {
                 it.setmCurrDevice(mCurrAddress)
             }

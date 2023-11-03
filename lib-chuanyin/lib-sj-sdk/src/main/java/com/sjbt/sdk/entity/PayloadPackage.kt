@@ -39,6 +39,7 @@ class PayloadPackage {
                 val nextNode = NodeData.fromByteBuffer(bytes, payload.actionType)
                 payload.itemList.add(nextNode)
             }
+
             if (payload.itemList.size != payload.itemCount) {
                 throw Exception("itemList.size != itemCount")
             }
