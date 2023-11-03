@@ -1,21 +1,15 @@
 package com.sjbt.sdk.sample.data.device
 
 import android.content.Context
-import android.text.TextUtils
 import androidx.annotation.IntDef
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.ProcessLifecycleOwner
 import com.base.api.UNIWatchMate
 import com.base.sdk.entity.BindType
 import com.base.sdk.entity.WmBindInfo
 import com.base.sdk.entity.WmDeviceModel
 import com.base.sdk.entity.apps.WmConnectState
 import com.base.sdk.entity.data.WmBatteryInfo
-import com.base.sdk.entity.settings.WmDateTime
 import com.base.sdk.entity.settings.WmPersonalInfo
-import com.base.sdk.entity.settings.WmUnitInfo
 import com.blankj.utilcode.util.ActivityUtils
-import com.blankj.utilcode.util.TimeUtils
 import com.sjbt.sdk.sample.base.BaseActivity
 import com.sjbt.sdk.sample.base.storage.InternalStorage
 import com.sjbt.sdk.sample.data.config.SportGoalRepository
@@ -31,8 +25,6 @@ import com.sjbt.sdk.sample.utils.ToastUtil
 import com.sjbt.sdk.sample.utils.launchWithLog
 import com.sjbt.sdk.sample.utils.runCatchingWithLog
 import io.reactivex.rxjava3.core.Completable
-import io.reactivex.rxjava3.core.CompletableEmitter
-import io.reactivex.rxjava3.core.CompletableOnSubscribe
 import io.reactivex.rxjava3.core.Observable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.Channel
@@ -174,10 +166,11 @@ internal class DeviceManagerImpl(
         Timber.e("flowConnectorState flowDevice == ${flowDevice.value}  connectorState == $connectorState"
         )
         if (device != null && device.isTryingBind && connectorState == WmConnectState.VERIFIED) {
-            saveDevice(device)
+            val deviceInfo =
+                UNIWatchMate.getDeviceInfo().await()
+            saveDevice(device,deviceInfo.deviceName)
         }
         connectorState
-//        combineState(device, connectorState)
     }.stateIn(applicationScope, SharingStarted.Eagerly, WmConnectState.DISCONNECTED)
 
     private val _flowSyncEvent = Channel<Int>()//通知SyncFragment去响应同步结果
@@ -188,7 +181,7 @@ internal class DeviceManagerImpl(
             //Connect or disconnect when device changed
             deviceFromStorage.collect { device ->
                 Timber.e( "it.device == $device")
-                if (deviceFromMemory.value == null) {
+                if (deviceFromMemory.value == null||!deviceFromMemory.value!!.isTryingBind) {
                     internalStorage.flowAuthedUserId.value?.let {
                         val userInfo = userInfoRepository.getUserInfo(it)
                         userInfo?.let { userInfo ->
@@ -231,11 +224,10 @@ internal class DeviceManagerImpl(
                 CacheDataHelper.setSynchronizingData(true)
 //                showLoadingDialog()
                 runCatchingWithLog {
-                    Timber.d(  "getDeviceInfo")
                     val deviceInfo =
                         UNIWatchMate.getDeviceInfo()
                             .await()
-                    Timber.d("getDeviceInfo=\n$deviceInfo")
+                    Timber.d("getDeviceInfo=$deviceInfo")
                     CacheDataHelper.setCurrentDeviceInfo(deviceInfo)
                 }.onFailure {
                     ToastUtil.showToast(it.message,true)
@@ -358,19 +350,19 @@ internal class DeviceManagerImpl(
     /**
      * Save device with current user
      */
-    private suspend fun saveDevice(device: ConnectorDevice) {
+    private suspend fun saveDevice(device: ConnectorDevice, deviceName: String) {
         val userId = internalStorage.flowAuthedUserId.value
         if (userId == null) {
             Timber.w( "saveDevice error because no authed user")
             deviceFromMemory.value = null
         } else {
             deviceFromMemory.value = ConnectorDevice(
-                device.address, device.name, device.wmDeviceMode, false,1
+                device.address, deviceName, device.wmDeviceMode, false,1
             )
             val entity = DeviceBindEntity(
                 userId,
                 device.address,
-                device.name,
+                deviceName,
                 device.deviceModeToInt(),
                 device.connectState
             )

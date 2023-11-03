@@ -1,6 +1,5 @@
 package com.sjbt.sdk.sample.ui.device.bind
 
-import android.bluetooth.BluetoothDevice
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,14 +12,14 @@ import com.sjbt.sdk.sample.databinding.ItemOtherDeviceDataBinding
 class OtherDevicesAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var bondedInfo = SizeCount()
-    var bonded: List<ScanDevice>? = null
+    var bonded: List<BlueToothDevice>? = null
         set(value) {
             field = value
             bondedInfo.upgrade(value)
         }
 
     private var connectedInfo = SizeCount()
-    var connected: List<ScanDevice>? = null
+    var connected: List<BlueToothDevice>? = null
         set(value) {
             field = value
             connectedInfo.upgrade(value)
@@ -110,7 +109,7 @@ class OtherDevicesAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     }
 
     interface Listener {
-        fun onItemClick(device: ScanDevice)
+        fun onItemClick(device: BlueToothDevice)
     }
 
     private class TitleViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -123,7 +122,7 @@ class OtherDevicesAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private class DataViewHolder(val viewBind: ItemOtherDeviceDataBinding) :
         RecyclerView.ViewHolder(viewBind.root) {
-        fun bind(device: ScanDevice) {
+        fun bind(device: BlueToothDevice) {
             viewBind.tvName.text = if (device.name.isNullOrEmpty()) {
                 DeviceBindFragment.UNKNOWN_DEVICE_NAME
             } else {

@@ -10,18 +10,18 @@ import com.base.sdk.entity.common.WmDiscoverDevice
 import com.sjbt.sdk.sample.databinding.ItemScanDeviceBinding
 import kotlin.math.abs
 
-class ScanDevicesAdapter : RecyclerView.Adapter<ScanDevicesAdapter.DeviceViewHolder>() {
+class SearchDevicesAdapter : RecyclerView.Adapter<SearchDevicesAdapter.DeviceViewHolder>() {
 
-    private val sorter = SortedList(ScanDevice::class.java, object : SortedListAdapterCallback<ScanDevice>(this) {
-        override fun compare(o1: ScanDevice, o2: ScanDevice): Int {
+    private val sorter = SortedList(BlueToothDevice::class.java, object : SortedListAdapterCallback<BlueToothDevice>(this) {
+        override fun compare(o1: BlueToothDevice, o2: BlueToothDevice): Int {
             return o2.rssi.compareTo(o1.rssi)
         }
 
-        override fun areContentsTheSame(oldItem: ScanDevice, newItem: ScanDevice): Boolean {
+        override fun areContentsTheSame(oldItem: BlueToothDevice, newItem: BlueToothDevice): Boolean {
             return oldItem.name == newItem.name && oldItem.rssi == newItem.rssi
         }
 
-        override fun areItemsTheSame(item1: ScanDevice, item2: ScanDevice): Boolean {
+        override fun areItemsTheSame(item1: BlueToothDevice, item2: BlueToothDevice): Boolean {
             return item1.address == item2.address
         }
     })
@@ -51,7 +51,7 @@ class ScanDevicesAdapter : RecyclerView.Adapter<ScanDevicesAdapter.DeviceViewHol
         /**
          * ToNote:The data in [SortedList] is sorted, so the [SortedList.indexOf] method uses binary search to improve efficiency.
          * Unfortunately, this only works if the primary keys match the sort keys.That is, the [SortedListAdapterCallback.areItemsTheSame] method and [SortedListAdapterCallback.compare] need to maintain consistency.
-         * We use [ScanDevice.address] as primary key. And [ScanDevice.rssi] as sort key. So never use [SortedList.indexOf] to find a item.
+         * We use [BlueToothDevice.address] as primary key. And [BlueToothDevice.rssi] as sort key. So never use [SortedList.indexOf] to find a item.
          */
         var existIndex = SortedList.INVALID_POSITION
         for (i in 0 until sorter.size()) {
@@ -80,7 +80,7 @@ class ScanDevicesAdapter : RecyclerView.Adapter<ScanDevicesAdapter.DeviceViewHol
         } else {
             val oldSize = sorter.size()
             //If it does not exist, then add
-            sorter.add(ScanDevice(result.device.address, result.device.name, result.rss.toInt(),sjWatch))
+            sorter.add(BlueToothDevice(result.device.address, result.device.name, result.rss.toInt(),sjWatch))
             listener?.onItemSizeChanged(oldSize, oldSize + 1)
         }
     }
@@ -92,12 +92,12 @@ class ScanDevicesAdapter : RecyclerView.Adapter<ScanDevicesAdapter.DeviceViewHol
     }
 
     interface Listener {
-        fun onItemClick(device: ScanDevice)
+        fun onItemClick(device: BlueToothDevice)
         fun onItemSizeChanged(oldSize: Int, newSize: Int)
     }
 
     class DeviceViewHolder(val viewBind: ItemScanDeviceBinding) : RecyclerView.ViewHolder(viewBind.root) {
-        fun bind(result: ScanDevice) {
+        fun bind(result: BlueToothDevice) {
             viewBind.tvName.text = if (result.name.isNullOrEmpty()) {
                 DeviceBindFragment.UNKNOWN_DEVICE_NAME
             } else {
@@ -122,7 +122,7 @@ class ScanDevicesAdapter : RecyclerView.Adapter<ScanDevicesAdapter.DeviceViewHol
 
 }
 
-class ScanDevice(
+class BlueToothDevice(
     val address: String,
     var name: String?,
     var rssi: Int,
@@ -132,7 +132,7 @@ class ScanDevice(
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
 
-        other as ScanDevice
+        other as BlueToothDevice
 
         if (address != other.address) return false
 
