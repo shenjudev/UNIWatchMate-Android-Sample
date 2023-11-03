@@ -1512,6 +1512,7 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(), Li
     }
 
     fun btStateChange(state: WmConnectState) {
+        wmTransferFile.mTransferring = false
         observeConnectState?.onNext(state)
         mConnectState = state
     }

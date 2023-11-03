@@ -280,8 +280,8 @@ class SJTransferFile(val sjUniWatch: SJUniWatch) : AbWmTransferFile() {
     }
 
     fun transferError(errMsg: String) {
-        if (observableTransferEmitter?.isDisposed == false && mTransferring) {
-            mTransferring = false
+        mTransferring = false
+        if (observableTransferEmitter?.isDisposed == false ) {
             observableTransferEmitter?.onError(
                 RuntimeException(errMsg)
             )
