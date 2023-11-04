@@ -26,9 +26,9 @@ sealed class ContactsEvent {
     class RequestFail(val throwable: Throwable) : ContactsEvent()
     class RequestEmergencyFail(val throwable: Throwable) : ContactsEvent()
     class Inserted(val pos: Int) : ContactsEvent()
-    class Update100Success() : ContactsEvent()
+    class Update100Success : ContactsEvent()
     class Removed(val position: Int) : ContactsEvent()
-    class UpdateFail() : ContactsEvent()
+    class UpdateFail : ContactsEvent()
     object NavigateUp : ContactsEvent()
 }
 
@@ -84,8 +84,45 @@ class ContactsViewModel() : StateEventViewModel<ContactsState, ContactsEvent>(Co
                     }.onFailure {
                         ContactsEvent.UpdateFail().newEvent()
                     }
+                } else {
+                    ContactsEvent.UpdateFail().newEvent()
                 }
                 Timber.i("addContacts: end")
+
+            }
+        }
+    }
+
+    fun addContacts(contacts: MutableList<WmContact>) {
+        viewModelScope.launch {
+            val list = state.requestContacts()
+            if (list != null) {
+                for (contact in contacts) {
+                    var exist = false
+                    var removedItem: WmContact? = null
+                    for (item in list) {
+                        if (item.number == contact.number && item.name == contact.name) {
+                            exist = true
+                            list.remove(item)
+                            removedItem = item
+                            break
+                        }
+                    }
+                    if (!exist) {
+                        list.add(contact)
+                    } else {
+                        if (removedItem != null) {
+                            list.add(removedItem)
+                        }
+                    }
+                }
+                runCatchingWithLog {
+                    action(list)
+                }.onSuccess {
+                    ContactsEvent.Update100Success().newEvent()
+                }.onFailure {
+                    ContactsEvent.UpdateFail().newEvent()
+                }
 
             }
         }
@@ -134,7 +171,7 @@ class ContactsViewModel() : StateEventViewModel<ContactsState, ContactsEvent>(Co
         }
     }
 
-    suspend fun action(list: ArrayList<WmContact>):Boolean {
+    suspend fun action(list: ArrayList<WmContact>): Boolean {
         val result = UNIWatchMate.wmApps.appContact.updateContactList(list).await()
         Timber.i("setContactsAction result=$result ")
         return result

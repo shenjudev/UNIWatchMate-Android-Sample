@@ -12,11 +12,13 @@ import android.view.View
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.MenuProvider
+import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import cn.bertsir.zbar.Qr.ScanResult
 import com.base.sdk.entity.apps.WmContact
 import com.sjbt.sdk.sample.R
 import com.sjbt.sdk.sample.base.BaseFragment
@@ -24,6 +26,8 @@ import com.sjbt.sdk.sample.base.Fail
 import com.sjbt.sdk.sample.base.Loading
 import com.sjbt.sdk.sample.base.Success
 import com.sjbt.sdk.sample.databinding.FragmentContactsBinding
+import com.sjbt.sdk.sample.model.device.PhoneContact
+import com.sjbt.sdk.sample.ui.device.bind.DeviceBindFragment
 import com.sjbt.sdk.sample.utils.PermissionHelper
 import com.sjbt.sdk.sample.utils.launchRepeatOnStarted
 import com.sjbt.sdk.sample.utils.showFailed
@@ -34,7 +38,6 @@ import com.sjbt.sdk.sample.widget.LoadingView
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
-
 class ContactsFragment : BaseFragment(R.layout.fragment_contacts) {
 
     private val viewBind: FragmentContactsBinding by viewBinding()
@@ -42,13 +45,13 @@ class ContactsFragment : BaseFragment(R.layout.fragment_contacts) {
 
     private lateinit var adapter: ContactsAdapter
 
-    private val pickContact =
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            val uri = result.data?.data
-            if (result.resultCode == Activity.RESULT_OK && uri != null) {
-                getContact(uri)
-            }
-        }
+//    private val pickContact =
+//        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+//            val uri = result.data?.data
+//            if (result.resultCode == Activity.RESULT_OK && uri != null) {
+//                getContact(uri)
+//            }
+//        }
 
     private fun getContact(uri: Uri) {
         val projection = arrayOf(
@@ -75,6 +78,15 @@ class ContactsFragment : BaseFragment(R.layout.fragment_contacts) {
                 }
             }
         }
+    }
+
+    private fun setContacts(contacts: ArrayList<PhoneContact>) {
+        promptProgress.showProgress("")
+        val wmContactList = arrayListOf<WmContact>()
+        contacts.forEach {
+            wmContactList.add(WmContact.create(it.name, it.number)!!)
+        }
+        viewModel.addContacts(wmContactList)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -141,9 +153,7 @@ class ContactsFragment : BaseFragment(R.layout.fragment_contacts) {
                 } else {
                     PermissionHelper.requestContacts(this@ContactsFragment) { granted ->
                         if (granted) {
-                            pickContact.launch(Intent(Intent.ACTION_PICK).apply {
-                                type = ContactsContract.CommonDataKinds.Phone.CONTENT_TYPE
-                            })
+                            findNavController().navigate(ContactsFragmentDirections.toPhoneContacts())
                         }
                     }
                 }
@@ -195,6 +205,10 @@ class ContactsFragment : BaseFragment(R.layout.fragment_contacts) {
                             promptProgress.dismiss()
                         }
 
+                        is ContactsEvent.UpdateFail -> {
+                            promptProgress.dismiss()
+                        }
+
                         is ContactsEvent.Update100Success -> {
                             adapter.notifyDataSetChanged()
                             promptProgress.dismiss()
@@ -210,6 +224,14 @@ class ContactsFragment : BaseFragment(R.layout.fragment_contacts) {
                         }
                     }
                 }
+            }
+        }
+        setFragmentResultListener(PHONE_CONTACTS_SELECT_KEY) { requestKey, bundle ->
+            if (requestKey == PHONE_CONTACTS_SELECT_KEY) {
+               val test = bundle.getString("test")
+                val results =
+                    bundle.getParcelableArrayList<PhoneContact>(PHONE_CONTACTS_SELECT) as ArrayList<PhoneContact>?
+                results?.let { setContacts(it) }
             }
         }
     }
@@ -231,7 +253,7 @@ class ContactsFragment : BaseFragment(R.layout.fragment_contacts) {
             "郑十二"
         )
         val lastNames = listOf("一", "二", "三", "四", "五", "六", "七", "八", "九", "十")
-        for (indext in 0 until  100) {
+        for (indext in 0 until 100) {
             val firstName = firstNames[random.nextInt(firstNames.size)]
             val lastName = lastNames[random.nextInt(lastNames.size)]
             val fullName = "$firstName$lastName"
@@ -262,5 +284,10 @@ class ContactsFragment : BaseFragment(R.layout.fragment_contacts) {
 
     private fun onBackPressed() {
         findNavController().navigateUp()
+    }
+
+    companion object {
+        const val PHONE_CONTACTS_SELECT_KEY = "phone_contacts_select_key"
+        const val PHONE_CONTACTS_SELECT = "phone_contacts_select"
     }
 }
