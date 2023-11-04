@@ -129,6 +129,18 @@ class CameraScanAnalysis implements Camera.PreviewCallback {
             allowAnalysis = false;
             this.data = data;
             this.camera = camera;
+            // 获取相机参数
+            Camera.Parameters parameters = camera.getParameters();
+            // 设置曝光补偿值，降低曝光度
+//            parameters.setExposureCompensation(-2); // 尝试不同的值来找到合适的效果
+
+            //设置自动连续对焦
+            if (parameters.getSupportedFocusModes().contains(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE))
+                parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
+
+            // TODO: 根据环境光信息判断是否需要调整曝光
+            parameters.setExposureCompensation(parameters.getMinExposureCompensation());
+            camera.setParameters(parameters);
 
             size = camera.getParameters().getPreviewSize();
             barcode = new Image(size.width, size.height, "Y800");

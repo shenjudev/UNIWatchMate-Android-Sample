@@ -78,7 +78,7 @@ class MyApplication : Application() {
 
                 WmConnectState.VERIFIED -> {
                     UNIWatchMate.wmApps.appCamera.observeCameraOpenState.subscribe {
-                        Timber.e( "Device camera status：$it")
+                        Timber.e("Device camera status：$it")
                     }
                 }
 
@@ -96,7 +96,7 @@ class MyApplication : Application() {
                             getTestWeatherdata(WmWeatherTime.SEVEN_DAYS, 32),
                             WmUnitInfo.TemperatureUnit.CELSIUS
                         )?.await()
-                        Timber.e( "push seven_days weather result = $result2")
+                        Timber.e("push seven_days weather result = $result2")
                         ToastUtil.showToast(
                             "push seven_days weather test ${
                                 if (result2) getString(R.string.tip_success) else getString(
@@ -127,7 +127,7 @@ class MyApplication : Application() {
                 UNIWatchMate.wmApps.appCamera.observeCameraOpenState.asFlow().collect {
                     if (it) {//
                         if (ActivityUtils.getTopActivity() != null) {
-                            Timber.e( "Device camera status：$it")
+                            Timber.e("Device camera status：$it")
                             CacheDataHelper.cameraLaunchedByDevice = true
                             CameraActivity.launchActivity(ActivityUtils.getTopActivity())
                         }
@@ -145,18 +145,21 @@ class MyApplication : Application() {
                             it1
                         )
                     }
-
                     ToastUtil.showToast(it.toString(), false)
                 }.collect {
                     ToastUtil.showToast("FindMobile $it", true)
                     val topActivity = ActivityUtils.getTopActivity()
                     if (topActivity != null && topActivity is BaseActivity) {
-                        topActivity.showFindPhoneDialogWithCallback( getString(R.string.ds_find_phone_found),
-                            getString(R.string.ds_find_phone_stop),object:CallBack<String>{
+                        topActivity.showFindPhoneDialogWithCallback(getString(R.string.ds_find_phone_found),
+                            getString(R.string.ds_find_phone_stop), object : CallBack<String> {
                                 override fun callBack(o: String) {
                                     applicationScope.launch {
-                                        val result = UNIWatchMate.wmApps.appFind.stopFindMobile().await()
-                                        ToastUtil.showToast("reply observeFindMobile result: $result", true)
+                                        val result =
+                                            UNIWatchMate.wmApps.appFind.stopFindMobile().await()
+                                        ToastUtil.showToast(
+                                            "reply observeFindMobile result: $result",
+                                            true
+                                        )
                                     }
                                 }
                             })

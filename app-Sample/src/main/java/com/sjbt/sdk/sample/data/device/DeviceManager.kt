@@ -201,7 +201,7 @@ internal class DeviceManagerImpl(
                                     address = device!!.address,
                                     WmBindInfo(
                                         userInfo.id.toString(),
-                                        "name",
+                                        userInfo.name,
                                         BindType.DISCOVERY,
                                         storageDevice.wmDeviceMode
                                     )

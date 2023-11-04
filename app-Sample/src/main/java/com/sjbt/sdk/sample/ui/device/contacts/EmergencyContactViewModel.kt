@@ -1,6 +1,5 @@
 package com.sjbt.sdk.sample.ui.device.contacts
 
-import android.telephony.emergency.EmergencyNumber
 import androidx.lifecycle.viewModelScope
 import com.base.api.UNIWatchMate
 import com.base.sdk.entity.apps.WmContact
@@ -8,13 +7,10 @@ import com.base.sdk.entity.settings.WmEmergencyCall
 import com.sjbt.sdk.sample.base.Async
 import com.sjbt.sdk.sample.base.Fail
 import com.sjbt.sdk.sample.base.Loading
-import com.sjbt.sdk.sample.base.SingleAsyncAction
 import com.sjbt.sdk.sample.base.StateEventViewModel
 import com.sjbt.sdk.sample.base.Success
 import com.sjbt.sdk.sample.base.Uninitialized
-import com.sjbt.sdk.sample.di.Injector
 import com.sjbt.sdk.sample.utils.runCatchingWithLog
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.rx3.await
 import kotlinx.coroutines.rx3.awaitFirst
