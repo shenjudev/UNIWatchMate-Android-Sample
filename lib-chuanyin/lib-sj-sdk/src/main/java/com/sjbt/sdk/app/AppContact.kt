@@ -112,6 +112,13 @@ class AppContact(val sjUniWatch: SJUniWatch) : AbAppContact(), ReadSubPkMsg {
         updateContactEmitter = it
 
         sjUniWatch.observableMtu.subscribe { mtu ->
+//            val realContactList = mutableListOf<WmContact>()
+//
+//            if (contactList.isEmpty()) {
+//                realContactList.add(WmContact.create("0", "0")!!)
+//            } else {
+//                realContactList.addAll(contactList)
+//            }
 
             val payloadPackage = getWriteContactListCmd(contactList)
 
@@ -345,26 +352,30 @@ class AppContact(val sjUniWatch: SJUniWatch) : AbAppContact(), ReadSubPkMsg {
     private fun getWriteContactListCmd(contacts: List<WmContact>): PayloadPackage {
         val payloadPackage = PayloadPackage()
 
-        val count = MAX_BUSINESS_BUFFER_SIZE / (NAME_BYTES_LIMIT + NUMBER_BYTES_LIMIT)
+        if (contacts.isNotEmpty()) {
+            val count = MAX_BUSINESS_BUFFER_SIZE / (NAME_BYTES_LIMIT + NUMBER_BYTES_LIMIT)
 
-        val contactGroup = contacts.chunked(count)
+            val contactGroup = contacts.chunked(count)
 
-        for (i in 0 until contactGroup.size) {
+            for (i in contactGroup.indices) {
 
-            val byteBuffer: ByteBuffer =
-                ByteBuffer.allocate(contactGroup[i].size * (NAME_BYTES_LIMIT + NUMBER_BYTES_LIMIT))
+                val byteBuffer: ByteBuffer =
+                    ByteBuffer.allocate(contactGroup[i].size * (NAME_BYTES_LIMIT + NUMBER_BYTES_LIMIT))
 
-            contactGroup[i].forEach {
-                byteBuffer.put(
-                    it.name.toByteArray().copyOf(NAME_BYTES_LIMIT)
-                )
+                contactGroup[i].forEach {
+                    byteBuffer.put(
+                        it.name.toByteArray().copyOf(NAME_BYTES_LIMIT)
+                    )
 
-                byteBuffer.put(
-                    it.number.toByteArray().copyOf(NUMBER_BYTES_LIMIT)
-                )
+                    byteBuffer.put(
+                        it.number.toByteArray().copyOf(NUMBER_BYTES_LIMIT)
+                    )
+                }
+
+                payloadPackage.putData(CmdHelper.getUrnId(URN_4, URN_3, URN_2), byteBuffer.array())
             }
-
-            payloadPackage.putData(CmdHelper.getUrnId(URN_4, URN_3, URN_2), byteBuffer.array())
+        } else {
+            payloadPackage.putData(CmdHelper.getUrnId(URN_4, URN_3, URN_2), ByteArray(0))
         }
 
         return payloadPackage
