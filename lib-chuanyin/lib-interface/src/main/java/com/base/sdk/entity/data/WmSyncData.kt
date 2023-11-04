@@ -295,29 +295,29 @@ class WmSleepData(
  * SleepSummary 睡眠概览
  */
 data class WmSleepSummary(
-    var dateStamp: Long,// 日期时间戳 (毫秒)
-    var bedTime: Long,// 入睡时间时间戳（毫秒）
-    var getUpTime: Long,// 起床时间时间戳（毫秒）
-    var totalSleepMinutes: Int,// 睡眠时长
+    var dateStamp: Int,// 日期时间 (年月日，4 bytes)
+    var bedTime: Int,// 相对于date 入睡时间（秒， 4 bytes）
+    var getUpTime: Int,// 相对于date 起床时间（秒， 4 bytes）
+    var totalSleepMinutes: Int,// 睡眠时长（分钟，4 bytes）
 
-    var sleepType: Int,// 睡眠类型 0：白天睡眠， 1：夜晚睡眠
+    var sleepType: Int,// 睡眠类型 0：白天睡眠， 1：夜晚睡眠(1 byte)
 
-    var deepSleepMinutes: Short,// 深睡时长(毫秒)
-    var lightSleepMinutes: Short,// 浅睡时长(毫秒)
-    var awakeSleepMinutes: Short,// 清醒时长(毫秒)
-    var remSleepMinutes: Short,// 快速眼动时长(毫秒)
+    var awakeSleepMinutes: Int,// 清醒时长（分钟, 2 bytes）
+    var lightSleepMinutes: Int,// 浅睡时长（分钟, 2 bytes）
+    var deepSleepMinutes: Int,// 深睡时长（分钟, 2 bytes）
+    var remSleepMinutes: Int,// 快速眼动时长（分钟, 2 bytes）
 
-    var deepSleepCount: Int,// 深睡次数
-    var lightSleepCount: Int,// 浅睡次数
-    var awakeSleepCount: Int,// 清醒次数
-    var remSleepCount: Int,// 快速眼动次数
+    var awakeSleepCount: Int,// 清醒次数（2 bytes）
+    var lightSleepCount: Int,// 浅睡次数（2 bytes）
+    var deepSleepCount: Int,// 深睡次数（2 bytes）
+    var remSleepCount: Int,// 快速眼动次数（2 bytes）
 
-    var awakePercentage: Int,// 清醒百分比
-    var lightSleepPercentage: Int,// 浅睡百分比
-    var deepSleepPercentage: Int,// 深睡百分比
-    var remSleepPercentage: Int,// 眼动百分比
+    var awakePercentage: Int,// 清醒百分比（*100, 2 bytes）
+    var lightSleepPercentage: Int,// 浅睡百分比（*100, 2 bytes）
+    var deepSleepPercentage: Int,// 深睡百分比（*100, 2 bytes）
+    var remSleepPercentage: Int,// 眼动百分比（*100, 2 bytes）
 
-    var sleepScore: Int,// 睡眠得分
+    var sleepScore: Int,// 睡眠得分(1 byte)
 
 ) {
     override fun toString(): String {
@@ -420,12 +420,12 @@ class WmTodayTotalData(
 
 interface ICalculateSleepItem {
     fun getCalculateStatus(): Int
-    fun getCalculateStartTime(): Short
+    fun getCalculateStartTime(): Int
 }
 
 class WmSleepItem(
     val status: Int,//状态
-    val duration: Short//开始时间
+    val duration: Int//持续时间
 ) : ICalculateSleepItem {
     companion object {
         /**
@@ -456,7 +456,7 @@ class WmSleepItem(
     }
 
     //计算开始时间
-    override fun getCalculateStartTime(): Short {
+    override fun getCalculateStartTime(): Int {
         return duration
     }
 

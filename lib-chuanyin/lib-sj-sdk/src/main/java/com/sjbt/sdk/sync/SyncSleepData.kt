@@ -1,25 +1,37 @@
 package com.sjbt.sdk.sync
 
-import com.base.sdk.entity.data.WmSleepData
-import com.base.sdk.entity.data.WmSyncData
+import com.base.sdk.entity.data.*
+import com.base.sdk.entity.settings.WmSleepSettings
 import com.base.sdk.port.sync.AbSyncData
 import com.sjbt.sdk.ReadSubPkMsg
 import com.sjbt.sdk.SJUniWatch
 import com.sjbt.sdk.entity.MsgBean
 import com.sjbt.sdk.entity.NodeData
 import com.sjbt.sdk.spp.cmd.CmdHelper
+import com.sjbt.sdk.spp.cmd.SYNC_DATA_INTERVAL
 import com.sjbt.sdk.spp.cmd.URN_SPORT_SLEEP
-import com.sjbt.sdk.spp.cmd.URN_SPORT_STEP
+import com.sjbt.sdk.utils.BtUtils
+import com.sjbt.sdk.utils.TimeUtils
+import io.reactivex.rxjava3.core.*
 import io.reactivex.rxjava3.core.Observable
-import io.reactivex.rxjava3.core.ObservableEmitter
-import io.reactivex.rxjava3.core.Single
-import io.reactivex.rxjava3.core.SingleEmitter
+import io.reactivex.rxjava3.core.Observer
+import io.reactivex.rxjava3.disposables.Disposable
+import java.nio.ByteBuffer
+import java.nio.ByteOrder
+import java.util.*
 
-class SyncSleepData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmSleepData>>(),ReadSubPkMsg {
+class SyncSleepData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmSleepData>>(),
+    ReadSubPkMsg {
     var isActionSupport: Boolean = true
     var lastSyncTime: Long = 0
     private var activityObserveEmitter: SingleEmitter<WmSyncData<WmSleepData>>? = null
     private var observeChangeEmitter: ObservableEmitter<WmSyncData<WmSleepData>>? = null
+
+    private val TAG = "SyncSleepData"
+    private val msgList = mutableSetOf<MsgBean>()
+    private var hasNext: Boolean = false
+    private lateinit var byteBufferSyncData: ByteBuffer
+
     override fun isSupport(): Boolean {
         return isActionSupport
     }
@@ -29,32 +41,228 @@ class SyncSleepData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmSleepD
     }
 
     override fun setHasNext(hasNext: Boolean) {
-        TODO("Not yet implemented")
+        this.hasNext = hasNext
     }
 
     override fun getHasNext(): Boolean {
-        TODO("Not yet implemented")
+        return hasNext
     }
 
     fun onTimeOut(msg: MsgBean, nodeData: NodeData) {
-        TODO("Not yet implemented")
     }
 
     override fun syncData(startTime: Long): Single<WmSyncData<WmSleepData>> {
 
         return Single.create { emitter ->
             activityObserveEmitter = emitter
-            sjUniWatch.sendReadSubPkObserveNode(this,
+            sjUniWatch.sendReadSubPkObserveNode(
+                this,
                 CmdHelper.getReadSportSyncData(
                     startTime,
                     lastSyncTime,
                     childUrn = URN_SPORT_SLEEP
                 )
-            )
+            ).subscribe(object :
+                Observer<MsgBean> {
+                override fun onSubscribe(d: Disposable) {
+                }
+
+                override fun onNext(t: MsgBean) {
+                    sjUniWatch.wmLog.logE(TAG, "sleep record back msg:$t")
+                    msgList.add(t)
+                }
+
+                override fun onError(e: Throwable) {
+                }
+
+                override fun onComplete() {
+                    sjUniWatch.wmLog.logE(TAG, "back msg:" + msgList.size)
+
+                    if (msgList.size > 0) {
+
+                        var bufferSize = 0
+                        msgList.forEach {
+                            bufferSize += it.payloadLen
+                        }
+
+                        byteBufferSyncData =
+                            ByteBuffer.allocate(bufferSize).order(ByteOrder.LITTLE_ENDIAN)
+
+                        msgList.forEachIndexed { index, it ->
+                            sjUniWatch.wmLog.logE(
+                                TAG,
+                                "sleep record data:" + BtUtils.bytesToHexString(it.originData)
+                            )
+
+                            if (index == 0) {
+                                byteBufferSyncData.put(
+                                    it.payload.copyOfRange(
+                                        17,
+                                        it.payload.lastIndex
+                                    )
+                                )
+                            } else {
+                                byteBufferSyncData.put(it.payload)
+                            }
+                        }
+
+                        parseStepData()
+                    }
+                }
+            })
         }
     }
 
     override var observeSyncData: Observable<WmSyncData<WmSleepData>> =
         Observable.create { emitter -> observeChangeEmitter = emitter }
+
+    private fun parseStepData() {
+        sjUniWatch.wmLog.logE(
+            TAG,
+            "all payload len:" + byteBufferSyncData.limit() + " :data:" + BtUtils.bytesToHexString(
+                byteBufferSyncData.array()
+            )
+        )
+        byteBufferSyncData.rewind()
+        //0: 只有一个时间戳
+        //1：每天一个时间戳
+        //2：每小时一个时间戳
+        val timestampType = byteBufferSyncData.get().toInt()
+
+        val baseYear = byteBufferSyncData.short.toInt()
+        val baseMon = byteBufferSyncData.get().toInt() - 1
+        val baseDay = byteBufferSyncData.get().toInt()
+
+        //时间戳
+        val timestamp = byteBufferSyncData.int
+        val dataLen = byteBufferSyncData.short
+
+        sjUniWatch.wmLog.logD(
+            TAG,
+            "timestampType:$timestampType --> baseDate:$baseYear$baseMon$baseDay  timestamp:$timestamp  dataLen:$dataLen"
+        )
+
+        val calendar = Calendar.getInstance()
+        calendar.set(baseYear, baseMon, baseDay, 0, 0, 0)
+
+        val realTimeStamp = calendar.timeInMillis + timestamp
+
+        val sleepDataList = mutableListOf<WmSleepData>()
+
+        while (byteBufferSyncData.hasRemaining()) {
+
+            val isEnable = byteBufferSyncData.get().toInt() == 1
+
+            val startHour = byteBufferSyncData.get().toInt()
+            val startMin = byteBufferSyncData.get().toInt()
+            val endHour = byteBufferSyncData.get().toInt()
+            val endMin = byteBufferSyncData.get().toInt()
+
+            val wmSleepSettings = WmSleepSettings(
+                isEnable, startHour,
+                startMin,
+                endHour,
+                endMin
+            )
+
+            var dateStamp: Int = byteBufferSyncData.int
+            var bedTime: Int = byteBufferSyncData.int
+            var getUpTime: Int = byteBufferSyncData.int
+            var totalSleepMinutes: Int = byteBufferSyncData.int
+
+            var sleepType: Int = byteBufferSyncData.get().toInt()
+
+            var awakeSleepMinutes: Int = byteBufferSyncData.short.toInt()
+            var lightSleepMinutes: Int = byteBufferSyncData.short.toInt()
+            var deepSleepMinutes: Int = byteBufferSyncData.short.toInt()
+            var remSleepMinutes: Int = byteBufferSyncData.short.toInt()
+
+            var awakeSleepCount: Int = byteBufferSyncData.short.toInt()
+            var lightSleepCount: Int = byteBufferSyncData.short.toInt()
+            var deepSleepCount: Int = byteBufferSyncData.short.toInt()
+            var remSleepCount: Int = byteBufferSyncData.short.toInt()
+
+            var awakePercentage: Int = byteBufferSyncData.short.toInt()
+            var lightSleepPercentage: Int = byteBufferSyncData.short.toInt()
+            var deepSleepPercentage: Int = byteBufferSyncData.short.toInt()
+            var remSleepPercentage: Int = byteBufferSyncData.short.toInt()
+
+            var sleepScore: Int = byteBufferSyncData.get().toInt()
+
+            val wmSleepSummary = WmSleepSummary(
+                dateStamp,
+                bedTime,
+                getUpTime,
+                totalSleepMinutes,
+                sleepType,
+                awakeSleepMinutes,
+                lightSleepMinutes,
+                deepSleepMinutes,
+                remSleepMinutes,
+                awakeSleepCount,
+                lightSleepCount,
+                deepSleepCount,
+                remSleepCount,
+                awakePercentage,
+                lightSleepPercentage,
+                deepSleepPercentage,
+                remSleepPercentage,
+                sleepScore
+            )
+
+            val sleepItems = mutableListOf<WmSleepItem>()
+
+            val itemCount = dataLen - 5 - 50
+            var itemIndex = 0
+
+            while (itemIndex < itemCount) {
+                val status = byteBufferSyncData.get().toInt()
+                val duration = byteBufferSyncData.short.toInt()
+                val sleepItem = WmSleepItem(status, duration)
+                sleepItems.add(sleepItem)
+                itemIndex++
+            }
+
+            val wmSleepData = WmSleepData(wmSleepSettings, wmSleepSummary, sleepItems)
+
+            if (timestampType == 0) {//只有一个时间戳
+                sjUniWatch.wmLog.logD(
+                    TAG,
+                    "start base date:" + TimeUtils.date2String(Date(realTimeStamp + (byteBufferSyncData.position() - 12) * SYNC_DATA_INTERVAL))
+                )
+
+                wmSleepData.timestamp =
+                    realTimeStamp + (byteBufferSyncData.position() - 12) * SYNC_DATA_INTERVAL
+            }
+
+            sjUniWatch.wmLog.logD(
+                TAG,
+                "sleep record data: ${byteBufferSyncData.position()} -> ${wmSleepData}"
+            )
+
+            sleepDataList.add(wmSleepData)
+        }
+
+        val wmSyncData =
+            WmSyncData(
+                WmSyncDataType.HEART_RATE_FIVE_MINUTES,
+                realTimeStamp,
+                WmIntervalType.FIVE_MINUTES,
+                sleepDataList
+            )
+
+        activityObserveEmitter?.onSuccess(wmSyncData)
+        lastSyncTime = System.currentTimeMillis()
+
+        sjUniWatch.wmLog.logE(
+            TAG,
+            "${wmSyncData}"
+        )
+    }
+
+    fun syncRealHeartRateBusiness(byteArray: ByteArray) {
+        byteBufferSyncData = ByteBuffer.wrap(byteArray).order(ByteOrder.LITTLE_ENDIAN)
+        parseStepData()
+    }
 
 }
