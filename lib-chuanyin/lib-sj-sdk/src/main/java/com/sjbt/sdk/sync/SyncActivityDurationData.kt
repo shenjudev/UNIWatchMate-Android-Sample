@@ -8,7 +8,7 @@ import com.sjbt.sdk.entity.MsgBean
 import com.sjbt.sdk.entity.NodeData
 import com.sjbt.sdk.spp.cmd.CmdHelper
 import com.sjbt.sdk.spp.cmd.SYNC_DATA_INTERVAL
-import com.sjbt.sdk.spp.cmd.URN_SPORT_OXYGEN
+import com.sjbt.sdk.spp.cmd.URN_SPORT_ACTIVITY_LEN
 import com.sjbt.sdk.utils.BtUtils
 import com.sjbt.sdk.utils.TimeUtils
 import io.reactivex.rxjava3.core.*
@@ -19,14 +19,17 @@ import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import java.util.*
 
-class SyncOxygenData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmOxygenData>>(),
-    ReadSubPkMsg {
-    var isActionSupport: Boolean = true
-    var lastSyncTime: Long = 0
-    private var oxygenObserveEmitter: SingleEmitter<WmSyncData<WmOxygenData>>? = null
-    private var observeChangeEmitter: ObservableEmitter<WmSyncData<WmOxygenData>>? = null
+/**
+ * 每小时持续活动的时长
+ */
+class SyncActivityDurationData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmActivityDurationData>>(),ReadSubPkMsg {
 
-    private val TAG = "SyncOxygenData"
+    private var isActionSupport: Boolean = true
+    var lastSyncTime: Long = 0
+    private var activityDurateObserveEmitter: SingleEmitter<WmSyncData<WmActivityDurationData>>? = null
+    private var observeChangeEmitter: ObservableEmitter<WmSyncData<WmActivityDurationData>>? = null
+
+    private val TAG = "SyncActivityDurationData"
     private val msgList = mutableSetOf<MsgBean>()
     private var hasNext: Boolean = false
     private lateinit var byteBufferSyncData: ByteBuffer
@@ -44,19 +47,21 @@ class SyncOxygenData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmOxyge
     }
 
     override fun getHasNext(): Boolean {
-        return hasNext
+       return hasNext
     }
 
-    fun onTimeOut(msg: MsgBean, nodeData: NodeData) {}
+    fun onTimeOut(nodeData: NodeData) {
 
-    override fun syncData(startTime: Long): Single<WmSyncData<WmOxygenData>> {
+    }
+
+    override fun syncData(startTime: Long): Single<WmSyncData<WmActivityDurationData>> {
+
         return Single.create { emitter ->
-            oxygenObserveEmitter = emitter
-            sjUniWatch.sendReadSubPkObserveNode(
-                this,
+            activityDurateObserveEmitter = emitter
+            sjUniWatch.sendReadSubPkObserveNode(this,
                 CmdHelper.getReadSportSyncData(
                     startTime, lastSyncTime,
-                    childUrn = URN_SPORT_OXYGEN
+                    childUrn = URN_SPORT_ACTIVITY_LEN
                 )
             ).subscribe(object :
                 Observer<MsgBean> {
@@ -109,7 +114,7 @@ class SyncOxygenData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmOxyge
         }
     }
 
-    override var observeSyncData: Observable<WmSyncData<WmOxygenData>> =
+    override var observeSyncData: Observable<WmSyncData<WmActivityDurationData>> =
         Observable.create { emitter -> observeChangeEmitter = emitter }
 
     private fun parseStepData() {
@@ -143,11 +148,11 @@ class SyncOxygenData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmOxyge
 
         val realTimeStamp = calendar.timeInMillis + timestamp
 
-        val oxygenDataList = mutableListOf<WmOxygenData>()
+        val activityDurationDataList = mutableListOf<WmActivityDurationData>()
 
         while (byteBufferSyncData.hasRemaining()) {
 
-            val wmOxygenData = WmOxygenData(byteBufferSyncData.get().toInt() and 0XFF)
+            val wmActivityDurationData = WmActivityDurationData(byteBufferSyncData.get().toInt() and 0XFF)
 
             if (timestampType == 0) {//只有一个时间戳
                 sjUniWatch.wmLog.logD(
@@ -155,16 +160,16 @@ class SyncOxygenData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmOxyge
                     "start base date:" + TimeUtils.date2String(Date(realTimeStamp + (byteBufferSyncData.position() - 12) * SYNC_DATA_INTERVAL))
                 )
 
-                wmOxygenData.timestamp =
+                wmActivityDurationData.timestamp =
                     realTimeStamp + (byteBufferSyncData.position() - 12) * SYNC_DATA_INTERVAL
             }
 
             sjUniWatch.wmLog.logD(
                 TAG,
-                "real time rate data: ${byteBufferSyncData.position()} -> ${wmOxygenData}"
+                "real time rate data: ${byteBufferSyncData.position()} -> ${wmActivityDurationData}"
             )
 
-            oxygenDataList.add(wmOxygenData)
+            activityDurationDataList.add(wmActivityDurationData)
         }
 
         val wmSyncData =
@@ -172,10 +177,10 @@ class SyncOxygenData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmOxyge
                 WmSyncDataType.OXYGEN,
                 realTimeStamp,
                 WmIntervalType.FIVE_MINUTES,
-                oxygenDataList
+                activityDurationDataList
             )
 
-        oxygenObserveEmitter?.onSuccess(wmSyncData)
+        activityDurateObserveEmitter?.onSuccess(wmSyncData)
         lastSyncTime = System.currentTimeMillis()
 
         sjUniWatch.wmLog.logE(
@@ -184,7 +189,7 @@ class SyncOxygenData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmOxyge
         )
     }
 
-    fun syncOxygenDataBusiness(byteArray: ByteArray) {
+    fun syncActivityDurationDataBusiness(byteArray: ByteArray) {
         byteBufferSyncData = ByteBuffer.wrap(byteArray).order(ByteOrder.LITTLE_ENDIAN)
         parseStepData()
     }

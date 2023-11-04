@@ -1,25 +1,44 @@
 package com.sjbt.sdk.sync
 
-import com.base.sdk.entity.data.WmCaloriesData
-import com.base.sdk.entity.data.WmSyncData
+import com.base.sdk.entity.data.*
 import com.base.sdk.port.sync.AbSyncData
 import com.sjbt.sdk.ReadSubPkMsg
 import com.sjbt.sdk.SJUniWatch
 import com.sjbt.sdk.entity.MsgBean
 import com.sjbt.sdk.entity.NodeData
 import com.sjbt.sdk.spp.cmd.CmdHelper
-import com.sjbt.sdk.spp.cmd.URN_SPORT_ACTIVITY_LEN
+import com.sjbt.sdk.spp.cmd.SYNC_DATA_INTERVAL
 import com.sjbt.sdk.spp.cmd.URN_SPORT_CALORIES
+import com.sjbt.sdk.utils.BtUtils
+import com.sjbt.sdk.utils.TimeUtils
+import io.reactivex.rxjava3.core.*
 import io.reactivex.rxjava3.core.Observable
-import io.reactivex.rxjava3.core.ObservableEmitter
-import io.reactivex.rxjava3.core.Single
-import io.reactivex.rxjava3.core.SingleEmitter
+import io.reactivex.rxjava3.core.Observer
+import io.reactivex.rxjava3.disposables.Disposable
+import java.nio.ByteBuffer
+import java.nio.ByteOrder
+import java.util.*
 
-class SyncCaloriesData (val sjUniWatch: SJUniWatch): AbSyncData<WmSyncData<WmCaloriesData>>(),ReadSubPkMsg {
+class SyncCaloriesData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmCaloriesData>>(),
+    ReadSubPkMsg {
     var isActionSupport: Boolean = true
     var lastSyncTime: Long = 0
-    private var activityObserveEmitter: SingleEmitter<WmSyncData<WmCaloriesData>>? = null
+    private var caloriesObserveEmitter: SingleEmitter<WmSyncData<WmCaloriesData>>? = null
     private var observeChangeEmitter: ObservableEmitter<WmSyncData<WmCaloriesData>>? = null
+
+    private val TAG = "SyncCaloriesData"
+    private val msgList = mutableSetOf<MsgBean>()
+    private var hasNext: Boolean = false
+    private lateinit var byteBufferSyncData: ByteBuffer
+
+    override fun setHasNext(hasNext: Boolean) {
+        this.hasNext = hasNext
+    }
+
+    override fun getHasNext(): Boolean {
+        return hasNext
+    }
+
     override fun isSupport(): Boolean {
         return isActionSupport
     }
@@ -29,30 +48,142 @@ class SyncCaloriesData (val sjUniWatch: SJUniWatch): AbSyncData<WmSyncData<WmCal
     }
 
     fun onTimeOut(msg: MsgBean, nodeData: NodeData) {
-        TODO("Not yet implemented")
-    }
-
-    override fun setHasNext(hasNext: Boolean) {
-        TODO("Not yet implemented")
-    }
-
-    override fun getHasNext(): Boolean {
-        TODO("Not yet implemented")
     }
 
     override fun syncData(startTime: Long): Single<WmSyncData<WmCaloriesData>> {
         return Single.create { emitter ->
-            activityObserveEmitter = emitter
-            sjUniWatch.sendReadSubPkObserveNode(this,
+            caloriesObserveEmitter = emitter
+            sjUniWatch.sendReadSubPkObserveNode(
+                this,
                 CmdHelper.getReadSportSyncData(
                     startTime, lastSyncTime,
                     childUrn = URN_SPORT_CALORIES
                 )
-            )
+            ).subscribe(object :
+                Observer<MsgBean> {
+                override fun onSubscribe(d: Disposable) {
+                }
+
+                override fun onNext(t: MsgBean) {
+                    sjUniWatch.wmLog.logE(TAG, "step back msg:$t")
+                    msgList.add(t)
+                }
+
+                override fun onError(e: Throwable) {
+                }
+
+                override fun onComplete() {
+                    sjUniWatch.wmLog.logE(TAG, "back msg:" + msgList.size)
+
+                    if (msgList.size > 0) {
+
+                        var bufferSize = 0
+                        msgList.forEach {
+                            bufferSize += it.payloadLen
+                        }
+
+                        byteBufferSyncData =
+                            ByteBuffer.allocate(bufferSize).order(ByteOrder.LITTLE_ENDIAN)
+
+                        msgList.forEachIndexed { index, it ->
+                            sjUniWatch.wmLog.logE(
+                                TAG,
+                                "step data:" + BtUtils.bytesToHexString(it.originData)
+                            )
+
+                            if (index == 0) {
+                                byteBufferSyncData.put(
+                                    it.payload.copyOfRange(
+                                        17,
+                                        it.payload.lastIndex
+                                    )
+                                )
+                            } else {
+                                byteBufferSyncData.put(it.payload)
+                            }
+                        }
+
+                        parseStepData()
+
+                    }
+                }
+            })
         }
     }
 
     override var observeSyncData: Observable<WmSyncData<WmCaloriesData>> =
         Observable.create { emitter -> observeChangeEmitter = emitter }
+
+    private fun parseStepData() {
+        sjUniWatch.wmLog.logE(
+            TAG,
+            "all payload len:" + byteBufferSyncData.limit() + " :data:" + BtUtils.bytesToHexString(
+                byteBufferSyncData.array()
+            )
+        )
+        byteBufferSyncData.rewind()
+        //0: 只有一个时间戳
+        //1：每天一个时间戳
+        //2：每小时一个时间戳
+        val timestampType = byteBufferSyncData.get().toInt()
+
+        val baseYear = byteBufferSyncData.short.toInt()
+        val baseMon = byteBufferSyncData.get().toInt() - 1
+        val baseDay = byteBufferSyncData.get().toInt()
+
+        //时间戳
+        val timestamp = byteBufferSyncData.int
+        val dataLen = byteBufferSyncData.short
+
+        sjUniWatch.wmLog.logD(
+            TAG,
+            "timestampType:$timestampType --> baseDate:$baseYear$baseMon$baseDay  timestamp:$timestamp  dataLen:$dataLen"
+        )
+
+        val calendar = Calendar.getInstance()
+        calendar.set(baseYear, baseMon, baseDay, 0, 0, 0)
+
+        val realTimeStamp = calendar.timeInMillis + timestamp
+
+        val caloriesList = mutableListOf<WmCaloriesData>()
+
+        while (byteBufferSyncData.hasRemaining()) {
+
+            val wmCaloriesData = WmCaloriesData(byteBufferSyncData.int and 0XFF)
+
+            if (timestampType == 0) {//只有一个时间戳
+                sjUniWatch.wmLog.logD(
+                    TAG,
+                    "start base date:" + TimeUtils.date2String(Date(realTimeStamp + (byteBufferSyncData.position() - 12) * SYNC_DATA_INTERVAL))
+                )
+
+                wmCaloriesData.timestamp =
+                    realTimeStamp + (byteBufferSyncData.position() - 12) * SYNC_DATA_INTERVAL
+            }
+
+            sjUniWatch.wmLog.logD(
+                TAG,
+                "step data: ${byteBufferSyncData.position()} -> ${wmCaloriesData}"
+            )
+
+            caloriesList.add(wmCaloriesData)
+        }
+
+        val wmSyncData =
+            WmSyncData(WmSyncDataType.CALORIE, realTimeStamp, WmIntervalType.ONE_HOUR, caloriesList)
+
+        caloriesObserveEmitter?.onSuccess(wmSyncData)
+        lastSyncTime = System.currentTimeMillis()
+
+        sjUniWatch.wmLog.logE(
+            TAG,
+            "${wmSyncData}"
+        )
+    }
+
+    fun syncCaloriesBusiness(byteArray: ByteArray) {
+        byteBufferSyncData = ByteBuffer.wrap(byteArray).order(ByteOrder.LITTLE_ENDIAN)
+        parseStepData()
+    }
 
 }

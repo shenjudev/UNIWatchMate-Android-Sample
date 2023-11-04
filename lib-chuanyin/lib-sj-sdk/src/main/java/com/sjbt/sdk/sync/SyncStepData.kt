@@ -1,6 +1,5 @@
 package com.sjbt.sdk.sync
 
-import android.text.format.DateUtils
 import com.base.sdk.entity.data.WmIntervalType
 import com.base.sdk.entity.data.WmStepData
 import com.base.sdk.entity.data.WmSyncData
@@ -11,6 +10,7 @@ import com.sjbt.sdk.SJUniWatch
 import com.sjbt.sdk.entity.MsgBean
 import com.sjbt.sdk.entity.NodeData
 import com.sjbt.sdk.spp.cmd.CmdHelper.getReadSportSyncData
+import com.sjbt.sdk.spp.cmd.SYNC_DATA_INTERVAL
 import com.sjbt.sdk.spp.cmd.URN_SPORT_STEP
 import com.sjbt.sdk.utils.BtUtils
 import com.sjbt.sdk.utils.TimeUtils
@@ -63,7 +63,7 @@ class SyncStepData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmStepDat
                 this,
                 getReadSportSyncData(
                     startTime,
-                    lastSyncTime,
+                    0,
                     childUrn = URN_SPORT_STEP
                 )
             )
@@ -90,7 +90,8 @@ class SyncStepData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmStepDat
                                 bufferSize += it.payloadLen
                             }
 
-                            byteBufferSyncData = ByteBuffer.allocate(bufferSize).order(ByteOrder.LITTLE_ENDIAN)
+                            byteBufferSyncData =
+                                ByteBuffer.allocate(bufferSize).order(ByteOrder.LITTLE_ENDIAN)
 
                             msgList.forEachIndexed { index, it ->
                                 sjUniWatch.wmLog.logE(
@@ -131,9 +132,9 @@ class SyncStepData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmStepDat
         //2：每小时一个时间戳
         val timestampType = byteBufferSyncData.get().toInt()
 
-        val baseYear = byteBufferSyncData.short
-        val baseMon = byteBufferSyncData.get()
-        val baseDay = byteBufferSyncData.get()
+        val baseYear = byteBufferSyncData.short.toInt()
+        val baseMon = byteBufferSyncData.get().toInt() - 1
+        val baseDay = byteBufferSyncData.get().toInt()
 
         //时间戳
         val timestamp = byteBufferSyncData.int
@@ -144,12 +145,8 @@ class SyncStepData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmStepDat
             "timestampType:$timestampType --> baseDate:$baseYear$baseMon$baseDay  timestamp:$timestamp  dataLen:$dataLen"
         )
 
-        //        byteArray.copyOfRange(10, byteArray.lastIndex).forEachIndexed { index, it ->
-        //            sjUniWatch.wmLog.logD(TAG, "step data: $index -> ${it.toInt() and 0xFF}")
-        //        }
-
         val calendar = Calendar.getInstance()
-        calendar.set(baseYear.toInt(), baseMon.toInt()-1, baseDay.toInt(), 0, 0, 0)
+        calendar.set(baseYear, baseMon, baseDay, 0, 0, 0)
 
         val realTimeStamp = calendar.timeInMillis + timestamp
 
@@ -157,16 +154,16 @@ class SyncStepData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmStepDat
 
         while (byteBufferSyncData.hasRemaining()) {
 
-            val wmStepData = WmStepData(byteBufferSyncData.get().toInt() and 0XFF)
+            val wmStepData = WmStepData(byteBufferSyncData.int)
 
             if (timestampType == 0) {//只有一个时间戳
                 sjUniWatch.wmLog.logD(
                     TAG,
-                    "start base date:" + TimeUtils.date2String(Date(realTimeStamp + (byteBufferSyncData.position() - 12) * 60 * 60 * 1000))
+                    "start base date:" + TimeUtils.date2String(Date(realTimeStamp + (byteBufferSyncData.position() - 12) * SYNC_DATA_INTERVAL))
                 )
 
                 wmStepData.timestamp =
-                    realTimeStamp + (byteBufferSyncData.position() - 12) * 60 * 60 * 1000
+                    realTimeStamp + (byteBufferSyncData.position() - 12) * SYNC_DATA_INTERVAL
             }
 
             sjUniWatch.wmLog.logD(
@@ -181,7 +178,7 @@ class SyncStepData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmStepDat
             WmSyncData(WmSyncDataType.STEP, realTimeStamp, WmIntervalType.ONE_HOUR, stepList)
 
         stepObserveEmitter?.onSuccess(wmSyncData)
-
+        lastSyncTime = System.currentTimeMillis()
 
         sjUniWatch.wmLog.logE(
             TAG,
@@ -196,71 +193,6 @@ class SyncStepData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmStepDat
 
         byteBufferSyncData = ByteBuffer.wrap(byteArray).order(ByteOrder.LITTLE_ENDIAN)
         parseStepData()
-
-//        //0: 只有一个时间戳
-//        //1：每天一个时间戳
-//        //2：每小时一个时间戳
-//        val timestampType = byteBufferSyncData.get().toInt()
-//
-//        val baseYear = byteBufferSyncData.short
-//        val baseMon = byteBufferSyncData.get()
-//        val baseDay = byteBufferSyncData.get()
-//
-//        //时间戳
-//        val timestamp = byteBufferSyncData.int
-//        val dataLen = byteBufferSyncData.short
-//
-//        sjUniWatch.wmLog.logD(
-//            TAG,
-//            "timestampType:$timestampType --> baseDate:$baseYear$baseMon$baseDay  timestamp:$timestamp  dataLen:$dataLen"
-//        )
-//
-////        byteArray.copyOfRange(10, byteArray.lastIndex).forEachIndexed { index, it ->
-////            sjUniWatch.wmLog.logD(TAG, "step data: $index -> ${it.toInt() and 0xFF}")
-////        }
-//
-//        val calendar = Calendar.getInstance()
-//        calendar.set(baseYear.toInt(), baseMon.toInt(), baseDay.toInt(), 0, 0, 0)
-//
-//        val realTimeStamp = calendar.timeInMillis + timestamp
-//
-//        sjUniWatch.wmLog.logD(TAG, "start base date:" + TimeUtils.date2String(Date(realTimeStamp)))
-//
-//        val stepList = mutableListOf<WmStepData>()
-//
-//        while (byteBufferSyncData.hasRemaining()) {
-//
-//            val wmStepData = WmStepData(byteBufferSyncData.get().toInt() and 0XFF)
-//
-//            if (timestampType == 0) {
-//                sjUniWatch.wmLog.logD(
-//                    TAG,
-//                    "start base date:" + TimeUtils.date2String(Date(realTimeStamp + (byteBufferSyncData.position() - 12) * 60 * 60 * 1000))
-//                )
-//
-//                wmStepData.timestamp =
-//                    realTimeStamp + (byteBufferSyncData.position() - 12) * 60 * 60 * 1000
-//            }
-//
-//            sjUniWatch.wmLog.logD(
-//                TAG,
-//                "step data: ${byteBufferSyncData.position()} -> ${wmStepData}"
-//            )
-//
-//            stepList.add(wmStepData)
-//        }
-//
-//        val wmSyncData =
-//            WmSyncData(WmSyncDataType.STEP, realTimeStamp, WmIntervalType.ONE_HOUR, stepList)
-//
-//        stepObserveEmitter?.onSuccess(wmSyncData)
-//
-//
-//        sjUniWatch.wmLog.logE(
-//            TAG,
-//            "${wmSyncData}"
-//        )
-
     }
 
 }

@@ -79,7 +79,7 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(), Li
     private val mBindStateMap = HashMap<String, Boolean>()
 
     //同步数据
-    private val syncActivity = wmSync.syncActivityData as SyncActivityData
+    private val syncActivity = wmSync.syncActivityDurationData as SyncActivityDurationData
     private val syncCaloriesData = wmSync.syncCaloriesData as SyncCaloriesData
     private val syncDistanceData = wmSync.syncDistanceData as SyncDistanceData
     private val syncHeartRateData = wmSync.syncHeartRateData as SyncHeartRateData
@@ -1368,7 +1368,7 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(), Li
                         }
 
                         URN_SPORT_CALORIES -> {
-
+                            syncCaloriesData.syncCaloriesBusiness(it.data)
                         }
 
                         URN_SPORT_ACTIVITY_LEN -> {
@@ -1392,11 +1392,11 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(), Li
                         }
 
                         URN_SPORT_RATE_RECORD -> {
-
+                            syncHeartRateData.syncHeartRateBusiness(it.data)
                         }
 
                         URN_SPORT_RATE_REALTIME -> {
-
+                            syncRealtimeRateData.syncRealHeartRateBusiness(it.data)
                         }
 
                         URN_SPORT_SLEEP -> {

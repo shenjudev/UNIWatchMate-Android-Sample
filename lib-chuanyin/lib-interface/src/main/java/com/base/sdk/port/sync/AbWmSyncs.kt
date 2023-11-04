@@ -1,7 +1,6 @@
 package com.base.sdk.port.sync
 
 import com.base.sdk.entity.data.*
-import com.base.sdk.entity.settings.WmDeviceInfo
 
 /**
  * 同步数据
@@ -45,7 +44,7 @@ abstract class AbWmSyncs {
     /**
      * syncActivity(同步日常活动)
      */
-    abstract val syncActivityData: AbSyncData<WmSyncData<WmActivityData>>
+    abstract val syncActivityDurationData: AbSyncData<WmSyncData<WmActivityDurationData>>
 
     /**
      * syncSportSummary(同步运动小结)

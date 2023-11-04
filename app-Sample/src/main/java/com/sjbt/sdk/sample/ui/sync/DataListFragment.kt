@@ -26,7 +26,7 @@ import java.util.*
 abstract class DataListFragment<T> : BaseFragment() {
 
     private val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-    protected val timeFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
+    protected val timeFormat = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault())
     protected val syncDataRepository = Injector.getSyncDataRepository()
     private var selectDate: Date = Date()
     protected lateinit var adapter: DataListAdapter<T>

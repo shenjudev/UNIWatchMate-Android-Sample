@@ -2,9 +2,6 @@ package com.base.api
 
 import com.base.sdk.AbUniWatch
 import com.base.sdk.entity.data.*
-import com.base.sdk.port.setting.AbWmSetting
-import com.base.sdk.port.setting.AbWmSettings
-import com.base.sdk.entity.settings.*
 import com.base.sdk.port.sync.AbSyncData
 import com.base.sdk.port.sync.AbWmSyncs
 
@@ -26,8 +23,8 @@ internal class AbWmSyncDelegate(
         get() = watchObservable.value!!.wmSync.syncHeartRateData
     override val syncDistanceData: AbSyncData<WmSyncData<WmDistanceData>>
         get() = watchObservable.value!!.wmSync.syncDistanceData
-    override val syncActivityData: AbSyncData<WmSyncData<WmActivityData>>
-        get() = watchObservable.value!!.wmSync.syncActivityData
+    override val syncActivityDurationData: AbSyncData<WmSyncData<WmActivityDurationData>>
+        get() = watchObservable.value!!.wmSync.syncActivityDurationData
     override val syncSportSummaryData: AbSyncData<WmSyncData<WmSportSummaryData>>
         get() = watchObservable.value!!.wmSync.syncSportSummaryData
     override val syncTodayInfoData: AbSyncData<WmSyncData<WmTodayTotalData>>

@@ -72,7 +72,7 @@ class WmHeartRateData(
     /**
      * activity duration, in seconds
      */
-    val duration: Int
+    val duration: Int = 0
 
 ) : WmBaseSyncData() {
     override fun toString(): String {
@@ -239,13 +239,14 @@ class WmGameData(
 }
 
 /**
- * 活动时长
+ * Duration of continuous activity per hour 每小时持续活动的时长
+ * duration :seconds
  */
-class WmActivityData(
+class WmActivityDurationData(
     val duration: Int
 ) : WmBaseSyncData() {
     override fun toString(): String {
-        return "WmActivityData(activity=$duration, duration=$duration)"
+        return "WmActivityDurationData(activity=$duration, duration=$duration)"
     }
 }
 
@@ -278,7 +279,7 @@ class WmEcgData(
 }
 
 /**
- * 睡眠同步数据
+ * Sleep synchronization data 睡眠同步数据
  */
 class WmSleepData(
     val wmSleepSettings: WmSleepSettings,
@@ -291,7 +292,7 @@ class WmSleepData(
 }
 
 /**
- * 睡眠概览
+ * SleepSummary 睡眠概览
  */
 data class WmSleepSummary(
     var dateStamp: Long,// 日期时间戳 (毫秒)
@@ -478,7 +479,9 @@ enum class WmIntervalType(val seconds: Int) {
 enum class WmSyncDataType {
     SPORT_SUMMARY,
     STEP,
-    HEART_RATE,
+    DISTANCE,
+    CALORIE,
+    HEART_RATE_FIVE_MINUTES,
     OXYGEN,
     BLOOD_PRESSURE,
     BLOOD_PRESSURE_MEASURE,
