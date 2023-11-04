@@ -87,13 +87,14 @@ class SyncStepData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmStepDat
 
                             var bufferSize = 0
                             msgList.forEach {
-                                bufferSize += it.payloadLen
+                                bufferSize += it.payloadLen - 9
                             }
 
                             byteBufferSyncData =
                                 ByteBuffer.allocate(bufferSize).order(ByteOrder.LITTLE_ENDIAN)
 
                             msgList.forEachIndexed { index, it ->
+
                                 sjUniWatch.wmLog.logE(
                                     TAG,
                                     "step data:" + BtUtils.bytesToHexString(it.originData)
@@ -107,8 +108,10 @@ class SyncStepData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmStepDat
                                         )
                                     )
                                 } else {
-                                    byteBufferSyncData.put(it.payload)
+                                    val byteBuffer = ByteBuffer.wrap(it.payload).order(ByteOrder.LITTLE_ENDIAN)
+                                    byteBufferSyncData.put(byteBuffer)
                                 }
+
                             }
 
                             parseStepData()
@@ -152,18 +155,15 @@ class SyncStepData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmStepDat
 
         val stepList = mutableListOf<WmStepData>()
 
+        var dataIndex = 0
+
         while (byteBufferSyncData.hasRemaining()) {
 
             val wmStepData = WmStepData(byteBufferSyncData.int)
 
             if (timestampType == 0) {//只有一个时间戳
-                sjUniWatch.wmLog.logD(
-                    TAG,
-                    "start base date:" + TimeUtils.date2String(Date(realTimeStamp + (byteBufferSyncData.position() - 12) * SYNC_DATA_INTERVAL))
-                )
-
                 wmStepData.timestamp =
-                    realTimeStamp + (byteBufferSyncData.position() - 12) * SYNC_DATA_INTERVAL
+                    realTimeStamp + dataIndex * SYNC_DATA_INTERVAL
             }
 
             sjUniWatch.wmLog.logD(
@@ -172,6 +172,7 @@ class SyncStepData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmStepDat
             )
 
             stepList.add(wmStepData)
+            dataIndex++
         }
 
         val wmSyncData =
