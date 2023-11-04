@@ -1,6 +1,7 @@
 package com.sjbt.sdk.sample.model
 
 import com.sjbt.sdk.sample.MyApplication
+import com.sjbt.sdk.sample.base.Config
 
 /**
  * Created by qiyachao
@@ -18,7 +19,7 @@ class LocalSportLibrary {
         val names = hashMapOf<String, String>()
     }
 
-    fun getNameById(id: Int):String {
+    fun getNameById(id: Int): String {
         val locale = MyApplication.instance.resources.configuration.locale;
         val language = locale.language;
         for (bean in sports) {
@@ -42,7 +43,7 @@ class LocalSportLibrary {
         return ""
     }
 
-    fun getTypeById(id: Int):String {
+    fun getTypeById(id: Int): String {
         val locale = MyApplication.instance.resources.configuration.locale;
         val language = locale.language;
         for (bean in sports) {
@@ -57,7 +58,7 @@ class LocalSportLibrary {
     }
 
     private fun getTypeName(type: Int): String {
-            return ""
+        return Config.SportTypeName.values()[type - 1].name
     }
 }
 

@@ -30,7 +30,7 @@ class SportDetailFragment : DataListFragment<WmSportSummaryData>() {
     override val valueFormat: DataListAdapter.ValueFormat<WmSportSummaryData> =
         object : DataListAdapter.ValueFormat<WmSportSummaryData> {
             override fun format(context: Context, obj: WmSportSummaryData): String {
-                return dateTimeFormat.format(obj.timestamp) + "    " + sportTypeText(obj.sportId) + "  " + obj.valueType
+                return dateTimeFormat.format(obj.timestamp) + "    " + sportTypeText(obj.sportId) + "  " +  obj.valueType
             }
         }
 

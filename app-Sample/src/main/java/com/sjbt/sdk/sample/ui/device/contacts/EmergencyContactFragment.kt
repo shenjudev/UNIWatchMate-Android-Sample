@@ -114,7 +114,7 @@ class EmergencyContactFragment : BaseFragment(R.layout.fragment_emergency_contac
                             pickEmergencyContact.launch(Intent(Intent.ACTION_PICK).apply {
                                 type = ContactsContract.CommonDataKinds.Phone.CONTENT_TYPE
                             })
-                            viewBind.itemEmergencyContactSwitch.getSwitchView().isChecked=false
+                            viewBind.itemEmergencyContactSwitch.getSwitchView().isChecked = false
                             return@setOnCheckedChangeListener
                         }
                     }
