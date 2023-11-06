@@ -2,6 +2,7 @@ package com.sjbt.sdk.entity
 
 import android.util.Log
 import com.sjbt.sdk.TAG_SJ
+import com.sjbt.sdk.log.SJLog
 import com.sjbt.sdk.spp.cmd.*
 import com.sjbt.sdk.utils.BtUtils
 import com.sjbt.sdk.utils.ByteUtil
@@ -18,6 +19,8 @@ class MsgBean {
 
     @JvmField
     var cmdId = 0
+    var nodeId = 0
+    var requestId = 0
     var divideType: Byte = 0
     var payloadPackTotalLen: Short = 0
     var payloadLen = 0
@@ -37,6 +40,8 @@ class MsgBean {
                 ", divideType=" + divideType +
                 ", payloadLen=" + payloadLen +
                 ", payloadPackTotalLen=" + payloadPackTotalLen +
+                ", requestId=" + requestId +
+                ", nodeId=" + nodeId +
                 '}'
     }
 
@@ -46,6 +51,7 @@ class MsgBean {
                 (head == HEAD_COMMON && cmdId == CMD_ID_802E.toInt()) ||//绑定
                 (head == HEAD_FILE_SPP_A_2_D && cmdId == CMD_ID_8003.toInt()) ||//传输文件的过程中，采用连续传输的方式
                 (head == HEAD_CAMERA_PREVIEW && cmdId == CMD_ID_8002.toInt()) ||//相机预览
+                (head == HEAD_NODE_TYPE && cmdId == CMD_ID_8004.toInt()) || //通讯层节点消息
                 (head == HEAD_NODE_TYPE && cmdId == CMD_ID_8004.toInt())) //通讯层节点消息
 
     private val isNodeMsg: Boolean = head == HEAD_NODE_TYPE
@@ -72,7 +78,7 @@ class MsgBean {
             return timeOutCode
         }
 
-    companion object{
+    companion object {
         fun fromByteArrayToMsgBean(msg: ByteArray): MsgBean {
             val msgBean = MsgBean()
             try {
@@ -118,6 +124,7 @@ class MsgBean {
 
                 if (msgBean.divideType == DIVIDE_N_2 || msgBean.divideType == DIVIDE_N_JSON) {
                     if (payLoadLength > 0) {
+
                         val payload = ByteArray(payLoadLength)
                         System.arraycopy(msg, BT_MSG_BASE_LEN, payload, 0, payLoadLength)
                         msgBean.payload = payload
@@ -125,11 +132,28 @@ class MsgBean {
                             val payloadJson = String(payload, StandardCharsets.UTF_8)
                             msgBean.payloadJson = payloadJson
                         }
+
+                        if (msgBean.head == HEAD_NODE_TYPE && msgBean.cmdId != CMD_ID_8004.toInt()) {
+                            msgBean.requestId = ByteBuffer.wrap(msgBean.payload).order(ByteOrder.LITTLE_ENDIAN).short.toInt()
+
+                            msgBean.nodeId =
+                                ByteBuffer.wrap(msgBean.payload.copyOfRange(10, 14)).order(ByteOrder.LITTLE_ENDIAN).int
+
+                            Log.e(TAG_SJ, "requestId:" + msgBean.requestId)
+                            Log.e(TAG_SJ, "nodeId:" + msgBean.nodeId)
+
+                        }
                     }
-                } else {
+                } else {//分包 subpackage
                     if (msgBean.head != HEAD_NODE_TYPE) {//如果不是节点数据，分包前四个是序号
                         val divideIndexArray = ByteArray(4)
-                        System.arraycopy(msg, BT_MSG_BASE_LEN, divideIndexArray, 0, divideIndexArray.size)
+                        System.arraycopy(
+                            msg,
+                            BT_MSG_BASE_LEN,
+                            divideIndexArray,
+                            0,
+                            divideIndexArray.size
+                        )
                         msgBean.divideIndex = ByteUtil.bytesToInt(divideIndexArray)
 
                         val payload = ByteArray(payLoadLength - 4)
@@ -139,6 +163,17 @@ class MsgBean {
                         val payload = ByteArray(payLoadLength)
                         System.arraycopy(msg, BT_MSG_BASE_LEN, payload, 0, payload.size)
                         msgBean.payload = payload
+
+                        if (msgBean.head == HEAD_NODE_TYPE && msgBean.cmdId != CMD_ID_8004.toInt()) {
+                            msgBean.requestId = ByteBuffer.wrap(msgBean.payload).order(ByteOrder.LITTLE_ENDIAN).short.toInt()
+
+                            msgBean.nodeId =
+                                ByteBuffer.wrap(msgBean.payload.copyOfRange(10, 14)).order(ByteOrder.LITTLE_ENDIAN).int
+
+                            Log.e(TAG_SJ, "requestId:" + msgBean.requestId)
+                            Log.e(TAG_SJ, "nodeId:" + msgBean.nodeId)
+
+                        }
                     }
                 }
             } catch (e: Exception) {

@@ -648,6 +648,7 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(), Li
                                 CMD_ID_8001 -> {//请求
 
                                     if (msgBean.payload.size > 10) {//设备请求的消息
+                                        sendCommunityResponse()
 
                                         var payloadPackage: PayloadPackage =
                                             PayloadPackage.fromByteArray(msgBean.payload)
