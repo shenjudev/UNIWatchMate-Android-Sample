@@ -53,33 +53,6 @@ class ContactsFragment : BaseFragment(R.layout.fragment_contacts) {
 //            }
 //        }
 
-    private fun getContact(uri: Uri) {
-        val projection = arrayOf(
-            ContactsContract.CommonDataKinds.Phone.NUMBER,
-            ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME
-        )
-        val cursor =
-            requireContext().contentResolver.query(uri, projection, null, null, null)
-        if (cursor != null && cursor.moveToFirst()) {
-            val numberIndex =
-                cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)
-            val nameIndex =
-                cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME)
-            var number = cursor.getString(numberIndex)
-            val name = cursor.getString(nameIndex)
-            Timber.i("select contacts result: [$name , $number]")
-            cursor.close()
-            if (!name.isNullOrEmpty() && !number.isNullOrEmpty()) {
-                number = number.replace(" ".toRegex(), "")
-                val newContact = WmContact.create(name, number)
-                newContact?.let {
-                    promptProgress.showProgress("")
-                    viewModel.addContacts(it)
-                }
-            }
-        }
-    }
-
     private fun setContacts(contacts: ArrayList<PhoneContact>) {
         promptProgress.showProgress("")
         val wmContactList = arrayListOf<WmContact>()
@@ -259,8 +232,7 @@ class ContactsFragment : BaseFragment(R.layout.fragment_contacts) {
             val fullName = "$firstName$lastName"
 //            val phoneNumber =
 //                "${random.nextInt(900) + 100}${random.nextInt(900) + 100}${random.nextInt(9000) + 1000}$indext"
-            val phoneNumber =
-                "$indext"
+            val phoneNumber = "$indext"
             val wmContact = WmContact.create(fullName, phoneNumber)
             if (wmContact != null) {
                 contacts.add(wmContact)

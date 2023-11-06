@@ -42,15 +42,30 @@ class PhoneContactsFragment : BaseFragment(R.layout.fragment_phone_contacts) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+
         requireActivity().addMenuProvider(object : MenuProvider {
             override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-
+                menuInflater.inflate(R.menu.menu_contact_select, menu)
             }
 
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
                 if (menuItem.itemId == android.R.id.home) {
                     onBackPressed()
                     return true
+                }else if (menuItem.itemId == R.id.menu_contact_select) {
+                    val choosePhoneContact = arrayListOf<PhoneContact>()
+                    adapter.sources?.let {
+                        for (bean in it) {
+                            if (bean.checked) {
+                                choosePhoneContact.add(bean)
+                            }
+                        }
+                        setFragmentResult(ContactsFragment.PHONE_CONTACTS_SELECT_KEY, Bundle().apply {
+                            putParcelableArrayList(ContactsFragment.PHONE_CONTACTS_SELECT, choosePhoneContact)
+                        })
+                        onBackPressed()
+                    }
                 }
                 return false
             }
@@ -136,18 +151,6 @@ class PhoneContactsFragment : BaseFragment(R.layout.fragment_phone_contacts) {
     }
 
     private fun onBackPressed() {
-        val choosePhoneContact = arrayListOf<PhoneContact>()
-        adapter.sources?.let {
-            for (bean in it) {
-                if (bean.checked) {
-                    choosePhoneContact.add(bean)
-                }
-            }
-            setFragmentResult(ContactsFragment.PHONE_CONTACTS_SELECT_KEY, Bundle().apply {
-                putParcelableArrayList(ContactsFragment.PHONE_CONTACTS_SELECT, choosePhoneContact)
-            })
-        }
-
         findNavController().navigateUp()
     }
 }
