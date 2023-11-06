@@ -86,8 +86,12 @@ class SyncStepData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmStepDat
                         if (msgList.size > 0) {
 
                             var bufferSize = 0
-                            msgList.forEach {
-                                bufferSize += it.payloadLen - 9
+                            msgList.forEachIndexed() { index, it ->
+                                if (index == 0) {
+                                    bufferSize = it.payloadLen - 17
+                                } else {
+                                    bufferSize += it.payloadLen
+                                }
                             }
 
                             byteBufferSyncData =
@@ -104,12 +108,13 @@ class SyncStepData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmStepDat
                                     byteBufferSyncData.put(
                                         it.payload.copyOfRange(
                                             17,
-                                            it.payload.lastIndex
+                                            it.payload.size
                                         )
                                     )
                                 } else {
-                                    val byteBuffer = ByteBuffer.wrap(it.payload).order(ByteOrder.LITTLE_ENDIAN)
-                                    byteBufferSyncData.put(byteBuffer)
+                                    val byteBuffer =
+                                        ByteBuffer.wrap(it.payload).order(ByteOrder.LITTLE_ENDIAN)
+                                    byteBufferSyncData.put(it.payload)
                                 }
 
                             }
