@@ -367,12 +367,20 @@
         android:id="@+id/contactsFragment"
         android:name="com.sjbt.sdk.sample.ui.device.contacts.ContactsFragment"
         android:label="@string/ds_contacts"
-        tools:layout="@layout/fragment_contacts" />
-
+        tools:layout="@layout/fragment_contacts">
+        <action
+            android:id="@+id/toPhoneContacts"
+            app:destination="@id/phoneContacts" />
+    </fragment>
+    <fragment
+        android:id="@+id/phoneContacts"
+        android:name="com.sjbt.sdk.sample.ui.device.contacts.PhoneContactsFragment"
+        android:label="@string/ds_emergency_contacts"
+        tools:layout="@layout/fragment_phone_contacts" />
     <fragment
         android:id="@+id/emergencyContacts"
         android:name="com.sjbt.sdk.sample.ui.device.contacts.EmergencyContactFragment"
-        android:label="@string/ds_emergency_contacts"
+        android:label="@string/ds_phone_contacts"
         tools:layout="@layout/fragment_emergency_contacts" />
     <fragment
         android:id="@+id/dialHomePageFragment"
