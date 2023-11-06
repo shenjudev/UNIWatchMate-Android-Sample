@@ -126,9 +126,6 @@ class AppWeather(val sjUniWatch: SJUniWatch) : AbAppWeather() {
                         val result = nodeData.data[0].toInt() == ErrorCode.ERR_CODE_OK.ordinal
                         sjUniWatch.wmLog.logD(TAG, "weather push result:$result")
                         pushWeatherEmitter?.onSuccess(result)
-                    } else {
-                        val bcp = String(nodeData.data, StandardCharsets.UTF_8)
-                        observeWeather?.onNext(WmWeatherRequest(bcp, WmWeatherTime.TODAY))
                     }
                 }
             }
@@ -146,9 +143,6 @@ class AppWeather(val sjUniWatch: SJUniWatch) : AbAppWeather() {
                         val result = nodeData.data[0].toInt() == ErrorCode.ERR_CODE_OK.ordinal
                         sjUniWatch.wmLog.logD(TAG, "weather push result:$result")
                         pushWeatherEmitter?.onSuccess(result)
-                    } else {
-                        val bcp = String(nodeData.data, StandardCharsets.UTF_8)
-                        observeWeather?.onNext(WmWeatherRequest(bcp, WmWeatherTime.SEVEN_DAYS))
                     }
                 }
 

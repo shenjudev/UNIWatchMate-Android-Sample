@@ -52,8 +52,8 @@ android {
         applicationId "com.sjbt.sdk.sample"
         minSdk min_sdk_version
         targetSdk target_sdk_version
-        versionCode 36
-        versionName "1.0.36"
+        versionCode 37
+        versionName "1.0.37"
         signingConfig signingConfigs.release
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"

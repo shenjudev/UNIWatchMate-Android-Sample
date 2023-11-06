@@ -88,40 +88,77 @@ class MyApplication : Application() {
             }
         }
 
+        UNIWatchMate.wmApps.appWeather.observeWeather.subscribe {
+            if (it.wmWeatherTime == WmWeatherTime.SEVEN_DAYS) {
+                UNIWatchMate?.wmApps?.appWeather?.pushSevenDaysWeather(
+                    getTestWeatherdata(WmWeatherTime.SEVEN_DAYS, 32),
+                    WmUnitInfo.TemperatureUnit.CELSIUS
+                ).subscribe { result2 ->
+                    Timber.e("push seven_days weather result = $result2")
+                    ToastUtil.showToast(
+                        "push seven_days weather test ${
+                            if (result2) getString(R.string.tip_success) else getString(
+                                R.string.tip_failed
+                            )
+                        }"
+                    )
+                }
+
+            } else if (it.wmWeatherTime == WmWeatherTime.TODAY) {
+                UNIWatchMate?.wmApps?.appWeather?.pushTodayWeather(
+                    getTestWeatherdata(WmWeatherTime.TODAY, 32),
+                    WmUnitInfo.TemperatureUnit.CELSIUS
+                ).subscribe { result ->
+                    UNIWatchMate.wmLog.logE(
+                        TAG,
+                        "push today weather result = $result"
+                    )
+                    ToastUtil.showToast(
+                        "push today weather test ${
+                            if (result) getString(R.string.tip_success) else getString(
+                                R.string.tip_failed
+                            )
+                        }"
+                    )
+                }
+            }
+        }
+
+
         applicationScope.launch {
             launchWithLog {
-                UNIWatchMate.wmApps.appWeather.observeWeather.asFlow().collect {
-                    if (it.wmWeatherTime == WmWeatherTime.SEVEN_DAYS) {
-                        val result2 = UNIWatchMate?.wmApps?.appWeather?.pushSevenDaysWeather(
-                            getTestWeatherdata(WmWeatherTime.SEVEN_DAYS, 32),
-                            WmUnitInfo.TemperatureUnit.CELSIUS
-                        )?.await()
-                        Timber.e("push seven_days weather result = $result2")
-                        ToastUtil.showToast(
-                            "push seven_days weather test ${
-                                if (result2) getString(R.string.tip_success) else getString(
-                                    R.string.tip_failed
-                                )
-                            }"
-                        )
-                    } else if (it.wmWeatherTime == WmWeatherTime.TODAY) {
-                        val result = UNIWatchMate?.wmApps?.appWeather?.pushTodayWeather(
-                            getTestWeatherdata(WmWeatherTime.TODAY, 32),
-                            WmUnitInfo.TemperatureUnit.CELSIUS
-                        )?.await()
-                        UNIWatchMate.wmLog.logE(
-                            TAG,
-                            "push today weather result = $result"
-                        )
-                        ToastUtil.showToast(
-                            "push today weather test ${
-                                if (result) getString(R.string.tip_success) else getString(
-                                    R.string.tip_failed
-                                )
-                            }"
-                        )
-                    }
-                }
+//                UNIWatchMate.wmApps.appWeather.observeWeather.asFlow().collect {
+//                    if (it.wmWeatherTime == WmWeatherTime.SEVEN_DAYS) {
+//                        val result2 = UNIWatchMate?.wmApps?.appWeather?.pushSevenDaysWeather(
+//                            getTestWeatherdata(WmWeatherTime.SEVEN_DAYS, 32),
+//                            WmUnitInfo.TemperatureUnit.CELSIUS
+//                        )?.await()
+//                        Timber.e("push seven_days weather result = $result2")
+//                        ToastUtil.showToast(
+//                            "push seven_days weather test ${
+//                                if (result2) getString(R.string.tip_success) else getString(
+//                                    R.string.tip_failed
+//                                )
+//                            }"
+//                        )
+//                    } else if (it.wmWeatherTime == WmWeatherTime.TODAY) {
+//                        val result = UNIWatchMate?.wmApps?.appWeather?.pushTodayWeather(
+//                            getTestWeatherdata(WmWeatherTime.TODAY, 32),
+//                            WmUnitInfo.TemperatureUnit.CELSIUS
+//                        )?.await()
+//                        UNIWatchMate.wmLog.logE(
+//                            TAG,
+//                            "push today weather result = $result"
+//                        )
+//                        ToastUtil.showToast(
+//                            "push today weather test ${
+//                                if (result) getString(R.string.tip_success) else getString(
+//                                    R.string.tip_failed
+//                                )
+//                            }"
+//                        )
+//                    }
+//                }
             }
             launchWithLog {
                 UNIWatchMate.wmApps.appCamera.observeCameraOpenState.asFlow().collect {
