@@ -717,8 +717,7 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(), Li
                                 }
 
                                 CMD_ID_8004 -> {
-                                    wmLog.logD(TAG, "transfer back msg：" + msgBean.payload.size)
-                                    node04Emitter?.onSuccess(msgBean.cmdOrder.toInt())
+                                    node04Emitter?.onSuccess(msgBean.cmdOrder)
                                 }
                             }
                         }
@@ -801,7 +800,11 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(), Li
                     }
 
                     CMD_ID_8003 -> {
-                        batteryEmitter?.onError(RuntimeException("get battery time out"))
+                        batteryEmitter?.let {
+                            if (!it.isDisposed) {
+                                it.onError(RuntimeException("get battery time out"))
+                            }
+                        }
                     }
 
                     CMD_ID_8004 -> {

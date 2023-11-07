@@ -45,40 +45,25 @@ class MsgBean {
                 '}'
     }
 
-    val isNotTimeOut: Boolean
-        get() = ((head == HEAD_COMMON && cmdId == CMD_ID_800D.toInt()) ||//绑定
-                (head == HEAD_COMMON && cmdId == CMD_ID_800F.toInt()) ||//我的表盘列表
-                (head == HEAD_COMMON && cmdId == CMD_ID_802E.toInt()) ||//绑定
-                (head == HEAD_FILE_SPP_A_2_D && cmdId == CMD_ID_8003.toInt()) ||//传输文件的过程中，采用连续传输的方式
-                (head == HEAD_CAMERA_PREVIEW && cmdId == CMD_ID_8002.toInt()) ||//相机预览
-                (head == HEAD_NODE_TYPE && cmdId == CMD_ID_8004.toInt()) || //通讯层节点消息
-                (head == HEAD_NODE_TYPE && cmdId == CMD_ID_8004.toInt())) //通讯层节点消息
-
-    private val isNodeMsg: Boolean = head == HEAD_NODE_TYPE
+    var isNotTimeOut: Boolean = false
+    var isNodeMsg: Boolean = head == HEAD_NODE_TYPE
 
     //节点消息的
-    val timeOutCode: String
-        get() {
-            val timeOutCode: String
-            if (isNodeMsg) {
-                var requestId: Short = 0
-                val requestArray = ByteArray(2)
-                if (payload != null && payload!!.size > 2) {
-                    requestArray[0] = payload!![0]
-                    requestArray[1] = payload!![1]
-                    requestId = BtUtils.byte2short(requestArray)
-                }
-                Log.d(TAG_SJ, "node timeout code requestId:$requestId")
-                Log.d(TAG_SJ, "node timeout code not timeout:$isNotTimeOut")
-                timeOutCode = "" + head + requestId //节点消息的
-            } else {
-                timeOutCode = "" + head + cmdOrder + cmdId
-                Log.d(TAG_SJ, "old timeout code:$timeOutCode cmdId:$cmdId")
-            }
-            return timeOutCode
-        }
+    var timeOutCode: String? = null
 
     companion object {
+
+        fun isNotTimeOut(head: Byte, cmdId: Int): Boolean {
+            return ((head == HEAD_COMMON && cmdId == CMD_ID_800D.toInt()) ||//绑定
+                    (head == HEAD_COMMON && cmdId == CMD_ID_800F.toInt()) ||//我的表盘列表
+                    (head == HEAD_COMMON && cmdId == CMD_ID_802E.toInt()) ||//绑定
+                    (head == HEAD_FILE_SPP_A_2_D && cmdId == CMD_ID_8003.toInt()) ||//传输文件的过程中，采用连续传输的方式
+                    (head == HEAD_CAMERA_PREVIEW && cmdId == CMD_ID_8002.toInt()) ||//相机预览
+                    (head == HEAD_NODE_TYPE && cmdId == CMD_ID_8004.toInt()) || //通讯层节点消息
+                    (head == HEAD_NODE_TYPE && cmdId == CMD_ID_8004.toInt())) //通讯层节点消息
+
+        }
+
         fun fromByteArrayToMsgBean(msg: ByteArray): MsgBean {
             val msgBean = MsgBean()
             try {
@@ -86,6 +71,7 @@ class MsgBean {
                 msgBean.originData = msg
                 msgBean.head = byteBuffer.get()
                 msgBean.cmdOrder = byteBuffer.get().toInt() and 0Xfffffff
+                msgBean.isNodeMsg = msgBean.head == HEAD_NODE_TYPE
 
                 val cmdId = ByteArray(2)
 
@@ -98,7 +84,7 @@ class MsgBean {
 
                 msgBean.cmdIdStr = BtUtils.bytesToHexString(cmdId)
                 msgBean.cmdId = BtUtils.byte2short(cmdId).toInt()
-
+                msgBean.isNotTimeOut = isNotTimeOut(msgBean.head, msgBean.cmdId)
 //            Log.e("SJ_SDK>>>>>", "response:" + response + "  cmdIdStr:" + msgBean.cmdIdStr)
 
                 //            LogUtils.logBlueTooth("返回命令cmdId:" + msgBean.cmdId);
@@ -123,8 +109,10 @@ class MsgBean {
                 msgBean.crc = ByteUtil.bytesToInt(crcArray, ByteOrder.LITTLE_ENDIAN)
 
                 if (msgBean.divideType == DIVIDE_N_2 || msgBean.divideType == DIVIDE_N_JSON) {
-                    if (payLoadLength > 0) {
 
+                    msgBean.timeOutCode = (msgBean.head + msgBean.cmdOrder).toString()
+
+                    if (payLoadLength > 0) {
                         val payload = ByteArray(payLoadLength)
                         System.arraycopy(msg, BT_MSG_BASE_LEN, payload, 0, payLoadLength)
                         msgBean.payload = payload
@@ -134,17 +122,24 @@ class MsgBean {
                         }
 
                         if (msgBean.head == HEAD_NODE_TYPE && msgBean.cmdId != CMD_ID_8004.toInt()) {
-                            msgBean.requestId = ByteBuffer.wrap(msgBean.payload).order(ByteOrder.LITTLE_ENDIAN).short.toInt()
+
+                            msgBean.requestId = ByteBuffer.wrap(msgBean.payload)
+                                .order(ByteOrder.LITTLE_ENDIAN).short.toInt()
 
                             msgBean.nodeId =
-                                ByteBuffer.wrap(msgBean.payload.copyOfRange(10, 14)).order(ByteOrder.LITTLE_ENDIAN).int
+                                ByteBuffer.wrap(msgBean.payload.copyOfRange(10, 14))
+                                    .order(ByteOrder.LITTLE_ENDIAN).int
 
                             Log.e(TAG_SJ, "requestId:" + msgBean.requestId)
                             Log.e(TAG_SJ, "nodeId:" + msgBean.nodeId)
 
+                            msgBean.timeOutCode = msgBean.requestId.toString()+msgBean.nodeId.toString()
+
                         }
                     }
                 } else {//分包 subpackage
+                    msgBean.timeOutCode = (msgBean.head + msgBean.cmdOrder).toString()
+
                     if (msgBean.head != HEAD_NODE_TYPE) {//如果不是节点数据，分包前四个是序号
                         val divideIndexArray = ByteArray(4)
                         System.arraycopy(
@@ -159,20 +154,24 @@ class MsgBean {
                         val payload = ByteArray(payLoadLength - 4)
                         System.arraycopy(msg, 20, payload, 0, payload.size)
                         msgBean.payload = payload
+
                     } else {
                         val payload = ByteArray(payLoadLength)
                         System.arraycopy(msg, BT_MSG_BASE_LEN, payload, 0, payload.size)
                         msgBean.payload = payload
 
                         if (msgBean.head == HEAD_NODE_TYPE && msgBean.cmdId != CMD_ID_8004.toInt()) {
-                            msgBean.requestId = ByteBuffer.wrap(msgBean.payload).order(ByteOrder.LITTLE_ENDIAN).short.toInt()
+                            msgBean.requestId = ByteBuffer.wrap(msgBean.payload)
+                                .order(ByteOrder.LITTLE_ENDIAN).short.toInt()
 
                             msgBean.nodeId =
-                                ByteBuffer.wrap(msgBean.payload.copyOfRange(10, 14)).order(ByteOrder.LITTLE_ENDIAN).int
+                                ByteBuffer.wrap(msgBean.payload.copyOfRange(10, 14))
+                                    .order(ByteOrder.LITTLE_ENDIAN).int
 
                             Log.e(TAG_SJ, "requestId:" + msgBean.requestId)
                             Log.e(TAG_SJ, "nodeId:" + msgBean.nodeId)
 
+                            msgBean.timeOutCode = msgBean.requestId.toString()
                         }
                     }
                 }
