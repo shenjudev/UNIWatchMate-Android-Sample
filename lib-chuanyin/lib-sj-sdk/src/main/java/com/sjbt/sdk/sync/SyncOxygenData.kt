@@ -4,6 +4,7 @@ import com.base.sdk.entity.data.*
 import com.base.sdk.port.sync.AbSyncData
 import com.sjbt.sdk.ReadSubPkMsg
 import com.sjbt.sdk.SJUniWatch
+import com.sjbt.sdk.entity.DataFormat
 import com.sjbt.sdk.entity.MsgBean
 import com.sjbt.sdk.entity.NodeData
 import com.sjbt.sdk.spp.cmd.CmdHelper
@@ -64,7 +65,7 @@ class SyncOxygenData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmOxyge
                 }
 
                 override fun onNext(t: MsgBean) {
-                    sjUniWatch.wmLog.logE(TAG, "real time rate back msg:$t")
+                    sjUniWatch.wmLog.logE(TAG, "oxygen back msg:$t")
                     msgList.add(t)
                 }
 
@@ -87,7 +88,7 @@ class SyncOxygenData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmOxyge
                         msgList.forEachIndexed { index, it ->
                             sjUniWatch.wmLog.logE(
                                 TAG,
-                                "real time rate data:" + BtUtils.bytesToHexString(it.originData)
+                                "oxygen data:" + BtUtils.bytesToHexString(it.originData)
                             )
 
                             if (index == 0) {
@@ -161,7 +162,7 @@ class SyncOxygenData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmOxyge
 
             sjUniWatch.wmLog.logD(
                 TAG,
-                "real time rate data: ${byteBufferSyncData.position()} -> ${wmOxygenData}"
+                "oxygen data: ${byteBufferSyncData.position()} -> ${wmOxygenData}"
             )
 
             oxygenDataList.add(wmOxygenData)
@@ -184,9 +185,16 @@ class SyncOxygenData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmOxyge
         )
     }
 
-    fun syncOxygenDataBusiness(byteArray: ByteArray) {
-        byteBufferSyncData = ByteBuffer.wrap(byteArray).order(ByteOrder.LITTLE_ENDIAN)
-        parseStepData()
+    fun syncOxygenDataBusiness(nodeData: NodeData) {
+        if (nodeData.dataFmt == DataFormat.FMT_BIN) {
+            byteBufferSyncData = ByteBuffer.wrap(nodeData.data).order(ByteOrder.LITTLE_ENDIAN)
+            parseStepData()
+        } else if (nodeData.dataFmt == DataFormat.FMT_ERRCODE || nodeData.dataFmt == DataFormat.FMT_NODATA) {
+            val wmSyncData =
+                WmSyncData(WmSyncDataType.STEP, 0, WmIntervalType.ONE_HOUR, mutableListOf<WmOxygenData>())
+
+            oxygenObserveEmitter?.onSuccess(wmSyncData)
+        }
     }
 
 }

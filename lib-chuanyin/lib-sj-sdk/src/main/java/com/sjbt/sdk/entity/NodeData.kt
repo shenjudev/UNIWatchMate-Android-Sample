@@ -1,8 +1,5 @@
 package com.sjbt.sdk.entity
 
-import android.util.Log
-import com.sjbt.sdk.TAG_SJ
-import com.sjbt.sdk.log.SJLog
 import java.nio.ByteBuffer
 
 class NodeData(

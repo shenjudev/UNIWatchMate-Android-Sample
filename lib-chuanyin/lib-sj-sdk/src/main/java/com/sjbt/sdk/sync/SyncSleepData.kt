@@ -5,6 +5,7 @@ import com.base.sdk.entity.settings.WmSleepSettings
 import com.base.sdk.port.sync.AbSyncData
 import com.sjbt.sdk.ReadSubPkMsg
 import com.sjbt.sdk.SJUniWatch
+import com.sjbt.sdk.entity.DataFormat
 import com.sjbt.sdk.entity.MsgBean
 import com.sjbt.sdk.entity.NodeData
 import com.sjbt.sdk.spp.cmd.CmdHelper
@@ -260,9 +261,17 @@ class SyncSleepData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmSleepD
         )
     }
 
-    fun syncRealHeartRateBusiness(byteArray: ByteArray) {
-        byteBufferSyncData = ByteBuffer.wrap(byteArray).order(ByteOrder.LITTLE_ENDIAN)
-        parseStepData()
+    fun syncRealHeartRateBusiness(nodeData: NodeData) {
+
+        if (nodeData.dataFmt == DataFormat.FMT_BIN) {
+            byteBufferSyncData = ByteBuffer.wrap(nodeData.data).order(ByteOrder.LITTLE_ENDIAN)
+            parseStepData()
+        } else if (nodeData.dataFmt == DataFormat.FMT_ERRCODE || nodeData.dataFmt == DataFormat.FMT_NODATA) {
+            val wmSyncData =
+                WmSyncData(WmSyncDataType.STEP, 0, WmIntervalType.ONE_HOUR, mutableListOf<WmSleepData>())
+
+            activityObserveEmitter?.onSuccess(wmSyncData)
+        }
     }
 
 }

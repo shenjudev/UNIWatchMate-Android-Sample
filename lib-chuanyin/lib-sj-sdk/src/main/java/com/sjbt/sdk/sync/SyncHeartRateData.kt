@@ -4,8 +4,10 @@ import com.base.sdk.entity.data.*
 import com.base.sdk.port.sync.AbSyncData
 import com.sjbt.sdk.ReadSubPkMsg
 import com.sjbt.sdk.SJUniWatch
+import com.sjbt.sdk.entity.DataFormat
 import com.sjbt.sdk.entity.MsgBean
 import com.sjbt.sdk.entity.NodeData
+import com.sjbt.sdk.exception.SjException
 import com.sjbt.sdk.spp.cmd.*
 import com.sjbt.sdk.utils.BtUtils
 import com.sjbt.sdk.utils.TimeUtils
@@ -66,7 +68,7 @@ class SyncHeartRateData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmHe
                 }
 
                 override fun onNext(t: MsgBean) {
-                    sjUniWatch.wmLog.logE(TAG, "step back msg:$t")
+                    sjUniWatch.wmLog.logE(TAG, "heart rate back msg:$t")
                     msgList.add(t)
                 }
 
@@ -89,7 +91,7 @@ class SyncHeartRateData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmHe
                         msgList.forEachIndexed { index, it ->
                             sjUniWatch.wmLog.logE(
                                 TAG,
-                                "step data:" + BtUtils.bytesToHexString(it.originData)
+                                "heart rate data:" + BtUtils.bytesToHexString(it.originData)
                             )
 
                             if (index == 0) {
@@ -168,7 +170,7 @@ class SyncHeartRateData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmHe
 
             sjUniWatch.wmLog.logD(
                 TAG,
-                "step data: ${byteBufferSyncData.position()} -> ${wmHeartRateData}"
+                "heart rate data: ${byteBufferSyncData.position()} -> ${wmHeartRateData}"
             )
 
             realTimeRateList.add(wmHeartRateData)
@@ -191,9 +193,17 @@ class SyncHeartRateData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmHe
         )
     }
 
-    fun syncHeartRateBusiness(byteArray: ByteArray) {
-        byteBufferSyncData = ByteBuffer.wrap(byteArray).order(ByteOrder.LITTLE_ENDIAN)
-        parseStepData()
+    fun syncHeartRateBusiness(nodeData: NodeData) {
+
+        if (nodeData.dataFmt == DataFormat.FMT_BIN) {
+            byteBufferSyncData = ByteBuffer.wrap(nodeData.data).order(ByteOrder.LITTLE_ENDIAN)
+            parseStepData()
+        } else if (nodeData.dataFmt == DataFormat.FMT_ERRCODE || nodeData.dataFmt == DataFormat.FMT_NODATA) {
+            val wmSyncData =
+                WmSyncData(WmSyncDataType.STEP, 0, WmIntervalType.ONE_HOUR, mutableListOf<WmHeartRateData>())
+
+            heartRateObserveEmitter?.onSuccess(wmSyncData)
+        }
     }
 
 }

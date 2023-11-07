@@ -26,7 +26,7 @@ class SportFragment : DataListFragment<WmSportSummaryData>(),
     override val valueFormat: DataListAdapter.ValueFormat<WmSportSummaryData> =
         object : DataListAdapter.ValueFormat<WmSportSummaryData> {
             override fun format(context: Context, obj: WmSportSummaryData): String {
-                return dateTimeFormat.format(obj.timestamp) + "    " + sportTypeText(obj.sportId) + "  " + obj.valueType
+                return dateTimeFormat.format(obj.timestamp) + "    " + sportTypeText(obj.sportId) + "  " + obj.actTime
             }
         }
 
@@ -38,20 +38,16 @@ class SportFragment : DataListFragment<WmSportSummaryData>(),
 
     override fun queryData(date: Date): List<WmSportSummaryData>? {
 
-//        val result =runBlocking {
-//            if (localSportLibrary != null) {
-//                val sportsData = ResourceUtils.readAssets2String("sports_data.json")
-//                localSportLibrary =
-//                    GsonUtils.fromJson<LocalSportLibrary>(sportsData, LocalSportLibrary::class.java)
-//            }
-//
-//           UNIWatchMate.wmSync.syncSportSummaryData.syncData(date.time).await()
-//        }
-        val result = arrayListOf<WmSportSummaryData>()
-//        if (result is ArrayList) {
-//            result.add(WmSportSummaryData(System.currentTimeMillis(),9, mutableListOf()))
-//        }
-        return result
+        val result = runBlocking {
+            if (localSportLibrary != null) {
+                val sportsData = ResourceUtils.readAssets2String("sports_data.json")
+                localSportLibrary =
+                    GsonUtils.fromJson<LocalSportLibrary>(sportsData, LocalSportLibrary::class.java)
+            }
+
+            UNIWatchMate.wmSync.syncSportSummaryData.syncData(date.time).await()
+        }
+        return result.value
     }
 
     //TODO Only part game types are listed here.

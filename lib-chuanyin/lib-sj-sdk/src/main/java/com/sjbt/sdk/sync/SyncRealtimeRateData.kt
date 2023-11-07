@@ -1,14 +1,13 @@
 package com.sjbt.sdk.sync
 
-import com.base.sdk.entity.data.WmIntervalType
-import com.base.sdk.entity.data.WmRealtimeRateData
-import com.base.sdk.entity.data.WmSyncData
-import com.base.sdk.entity.data.WmSyncDataType
+import com.base.sdk.entity.data.*
 import com.base.sdk.port.sync.AbSyncData
 import com.sjbt.sdk.ReadSubPkMsg
 import com.sjbt.sdk.SJUniWatch
+import com.sjbt.sdk.entity.DataFormat
 import com.sjbt.sdk.entity.MsgBean
 import com.sjbt.sdk.entity.NodeData
+import com.sjbt.sdk.exception.SjException
 import com.sjbt.sdk.spp.cmd.*
 import com.sjbt.sdk.utils.BtUtils
 import com.sjbt.sdk.utils.TimeUtils
@@ -21,11 +20,12 @@ import java.nio.ByteOrder
 import java.util.*
 
 class SyncRealtimeRateData(val sjUniWatch: SJUniWatch) :
-    AbSyncData<WmSyncData<WmRealtimeRateData>>(),ReadSubPkMsg {
+    AbSyncData<WmSyncData<WmRealtimeRateData>>(), ReadSubPkMsg {
 
     var isActionSupport: Boolean = true
     var lastSyncTime: Long = 0
-    private var realTimeHeartRateObserveEmitter: SingleEmitter<WmSyncData<WmRealtimeRateData>>? = null
+    private var realTimeHeartRateObserveEmitter: SingleEmitter<WmSyncData<WmRealtimeRateData>>? =
+        null
     private var observeChangeEmitter: ObservableEmitter<WmSyncData<WmRealtimeRateData>>? = null
 
     private val TAG = "SyncRealtimeRateData"
@@ -56,7 +56,8 @@ class SyncRealtimeRateData(val sjUniWatch: SJUniWatch) :
 
         return Single.create { emitter ->
             realTimeHeartRateObserveEmitter = emitter
-            sjUniWatch.sendReadSubPkObserveNode(this,
+            sjUniWatch.sendReadSubPkObserveNode(
+                this,
                 CmdHelper.getReadSportSyncData(
                     startTime, lastSyncTime,
                     childUrn = URN_SPORT_RATE,
@@ -172,7 +173,12 @@ class SyncRealtimeRateData(val sjUniWatch: SJUniWatch) :
         }
 
         val wmSyncData =
-            WmSyncData(WmSyncDataType.HEART_RATE_FIVE_MINUTES, realTimeStamp, WmIntervalType.FIVE_MINUTES, realTimeRateList)
+            WmSyncData(
+                WmSyncDataType.HEART_RATE_FIVE_MINUTES,
+                realTimeStamp,
+                WmIntervalType.FIVE_MINUTES,
+                realTimeRateList
+            )
 
         realTimeHeartRateObserveEmitter?.onSuccess(wmSyncData)
         lastSyncTime = System.currentTimeMillis()
@@ -183,9 +189,16 @@ class SyncRealtimeRateData(val sjUniWatch: SJUniWatch) :
         )
     }
 
-    fun syncRealHeartRateBusiness(byteArray: ByteArray) {
-        byteBufferSyncData = ByteBuffer.wrap(byteArray).order(ByteOrder.LITTLE_ENDIAN)
-        parseStepData()
+    fun syncRealHeartRateBusiness(nodeData: NodeData) {
+        if (nodeData.dataFmt == DataFormat.FMT_BIN) {
+            byteBufferSyncData = ByteBuffer.wrap(nodeData.data).order(ByteOrder.LITTLE_ENDIAN)
+            parseStepData()
+        } else if (nodeData.dataFmt == DataFormat.FMT_ERRCODE || nodeData.dataFmt == DataFormat.FMT_NODATA) {
+            val wmSyncData =
+                WmSyncData(WmSyncDataType.STEP, 0, WmIntervalType.ONE_HOUR, mutableListOf<WmRealtimeRateData>())
+
+            realTimeHeartRateObserveEmitter?.onSuccess(wmSyncData)
+        }
     }
 
 }

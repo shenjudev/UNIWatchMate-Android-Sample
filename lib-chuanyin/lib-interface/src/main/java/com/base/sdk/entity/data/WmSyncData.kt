@@ -41,20 +41,89 @@ class WmSyncData<T : WmBaseSyncData>(
 
 /**
  * 运动小结
+ *
+/// 训练开始日期
+uint32_t date;
+/// 训练开始时间戳(毫秒)
+uint32_t ts_start;
+/// 训练结束时间戳(毫秒)
+uint32_t ts_end;
+uint16_t sport_id;
+/// 训练类型, 4种类型
+uint8_t sport_type;
+/// 步数
+uint32_t step;
+/// 卡路里：kcal
+uint32_t calories;
+/// 距离：米
+uint32_t distance;
+//活动时长
+uint16_t act_time;
+/// 最大心率
+uint8_t max_hr;
+/// 平均心率
+uint8_t avg_hr;
+/// 最小心率
+uint8_t min_hr;
+/// 心率 -- 极限时长  / 单位:  秒
+uint16_t hr_limit_time;
+/// 心率 -- 无氧耐力时长  / 单位:  秒
+uint16_t hr_anaerobic;
+/// 心率 -- 有氧耐力时长  / 单位:  秒
+uint16_t hr_aerobic;
+/// 心率 -- 燃脂时长  / 单位:  秒
+uint16_t hr_fat_burning;
+/// 心率 -- 热身时长  / 单位:  秒
+uint16_t hr_warm_up;
+// 最大步频 / 单位:步/分钟
+uint16_t max_step_speed;
+// 最小步频
+uint16_t min_step_speed;
+//平均步频
+uint16_t avg_step_speed;
+// 最快配速(用时最少为最快) / 单位: 非游泳:秒/公里， 游泳:秒/百米
+uint16_t fast_pace;
+// 最慢配速 / 单位: 非游泳:秒/公里， 游泳:秒/百米
+uint16_t slowest_pace;
+//平均配速
+uint16_t avg_pace;
+// 最快速度 /单位: 公里/小时
+uint16_t fast_speed;
+// 最慢速度
+uint16_t slowest_speed;
+// 平均速度
+uint16_t avg_speed;
+/// 公里/英里配速
+uint16_t paces[0];
+ *
  */
 class WmSportSummaryData(
-    /**
-     * 运动Id
-     */
+    val date: Long,
+    val startTime: Int,
+    val endTime: Int,
     val sportId: Int,
-
-    /**
-     * 基本参数类型
-     */
-    val valueType: List<WmValueTypeData>
+    val sportType: Byte,
+    val step: Int,
+    val calories: Int,
+    val distance: Int,
+    val actTime: Short,
+    val maxRate: Byte,
+    val averageRate: Byte,
+    val minRate: Byte,
+    val rateLimitTime: Short,
+    val rateUnAerobic: Short,
+    val rateAerobic: Short,
+    val rateFatBurning: Short,
+    val rateWarmUp: Short,
+    val maxStepSpeed: Short,
+    val minStepSpeed: Short,
+    val averageStepSpeed: Short,
+    val fastPace: Short,
+    val slowestPace: Short,
+    val averageSpeed: Short
 ) : WmBaseSyncData(), Serializable {
     override fun toString(): String {
-        return "WmSportSummaryData(sportId=$sportId, valueType=$valueType)"
+        return "WmSportSummaryData(date=$Long, startTime=$startTime, endTime=$endTime, sportId=$sportId, sportType=$sportType, step=$step, calories=$calories, distance=$distance, actTime=$actTime, maxRate=$maxRate, averageRate=$averageRate, minRate=$minRate, rateLimitTime=$rateLimitTime, rateUnAerobic=$rateUnAerobic, rateAerobic=$rateAerobic, rateFatBurning=$rateFatBurning, rateWarmUp=$rateWarmUp, maxStepSpeed=$maxStepSpeed, minStepSpeed=$minStepSpeed, averageStepSpeed=$averageStepSpeed, fastPace=$fastPace, slowestPace=$slowestPace, averageSpeed=$averageSpeed)"
     }
 }
 

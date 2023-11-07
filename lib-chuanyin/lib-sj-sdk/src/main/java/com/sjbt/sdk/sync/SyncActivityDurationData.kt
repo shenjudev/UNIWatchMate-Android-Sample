@@ -4,6 +4,7 @@ import com.base.sdk.entity.data.*
 import com.base.sdk.port.sync.AbSyncData
 import com.sjbt.sdk.ReadSubPkMsg
 import com.sjbt.sdk.SJUniWatch
+import com.sjbt.sdk.entity.DataFormat
 import com.sjbt.sdk.entity.MsgBean
 import com.sjbt.sdk.entity.NodeData
 import com.sjbt.sdk.spp.cmd.CmdHelper
@@ -69,7 +70,7 @@ class SyncActivityDurationData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncDa
                 }
 
                 override fun onNext(t: MsgBean) {
-                    sjUniWatch.wmLog.logE(TAG, "real time rate back msg:$t")
+                    sjUniWatch.wmLog.logE(TAG, "activity duration back msg:$t")
                     msgList.add(t)
                 }
 
@@ -92,7 +93,7 @@ class SyncActivityDurationData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncDa
                         msgList.forEachIndexed { index, it ->
                             sjUniWatch.wmLog.logE(
                                 TAG,
-                                "real time rate data:" + BtUtils.bytesToHexString(it.originData)
+                                "activity duration data:" + BtUtils.bytesToHexString(it.originData)
                             )
 
                             if (index == 0) {
@@ -166,7 +167,7 @@ class SyncActivityDurationData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncDa
 
             sjUniWatch.wmLog.logD(
                 TAG,
-                "real time rate data: ${byteBufferSyncData.position()} -> ${wmActivityDurationData}"
+                "activity duration data: ${byteBufferSyncData.position()} -> ${wmActivityDurationData}"
             )
 
             activityDurationDataList.add(wmActivityDurationData)
@@ -189,9 +190,16 @@ class SyncActivityDurationData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncDa
         )
     }
 
-    fun syncActivityDurationDataBusiness(byteArray: ByteArray) {
-        byteBufferSyncData = ByteBuffer.wrap(byteArray).order(ByteOrder.LITTLE_ENDIAN)
-        parseStepData()
+    fun syncActivityDurationDataBusiness(nodeData: NodeData) {
+        if (nodeData.dataFmt == DataFormat.FMT_BIN) {
+            byteBufferSyncData = ByteBuffer.wrap(nodeData.data).order(ByteOrder.LITTLE_ENDIAN)
+            parseStepData()
+        } else if (nodeData.dataFmt == DataFormat.FMT_ERRCODE || nodeData.dataFmt == DataFormat.FMT_NODATA) {
+            val wmSyncData =
+                WmSyncData(WmSyncDataType.STEP, 0, WmIntervalType.ONE_HOUR, mutableListOf<WmActivityDurationData>())
+
+            activityDurateObserveEmitter?.onSuccess(wmSyncData)
+        }
     }
 
 }

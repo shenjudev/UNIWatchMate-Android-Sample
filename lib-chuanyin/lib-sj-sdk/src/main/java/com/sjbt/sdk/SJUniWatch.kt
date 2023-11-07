@@ -1370,7 +1370,7 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(), Li
                     when (it.urn[1]) {
 
                         URN_SPORT_STEP -> {
-                            syncStepData.syncStepBusiness(it.data)
+                            syncStepData.syncStepBusiness(it)
                         }
 
                         URN_SPORT_DISTANCE -> {
@@ -1378,11 +1378,12 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(), Li
                         }
 
                         URN_SPORT_CALORIES -> {
-                            syncCaloriesData.syncCaloriesBusiness(it.data)
+                            syncCaloriesData.syncCaloriesBusiness(it)
                         }
 
                         URN_SPORT_ACTIVITY_LEN -> {
 
+                            syncActivity.syncActivityDurationDataBusiness(it)
                         }
 
                         URN_SPORT_DAILY_ACTIVITY_LEN -> {
@@ -1390,11 +1391,11 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(), Li
                         }
 
                         URN_SPORT_DISTANCE -> {
-
+                            syncDistanceData.syncDistanceBusiness(it)
                         }
 
                         URN_SPORT_OXYGEN -> {
-
+                            syncOxygenData.syncOxygenDataBusiness(it)
                         }
 
                         URN_SPORT_RATE -> {
@@ -1402,19 +1403,19 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(), Li
                         }
 
                         URN_SPORT_RATE_RECORD -> {
-                            syncHeartRateData.syncHeartRateBusiness(it.data)
+                            syncHeartRateData.syncHeartRateBusiness(it)
                         }
 
                         URN_SPORT_RATE_REALTIME -> {
-                            syncRealtimeRateData.syncRealHeartRateBusiness(it.data)
+                            syncRealtimeRateData.syncRealHeartRateBusiness(it)
                         }
 
                         URN_SPORT_SLEEP -> {
-
+                            syncSleepData.syncRealHeartRateBusiness(it)
                         }
 
                         URN_SPORT_SUMMARY -> {
-
+                            syncSportSummaryData.syncSportSummaryDataBusiness(it)
                         }
 
                         URN_SPORT_RATE_10S -> {

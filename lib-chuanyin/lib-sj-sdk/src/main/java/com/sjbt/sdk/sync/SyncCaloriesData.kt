@@ -4,8 +4,10 @@ import com.base.sdk.entity.data.*
 import com.base.sdk.port.sync.AbSyncData
 import com.sjbt.sdk.ReadSubPkMsg
 import com.sjbt.sdk.SJUniWatch
+import com.sjbt.sdk.entity.DataFormat
 import com.sjbt.sdk.entity.MsgBean
 import com.sjbt.sdk.entity.NodeData
+import com.sjbt.sdk.exception.SjException
 import com.sjbt.sdk.spp.cmd.CmdHelper
 import com.sjbt.sdk.spp.cmd.SYNC_DATA_INTERVAL
 import com.sjbt.sdk.spp.cmd.URN_SPORT_CALORIES
@@ -181,9 +183,17 @@ class SyncCaloriesData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmCal
         )
     }
 
-    fun syncCaloriesBusiness(byteArray: ByteArray) {
-        byteBufferSyncData = ByteBuffer.wrap(byteArray).order(ByteOrder.LITTLE_ENDIAN)
-        parseStepData()
+    fun syncCaloriesBusiness(nodeData: NodeData) {
+
+        if (nodeData.dataFmt == DataFormat.FMT_BIN) {
+            byteBufferSyncData = ByteBuffer.wrap(nodeData.data).order(ByteOrder.LITTLE_ENDIAN)
+            parseStepData()
+        } else if (nodeData.dataFmt == DataFormat.FMT_ERRCODE || nodeData.dataFmt == DataFormat.FMT_NODATA) {
+            val wmSyncData =
+                WmSyncData(WmSyncDataType.STEP, 0, WmIntervalType.ONE_HOUR, mutableListOf<WmCaloriesData>())
+
+            caloriesObserveEmitter?.onSuccess(wmSyncData)
+        }
     }
 
 }
