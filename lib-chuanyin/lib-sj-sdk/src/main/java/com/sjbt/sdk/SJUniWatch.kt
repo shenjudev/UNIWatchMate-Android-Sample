@@ -998,6 +998,12 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(), Li
                         if (msgBean.payload.size > 10) {//设备应用层回复
 
                             if (msgBean.head == HEAD_NODE_TYPE && msgBean.cmdId.toShort() != CMD_ID_8004) {
+
+                                wmLog.logE(
+                                    TAG,
+                                    "time out node msg：" + BtUtils.bytesToHexString(msgBean.originData)
+                                )
+
                                 var payloadPackage: PayloadPackage =
                                     PayloadPackage.fromByteArray(msgBean.payload)
 

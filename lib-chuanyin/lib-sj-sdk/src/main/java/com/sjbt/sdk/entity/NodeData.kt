@@ -27,7 +27,8 @@ class NodeData(
             val nodeData = NodeData()
             nodeData.urn = ByteArray(4)
             byteBuffer.get(nodeData.urn)
-            if (type != RequestType.REQ_TYPE_READ.type) {
+
+            if (type != RequestType.REQ_TYPE_READ.type && byteBuffer.limit() > 17) {//
                 val fmt = byteBuffer.get().toInt()
 //                Log.e(TAG_SJ, "fmt:$fmt")
                 nodeData.dataFmt = DataFormat.values()[fmt]
@@ -37,6 +38,8 @@ class NodeData(
                 nodeData.data = ByteArray(byteBuffer.remaining())
                 byteBuffer.get(nodeData.data)
 //                Log.e(TAG_SJ, "nodeData:${nodeData}")
+            }else{
+                byteBuffer.position(byteBuffer.limit())
             }
             return nodeData
         }
@@ -51,11 +54,11 @@ class NodeData(
         val bytes: ByteBuffer = ByteBuffer.allocate(size)
         bytes.order(java.nio.ByteOrder.LITTLE_ENDIAN)
         bytes.put(urn)
-            bytes.put(dataFmt.ordinal.toByte())
-            bytes.putShort(dataLen)
-            for (item in data) {
-                bytes.put(item)
-            }
+        bytes.put(dataFmt.ordinal.toByte())
+        bytes.putShort(dataLen)
+        for (item in data) {
+            bytes.put(item)
+        }
 
         return bytes.array()
     }

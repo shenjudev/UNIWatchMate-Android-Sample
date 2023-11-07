@@ -42,6 +42,7 @@ class MsgBean {
                 ", payloadPackTotalLen=" + payloadPackTotalLen +
                 ", requestId=" + requestId +
                 ", nodeId=" + nodeId +
+                ", timeOutCode=" + timeOutCode +
                 '}'
     }
 
@@ -53,14 +54,14 @@ class MsgBean {
 
     companion object {
 
-        fun isNotTimeOut(head: Byte, cmdId: Int): Boolean {
+        private fun isNotTimeOut(head: Byte, divideType: Byte, cmdId: Int): Boolean {
             return ((head == HEAD_COMMON && cmdId == CMD_ID_800D.toInt()) ||//绑定
                     (head == HEAD_COMMON && cmdId == CMD_ID_800F.toInt()) ||//我的表盘列表
                     (head == HEAD_COMMON && cmdId == CMD_ID_802E.toInt()) ||//绑定
                     (head == HEAD_FILE_SPP_A_2_D && cmdId == CMD_ID_8003.toInt()) ||//传输文件的过程中，采用连续传输的方式
                     (head == HEAD_CAMERA_PREVIEW && cmdId == CMD_ID_8002.toInt()) ||//相机预览
                     (head == HEAD_NODE_TYPE && cmdId == CMD_ID_8004.toInt()) || //通讯层节点消息
-                    (head == HEAD_NODE_TYPE && cmdId == CMD_ID_8004.toInt())) //通讯层节点消息
+                    (divideType == DIVIDE_Y_M_2)) //中间包没有超时设置
 
         }
 
@@ -84,7 +85,7 @@ class MsgBean {
 
                 msgBean.cmdIdStr = BtUtils.bytesToHexString(cmdId)
                 msgBean.cmdId = BtUtils.byte2short(cmdId).toInt()
-                msgBean.isNotTimeOut = isNotTimeOut(msgBean.head, msgBean.cmdId)
+
 //            Log.e("SJ_SDK>>>>>", "response:" + response + "  cmdIdStr:" + msgBean.cmdIdStr)
 
                 //            LogUtils.logBlueTooth("返回命令cmdId:" + msgBean.cmdId);
@@ -97,6 +98,8 @@ class MsgBean {
 
                 msgBean.divideType = divideType
                 msgBean.payloadPackTotalLen = divideInfo.payloadPackTotalLen
+
+                msgBean.isNotTimeOut = isNotTimeOut(msgBean.head, divideType, msgBean.cmdId)
 
                 val payLoadLength = msg.size - BT_MSG_BASE_LEN
 

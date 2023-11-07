@@ -307,8 +307,6 @@ public class BtEngine {
 
                         notifyUI(Listener.TIME_OUT, msgBean);
 
-                        logD("real message timeout code：" + msgBean.getTimeOutCode());
-
                         mHandler.removeCallbacks(msgQueueMap.get(msgTimeCode));
                         msgQueueMap.remove(msgTimeCode);
                     }
