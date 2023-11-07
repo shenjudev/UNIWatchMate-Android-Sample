@@ -208,3 +208,4 @@ const val CHANGE_FLASH = 1.toByte()
 //设备端支持的最大业务单元大小
 const val MAX_BUSINESS_BUFFER_SIZE = 2048
 const val SYNC_DATA_INTERVAL = 60 * 60 * 1000
+const val SYNC_DATA_INTERVAL_FIVE_MINUTES = 5 * 60 * 1000

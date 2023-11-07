@@ -59,7 +59,7 @@ class SyncRealtimeRateData(val sjUniWatch: SJUniWatch) :
             sjUniWatch.sendReadSubPkObserveNode(
                 this,
                 CmdHelper.getReadSportSyncData(
-                    startTime, lastSyncTime,
+                    startTime, 0,
                     childUrn = URN_SPORT_RATE,
                     grandSon = URN_SPORT_RATE_REALTIME
                 )
@@ -149,7 +149,7 @@ class SyncRealtimeRateData(val sjUniWatch: SJUniWatch) :
         val realTimeStamp = calendar.timeInMillis + timestamp
 
         val realTimeRateList = mutableListOf<WmRealtimeRateData>()
-
+        var dataIndex = 0
         while (byteBufferSyncData.hasRemaining()) {
 
             val wmHeartRateData = WmRealtimeRateData(byteBufferSyncData.get().toInt() and 0XFF)
@@ -157,19 +157,21 @@ class SyncRealtimeRateData(val sjUniWatch: SJUniWatch) :
             if (timestampType == 0) {//只有一个时间戳
                 sjUniWatch.wmLog.logD(
                     TAG,
-                    "start base date:" + TimeUtils.date2String(Date(realTimeStamp + (byteBufferSyncData.position() - 12) * SYNC_DATA_INTERVAL))
+                    "start base date:" + TimeUtils.date2String(Date(realTimeStamp + dataIndex * SYNC_DATA_INTERVAL_FIVE_MINUTES))
                 )
 
                 wmHeartRateData.timestamp =
-                    realTimeStamp + (byteBufferSyncData.position() - 12) * SYNC_DATA_INTERVAL
+                    realTimeStamp + dataIndex * SYNC_DATA_INTERVAL_FIVE_MINUTES
             }
 
             sjUniWatch.wmLog.logD(
                 TAG,
-                "real time rate data: ${byteBufferSyncData.position()} -> ${wmHeartRateData}"
+                "real time rate data: $dataIndex -> ${wmHeartRateData}"
             )
 
             realTimeRateList.add(wmHeartRateData)
+
+            dataIndex++
         }
 
         val wmSyncData =

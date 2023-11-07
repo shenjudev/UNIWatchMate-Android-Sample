@@ -168,14 +168,14 @@ class SyncStepData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmStepDat
 
             val wmStepData = WmStepData(byteBufferSyncData.int)
 
-            if (timestampType == 0) {//只有一个时间戳
+            if (timestampType == 0) {
                 wmStepData.timestamp =
                     realTimeStamp + dataIndex * SYNC_DATA_INTERVAL
             }
 
             sjUniWatch.wmLog.logD(
                 TAG,
-                "step data: ${byteBufferSyncData.position()} -> ${wmStepData}"
+                "step data: $dataIndex -> ${wmStepData}"
             )
 
             stepList.add(wmStepData)
@@ -203,7 +203,12 @@ class SyncStepData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmStepDat
             parseStepData()
         } else if (nodeData.dataFmt == DataFormat.FMT_ERRCODE || nodeData.dataFmt == DataFormat.FMT_NODATA) {
             val wmSyncData =
-                WmSyncData(WmSyncDataType.STEP, 0, WmIntervalType.ONE_HOUR, mutableListOf<WmStepData>())
+                WmSyncData(
+                    WmSyncDataType.STEP,
+                    0,
+                    WmIntervalType.ONE_HOUR,
+                    mutableListOf<WmStepData>()
+                )
 
             stepObserveEmitter?.onSuccess(wmSyncData)
         }

@@ -1399,15 +1399,15 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(), Li
                         }
 
                         URN_SPORT_RATE -> {
+                            when (it.urn[2]) {
+                                URN_SPORT_RATE_RECORD -> {
+                                    syncHeartRateData.syncHeartRateBusiness(it)
+                                }
 
-                        }
-
-                        URN_SPORT_RATE_RECORD -> {
-                            syncHeartRateData.syncHeartRateBusiness(it)
-                        }
-
-                        URN_SPORT_RATE_REALTIME -> {
-                            syncRealtimeRateData.syncRealHeartRateBusiness(it)
+                                URN_SPORT_RATE_REALTIME -> {
+                                    syncRealtimeRateData.syncRealHeartRateBusiness(it)
+                                }
+                            }
                         }
 
                         URN_SPORT_SLEEP -> {

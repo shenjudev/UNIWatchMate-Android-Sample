@@ -150,6 +150,8 @@ class SyncHeartRateData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmHe
 
         val realTimeRateList = mutableListOf<WmHeartRateData>()
 
+        var dataIndex = 0
+
         while (byteBufferSyncData.hasRemaining()) {
 
             val high = byteBufferSyncData.get().toInt() and 0XFF
@@ -161,19 +163,20 @@ class SyncHeartRateData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmHe
             if (timestampType == 0) {//只有一个时间戳
                 sjUniWatch.wmLog.logD(
                     TAG,
-                    "start base date:" + TimeUtils.date2String(Date(realTimeStamp + (byteBufferSyncData.position() - 12) * SYNC_DATA_INTERVAL))
+                    "start base date:" + TimeUtils.date2String(Date(realTimeStamp + dataIndex * SYNC_DATA_INTERVAL))
                 )
 
                 wmHeartRateData.timestamp =
-                    realTimeStamp + (byteBufferSyncData.position() - 12) * SYNC_DATA_INTERVAL
+                    realTimeStamp + dataIndex * SYNC_DATA_INTERVAL
             }
 
             sjUniWatch.wmLog.logD(
                 TAG,
-                "heart rate data: ${byteBufferSyncData.position()} -> ${wmHeartRateData}"
+                "heart rate data: $dataIndex -> $wmHeartRateData"
             )
 
             realTimeRateList.add(wmHeartRateData)
+            dataIndex++
         }
 
         val wmSyncData =
