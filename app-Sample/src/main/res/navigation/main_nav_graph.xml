@@ -376,7 +376,11 @@
         android:id="@+id/phoneContacts"
         android:name="com.sjbt.sdk.sample.ui.device.contacts.PhoneContactsFragment"
         android:label="@string/ds_phone_contacts"
-        tools:layout="@layout/fragment_phone_contacts" />
+        tools:layout="@layout/fragment_phone_contacts" >
+        <argument
+            android:name="contactNum"
+            app:argType="integer"/>
+    </fragment>
     <fragment
         android:id="@+id/emergencyContacts"
         android:name="com.sjbt.sdk.sample.ui.device.contacts.EmergencyContactFragment"

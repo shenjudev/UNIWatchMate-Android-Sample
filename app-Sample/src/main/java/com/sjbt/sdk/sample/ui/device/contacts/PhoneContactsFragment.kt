@@ -10,6 +10,7 @@ import androidx.core.view.MenuProvider
 import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -32,17 +33,17 @@ class PhoneContactsFragment : BaseFragment(R.layout.fragment_phone_contacts) {
 
     private val viewBind: FragmentPhoneContactsBinding by viewBinding()
     private val viewModel: PhoneContactsViewModel by viewModels()
+    private val args: PhoneContactsFragmentArgs by navArgs()
 
     private lateinit var adapter: PhotoContactsAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        adapter = PhotoContactsAdapter()
+        adapter = PhotoContactsAdapter(args.contactNum)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
 
         requireActivity().addMenuProvider(object : MenuProvider {
             override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
