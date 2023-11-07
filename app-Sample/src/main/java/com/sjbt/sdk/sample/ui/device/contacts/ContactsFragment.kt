@@ -126,7 +126,7 @@ class ContactsFragment : BaseFragment(R.layout.fragment_contacts) {
                 } else {
                     PermissionHelper.requestContacts(this@ContactsFragment) { granted ->
                         if (granted) {
-                            findNavController().navigate(ContactsFragmentDirections.toPhoneContacts())
+                            findNavController().navigate(ContactsFragmentDirections.toPhoneContacts(adapter.sources?.size ?: 0))
                         }
                     }
                 }
