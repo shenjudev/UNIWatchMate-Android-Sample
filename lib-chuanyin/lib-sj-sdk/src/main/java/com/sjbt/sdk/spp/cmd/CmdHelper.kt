@@ -38,7 +38,7 @@ object CmdHelper {
     private var mKeyData2: String? = null
     private val gson = Gson()
 
-    const val MAX_ORDER_ID = 127
+    const val MAX_ORDER_ID = 0xfd
 
     /**
      * 写入分包类型和总长度

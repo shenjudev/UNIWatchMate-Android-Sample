@@ -40,9 +40,9 @@ class PayloadPackage {
                 payload.itemList.add(nextNode)
             }
 
-            if (payload.itemList.size != payload.itemCount) {
-                throw Exception("itemList.size != itemCount")
-            }
+//            if (payload.itemList.size != payload.itemCount) {
+//                throw Exception("itemList.size != itemCount")
+//            }
 
             return payload
         }

@@ -70,7 +70,7 @@ class MsgBean {
                 val byteBuffer = ByteBuffer.wrap(msg)
                 msgBean.originData = msg
                 msgBean.head = byteBuffer.get()
-                msgBean.cmdOrder = byteBuffer.get().toInt() and 0Xfffffff
+                msgBean.cmdOrder = byteBuffer.get().toUByte().toInt()
                 msgBean.isNodeMsg = msgBean.head == HEAD_NODE_TYPE
 
                 val cmdId = ByteArray(2)
@@ -121,10 +121,10 @@ class MsgBean {
                             msgBean.payloadJson = payloadJson
                         }
 
-                        if (msgBean.head == HEAD_NODE_TYPE && msgBean.cmdId != CMD_ID_8004.toInt()) {
+                        if (msgBean.head == HEAD_NODE_TYPE && msgBean.payload.size > 10) {
 
                             msgBean.requestId = ByteBuffer.wrap(msgBean.payload)
-                                .order(ByteOrder.LITTLE_ENDIAN).short.toInt()
+                                .order(ByteOrder.LITTLE_ENDIAN).short.toUShort().toInt()
 
                             msgBean.nodeId =
                                 ByteBuffer.wrap(msgBean.payload.copyOfRange(10, 14))
@@ -133,7 +133,8 @@ class MsgBean {
                             Log.e(TAG_SJ, "requestId:" + msgBean.requestId)
                             Log.e(TAG_SJ, "nodeId:" + msgBean.nodeId)
 
-                            msgBean.timeOutCode = msgBean.requestId.toString()+msgBean.nodeId.toString()
+                            msgBean.timeOutCode =
+                                msgBean.requestId.toString() + msgBean.nodeId.toString()
 
                         }
                     }
@@ -160,9 +161,9 @@ class MsgBean {
                         System.arraycopy(msg, BT_MSG_BASE_LEN, payload, 0, payload.size)
                         msgBean.payload = payload
 
-                        if (msgBean.head == HEAD_NODE_TYPE && msgBean.cmdId != CMD_ID_8004.toInt()) {
+                        if (msgBean.head == HEAD_NODE_TYPE && msgBean.payload.size > 10) {
                             msgBean.requestId = ByteBuffer.wrap(msgBean.payload)
-                                .order(ByteOrder.LITTLE_ENDIAN).short.toInt()
+                                .order(ByteOrder.LITTLE_ENDIAN).short.toUShort().toInt()
 
                             msgBean.nodeId =
                                 ByteBuffer.wrap(msgBean.payload.copyOfRange(10, 14))
