@@ -175,7 +175,7 @@
         tools:layout="@layout/fragment_sport_detail">
         <argument
             android:name="wmSportSummaryData"
-            app:argType="com.sjbt.sdk.sample.entity.SportSummaryEntity" />
+            app:argType="com.base.sdk.entity.data.WmSportSummaryData" />
     </fragment>
 
     <fragment

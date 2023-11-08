@@ -14,6 +14,7 @@ import com.sjbt.sdk.sample.R
 import com.sjbt.sdk.sample.entity.SportSummaryEntity
 import com.sjbt.sdk.sample.model.LocalSportLibrary
 import com.sjbt.sdk.sample.utils.getParcelableCompat
+import com.sjbt.sdk.sample.utils.getSerializableCompat
 import com.sjbt.sdk.sample.utils.getSportLibrary
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.rx3.await
@@ -25,7 +26,7 @@ class SportDetailFragment : DataListFragment<WmSportSummaryData>() {
     private val dateTimeFormat = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault())
     var localSportLibrary: LocalSportLibrary? = null
     var tvDataSport: TextView? = null
-    private var sportSummaryEntity: SportSummaryEntity? = null
+    private var sportSummaryEntity: WmSportSummaryData? = null
 
     override val valueFormat: DataListAdapter.ValueFormat<WmSportSummaryData> =
         object : DataListAdapter.ValueFormat<WmSportSummaryData> {
@@ -37,10 +38,10 @@ class SportDetailFragment : DataListFragment<WmSportSummaryData>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         sportSummaryEntity =
-            arguments?.getParcelableCompat<SportSummaryEntity>("wmSportSummaryData")
+            arguments?.getSerializableCompat<WmSportSummaryData>("wmSportSummaryData")
         tvDataSport = view.findViewById(R.id.tv_data_sport)
         btnDate.isVisible = false
-        tvDataSport?.text = "${sportSummaryEntity?.sportId}\n${sportSummaryEntity?.valueType}"
+        tvDataSport?.text = "${sportSummaryEntity?.sportId}\n${sportSummaryEntity}"
     }
 
     override fun queryData(date: Date): List<WmSportSummaryData>? {
@@ -50,7 +51,7 @@ class SportDetailFragment : DataListFragment<WmSportSummaryData>() {
                 localSportLibrary = getSportLibrary()
             }
             //detail里面获取每10秒的数据
-            UNIWatchMate.wmSync.syncSportSummaryData.syncData(date.time).await().value
+            mutableListOf()
         }
     }
 

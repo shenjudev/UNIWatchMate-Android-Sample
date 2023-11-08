@@ -8,6 +8,7 @@ import com.base.api.UNIWatchMate
 import com.base.sdk.entity.data.WmSleepData
 import com.base.sdk.entity.data.WmSleepItem
 import com.sjbt.sdk.sample.R
+import com.sjbt.sdk.sample.utils.DateTimeUtils
 import com.sjbt.sdk.sample.utils.FormatterUtil
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
@@ -48,7 +49,11 @@ class SleepFragment : DataListFragment<WmSleepItem>() {
 
     override fun queryData(date: Date): List<WmSleepItem>? {
         return runBlocking {
-            val data = UNIWatchMate.wmSync.syncSleepData.syncData(date.time).await().value
+            val calendar = Calendar.getInstance()
+            val start: Date = DateTimeUtils.getDayStartTime(calendar, date)
+            val end: Date = DateTimeUtils.getDayEndTime(calendar, date)
+            val data = UNIWatchMate.wmSync.syncSleepData.syncData(start.time).await().value
+
             val sleepItemDatas = mutableListOf<WmSleepItem>()
             val duration = IntArray(4)
             data.forEach { wmSleepData ->

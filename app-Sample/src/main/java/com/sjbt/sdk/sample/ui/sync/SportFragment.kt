@@ -12,6 +12,7 @@ import com.blankj.utilcode.util.GsonUtils
 import com.blankj.utilcode.util.ResourceUtils
 import com.sjbt.sdk.sample.entity.SportSummaryEntity
 import com.sjbt.sdk.sample.model.LocalSportLibrary
+import com.sjbt.sdk.sample.utils.DateTimeUtils
 import com.sjbt.sdk.sample.utils.getSportLibrary
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.rx3.await
@@ -27,20 +28,21 @@ class SportFragment : DataListFragment<WmSportSummaryData>(),
     override val valueFormat: DataListAdapter.ValueFormat<WmSportSummaryData> =
         object : DataListAdapter.ValueFormat<WmSportSummaryData> {
             override fun format(context: Context, obj: WmSportSummaryData): String {
-                return dateTimeFormat.format(obj.timestamp) + "    " + sportTypeText(obj.sportId) + "  " + obj
+                return dateTimeFormat.format(obj.timestamp) + "    " + sportTypeText(obj.sportId)
             }
         }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        btnDate.isVisible = false
         adapter.listener = this
     }
 
     override fun queryData(date: Date): List<WmSportSummaryData>? {
-
+        val calendar = Calendar.getInstance()
+        val start: Date = DateTimeUtils.getDayStartTime(calendar, date)
+        val end: Date = DateTimeUtils.getDayEndTime(calendar, date)
         val result = runBlocking {
-            UNIWatchMate.wmSync.syncSportSummaryData.syncData(date.time).await()
+            UNIWatchMate.wmSync.syncSportSummaryData.syncData(start.time).await()
         }
         return result.value
     }
@@ -62,7 +64,7 @@ class SportFragment : DataListFragment<WmSportSummaryData>(),
 
     override fun onItemClick(item: WmSportSummaryData) {
         val test = SportSummaryEntity(item.timestamp, item.sportId, mutableListOf())
-        findNavController().navigate(SportFragmentDirections.toSportDetail(test))
+        findNavController().navigate(SportFragmentDirections.toSportDetail(item))
     }
 
 }

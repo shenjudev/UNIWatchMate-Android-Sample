@@ -10,6 +10,7 @@ import com.base.sdk.entity.data.WmHeartRateData
 import com.base.sdk.entity.data.WmRealtimeRateData
 import com.github.kilnn.tool.widget.item.PreferenceItem
 import com.sjbt.sdk.sample.R
+import com.sjbt.sdk.sample.utils.DateTimeUtils
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.rx3.await
 import java.util.*
@@ -26,7 +27,10 @@ class HeartRateFiveMinutesFragment : DataListFragment<WmRealtimeRateData>() {
 
     override fun queryData(date: Date): List<WmRealtimeRateData>? {
         return runBlocking {
-            UNIWatchMate.wmSync.syncRealtimeRateData.syncData(System.currentTimeMillis() - 1000 * 60 * 60 * 24)
+            val calendar = Calendar.getInstance()
+            val start: Date = DateTimeUtils.getDayStartTime(calendar, date)
+            val end: Date = DateTimeUtils.getDayEndTime(calendar, date)
+            UNIWatchMate.wmSync.syncRealtimeRateData.syncData(start.time)
                 .await().value
         }
     }
