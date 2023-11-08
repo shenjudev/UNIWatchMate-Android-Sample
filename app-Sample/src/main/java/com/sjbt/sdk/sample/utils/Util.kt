@@ -307,11 +307,14 @@ fun step2Km(step: Int, stepLength: Float): Float {
     return stepLength * step / 1000
 }
 
+private var localSportLibrary:LocalSportLibrary?=null
 fun getSportLibrary(): LocalSportLibrary {
-    val sportsData = ResourceUtils.readAssets2String("sports_data.json")
-    val localSportLibrary =
-        GsonUtils.fromJson(sportsData, LocalSportLibrary::class.java)
-    return localSportLibrary
+    if (localSportLibrary == null) {
+        val sportsData = ResourceUtils.readAssets2String("sports_data.json")
+        localSportLibrary =
+            GsonUtils.fromJson(sportsData, LocalSportLibrary::class.java)
+    }
+    return localSportLibrary!!
 }
 
 fun glideShowImage(

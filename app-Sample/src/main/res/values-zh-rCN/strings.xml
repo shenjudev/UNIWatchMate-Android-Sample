@@ -271,7 +271,26 @@
     <string name="exercise_goal_step">步数</string>
     <string name="exercise_goal_distance">距离</string>
     <string name="exercise_goal_calories">卡路里</string>
-
+    <!--Exercise data type -->
+<!--    用时、距离、消耗（热量）、步数、平均配速、最大配速、最低配速、平均速度、最大速度、最低速度、平均步频、最大步频、最低步频、平均心率、最大心率、最低心率、跳绳计数、心率分布-->
+    <string name="exercise_data_time">用时</string>
+    <string name="exercise_data_distance">距离</string>
+    <string name="exercise_data_calories">消耗</string>
+    <string name="exercise_data_step">步数</string>
+    <string name="exercise_data_average_pace">平均配速</string>
+    <string name="exercise_data_max_pace">最大配速</string>
+    <string name="exercise_data_min_pace">最低配速</string>
+    <string name="exercise_data_average_speed">平均速度</string>
+    <string name="exercise_data_max_speed">最大速度</string>
+    <string name="exercise_data_min_speed">最低速度</string>
+    <string name="exercise_data_average_step_frequency">平均步频</string>
+    <string name="exercise_data_max_step_frequency">最大步频</string>
+    <string name="exercise_data_min_step_frequency">最低步频</string>
+    <string name="exercise_data_average_heart_rate">平均心率</string>
+    <string name="exercise_data_max_heart_rate">最大心率</string>
+    <string name="exercise_data_min_heart_rate">最低心率</string>
+    <string name="exercise_data_jump_rope_counting">跳绳计数</string>
+    <string name="exercise_data_heart_rate_distributione">心率分布</string>
     <!--Unit-->
     <string name="ds_unit_config">单位配置</string>
     <string name="permission_explain_msg">需要以下权限，是否请求以便进行下一步操作？</string>

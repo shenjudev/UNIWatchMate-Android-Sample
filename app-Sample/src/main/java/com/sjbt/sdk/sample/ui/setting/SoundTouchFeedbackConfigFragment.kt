@@ -17,6 +17,7 @@ import com.sjbt.sdk.sample.utils.setAllChildEnabled
 import com.sjbt.sdk.sample.utils.viewLifecycle
 import com.sjbt.sdk.sample.utils.viewbinding.viewBinding
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.reactive.asFlow
 import kotlinx.coroutines.rx3.asFlow
 import kotlinx.coroutines.rx3.await
 
@@ -39,7 +40,7 @@ class SoundTouchFeedbackConfigFragment : BaseFragment(R.layout.fragment_sound_to
 
         viewLifecycle.launchRepeatOnStarted {
             launch {
-                UNIWatchMate.wmSettings.settingSoundAndHaptic.get().toObservable().asFlow()
+                UNIWatchMate.wmSettings.settingSoundAndHaptic.get().toFlowable().asFlow()
                     .collect {
                         config = it
                         updateUI()

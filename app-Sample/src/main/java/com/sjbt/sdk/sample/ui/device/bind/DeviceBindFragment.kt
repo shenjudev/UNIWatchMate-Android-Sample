@@ -123,7 +123,7 @@ class DeviceBindFragment : BaseFragment(R.layout.fragment_device_bind),
                 this::class.simpleName?.let { Timber.tag(it).i("scanContent=$scanContent") }
                 val userInfo = userInfoRepository.flowCurrent.value ?: return@launchWithLog
                 val bindInfo = WmBindInfo(userInfo.id.toString(), userInfo.name, BindType.SCAN_QR)
-//                        deviceManager.delDevice()
+//                  deviceManager.delDevice()
                 val wmDevice = UNIWatchMate.connectScanQr(
                     scanContent,
                     bindInfo
@@ -338,7 +338,6 @@ class DeviceBindFragment : BaseFragment(R.layout.fragment_device_bind),
         const val EXTRA_NAME = "name"
         const val UNKNOWN_DEVICE_NAME = "Unknown"
     }
-
 }
 
 class ScanErrorDelayDialogFragment : AppCompatDialogFragment() {

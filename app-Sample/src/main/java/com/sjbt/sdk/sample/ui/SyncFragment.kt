@@ -2,9 +2,7 @@ package com.sjbt.sdk.sample.ui
 
 import android.os.Bundle
 import android.view.View
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import com.base.api.UNIWatchMate
 import com.github.kilnn.tool.widget.ktx.clickTrigger
 import com.sjbt.sdk.sample.R
 import com.sjbt.sdk.sample.base.BaseFragment
@@ -16,7 +14,6 @@ import com.sjbt.sdk.sample.utils.setAllChildEnabled
 import com.sjbt.sdk.sample.utils.viewLifecycle
 import com.sjbt.sdk.sample.utils.viewbinding.viewBinding
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.rx3.asFlow
 
 /**
  * ***Description**
@@ -30,9 +27,9 @@ class SyncFragment : BaseFragment(R.layout.fragment_sync) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewBind.refreshLayout.setOnRefreshListener {
-            deviceManager.syncData()
-        }
+//        viewBind.refreshLayout.setOnRefreshListener {
+//            deviceManager.syncData()
+//        }
 
         viewBind.itemStep.clickTrigger(block = blockClick)
         viewBind.itemSleep.clickTrigger(block = blockClick)

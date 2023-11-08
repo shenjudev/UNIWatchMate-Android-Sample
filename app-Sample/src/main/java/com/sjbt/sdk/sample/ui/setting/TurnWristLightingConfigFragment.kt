@@ -16,6 +16,7 @@ import com.sjbt.sdk.sample.utils.setAllChildEnabled
 import com.sjbt.sdk.sample.utils.viewLifecycle
 import com.sjbt.sdk.sample.utils.viewbinding.viewBinding
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.reactive.asFlow
 import kotlinx.coroutines.rx3.asFlow
 import kotlinx.coroutines.rx3.await
 
@@ -52,7 +53,7 @@ class TurnWristLightingConfigFragment : BaseFragment(R.layout.fragment_turn_wris
             }
 
             launch {
-                 UNIWatchMate.wmSettings.settingWistRaise.get().toObservable().asFlow().collect{
+                 UNIWatchMate.wmSettings.settingWistRaise.get().toFlowable().asFlow().collect{
                     config = it
                     updateUI()
                 }

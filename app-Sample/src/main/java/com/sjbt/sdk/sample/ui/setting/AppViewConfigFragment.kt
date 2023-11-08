@@ -16,6 +16,7 @@ import com.sjbt.sdk.sample.utils.setAllChildEnabled
 import com.sjbt.sdk.sample.utils.viewLifecycle
 import com.sjbt.sdk.sample.utils.viewbinding.viewBinding
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.reactive.asFlow
 import kotlinx.coroutines.rx3.asFlow
 import kotlinx.coroutines.rx3.await
 
@@ -53,7 +54,7 @@ class AppViewConfigFragment : BaseFragment(R.layout.fragment_app_view) {
                 }
             }
             launch {
-                UNIWatchMate.wmSettings.settingAppView.get().toObservable().asFlow().collect {
+                UNIWatchMate.wmSettings.settingAppView.get().toFlowable().asFlow().collect {
                     config = it
                     updateUI()
                 }

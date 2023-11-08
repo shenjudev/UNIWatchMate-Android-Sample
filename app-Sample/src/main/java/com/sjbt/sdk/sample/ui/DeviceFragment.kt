@@ -29,6 +29,7 @@ import com.sjbt.sdk.sample.utils.setAllChildEnabled
 import com.sjbt.sdk.sample.utils.viewLifecycle
 import com.sjbt.sdk.sample.utils.viewbinding.viewBinding
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.reactive.asFlow
 import kotlinx.coroutines.rx3.asFlow
 import kotlinx.coroutines.rx3.await
 import timber.log.Timber
@@ -186,7 +187,7 @@ class DeviceFragment : BaseFragment(R.layout.fragment_device),
                             "content_notification${TimeUtils.millis2String(System.currentTimeMillis())}",
                             "sub_content_notification"
                         )
-                    )?.toObservable()?.asFlow()?.collect {
+                    )?.toFlowable()?.asFlow()?.collect {
                         Timber.tag("appNotification").i("appNotification result=$it")
                         ToastUtil.showToast("TestSendNotification $it")
                     }

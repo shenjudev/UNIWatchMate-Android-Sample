@@ -14,7 +14,7 @@ class HeartRateHourlyFragment : DataListFragment<WmHeartRateData>() {
         object : DataListAdapter.ValueFormat<WmHeartRateData> {
             override fun format(context: Context, obj: WmHeartRateData): String {
                 return timeFormat.format(obj.timestamp) + "    " +
-                        context.getString(R.string.unit_bmp_unit, obj.avgHeartRate)
+                        context.getString(R.string.unit_bmp_unit, obj.avgHeartRate) + "  min=${obj.minHeartRate} max=${obj.maxHeartRate}"  +"  ${obj.maxHeartRate}"
             }
         }
 

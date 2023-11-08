@@ -54,6 +54,9 @@ class ContactsFragment : BaseFragment(R.layout.fragment_contacts) {
 //        }
 
     private fun setContacts(contacts: ArrayList<PhoneContact>) {
+        if (contacts.isEmpty()) {
+            return
+        }
         promptProgress.showProgress("")
         val wmContactList = arrayListOf<WmContact>()
         contacts.forEach {
@@ -126,7 +129,11 @@ class ContactsFragment : BaseFragment(R.layout.fragment_contacts) {
                 } else {
                     PermissionHelper.requestContacts(this@ContactsFragment) { granted ->
                         if (granted) {
-                            findNavController().navigate(ContactsFragmentDirections.toPhoneContacts(adapter.sources?.size ?: 0))
+                            findNavController().navigate(
+                                ContactsFragmentDirections.toPhoneContacts(
+                                    adapter.sources?.size ?: 0
+                                )
+                            )
                         }
                     }
                 }
@@ -201,7 +208,6 @@ class ContactsFragment : BaseFragment(R.layout.fragment_contacts) {
         }
         setFragmentResultListener(PHONE_CONTACTS_SELECT_KEY) { requestKey, bundle ->
             if (requestKey == PHONE_CONTACTS_SELECT_KEY) {
-               val test = bundle.getString("test")
                 val results =
                     bundle.getParcelableArrayList<PhoneContact>(PHONE_CONTACTS_SELECT) as ArrayList<PhoneContact>?
                 results?.let { setContacts(it) }

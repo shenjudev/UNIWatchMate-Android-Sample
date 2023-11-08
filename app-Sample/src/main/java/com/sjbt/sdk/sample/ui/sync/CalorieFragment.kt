@@ -18,7 +18,7 @@ class CalorieFragment : DataListFragment<WmCaloriesData>() {
     override val valueFormat: DataListAdapter.ValueFormat<WmCaloriesData> = object : DataListAdapter.ValueFormat<WmCaloriesData> {
         override fun format(context: Context, obj: WmCaloriesData): String {
             return timeFormat.format(obj.timestamp) + "    " +
-                    context.getString(R.string.unit_k_calories_param, (obj.calorie/1000).toString())
+                    context.getString(R.string.unit_k_calories_param, (obj.calorie/1000).toString()) +"  ${obj.calorie}"
         }
     }
 
@@ -29,7 +29,6 @@ class CalorieFragment : DataListFragment<WmCaloriesData>() {
             val end: Date = DateTimeUtils.getDayEndTime(calendar, date)
             UNIWatchMate.wmSync.syncCaloriesData.syncData(start.time)
                 .await().value
-
         }
     }
 

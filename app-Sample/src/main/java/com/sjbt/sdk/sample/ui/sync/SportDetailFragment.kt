@@ -30,7 +30,7 @@ class SportDetailFragment : DataListFragment<WmSportSummaryData>() {
     override val valueFormat: DataListAdapter.ValueFormat<WmSportSummaryData> =
         object : DataListAdapter.ValueFormat<WmSportSummaryData> {
             override fun format(context: Context, obj: WmSportSummaryData): String {
-                return dateTimeFormat.format(obj.timestamp) + "    " + sportTypeText(obj.sportId) + "  " +  obj.actTime
+                return dateTimeFormat.format(obj.timestamp) + "    " + sportTypeText(obj.sportId) + "  " +  obj
             }
         }
 
@@ -40,7 +40,7 @@ class SportDetailFragment : DataListFragment<WmSportSummaryData>() {
             arguments?.getParcelableCompat<SportSummaryEntity>("wmSportSummaryData")
         tvDataSport = view.findViewById(R.id.tv_data_sport)
         btnDate.isVisible = false
-        tvDataSport?.text = "${sportSummaryEntity?.sportId}"
+        tvDataSport?.text = "${sportSummaryEntity?.sportId}\n${sportSummaryEntity?.valueType}"
     }
 
     override fun queryData(date: Date): List<WmSportSummaryData>? {

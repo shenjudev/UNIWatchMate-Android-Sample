@@ -5,11 +5,14 @@ import android.os.Bundle
 import android.view.View
 import android.widget.TextView
 import com.base.api.UNIWatchMate
+import com.base.sdk.entity.data.WmSleepData
 import com.base.sdk.entity.data.WmSleepItem
 import com.sjbt.sdk.sample.R
 import com.sjbt.sdk.sample.utils.FormatterUtil
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.rx3.await
+import kotlinx.coroutines.withContext
 import java.util.*
 
 class SleepFragment : DataListFragment<WmSleepItem>() {
@@ -45,28 +48,30 @@ class SleepFragment : DataListFragment<WmSleepItem>() {
         }
 
     override fun queryData(date: Date): List<WmSleepItem>? {
-        val data =
-            runBlocking { UNIWatchMate.wmSync.syncSleepData.syncData(date.time).await().value }
-        val sleepItemDatas = mutableListOf<WmSleepItem>()
-        val duration = IntArray(4)
-        data.forEach { wmSleepData ->
-            wmSleepData.wmSleepData.forEach {
-                sleepItemDatas.add(it)
-                when (it.status) {
-                    WmSleepItem.STATUS_DEEP -> duration[0] = duration[0] + it.duration.toInt()
-                    WmSleepItem.STATUS_LIGHT -> duration[1] = duration[1] + it.duration.toInt()
-                    WmSleepItem.STATUS_REM -> duration[2] = duration[2] + it.duration.toInt()
-                    WmSleepItem.STATUS_SOBER -> duration[3] = duration[3] + it.duration.toInt()
-                    else -> duration[3] = duration[3] + it.duration.toInt()
+        return runBlocking {
+            val data = UNIWatchMate.wmSync.syncSleepData.syncData(date.time).await().value
+            val sleepItemDatas = mutableListOf<WmSleepItem>()
+            val duration = IntArray(4)
+            data.forEach { wmSleepData ->
+                wmSleepData.wmSleepData.forEach {
+                    sleepItemDatas.add(it)
+                    when (it.status) {
+                        WmSleepItem.STATUS_DEEP -> duration[0] = duration[0] + it.duration
+                        WmSleepItem.STATUS_LIGHT -> duration[1] = duration[1] + it.duration
+                        WmSleepItem.STATUS_REM -> duration[2] = duration[2] + it.duration
+                        WmSleepItem.STATUS_SOBER -> duration[3] = duration[3] + it.duration
+                        else -> duration[3] = duration[3] + it.duration
+                    }
                 }
             }
+            withContext(Dispatchers.Main) {
+                tvDeepSleep.text = FormatterUtil.second2Hmm(duration[0])
+                tvLightSleep.text = FormatterUtil.second2Hmm(duration[1])
+                tvAwakeSleep.text = FormatterUtil.second2Hmm(duration[2])
+                tvRem.text = FormatterUtil.second2Hmm(duration[3])
+            }
+            sleepItemDatas
         }
-
-        tvDeepSleep.text = FormatterUtil.second2Hmm(duration[0])
-        tvLightSleep.text = FormatterUtil.second2Hmm(duration[1])
-        tvAwakeSleep.text = FormatterUtil.second2Hmm(duration[2])
-        tvRem.text = FormatterUtil.second2Hmm(duration[3])
-        return sleepItemDatas
     }
 
 }

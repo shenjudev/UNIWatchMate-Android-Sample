@@ -125,6 +125,27 @@
     <string name="exercise_goal_distance">Distance</string>
     <string name="exercise_goal_calories">Calories</string>
     <string name="exercise_goal_activity">Activity Duration</string>
+    <!--Exercise data type -->
+    <!--    用时、距离、消耗（热量）、步数、平均配速、最大配速、最低配速、平均速度、最大速度、最低速度、平均步频、最大步频、最低步频、平均心率、最大心率、最低心率、跳绳计数、心率分布-->
+    <string name="exercise_data_time">time</string>
+    <string name="exercise_data_distance">distance</string>
+    <string name="exercise_data_calories">calories</string>
+    <string name="exercise_data_step">step</string>
+    <string name="exercise_data_average_pace">average pace</string>
+    <string name="exercise_data_max_pace">max pace</string>
+    <string name="exercise_data_min_pace">min pace</string>
+    <string name="exercise_data_average_speed">average speed</string>
+    <string name="exercise_data_max_speed">max speed</string>
+    <string name="exercise_data_min_speed">min speed</string>
+    <string name="exercise_data_average_step_frequency">average step frequency</string>
+    <string name="exercise_data_max_step_frequency">max step frequency</string>
+    <string name="exercise_data_min_step_frequency">min step frequency</string>
+    <string name="exercise_data_average_heart_rate">average heart rate</string>
+    <string name="exercise_data_max_heart_rate">max heart rate</string>
+    <string name="exercise_data_min_heart_rate">min heart rate</string>
+    <string name="exercise_data_jump_rope_counting">jump rope counting</string>
+    <string name="exercise_data_heart_rate_distributione">heart rate distributione</string>
+
     <!--Account-->
     <string name="account_sign_in">Sign In</string>
     <string name="account_input_username_hint">Input username</string>

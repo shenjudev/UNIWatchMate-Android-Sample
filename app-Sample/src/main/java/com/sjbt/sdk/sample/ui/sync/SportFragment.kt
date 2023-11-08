@@ -6,11 +6,13 @@ import android.view.View
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import com.base.api.UNIWatchMate
+import com.base.sdk.entity.apps.WmValueTypeData
 import com.base.sdk.entity.data.WmSportSummaryData
 import com.blankj.utilcode.util.GsonUtils
 import com.blankj.utilcode.util.ResourceUtils
 import com.sjbt.sdk.sample.entity.SportSummaryEntity
 import com.sjbt.sdk.sample.model.LocalSportLibrary
+import com.sjbt.sdk.sample.utils.getSportLibrary
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.rx3.await
 import java.text.SimpleDateFormat
@@ -21,12 +23,11 @@ class SportFragment : DataListFragment<WmSportSummaryData>(),
     DataListAdapter.Listener<WmSportSummaryData> {
 
     private val dateTimeFormat = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault())
-    private var localSportLibrary: LocalSportLibrary? = null
 
     override val valueFormat: DataListAdapter.ValueFormat<WmSportSummaryData> =
         object : DataListAdapter.ValueFormat<WmSportSummaryData> {
             override fun format(context: Context, obj: WmSportSummaryData): String {
-                return dateTimeFormat.format(obj.timestamp) + "    " + sportTypeText(obj.sportId) + "  " + obj.actTime
+                return dateTimeFormat.format(obj.timestamp) + "    " + sportTypeText(obj.sportId) + "  " + obj
             }
         }
 
@@ -39,12 +40,6 @@ class SportFragment : DataListFragment<WmSportSummaryData>(),
     override fun queryData(date: Date): List<WmSportSummaryData>? {
 
         val result = runBlocking {
-            if (localSportLibrary != null) {
-                val sportsData = ResourceUtils.readAssets2String("sports_data.json")
-                localSportLibrary =
-                    GsonUtils.fromJson<LocalSportLibrary>(sportsData, LocalSportLibrary::class.java)
-            }
-
             UNIWatchMate.wmSync.syncSportSummaryData.syncData(date.time).await()
         }
         return result.value
@@ -57,13 +52,11 @@ class SportFragment : DataListFragment<WmSportSummaryData>(),
     }
 
     private fun getSportName(sportId: Int): String {
-        localSportLibrary?.let {
-            it.sports.forEach { localSport ->
+            getSportLibrary().sports.forEach { localSport ->
                 if (sportId == localSport.id) {
-                    return it.getNameById(sportId) + it.getTypeById(sportId)
+                    return getSportLibrary().getNameById(sportId) + getSportLibrary().getTypeById(sportId)
                 }
             }
-        }
         return sportId.toString()
     }
 

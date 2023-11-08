@@ -14,6 +14,7 @@ import com.sjbt.sdk.sample.dialog.*
 import com.sjbt.sdk.sample.utils.*
 import com.sjbt.sdk.sample.utils.viewbinding.viewBinding
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.reactive.asFlow
 import kotlinx.coroutines.rx3.asFlow
 import kotlinx.coroutines.rx3.await
 
@@ -48,7 +49,7 @@ class SleepConfigFragment : BaseFragment(R.layout.fragment_sleep_config),
                 }
             }
             launch {
-                UNIWatchMate?.wmSettings?.settingSleepSettings?.get()?.toObservable()?.asFlow()
+                UNIWatchMate?.wmSettings?.settingSleepSettings?.get()?.toFlowable()?.asFlow()
                     ?.collect {
                         config = it
                         updateUI()
