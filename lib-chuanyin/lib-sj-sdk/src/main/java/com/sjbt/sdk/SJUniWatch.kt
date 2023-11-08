@@ -1422,6 +1422,18 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(), Li
 
                         }
 
+                        URN_SPORT_STEP_FREQUENCY_10S -> {
+
+                        }
+
+                        URN_SPORT_DISTANCE_10S -> {
+
+                        }
+
+                        URN_SPORT_CALORIES_10S -> {
+
+                        }
+
                     }
                 }
             }

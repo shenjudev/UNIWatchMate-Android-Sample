@@ -8,7 +8,7 @@ import com.sjbt.sdk.SJUniWatch
 import com.sjbt.sdk.entity.MsgBean
 import com.sjbt.sdk.entity.NodeData
 import com.sjbt.sdk.spp.cmd.CmdHelper
-import com.sjbt.sdk.spp.cmd.URN_SPORT_RATE_10S
+import com.sjbt.sdk.spp.cmd.URN_SPORT_DISTANCE_10S
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.core.ObservableEmitter
 import io.reactivex.rxjava3.core.Single
@@ -47,7 +47,7 @@ class SyncTodayTotalData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmT
                 CmdHelper.getReadSportSyncData(
                     startTime,
                     lastSyncTime,
-                    childUrn = URN_SPORT_RATE_10S
+                    childUrn = URN_SPORT_DISTANCE_10S
                 )
             )
         }

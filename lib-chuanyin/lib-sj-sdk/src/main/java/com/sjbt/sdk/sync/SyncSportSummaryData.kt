@@ -105,7 +105,7 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
                             }
                         }
 
-                        parseStepData()
+                        parseSportSummaryData()
                     }
                 }
             })
@@ -116,7 +116,7 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
         Observable.create { emitter -> observeChangeEmitter = emitter }
 
 
-    private fun parseStepData() {
+    private fun parseSportSummaryData() {
         sjUniWatch.wmLog.logE(
             TAG,
             "all payload len:" + byteBufferSyncData.limit() + " :data:" + BtUtils.bytesToHexString(
@@ -211,11 +211,10 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
     fun syncSportSummaryDataBusiness(nodeData: NodeData) {
         if (nodeData.dataFmt == DataFormat.FMT_BIN) {
             byteBufferSyncData = ByteBuffer.wrap(nodeData.data).order(ByteOrder.LITTLE_ENDIAN)
-            parseStepData()
+            parseSportSummaryData()
         } else if (nodeData.dataFmt == DataFormat.FMT_ERRCODE || nodeData.dataFmt == DataFormat.FMT_NODATA) {
             val wmSyncData =
                 WmSyncData(WmSyncDataType.STEP, 0, WmIntervalType.ONE_HOUR, mutableListOf<WmSportSummaryData>())
-
             syncSportSummaryObserveEmitter?.onSuccess(wmSyncData)
         }
     }

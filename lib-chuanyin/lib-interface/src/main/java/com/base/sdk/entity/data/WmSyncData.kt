@@ -122,6 +122,12 @@ class WmSportSummaryData(
     val slowestPace: Short,
     val averageSpeed: Short
 ) : WmBaseSyncData(), Serializable {
+
+    var tenSecondsHeartRate: List<WmRealtimeRateData>? = null
+    var tenSecondsStepFrequencyData: List<WmStepFrequencyData>? = null
+    var tenSecondsDistanceData: List<WmDistanceData>? = null
+    var tenSecondsCaloriesData: List<WmCaloriesData>? = null
+
     override fun toString(): String {
         return "WmSportSummaryData(date=$Long, startTime=$startTime, endTime=$endTime, sportId=$sportId, sportType=$sportType, step=$step, calories=$calories, distance=$distance, actTime=$actTime, maxRate=$maxRate, averageRate=$averageRate, minRate=$minRate, rateLimitTime=$rateLimitTime, rateUnAerobic=$rateUnAerobic, rateAerobic=$rateAerobic, rateFatBurning=$rateFatBurning, rateWarmUp=$rateWarmUp, maxStepSpeed=$maxStepSpeed, minStepSpeed=$minStepSpeed, averageStepSpeed=$averageStepSpeed, fastPace=$fastPace, slowestPace=$slowestPace, averageSpeed=$averageSpeed)"
     }
@@ -248,6 +254,9 @@ class WmBloodPressureMeasureData(
     }
 }
 
+/**
+ * realtime heart rate 实时心率
+ */
 class WmRealtimeRateData(
     /**
      * Respiratory rate value (breaths per minute)
@@ -256,6 +265,20 @@ class WmRealtimeRateData(
 ) : WmBaseSyncData() {
     override fun toString(): String {
         return "WmRealtimeRateData(rate=$rate)"
+    }
+}
+
+/**
+ * step frequency per 10 seconds 每十秒中步频
+ */
+class WmStepFrequencyData(
+    /**
+     * Respiratory frequency value
+     */
+    val frequency: Int
+) : WmBaseSyncData() {
+    override fun toString(): String {
+        return "WmStepFrequencyData(frequency=$frequency)"
     }
 }
 

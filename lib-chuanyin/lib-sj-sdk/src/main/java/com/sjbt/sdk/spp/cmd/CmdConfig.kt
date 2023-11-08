@@ -196,11 +196,14 @@ const val URN_SPORT_DAILY_ACTIVITY_LEN: Byte = URN_4
 const val URN_SPORT_DISTANCE: Byte = URN_5
 const val URN_SPORT_OXYGEN: Byte = URN_6
 const val URN_SPORT_RATE: Byte = URN_7
-const val URN_SPORT_RATE_RECORD: Byte = URN_1
-const val URN_SPORT_RATE_REALTIME: Byte = URN_2
+const val URN_SPORT_RATE_RECORD: Byte = URN_2
+const val URN_SPORT_RATE_REALTIME: Byte = URN_1
 const val URN_SPORT_SLEEP: Byte = URN_8
 const val URN_SPORT_SUMMARY: Byte = URN_9
 const val URN_SPORT_RATE_10S: Byte = URN_A
+const val URN_SPORT_STEP_FREQUENCY_10S: Byte = URN_B
+const val URN_SPORT_DISTANCE_10S: Byte = URN_C
+const val URN_SPORT_CALORIES_10S: Byte = URN_D
 
 const val CHANGE_CAMERA = 0.toByte()
 const val CHANGE_FLASH = 1.toByte()
