@@ -8,22 +8,22 @@ import com.sjbt.sdk.spp.cmd.CmdHelper
 import io.reactivex.rxjava3.core.*
 
 class SettingSoundAndHaptic(sjUniWatch: SJUniWatch) : AbWmSetting<WmSoundAndHaptic>() {
-    var observeEmitter: ObservableEmitter<WmSoundAndHaptic>? = null
-    var setEmitter: SingleEmitter<WmSoundAndHaptic>? = null
-    var getEmitter: SingleEmitter<WmSoundAndHaptic>? = null
+    private var observeEmitter: ObservableEmitter<WmSoundAndHaptic>? = null
+    private var setEmitter: SingleEmitter<WmSoundAndHaptic>? = null
+    private var getEmitter: SingleEmitter<WmSoundAndHaptic>? = null
 
     private var sjUniWatch = sjUniWatch
     private var wmSoundAndHaptic: WmSoundAndHaptic? = null
     private var backWmSoundAndHaptic = WmSoundAndHaptic();
     private var isGet = false
 
-    fun backSoundAndHapticSettings(wmWistRaise: WmSoundAndHaptic){
-       if(isGet){
-           isGet =false
-           getWmWistRaise(wmWistRaise)
-       }else{
-           observeWmWistRaiseChange(wmWistRaise)
-       }
+    fun backSoundAndHapticSettings(wmWistRaise: WmSoundAndHaptic) {
+        if (isGet) {
+            isGet = false
+            getWmWistRaise(wmWistRaise)
+        } else {
+            observeWmWistRaiseChange(wmWistRaise)
+        }
     }
 
     fun getWmWistRaise(wmWistRaise: WmSoundAndHaptic) {
@@ -160,11 +160,15 @@ class SettingSoundAndHaptic(sjUniWatch: SJUniWatch) : AbWmSetting<WmSoundAndHapt
         }
     }
 
-    fun onTimeOut(nodeData: NodeData) {
-
+    fun setSoundAndHapticTimeOut(){
+        setEmitter?.onError(RuntimeException("set sound and haptic time out"))
     }
 
-    enum class SoundAndHapticType(val type:Int){
+    fun getSoundAndHapticTimeOut(){
+        getEmitter?.onError(RuntimeException("get sound and haptic time out"))
+    }
+
+    enum class SoundAndHapticType(val type: Int) {
         RING(0),
         NOTIFY(1),
         CROWN(2),

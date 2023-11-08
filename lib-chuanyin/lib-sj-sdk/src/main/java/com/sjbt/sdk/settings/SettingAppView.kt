@@ -22,34 +22,26 @@ class SettingAppView(val sjUniWatch: SJUniWatch) : AbWmSetting<WmAppView>() {
     }
 
     override fun observeChange(): Observable<WmAppView> {
-        return Observable.create(object : ObservableOnSubscribe<WmAppView> {
-            override fun subscribe(emitter: ObservableEmitter<WmAppView>) {
-                observeEmitter = emitter
-            }
-        })
+        return Observable.create { emitter -> observeEmitter = emitter }
     }
 
     override fun set(appView: WmAppView): Single<WmAppView> {
         mAppView = appView
-        return Single.create(object : SingleOnSubscribe<WmAppView> {
-            override fun subscribe(emitter: SingleEmitter<WmAppView>) {
-                setEmitter = emitter
-                appView.appViewList.forEach {
-                    if (it.status == 1) {
-                        sjUniWatch.sendNormalMsg(CmdHelper.setAppViewCmd(it.id.toByte()))
-                    }
+        return Single.create { emitter ->
+            setEmitter = emitter
+            appView.appViewList.forEach {
+                if (it.status == 1) {
+                    sjUniWatch.sendNormalMsg(CmdHelper.setAppViewCmd(it.id.toByte()))
                 }
             }
-        })
+        }
     }
 
     override fun get(): Single<WmAppView> {
-        return Single.create(object : SingleOnSubscribe<WmAppView> {
-            override fun subscribe(emitter: SingleEmitter<WmAppView>) {
-                getEmitter = emitter
-                sjUniWatch.sendNormalMsg(CmdHelper.appViewList)
-            }
-        })
+        return Single.create { emitter ->
+            getEmitter = emitter
+            sjUniWatch.sendNormalMsg(CmdHelper.appViewList)
+        }
     }
 
     fun appViewsSetTimeOut() {

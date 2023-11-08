@@ -849,12 +849,13 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(), Li
 //                        }
 
                     }
+
                     CMD_ID_8017 -> {
-                        settingSoundAndHaptic.getEmitter?.onError(RuntimeException("get sound and haptic time out"))
+                        settingSoundAndHaptic.setSoundAndHapticTimeOut()
                     }
 
                     CMD_ID_8018 -> {
-                        settingSoundAndHaptic.setEmitter?.onError(RuntimeException("set sound and haptic time out"))
+                        settingSoundAndHaptic.getSoundAndHapticTimeOut()
                     }
 
                     CMD_ID_801C -> {
