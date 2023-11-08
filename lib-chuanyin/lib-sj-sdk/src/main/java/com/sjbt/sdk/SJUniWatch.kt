@@ -1419,19 +1419,19 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(), Li
                             syncSportSummaryData.syncSportSummaryDataBusiness(it)
                         }
 
-                        URN_SPORT_RATE_10S -> {
+                        URN_SPORT_10S_RATE -> {
 
                         }
 
-                        URN_SPORT_STEP_FREQUENCY_10S -> {
+                        URN_SPORT_10S_STEP_FREQUENCY -> {
 
                         }
 
-                        URN_SPORT_DISTANCE_10S -> {
+                        URN_SPORT_10S_DISTANCE -> {
 
                         }
 
-                        URN_SPORT_CALORIES_10S -> {
+                        URN_SPORT_10S_CALORIES -> {
 
                         }
 

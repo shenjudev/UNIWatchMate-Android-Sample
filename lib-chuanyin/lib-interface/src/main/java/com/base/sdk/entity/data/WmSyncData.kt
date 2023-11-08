@@ -98,8 +98,8 @@ uint16_t paces[0];
  */
 class WmSportSummaryData(
     val date: Long,
-    val startTime: Int,
-    val endTime: Int,
+    val startTime: Long,
+    val endTime: Long,
     val sportId: Int,
     val sportType: Byte,
     val step: Int,
