@@ -7,9 +7,8 @@ import com.sjbt.sdk.SJUniWatch
 import com.sjbt.sdk.entity.DataFormat
 import com.sjbt.sdk.entity.MsgBean
 import com.sjbt.sdk.entity.NodeData
-import com.sjbt.sdk.exception.SjException
 import com.sjbt.sdk.spp.cmd.CmdHelper
-import com.sjbt.sdk.spp.cmd.SYNC_DATA_INTERVAL
+import com.sjbt.sdk.spp.cmd.SYNC_DATA_INTERVAL_HOUR
 import com.sjbt.sdk.spp.cmd.URN_SPORT_CALORIES
 import com.sjbt.sdk.utils.BtUtils
 import com.sjbt.sdk.utils.TimeUtils
@@ -149,6 +148,8 @@ class SyncCaloriesData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmCal
 
         val caloriesList = mutableListOf<WmCaloriesData>()
 
+        var dataIndex = 0
+
         while (byteBufferSyncData.hasRemaining()) {
 
             val wmCaloriesData = WmCaloriesData(byteBufferSyncData.int and 0XFF)
@@ -156,11 +157,11 @@ class SyncCaloriesData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmCal
             if (timestampType == 0) {//只有一个时间戳
                 sjUniWatch.wmLog.logD(
                     TAG,
-                    "start base date:" + TimeUtils.date2String(Date(realTimeStamp + (byteBufferSyncData.position() - 12) * SYNC_DATA_INTERVAL))
+                    "start base date:" + TimeUtils.date2String(Date(realTimeStamp + dataIndex * SYNC_DATA_INTERVAL_HOUR))
                 )
 
                 wmCaloriesData.timestamp =
-                    realTimeStamp + (byteBufferSyncData.position() - 12) * SYNC_DATA_INTERVAL
+                    realTimeStamp + dataIndex * SYNC_DATA_INTERVAL_HOUR
             }
 
             sjUniWatch.wmLog.logD(
@@ -169,6 +170,7 @@ class SyncCaloriesData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmCal
             )
 
             caloriesList.add(wmCaloriesData)
+            dataIndex ++
         }
 
         val wmSyncData =

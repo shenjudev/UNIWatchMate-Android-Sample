@@ -7,7 +7,6 @@ import com.sjbt.sdk.SJUniWatch
 import com.sjbt.sdk.entity.DataFormat
 import com.sjbt.sdk.entity.MsgBean
 import com.sjbt.sdk.entity.NodeData
-import com.sjbt.sdk.exception.SjException
 import com.sjbt.sdk.spp.cmd.*
 import com.sjbt.sdk.utils.BtUtils
 import com.sjbt.sdk.utils.TimeUtils
@@ -163,11 +162,11 @@ class SyncHeartRateData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmHe
             if (timestampType == 0) {//只有一个时间戳
                 sjUniWatch.wmLog.logD(
                     TAG,
-                    "start base date:" + TimeUtils.date2String(Date(realTimeStamp + dataIndex * SYNC_DATA_INTERVAL))
+                    "start base date:" + TimeUtils.date2String(Date(realTimeStamp + dataIndex * SYNC_DATA_INTERVAL_HOUR))
                 )
 
                 wmHeartRateData.timestamp =
-                    realTimeStamp + dataIndex * SYNC_DATA_INTERVAL
+                    realTimeStamp + dataIndex * SYNC_DATA_INTERVAL_HOUR
             }
 
             sjUniWatch.wmLog.logD(

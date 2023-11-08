@@ -8,7 +8,7 @@ import com.sjbt.sdk.entity.DataFormat
 import com.sjbt.sdk.entity.MsgBean
 import com.sjbt.sdk.entity.NodeData
 import com.sjbt.sdk.spp.cmd.CmdHelper
-import com.sjbt.sdk.spp.cmd.SYNC_DATA_INTERVAL
+import com.sjbt.sdk.spp.cmd.SYNC_DATA_INTERVAL_HOUR
 import com.sjbt.sdk.spp.cmd.URN_SPORT_OXYGEN
 import com.sjbt.sdk.utils.BtUtils
 import com.sjbt.sdk.utils.TimeUtils
@@ -146,6 +146,8 @@ class SyncOxygenData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmOxyge
 
         val oxygenDataList = mutableListOf<WmOxygenData>()
 
+        var dataIndex = 0
+
         while (byteBufferSyncData.hasRemaining()) {
 
             val wmOxygenData = WmOxygenData(byteBufferSyncData.get().toInt() and 0XFF)
@@ -153,11 +155,11 @@ class SyncOxygenData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmOxyge
             if (timestampType == 0) {//只有一个时间戳
                 sjUniWatch.wmLog.logD(
                     TAG,
-                    "start base date:" + TimeUtils.date2String(Date(realTimeStamp + (byteBufferSyncData.position() - 12) * SYNC_DATA_INTERVAL))
+                    "start base date:" + TimeUtils.date2String(Date(realTimeStamp + dataIndex * SYNC_DATA_INTERVAL_HOUR))
                 )
 
                 wmOxygenData.timestamp =
-                    realTimeStamp + (byteBufferSyncData.position() - 12) * SYNC_DATA_INTERVAL
+                    realTimeStamp + dataIndex * SYNC_DATA_INTERVAL_HOUR
             }
 
             sjUniWatch.wmLog.logD(
@@ -166,6 +168,8 @@ class SyncOxygenData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmOxyge
             )
 
             oxygenDataList.add(wmOxygenData)
+
+            dataIndex++
         }
 
         val wmSyncData =
@@ -191,7 +195,12 @@ class SyncOxygenData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmOxyge
             parseStepData()
         } else if (nodeData.dataFmt == DataFormat.FMT_ERRCODE || nodeData.dataFmt == DataFormat.FMT_NODATA) {
             val wmSyncData =
-                WmSyncData(WmSyncDataType.STEP, 0, WmIntervalType.ONE_HOUR, mutableListOf<WmOxygenData>())
+                WmSyncData(
+                    WmSyncDataType.STEP,
+                    0,
+                    WmIntervalType.ONE_HOUR,
+                    mutableListOf<WmOxygenData>()
+                )
 
             oxygenObserveEmitter?.onSuccess(wmSyncData)
         }

@@ -116,7 +116,6 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
     override var observeSyncData: Observable<WmSyncData<WmSportSummaryData>> =
         Observable.create { emitter -> observeChangeEmitter = emitter }
 
-
     private fun parseSportSummaryData() {
         sjUniWatch.wmLog.logE(
             TAG,
@@ -253,19 +252,19 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
         }
     }
 
-    fun syncTenSecondsDistance(nodeData: NodeData) {
+    fun syncTenSecondsDistanceBusiness(nodeData: NodeData) {
 
     }
 
-    fun syncTenSecondsCalories(nodeData: NodeData) {
+    fun syncTenSecondsCaloriesBusiness(nodeData: NodeData) {
 
     }
 
-    fun syncTenSecondsRate(nodeData: NodeData) {
+    fun syncTenSecondsRateBusiness(nodeData: NodeData) {
 
     }
 
-    fun syncTenSecondsStepFrequency(nodeData: NodeData) {
+    fun syncTenSecondsStepFrequencyBusiness(nodeData: NodeData) {
 
     }
 

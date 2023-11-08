@@ -8,7 +8,7 @@ import com.sjbt.sdk.entity.DataFormat
 import com.sjbt.sdk.entity.MsgBean
 import com.sjbt.sdk.entity.NodeData
 import com.sjbt.sdk.spp.cmd.CmdHelper
-import com.sjbt.sdk.spp.cmd.SYNC_DATA_INTERVAL
+import com.sjbt.sdk.spp.cmd.SYNC_DATA_INTERVAL_HOUR
 import com.sjbt.sdk.spp.cmd.URN_SPORT_DISTANCE
 import com.sjbt.sdk.utils.BtUtils
 import com.sjbt.sdk.utils.TimeUtils
@@ -158,11 +158,11 @@ class SyncDistanceData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmDis
             if (timestampType == 0) {//只有一个时间戳
                 sjUniWatch.wmLog.logD(
                     TAG,
-                    "start base date:" + TimeUtils.date2String(Date(realTimeStamp + (byteBufferSyncData.position() - 12) * SYNC_DATA_INTERVAL))
+                    "start base date:" + TimeUtils.date2String(Date(realTimeStamp + (byteBufferSyncData.position() - 12) * SYNC_DATA_INTERVAL_HOUR))
                 )
 
                 wmDistanceData.timestamp =
-                    realTimeStamp + (byteBufferSyncData.position() - 12) * SYNC_DATA_INTERVAL
+                    realTimeStamp + (byteBufferSyncData.position() - 12) * SYNC_DATA_INTERVAL_HOUR
             }
 
             sjUniWatch.wmLog.logD(

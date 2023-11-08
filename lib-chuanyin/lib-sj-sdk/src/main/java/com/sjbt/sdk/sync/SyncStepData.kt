@@ -10,12 +10,10 @@ import com.sjbt.sdk.SJUniWatch
 import com.sjbt.sdk.entity.DataFormat
 import com.sjbt.sdk.entity.MsgBean
 import com.sjbt.sdk.entity.NodeData
-import com.sjbt.sdk.exception.SjException
 import com.sjbt.sdk.spp.cmd.CmdHelper.getReadSportSyncData
-import com.sjbt.sdk.spp.cmd.SYNC_DATA_INTERVAL
+import com.sjbt.sdk.spp.cmd.SYNC_DATA_INTERVAL_HOUR
 import com.sjbt.sdk.spp.cmd.URN_SPORT_STEP
 import com.sjbt.sdk.utils.BtUtils
-import com.sjbt.sdk.utils.TimeUtils
 import io.reactivex.rxjava3.core.*
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.core.Observer
@@ -170,7 +168,7 @@ class SyncStepData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmStepDat
 
             if (timestampType == 0) {
                 wmStepData.timestamp =
-                    realTimeStamp + dataIndex * SYNC_DATA_INTERVAL
+                    realTimeStamp + dataIndex * SYNC_DATA_INTERVAL_HOUR
             }
 
             sjUniWatch.wmLog.logD(

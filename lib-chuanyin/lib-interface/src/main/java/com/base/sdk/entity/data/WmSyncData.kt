@@ -206,7 +206,7 @@ class WmDistanceData(
  */
 class WmCaloriesData(
     /**
-     * calorie value
+     * calorie value 单位：卡 calorie
      */
     val calorie: Int,
 ) : WmBaseSyncData() {
@@ -337,7 +337,7 @@ class WmActivityDurationData(
     val duration: Int
 ) : WmBaseSyncData() {
     override fun toString(): String {
-        return "WmActivityDurationData(activity=$duration, duration=$duration)"
+        return "WmActivityDurationData(duration=$duration)"
     }
 }
 
