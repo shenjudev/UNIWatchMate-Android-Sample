@@ -42,8 +42,7 @@ class SleepFragment : DataListFragment<WmSleepItem>() {
                     WmSleepItem.STATUS_SOBER -> context.getString(R.string.awake_sleep)
                     else -> context.getString(R.string.awake_sleep)
                 }
-                return statusText + "    " + timeFormat.format(obj) + " ->  "
-                return statusText + "    "
+                return statusText + "    " + timeFormat.format(obj.duration) + " ->  ${obj.duration}"
             }
         }
 
