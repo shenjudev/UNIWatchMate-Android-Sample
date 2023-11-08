@@ -54,6 +54,7 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
 
         return Single.create { emitter ->
             syncSportSummaryObserveEmitter = emitter
+            msgList.clear()
             sjUniWatch.sendReadSubPkObserveNode(
                 this,
                 CmdHelper.getReadSportSyncData(
@@ -160,11 +161,11 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
 
             val sportId = byteBufferSyncData.short.toInt()
 
-            val sportType= byteBufferSyncData.get()
+            val sportType = byteBufferSyncData.get()
             val step = byteBufferSyncData.int
             val calories = byteBufferSyncData.int
             val distance = byteBufferSyncData.int
-            val actTime= byteBufferSyncData.short
+            val actTime = byteBufferSyncData.short
             val maxRate = byteBufferSyncData.get()
             val averageRate = byteBufferSyncData.get()
             val minRate = byteBufferSyncData.get()
@@ -186,7 +187,31 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
 
             val dateTime = calendar.timeInMillis
 
-            val wmSportSummaryData = WmSportSummaryData(dateTime, startTime, endTime, sportId, sportType, step, calories, distance, actTime, maxRate, averageRate, minRate, rateLimitTime, rateUnAerobic, rateAerobic, rateFatBurning, rateWarmUp, maxStepSpeed, minStepSpeed, averageStepSpeed, fastPace, slowestPace, averageSpeed )
+            val wmSportSummaryData = WmSportSummaryData(
+                dateTime,
+                startTime,
+                endTime,
+                sportId,
+                sportType,
+                step,
+                calories,
+                distance,
+                actTime,
+                maxRate,
+                averageRate,
+                minRate,
+                rateLimitTime,
+                rateUnAerobic,
+                rateAerobic,
+                rateFatBurning,
+                rateWarmUp,
+                maxStepSpeed,
+                minStepSpeed,
+                averageStepSpeed,
+                fastPace,
+                slowestPace,
+                averageSpeed
+            )
 
             activitySportSummaryList.add(wmSportSummaryData)
         }
@@ -206,6 +231,10 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
             TAG,
             "${wmSyncData}"
         )
+
+        wmSyncData.value.forEach {
+            sjUniWatch.wmLog.logD(TAG, "activity detail info:" + it.toString())
+        }
     }
 
     fun syncSportSummaryDataBusiness(nodeData: NodeData) {
@@ -214,8 +243,30 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
             parseSportSummaryData()
         } else if (nodeData.dataFmt == DataFormat.FMT_ERRCODE || nodeData.dataFmt == DataFormat.FMT_NODATA) {
             val wmSyncData =
-                WmSyncData(WmSyncDataType.STEP, 0, WmIntervalType.ONE_HOUR, mutableListOf<WmSportSummaryData>())
+                WmSyncData(
+                    WmSyncDataType.STEP,
+                    0,
+                    WmIntervalType.ONE_HOUR,
+                    mutableListOf<WmSportSummaryData>()
+                )
             syncSportSummaryObserveEmitter?.onSuccess(wmSyncData)
         }
     }
+
+    fun syncTenSecondsDistance(nodeData: NodeData) {
+
+    }
+
+    fun syncTenSecondsCalories(nodeData: NodeData) {
+
+    }
+
+    fun syncTenSecondsRate(nodeData: NodeData) {
+
+    }
+
+    fun syncTenSecondsStepFrequency(nodeData: NodeData) {
+
+    }
+
 }

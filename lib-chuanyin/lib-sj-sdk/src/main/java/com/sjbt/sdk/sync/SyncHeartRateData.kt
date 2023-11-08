@@ -181,9 +181,9 @@ class SyncHeartRateData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmHe
 
         val wmSyncData =
             WmSyncData(
-                WmSyncDataType.HEART_RATE_FIVE_MINUTES,
+                WmSyncDataType.HEART_RATE_ONE_HOUR,
                 realTimeStamp,
-                WmIntervalType.FIVE_MINUTES,
+                WmIntervalType.ONE_HOUR,
                 realTimeRateList
             )
 

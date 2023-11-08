@@ -1,7 +1,6 @@
 package com.base.sdk.entity.data
 
 import android.text.format.DateFormat
-import com.base.sdk.entity.apps.WmValueTypeData
 import com.base.sdk.entity.settings.WmSleepSettings
 import java.io.Serializable
 import java.util.*
@@ -127,10 +126,10 @@ class WmSportSummaryData(
     var tenSecondsStepFrequencyData: List<WmStepFrequencyData>? = null
     var tenSecondsDistanceData: List<WmDistanceData>? = null
     var tenSecondsCaloriesData: List<WmCaloriesData>? = null
-
     override fun toString(): String {
-        return "WmSportSummaryData(date=$Long, startTime=$startTime, endTime=$endTime, sportId=$sportId, sportType=$sportType, step=$step, calories=$calories, distance=$distance, actTime=$actTime, maxRate=$maxRate, averageRate=$averageRate, minRate=$minRate, rateLimitTime=$rateLimitTime, rateUnAerobic=$rateUnAerobic, rateAerobic=$rateAerobic, rateFatBurning=$rateFatBurning, rateWarmUp=$rateWarmUp, maxStepSpeed=$maxStepSpeed, minStepSpeed=$minStepSpeed, averageStepSpeed=$averageStepSpeed, fastPace=$fastPace, slowestPace=$slowestPace, averageSpeed=$averageSpeed)"
+        return "WmSportSummaryData(date=$date, startTime=$startTime, endTime=$endTime, sportId=$sportId, sportType=$sportType, step=$step, calories=$calories, distance=$distance, actTime=$actTime, maxRate=$maxRate, averageRate=$averageRate, minRate=$minRate, rateLimitTime=$rateLimitTime, rateUnAerobic=$rateUnAerobic, rateAerobic=$rateAerobic, rateFatBurning=$rateFatBurning, rateWarmUp=$rateWarmUp, maxStepSpeed=$maxStepSpeed, minStepSpeed=$minStepSpeed, averageStepSpeed=$averageStepSpeed, fastPace=$fastPace, slowestPace=$slowestPace, averageSpeed=$averageSpeed, tenSecondsHeartRate=$tenSecondsHeartRate, tenSecondsStepFrequencyData=$tenSecondsStepFrequencyData, tenSecondsDistanceData=$tenSecondsDistanceData, tenSecondsCaloriesData=$tenSecondsCaloriesData)"
     }
+
 }
 
 /**
@@ -574,13 +573,13 @@ enum class WmSyncDataType {
     DISTANCE,
     CALORIE,
     HEART_RATE_FIVE_MINUTES,
+    HEART_RATE_ONE_HOUR,
     OXYGEN,
     BLOOD_PRESSURE,
     BLOOD_PRESSURE_MEASURE,
-    REALTIME_RATE,
     PRESSURE,
     TEMPERATURE,
     GAME,
-    ACTIVITY,
+    ACTIVITY_DURATION,
 }
 

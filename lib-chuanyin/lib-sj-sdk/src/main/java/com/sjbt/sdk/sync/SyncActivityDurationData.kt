@@ -175,7 +175,7 @@ class SyncActivityDurationData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncDa
 
         val wmSyncData =
             WmSyncData(
-                WmSyncDataType.OXYGEN,
+                WmSyncDataType.ACTIVITY_DURATION,
                 realTimeStamp,
                 WmIntervalType.FIVE_MINUTES,
                 activityDurationDataList
