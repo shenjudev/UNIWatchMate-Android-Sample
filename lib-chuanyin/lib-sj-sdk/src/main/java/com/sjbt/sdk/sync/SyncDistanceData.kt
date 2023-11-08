@@ -151,6 +151,8 @@ class SyncDistanceData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmDis
 
         val distanceList = mutableListOf<WmDistanceData>()
 
+        var dataIndex = 0
+
         while (byteBufferSyncData.hasRemaining()) {
 
             val wmDistanceData = WmDistanceData(byteBufferSyncData.get().toInt() and 0XFF)
@@ -158,11 +160,11 @@ class SyncDistanceData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmDis
             if (timestampType == 0) {//只有一个时间戳
                 sjUniWatch.wmLog.logD(
                     TAG,
-                    "start base date:" + TimeUtils.date2String(Date(realTimeStamp + (byteBufferSyncData.position() - 12) * SYNC_DATA_INTERVAL_HOUR))
+                    "start base date:" + TimeUtils.date2String(Date(realTimeStamp + dataIndex * SYNC_DATA_INTERVAL_HOUR))
                 )
 
                 wmDistanceData.timestamp =
-                    realTimeStamp + (byteBufferSyncData.position() - 12) * SYNC_DATA_INTERVAL_HOUR
+                    realTimeStamp + dataIndex * SYNC_DATA_INTERVAL_HOUR
             }
 
             sjUniWatch.wmLog.logD(

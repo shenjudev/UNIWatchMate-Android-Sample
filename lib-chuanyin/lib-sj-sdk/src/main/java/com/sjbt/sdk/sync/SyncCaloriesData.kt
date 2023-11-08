@@ -152,7 +152,7 @@ class SyncCaloriesData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmCal
 
         while (byteBufferSyncData.hasRemaining()) {
 
-            val wmCaloriesData = WmCaloriesData(byteBufferSyncData.int and 0XFF)
+            val wmCaloriesData = WmCaloriesData(byteBufferSyncData.int)
 
             if (timestampType == 0) {//只有一个时间戳
                 sjUniWatch.wmLog.logD(

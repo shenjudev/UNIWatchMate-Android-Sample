@@ -154,7 +154,7 @@ class SyncActivityDurationData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncDa
         var dataIndex = 0
         while (byteBufferSyncData.hasRemaining()) {
 
-            val wmActivityDurationData = WmActivityDurationData(byteBufferSyncData.int and 0XFF)
+            val wmActivityDurationData = WmActivityDurationData(byteBufferSyncData.int)
 
             if (timestampType == 0) {//只有一个时间戳
                 sjUniWatch.wmLog.logD(
