@@ -119,6 +119,9 @@ class WmSportSummaryData(
     val averageStepSpeed: Short,
     val fastPace: Short,
     val slowestPace: Short,
+    val averagePace: Short,
+    val fastSpeed: Short,
+    val slowestSpeed: Short,
     val averageSpeed: Short
 ) : WmBaseSyncData(), Serializable {
 
@@ -126,8 +129,9 @@ class WmSportSummaryData(
     var tenSecondsStepFrequencyData: List<WmStepFrequencyData>? = null
     var tenSecondsDistanceData: List<WmDistanceData>? = null
     var tenSecondsCaloriesData: List<WmCaloriesData>? = null
+
     override fun toString(): String {
-        return "WmSportSummaryData(date=$date, startTime=$startTime, endTime=$endTime, sportId=$sportId, sportType=$sportType, step=$step, calories=$calories, distance=$distance, actTime=$actTime, maxRate=$maxRate, averageRate=$averageRate, minRate=$minRate, rateLimitTime=$rateLimitTime, rateUnAerobic=$rateUnAerobic, rateAerobic=$rateAerobic, rateFatBurning=$rateFatBurning, rateWarmUp=$rateWarmUp, maxStepSpeed=$maxStepSpeed, minStepSpeed=$minStepSpeed, averageStepSpeed=$averageStepSpeed, fastPace=$fastPace, slowestPace=$slowestPace, averageSpeed=$averageSpeed, tenSecondsHeartRate=$tenSecondsHeartRate, tenSecondsStepFrequencyData=$tenSecondsStepFrequencyData, tenSecondsDistanceData=$tenSecondsDistanceData, tenSecondsCaloriesData=$tenSecondsCaloriesData)"
+        return "WmSportSummaryData(date=$date, startTime=$startTime, endTime=$endTime, sportId=$sportId, sportType=$sportType, step=$step, calories=$calories, distance=$distance, actTime=$actTime, maxRate=$maxRate, averageRate=$averageRate, minRate=$minRate, rateLimitTime=$rateLimitTime, rateUnAerobic=$rateUnAerobic, rateAerobic=$rateAerobic, rateFatBurning=$rateFatBurning, rateWarmUp=$rateWarmUp, maxStepSpeed=$maxStepSpeed, minStepSpeed=$minStepSpeed, averageStepSpeed=$averageStepSpeed, fastPace=$fastPace, slowestPace=$slowestPace, averagePace=$averagePace, fastSpeed=$fastSpeed, slowestSpeed=$slowestSpeed, averageSpeed=$averageSpeed, tenSecondsHeartRate=$tenSecondsHeartRate, tenSecondsStepFrequencyData=$tenSecondsStepFrequencyData, tenSecondsDistanceData=$tenSecondsDistanceData, tenSecondsCaloriesData=$tenSecondsCaloriesData)"
     }
 
 }

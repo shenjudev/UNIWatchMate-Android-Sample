@@ -18,7 +18,6 @@ import java.util.*
 
 class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
     AbSyncData<WmSyncData<WmSportSummaryData>>(), ReadSubPkMsg {
-    var isActionSupport: Boolean = true
     var lastSyncTime: Long = 0
     private var syncSportSummaryObserveEmitter: SingleEmitter<WmSyncData<WmSportSummaryData>>? =
         null
@@ -44,6 +43,7 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
         URN_SPORT_10S_DISTANCE,
         URN_SPORT_10S_CALORIES
     )
+
     private var tenSecondsRequestIndex = 0
 
     override fun latestSyncTime(): Long {
@@ -167,8 +167,13 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
             val mon = byteBufferSyncData.get().toInt()
             val day = byteBufferSyncData.get().toInt()
 
-            val startTime = byteBufferSyncData.int.toLong()
-            val endTime = byteBufferSyncData.int.toLong()
+            val calendar = Calendar.getInstance()
+            calendar.set(year, mon, day, 0, 0, 0)
+
+            val dateTime = calendar.timeInMillis
+
+            val startTime = dateTime + byteBufferSyncData.int.toLong()
+            val endTime = dateTime + byteBufferSyncData.int.toLong()
 
             val sportId = byteBufferSyncData.short.toInt()
 
@@ -180,8 +185,10 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
             val maxRate = byteBufferSyncData.get()
             val averageRate = byteBufferSyncData.get()
             val minRate = byteBufferSyncData.get()
+
             val rateLimitTime = byteBufferSyncData.short
             val rateUnAerobic = byteBufferSyncData.short
+
             val rateAerobic = byteBufferSyncData.short
             val rateFatBurning = byteBufferSyncData.short
             val rateWarmUp = byteBufferSyncData.short
@@ -190,13 +197,12 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
             val averageStepSpeed = byteBufferSyncData.short
             val fastPace = byteBufferSyncData.short
             val slowestPace = byteBufferSyncData.short
+            val averagePace = byteBufferSyncData.short
+            val fastSpeed = byteBufferSyncData.short
+            val slowestSpeed = byteBufferSyncData.short
             val averageSpeed = byteBufferSyncData.short
 //            val paces:ShortArray = byteBufferSyncData.short
 
-            val calendar = Calendar.getInstance()
-            calendar.set(year, mon, day, 0, 0, 0)
-
-            val dateTime = calendar.timeInMillis
 
             val wmSportSummaryData = WmSportSummaryData(
                 dateTime,
@@ -221,6 +227,9 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
                 averageStepSpeed,
                 fastPace,
                 slowestPace,
+                averagePace,
+                fastSpeed,
+                slowestSpeed,
                 averageSpeed
             )
 
@@ -229,7 +238,7 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
 
         wmSyncData =
             WmSyncData(
-                WmSyncDataType.OXYGEN,
+                WmSyncDataType.SPORT_SUMMARY,
                 realTimeStamp,
                 WmIntervalType.FIVE_MINUTES,
                 activitySportSummaryList
@@ -244,7 +253,7 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
             )
 
             it.value.forEach {
-                sjUniWatch.wmLog.logD(TAG, "activity detail info:" + it.toString())
+                sjUniWatch.wmLog.logD(TAG, "activity detail info:$it")
             }
 
             syncTenSecondsData(mUrnArray[tenSecondsRequestIndex])
@@ -537,7 +546,11 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
             byteBufferSyncData = ByteBuffer.wrap(nodeData.data).order(ByteOrder.LITTLE_ENDIAN)
             parseTenSecondsData(URN_SPORT_10S_DISTANCE)
         } else if (nodeData.dataFmt == DataFormat.FMT_ERRCODE || nodeData.dataFmt == DataFormat.FMT_NODATA) {
-
+            if (tenSecondsRequestIndex < mUrnArray.size) {
+                syncTenSecondsData(mUrnArray[tenSecondsRequestIndex])
+            } else {
+                syncSportSummaryObserveEmitter?.onSuccess(wmSyncData)
+            }
         }
     }
 
@@ -546,7 +559,11 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
             byteBufferSyncData = ByteBuffer.wrap(nodeData.data).order(ByteOrder.LITTLE_ENDIAN)
             parseTenSecondsData(URN_SPORT_10S_CALORIES)
         } else if (nodeData.dataFmt == DataFormat.FMT_ERRCODE || nodeData.dataFmt == DataFormat.FMT_NODATA) {
-
+            if (tenSecondsRequestIndex < mUrnArray.size) {
+                syncTenSecondsData(mUrnArray[tenSecondsRequestIndex])
+            } else {
+                syncSportSummaryObserveEmitter?.onSuccess(wmSyncData)
+            }
         }
     }
 
@@ -555,9 +572,12 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
             byteBufferSyncData = ByteBuffer.wrap(nodeData.data).order(ByteOrder.LITTLE_ENDIAN)
             parseTenSecondsData(URN_SPORT_10S_RATE)
         } else if (nodeData.dataFmt == DataFormat.FMT_ERRCODE || nodeData.dataFmt == DataFormat.FMT_NODATA) {
-
+            if (tenSecondsRequestIndex < mUrnArray.size) {
+                syncTenSecondsData(mUrnArray[tenSecondsRequestIndex])
+            } else {
+                syncSportSummaryObserveEmitter?.onSuccess(wmSyncData)
+            }
         }
-
     }
 
     fun syncTenSecondsStepFrequencyBusiness(nodeData: NodeData) {
@@ -565,7 +585,11 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
             byteBufferSyncData = ByteBuffer.wrap(nodeData.data).order(ByteOrder.LITTLE_ENDIAN)
             parseTenSecondsData(URN_SPORT_10S_STEP_FREQUENCY)
         } else if (nodeData.dataFmt == DataFormat.FMT_ERRCODE || nodeData.dataFmt == DataFormat.FMT_NODATA) {
-
+            if (tenSecondsRequestIndex < mUrnArray.size) {
+                syncTenSecondsData(mUrnArray[tenSecondsRequestIndex])
+            } else {
+                syncSportSummaryObserveEmitter?.onSuccess(wmSyncData)
+            }
         }
     }
 

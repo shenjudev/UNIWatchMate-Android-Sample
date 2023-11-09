@@ -75,6 +75,11 @@ interface DeviceManager {
     suspend fun reset()
 
     /**
+     * reboot the device
+     */
+    suspend fun reboot()
+
+    /**
      * When state is [ConnectorState.PRE_CONNECTING], get the number of seconds to retry the connection next time
      */
     fun syncData()
@@ -355,6 +360,11 @@ internal class DeviceManagerImpl(
             Completable.create { emitter -> emitter.onComplete() }
         }.awaitSingleOrNull()
         clearDevice()
+    }
+
+    override suspend fun reboot() {
+        Timber.d("reset")
+        UNIWatchMate.reboot().await()
     }
 
     /**

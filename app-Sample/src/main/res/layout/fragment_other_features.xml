@@ -35,10 +35,16 @@
             android:id="@+id/item_device_reset"
             style="@style/Widget.Sample.PreferenceView.Item.Text"
             app:preferenceTitle="@string/ds_device_reset"/>
+
         <com.github.kilnn.tool.widget.item.PreferenceItem
             android:id="@+id/item_local_ota"
             style="@style/Widget.Sample.PreferenceView.Item.Text"
             app:preferenceTitle="@string/ds_device_local_ota"/>
+
+        <com.github.kilnn.tool.widget.item.PreferenceItem
+            android:id="@+id/reboot"
+            style="@style/Widget.Sample.PreferenceView.Item.Text"
+            app:preferenceTitle="@string/ds_device_reboot"/>
     </LinearLayout>
 
 </ScrollView>

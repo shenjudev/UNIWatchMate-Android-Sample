@@ -410,7 +410,6 @@
     <string name="ds_device_reset">Device Reset</string>
     <string name="ds_device_local_ota">Device Local Ota</string>
 
-
     <string name="device_scan_bind_tips1">This is a simulated code scanning page, developers need to complete the scanning function by themselves</string>
     <string name="device_scan_bind_tips2">Now suppose the scan was successful, and the following string was obtained:</string>
     <string name="device_scan_bind_tips3">Click the button below, it will return within 3 seconds after the parsing is successful</string>

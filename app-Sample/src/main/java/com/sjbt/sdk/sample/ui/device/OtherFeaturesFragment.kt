@@ -93,6 +93,12 @@ class OtherFeaturesFragment : BaseFragment(R.layout.fragment_other_features) {
                 }
             }
         }
+
+        viewBind.reboot.clickTrigger {
+            viewLifecycleScope.launchWhenStarted {
+                deviceManager.reboot()
+            }
+        }
     }
 
     private fun checkReadFilePermission() {

@@ -68,7 +68,7 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(), Li
     private var mCurrDevice: BluetoothDevice? = null
     private var mCurrAddress: String? = null
     private var mConnectTryCount = 0
-    private var mConnectState: WmConnectState = WmConnectState.DISCONNECTED
+    private var mConnectState: WmConnectState = WmConnectState.CONNECTING
 
     override val wmSettings = SJSettings(this)
     override val wmApps = SJApps(this)
@@ -1421,19 +1421,19 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(), Li
                         }
 
                         URN_SPORT_10S_RATE -> {
-
+                            syncSportSummaryData.syncTenSecondsRateBusiness(it)
                         }
 
                         URN_SPORT_10S_STEP_FREQUENCY -> {
-
+                            syncSportSummaryData.syncTenSecondsStepFrequencyBusiness(it)
                         }
 
                         URN_SPORT_10S_DISTANCE -> {
-
+                            syncSportSummaryData.syncTenSecondsDistanceBusiness(it)
                         }
 
                         URN_SPORT_10S_CALORIES -> {
-
+                            syncSportSummaryData.syncTenSecondsCaloriesBusiness(it)
                         }
 
                     }
@@ -1463,7 +1463,7 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(), Li
 
         if (device == mCurrDevice) {
 
-            if (msg!!.contains("read failed, socket might closed or timeout") || msg.contains("Connection reset by peer") || msg.contains(
+            if (msg!!.contains("socket might closed or timeout") || msg.contains("Connection reset by peer") || msg.contains(
                     "Connect refused"
                 ) && mBindStateMap.get(device.address) == true
             ) {
@@ -1633,6 +1633,16 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(), Li
 
             if (mConnectState == WmConnectState.VERIFIED) {
                 sendNormalMsg(CmdHelper.getRebootCmd())
+
+                mHandler.postDelayed({
+
+                    unbindEmitter?.let {
+                        if (!it.isDisposed) {
+                            it.onComplete()
+                        }
+                    }
+
+                }, 5 * 1000)
             } else {
                 emitter.onError(RuntimeException("not VERIFIED"))
             }

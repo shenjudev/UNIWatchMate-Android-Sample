@@ -9,6 +9,7 @@ import com.base.sdk.entity.settings.*
 import com.base.sdk.port.FileType
 import com.google.gson.Gson
 import com.sjbt.sdk.ALARM_NAME_LEN
+import com.sjbt.sdk.TAG_SJ
 import com.sjbt.sdk.entity.DivideInfo
 import com.sjbt.sdk.entity.MsgBean
 import com.sjbt.sdk.entity.OtaCmdInfo
@@ -1128,6 +1129,11 @@ object CmdHelper {
         val eHour = calendar.get(Calendar.HOUR_OF_DAY)
         val eMinute = calendar.get(Calendar.MINUTE)
         val eSecond = calendar.get(Calendar.SECOND)
+
+        Log.e(
+            TAG_SJ,
+            "URN:$childUrn startTime:$sYear$sMonth$sDay $sHour:$sMinute:$sSecond - endTime:$eYear$eMonth$eDay $eHour:$eMinute:$eSecond"
+        )
 
         val byteBuffer = ByteBuffer.allocate(14).order(ByteOrder.LITTLE_ENDIAN)
         if (startTime != 0L) {
