@@ -1767,7 +1767,14 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(), Li
 
             if (id + productType == deviceType && deviceType == DEVICE_MANUFACTURER_CODE) {
                 bleDevice.name?.let {
-                    if (it.contains(discoveryTag)) {
+                    if (!TextUtils.isEmpty(discoveryTag) && it.contains(discoveryTag)) {
+                        discoveryObservableEmitter?.onNext(
+                            WmDiscoverDevice(
+                                bleDevice.bluetoothDevice,
+                                bleScanResult.rssi
+                            )
+                        )
+                    } else {
                         discoveryObservableEmitter?.onNext(
                             WmDiscoverDevice(
                                 bleDevice.bluetoothDevice,
