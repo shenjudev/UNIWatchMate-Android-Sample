@@ -1,6 +1,5 @@
 package com.base.sdk.port.sync
 
-import com.base.sdk.port.IWmSupport
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.core.Single
 
@@ -8,7 +7,7 @@ import io.reactivex.rxjava3.core.Single
  * 同步数据抽象父类
  * 所有同步数据模块共同继承
  */
-abstract class AbSyncData<T> : IWmSupport {
+abstract class AbSyncData<T> {
 
     /**
      * 最近更新时间

@@ -9,10 +9,6 @@ import io.reactivex.rxjava3.core.Single
 internal class SettingSportGoal(
     private val connector: FcConnector
 ) : AbWmSetting<WmSportGoal>() {
-    override fun isSupport(): Boolean {
-        return true
-    }
-
     override fun observeChange(): Observable<WmSportGoal> {
         TODO("Not yet implemented")
     }

@@ -23,10 +23,6 @@ class AppFind(val sjUniWatch: SJUniWatch) : AbAppFind() {
     var stopFindMobileEmitter: SingleEmitter<Boolean>? = null
     private val TAG = "AppFind"
 
-    override fun isSupport(): Boolean {
-        return true
-    }
-
     private val findMobile = PublishSubject.create<WmFind>()
     private val mObserveStopFindMobile = PublishSubject.create<Any>()
 

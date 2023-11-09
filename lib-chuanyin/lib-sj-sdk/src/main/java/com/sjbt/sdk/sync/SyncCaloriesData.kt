@@ -22,7 +22,6 @@ import java.util.*
 
 class SyncCaloriesData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmCaloriesData>>(),
     ReadSubPkMsg {
-    var isActionSupport: Boolean = true
     var lastSyncTime: Long = 0
     private var caloriesObserveEmitter: SingleEmitter<WmSyncData<WmCaloriesData>>? = null
     private var observeChangeEmitter: ObservableEmitter<WmSyncData<WmCaloriesData>>? = null
@@ -38,10 +37,6 @@ class SyncCaloriesData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmCal
 
     override fun getHasNext(): Boolean {
         return hasNext
-    }
-
-    override fun isSupport(): Boolean {
-        return isActionSupport
     }
 
     override fun latestSyncTime(): Long {

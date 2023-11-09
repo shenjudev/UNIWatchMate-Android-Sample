@@ -95,10 +95,6 @@ class AppCamera(val sjUniWatch: SJUniWatch) : AbAppCamera() {
         }
     }
 
-    override fun isSupport(): Boolean {
-        return true
-    }
-
     fun onTimeOut(nodeData: NodeData) {
         TODO("Not yet implemented")
     }

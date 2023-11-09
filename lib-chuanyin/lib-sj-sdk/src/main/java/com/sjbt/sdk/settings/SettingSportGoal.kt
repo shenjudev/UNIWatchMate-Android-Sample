@@ -22,10 +22,6 @@ class SettingSportGoal(val sjUniWatch: SJUniWatch) : AbWmSetting<WmSportGoal>() 
 
     private var isGet = false
 
-    override fun isSupport(): Boolean {
-        return true
-    }
-
     override fun observeChange(): Observable<WmSportGoal> {
         return Observable.create { emitter -> observeEmitter = emitter }
     }

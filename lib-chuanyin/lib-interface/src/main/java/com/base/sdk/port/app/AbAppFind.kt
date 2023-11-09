@@ -1,14 +1,13 @@
 package com.base.sdk.port.app
 
 import com.base.sdk.entity.apps.WmFind
-import com.base.sdk.port.IWmSupport
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.core.Single
 
 /**
  * (app-find)应用模块-查找功能
  */
-abstract class AbAppFind : IWmSupport {
+abstract class AbAppFind {
 
     /**
      * find mobile(监听来自手表，查找手机)

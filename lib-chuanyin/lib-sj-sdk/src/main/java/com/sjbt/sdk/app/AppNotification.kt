@@ -55,10 +55,6 @@ class AppNotification(sjUniWatch: SJUniWatch) : AbAppNotification() {
         TODO("Not yet implemented")
     }
 
-    override fun isSupport(): Boolean {
-        return true
-    }
-
     override fun sendNotification(notification: WmNotification): Single<Boolean> {
         return Single.create(object : SingleOnSubscribe<Boolean> {
             override fun subscribe(emitter: SingleEmitter<Boolean>) {

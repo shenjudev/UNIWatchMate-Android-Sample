@@ -22,7 +22,6 @@ import java.util.*
 class SyncRealtimeRateData(val sjUniWatch: SJUniWatch) :
     AbSyncData<WmSyncData<WmRealtimeRateData>>(), ReadSubPkMsg {
 
-    var isActionSupport: Boolean = true
     var lastSyncTime: Long = 0
     private var realTimeHeartRateObserveEmitter: SingleEmitter<WmSyncData<WmRealtimeRateData>>? =
         null
@@ -39,10 +38,6 @@ class SyncRealtimeRateData(val sjUniWatch: SJUniWatch) :
 
     override fun getHasNext(): Boolean {
         return hasNext
-    }
-
-    override fun isSupport(): Boolean {
-        return isActionSupport
     }
 
     override fun latestSyncTime(): Long {

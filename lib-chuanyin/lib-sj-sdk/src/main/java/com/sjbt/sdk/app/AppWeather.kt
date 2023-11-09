@@ -23,10 +23,6 @@ class AppWeather(val sjUniWatch: SJUniWatch) : AbAppWeather() {
     override val observeWeather: PublishSubject<WmWeatherRequest> = requestWeather
     private val TAG = "AppWeather"
 
-    override fun isSupport(): Boolean {
-        return true
-    }
-
     override fun pushTodayWeather(
         weather: WmWeather,
         temperatureUnit: WmUnitInfo.TemperatureUnit

@@ -13,13 +13,8 @@ class SettingAppView(val sjUniWatch: SJUniWatch) : AbWmSetting<WmAppView>() {
     private var observeEmitter: ObservableEmitter<WmAppView>? = null
     var setEmitter: SingleEmitter<WmAppView>? = null
     private var getEmitter: SingleEmitter<WmAppView>? = null
-    var isActionSupport: Boolean = false
     private var mAppView: WmAppView? = null
     private var isGet = false
-
-    override fun isSupport(): Boolean {
-        return isActionSupport
-    }
 
     override fun observeChange(): Observable<WmAppView> {
         return Observable.create { emitter -> observeEmitter = emitter }

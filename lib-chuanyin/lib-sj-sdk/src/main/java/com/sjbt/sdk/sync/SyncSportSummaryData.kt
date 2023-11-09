@@ -46,10 +46,6 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
     )
     private var tenSecondsRequestIndex = 0
 
-    override fun isSupport(): Boolean {
-        return isActionSupport
-    }
-
     override fun latestSyncTime(): Long {
         return lastSyncTime
     }

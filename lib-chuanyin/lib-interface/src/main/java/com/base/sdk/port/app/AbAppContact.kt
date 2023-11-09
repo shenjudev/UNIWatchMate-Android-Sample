@@ -2,19 +2,18 @@ package com.base.sdk.port.app
 
 import com.base.sdk.entity.apps.WmContact
 import com.base.sdk.entity.settings.WmEmergencyCall
-import com.base.sdk.port.IWmSupport
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.core.Single
 
 /**
  * 应用模块-通讯录
  */
-abstract class AbAppContact : IWmSupport {
+abstract class AbAppContact {
 
     /**
      * 从设备端获取通讯录列表
      */
-    abstract var getContactList: Observable<List<WmContact>>
+    abstract val getContactList: Observable<List<WmContact>>
 
     /**
      * 设置联系人个数

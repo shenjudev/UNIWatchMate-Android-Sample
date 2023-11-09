@@ -11,10 +11,6 @@ class AppMusicControl(val sjUniWatch: SJUniWatch) : AbAppMusicControl() {
 
     private val musicControlSub: PublishSubject<WmMusicControlType> = PublishSubject.create()
 
-    override fun isSupport(): Boolean {
-        return true
-    }
-
     override var observableMusicControl: PublishSubject<WmMusicControlType> = musicControlSub
 
     fun onTimeOut(msgBean: MsgBean, nodeData: NodeData) {

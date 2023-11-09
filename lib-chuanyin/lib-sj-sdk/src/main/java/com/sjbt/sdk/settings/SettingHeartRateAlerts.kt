@@ -19,10 +19,6 @@ class SettingHeartRateAlerts(val sjUniWatch: SJUniWatch) : AbWmSetting<WmHeartRa
     private var heartRateAlerts: WmHeartRateAlerts? = null
     private val TAG = "SettingHeartRateAlerts"
 
-    override fun isSupport(): Boolean {
-        return true
-    }
-
     override fun observeChange(): Observable<WmHeartRateAlerts> {
         return Observable.create { emitter ->
             observeEmitter = emitter

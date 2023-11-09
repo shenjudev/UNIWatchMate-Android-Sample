@@ -94,10 +94,6 @@ class SettingSoundAndHaptic(sjUniWatch: SJUniWatch) : AbWmSetting<WmSoundAndHapt
         setEmitter?.onSuccess(backWmSoundAndHaptic)
     }
 
-    override fun isSupport(): Boolean {
-        return true
-    }
-
     override fun observeChange(): Observable<WmSoundAndHaptic> {
         return Observable.create { emitter -> observeEmitter = emitter }
     }

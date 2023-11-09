@@ -22,11 +22,7 @@ class AppSport(val sjUniWatch: SJUniWatch) : AbAppSport() {
     private val mSportList = mutableListOf<WmSport>()
     private val TAG = "AppSport"
 
-    override fun isSupport(): Boolean {
-        return true
-    }
-
-    override var getSportList: Single<List<WmSport>> = Single.create {
+    override val getSportList: Single<List<WmSport>> = Single.create {
         mSportList.clear()
         getSportListEmitter = it
         sjUniWatch.sendReadNodeCmdList(getReadSportListPayloadPackage())

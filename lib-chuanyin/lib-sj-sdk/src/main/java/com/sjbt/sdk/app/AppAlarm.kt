@@ -20,15 +20,10 @@ import java.nio.charset.StandardCharsets
 
 class AppAlarm(val sjUniWatch: SJUniWatch) : AbAppAlarm() {
 
-    private var _isSupport: Boolean = true
     private var observeAlarmListEmitter: ObservableEmitter<List<WmAlarm>>? = null
     private var updateAlarmEmitter: SingleEmitter<Boolean>? = null
 
     private val TAG = "AppAlarm"
-
-    override fun isSupport(): Boolean {
-        return _isSupport
-    }
 
     override fun updateAlarmList(alarms: List<WmAlarm>): Single<Boolean> {
         return Single.create {

@@ -40,9 +40,6 @@ class AppContact(val sjUniWatch: SJUniWatch) : AbAppContact(), ReadSubPkMsg {
     private var firstPkOrder = 0
     private var hasNext = false
     private val TAG = "AppContact"
-    override fun isSupport(): Boolean {
-        return true
-    }
 
     override fun setHasNext(hasNext: Boolean) {
         this.hasNext = hasNext
@@ -52,7 +49,7 @@ class AppContact(val sjUniWatch: SJUniWatch) : AbAppContact(), ReadSubPkMsg {
         return hasNext
     }
 
-    override var getContactList: Observable<List<WmContact>> = Observable.create {
+    override val getContactList: Observable<List<WmContact>> = Observable.create {
         mContacts.clear()
         contactListEmitter = it
         msgList.clear()

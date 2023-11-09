@@ -22,7 +22,6 @@ import java.util.*
 
 class SyncOxygenData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmOxygenData>>(),
     ReadSubPkMsg {
-    var isActionSupport: Boolean = true
     var lastSyncTime: Long = 0
     private var oxygenObserveEmitter: SingleEmitter<WmSyncData<WmOxygenData>>? = null
     private var observeChangeEmitter: ObservableEmitter<WmSyncData<WmOxygenData>>? = null
@@ -31,10 +30,6 @@ class SyncOxygenData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmOxyge
     private val msgList = mutableSetOf<MsgBean>()
     private var hasNext: Boolean = false
     private lateinit var byteBufferSyncData: ByteBuffer
-
-    override fun isSupport(): Boolean {
-        return isActionSupport
-    }
 
     override fun latestSyncTime(): Long {
         return lastSyncTime

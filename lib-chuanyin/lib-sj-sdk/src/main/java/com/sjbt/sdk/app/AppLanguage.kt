@@ -22,11 +22,7 @@ class AppLanguage(val sjUniWatch: SJUniWatch) : AbAppLanguage() {
 
     private var wmLanguage: WmLanguage? = null
 
-    override fun isSupport(): Boolean {
-        return true
-    }
-
-    override var syncLanguageList: Single<List<WmLanguage>> = Single.create {
+    override val syncLanguageList: Single<List<WmLanguage>> = Single.create {
         languageListEmitter = it
         sjUniWatch.sendReadNodeCmdList(getReadLanguageListCmd())
     }

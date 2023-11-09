@@ -4,6 +4,7 @@ import android.app.Application
 import android.bluetooth.BluetoothDevice
 import android.util.Log
 import com.base.sdk.AbUniWatch
+import com.base.sdk.FunctionType
 import com.base.sdk.entity.WmBindInfo
 import com.base.sdk.entity.WmDevice
 import com.base.sdk.port.setting.AbWmSettings
@@ -103,7 +104,7 @@ object UNIWatchMate : AbUniWatch() {
         return uniWatchSubject.value?.getDeviceModel()
     }
 
-     override fun setDeviceModel(wmDeviceModel: WmDeviceModel): Boolean {
+    override fun setDeviceModel(wmDeviceModel: WmDeviceModel): Boolean {
         if (uniWatchSubject.value?.getDeviceModel() == wmDeviceModel) {
             //deviceMode²»±ä
             return false
@@ -157,6 +158,14 @@ object UNIWatchMate : AbUniWatch() {
 
     override fun stopDiscovery() {
         uniWatchSubject.value?.stopDiscovery()
+    }
+
+    override fun isFunctionAvailable(functionType: FunctionType): Boolean {
+        return uniWatchSubject.value?.let {
+            it.isFunctionAvailable(functionType)
+        } ?: run {
+            false
+        }
     }
 
 

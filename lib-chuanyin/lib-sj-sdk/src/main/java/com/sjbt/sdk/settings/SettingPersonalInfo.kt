@@ -19,9 +19,6 @@ class SettingPersonalInfo(val sjUniWatch: SJUniWatch) : AbWmSetting<WmPersonalIn
     private var getEmitter: SingleEmitter<WmPersonalInfo>? = null
 
     private var personalInfo: WmPersonalInfo? = null
-    override fun isSupport(): Boolean {
-        return true
-    }
 
     override fun observeChange(): Observable<WmPersonalInfo> {
         return Observable.create { emitter -> observeEmitter = emitter }

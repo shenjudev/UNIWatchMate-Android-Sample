@@ -24,10 +24,6 @@ class SettingDrinkWaterReminder(val sjUniWatch: SJUniWatch) : AbWmSetting<WmSede
     private var isGet = false
     private var mSedentaryReminder: WmSedentaryReminder? = null
 
-    override fun isSupport(): Boolean {
-        return true
-    }
-
     override fun observeChange(): Observable<WmSedentaryReminder> {
         return Observable.create { emitter -> observeEmitter = emitter }
     }

@@ -1,14 +1,13 @@
 package com.base.sdk.port.app
 
 import com.base.sdk.entity.apps.WmCameraFrameInfo
-import com.base.sdk.port.IWmSupport
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.core.Single
 
 /**
  * 应用模块-相机
  */
-abstract class AbAppCamera : IWmSupport {
+abstract class AbAppCamera {
 
     /**
      * 监听设备端相机开启状态

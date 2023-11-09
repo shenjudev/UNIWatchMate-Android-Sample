@@ -11,10 +11,6 @@ import io.reactivex.rxjava3.core.SingleEmitter
 class AppDateTime(val sjUniWatch: SJUniWatch) : AbAppDateTime() {
     var setEmitter: SingleEmitter<Boolean>? = null
 
-    override fun isSupport(): Boolean {
-        return true
-    }
-
     fun onTimeOut(nodeData: NodeData) {
         TODO("Not yet implemented")
     }

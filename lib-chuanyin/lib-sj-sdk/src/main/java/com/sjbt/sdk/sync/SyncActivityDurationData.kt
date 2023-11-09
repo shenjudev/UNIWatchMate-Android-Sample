@@ -25,7 +25,6 @@ import java.util.*
  */
 class SyncActivityDurationData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmActivityDurationData>>(),ReadSubPkMsg {
 
-    private var isActionSupport: Boolean = true
     var lastSyncTime: Long = 0
     private var activityDurateObserveEmitter: SingleEmitter<WmSyncData<WmActivityDurationData>>? = null
     private var observeChangeEmitter: ObservableEmitter<WmSyncData<WmActivityDurationData>>? = null
@@ -34,10 +33,6 @@ class SyncActivityDurationData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncDa
     private val msgList = mutableSetOf<MsgBean>()
     private var hasNext: Boolean = false
     private lateinit var byteBufferSyncData: ByteBuffer
-
-    override fun isSupport(): Boolean {
-        return isActionSupport
-    }
 
     override fun latestSyncTime(): Long {
         return lastSyncTime

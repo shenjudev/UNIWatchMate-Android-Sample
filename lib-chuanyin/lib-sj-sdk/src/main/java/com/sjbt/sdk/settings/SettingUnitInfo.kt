@@ -22,10 +22,6 @@ class SettingUnitInfo(val sjUniWatch: SJUniWatch) : AbWmSetting<WmUnitInfo>() {
     private var wmUnitInfo: WmUnitInfo? = null
     private var isGet = false
 
-    override fun isSupport(): Boolean {
-        return true
-    }
-
     override fun observeChange(): Observable<WmUnitInfo> {
         return Observable.create { emitter -> observeEmitter = emitter }
     }

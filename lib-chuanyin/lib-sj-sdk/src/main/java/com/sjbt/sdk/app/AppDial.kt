@@ -24,10 +24,6 @@ class AppDial(sjUniWatch: SJUniWatch) : AbAppDial() {
     //表盘列表
     val mMyDialList = ArrayList<WmDial>()
 
-    override fun isSupport(): Boolean {
-        return true
-    }
-
     override fun syncDialList(): Observable<List<WmDial>> {
         return Observable.create(object : ObservableOnSubscribe<List<WmDial>> {
             override fun subscribe(emitter: ObservableEmitter<List<WmDial>>) {

@@ -16,13 +16,9 @@ import io.reactivex.rxjava3.core.SingleEmitter
 
 class SyncTodayTotalData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmTodayTotalData>>(),ReadSubPkMsg{
 
-    var isActionSupport: Boolean = true
     var lastSyncTime: Long = 0
     private var activityObserveEmitter: SingleEmitter<WmSyncData<WmTodayTotalData>>? = null
     private var observeChangeEmitter: ObservableEmitter<WmSyncData<WmTodayTotalData>>? = null
-    override fun isSupport(): Boolean {
-        return isActionSupport
-    }
 
     override fun latestSyncTime(): Long {
         return lastSyncTime

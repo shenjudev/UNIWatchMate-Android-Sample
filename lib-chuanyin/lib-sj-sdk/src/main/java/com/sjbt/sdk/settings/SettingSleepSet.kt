@@ -19,10 +19,6 @@ class SettingSleepSet(val sjUniWatch: SJUniWatch) : AbWmSetting<WmSleepSettings>
     private var wmSleepSettings: WmSleepSettings? = null
     private var isGet = false
 
-    override fun isSupport(): Boolean {
-        return true
-    }
-
     override fun observeChange(): Observable<WmSleepSettings> {
         return Observable.create { emitter -> observeSleepSettingEmitter = emitter }
     }

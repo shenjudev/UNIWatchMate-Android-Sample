@@ -44,10 +44,6 @@ class SettingWistRaise(val sjUniWatch: SJUniWatch) : AbWmSetting<WmWistRaise>() 
         observeEmitter?.onNext(backWmWistRaise)
     }
 
-    override fun isSupport(): Boolean {
-        return true
-    }
-
     override fun observeChange(): Observable<WmWistRaise> {
         return Observable.create { emitter -> observeEmitter = emitter }
     }
