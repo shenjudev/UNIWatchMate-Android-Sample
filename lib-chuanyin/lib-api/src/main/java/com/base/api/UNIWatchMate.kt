@@ -86,6 +86,10 @@ object UNIWatchMate : AbUniWatch() {
         return uniWatchSubject.value.reset()
     }
 
+    override fun reboot(): Completable {
+        return uniWatchSubject.value.reboot()
+    }
+
     override val observeConnectState: Observable<WmConnectState> = uniWatchSubject.switchMap {
         it.observeConnectState
     }.distinctUntilChanged()
@@ -150,4 +154,10 @@ object UNIWatchMate : AbUniWatch() {
     override fun setLogEnable(logEnable: Boolean) {
         uniWatchSubject.value?.setLogEnable(logEnable)
     }
+
+    override fun stopDiscovery() {
+        uniWatchSubject.value?.stopDiscovery()
+    }
+
+
 }

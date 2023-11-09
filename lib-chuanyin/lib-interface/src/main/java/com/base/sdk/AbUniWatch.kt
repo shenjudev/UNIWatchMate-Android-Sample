@@ -147,5 +147,14 @@ abstract class AbUniWatch {
         tag: String
     ): Observable<WmDiscoverDevice>
 
+    /**
+     * 停止蓝牙扫描
+     */
+    abstract fun stopDiscovery()
+
+    /**
+     * 设备重启
+     */
+    abstract fun reboot(): Completable
 
 }

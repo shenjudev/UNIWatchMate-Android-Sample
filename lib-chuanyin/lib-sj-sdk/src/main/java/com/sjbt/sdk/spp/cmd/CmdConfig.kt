@@ -68,6 +68,7 @@ const val CMD_ID_802C: Short = 0x2C
 const val CMD_ID_802D: Short = 0x2D
 const val CMD_ID_802E: Short = 0x2E
 const val CMD_ID_802F: Short = 0x2F
+const val CMD_ID_8030: Short = 0x30
 
 ///**
 // * 循环使用order_id

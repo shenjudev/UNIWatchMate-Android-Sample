@@ -1626,6 +1626,18 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(), Li
         }
     }
 
+    override fun reboot(): Completable {
+        return Completable.create { emitter ->
+            unbindEmitter = emitter
+
+            if (mConnectState == WmConnectState.VERIFIED) {
+                sendNormalMsg(CmdHelper.getRebootCmd())
+            } else {
+                emitter.onError(RuntimeException("not VERIFIED"))
+            }
+        }
+    }
+
     private val mObservableConnectState: PublishSubject<WmConnectState> =
         PublishSubject.create()
     override val observeConnectState: PublishSubject<WmConnectState> = mObservableConnectState
@@ -1681,6 +1693,13 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(), Li
         }
     }
 
+    override fun stopDiscovery() {
+        if (!discoveryObservableEmitter.isDisposed) {
+            discoveryObservableEmitter?.onComplete()
+            wmLog.logD(TAG, "stop discovery onComplete")
+        }
+        dispose()
+    }
 
     private var scanDisposable: Disposable? = null
 
@@ -1763,4 +1782,6 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(), Li
     override fun getDeviceModel(): WmDeviceModel {
         return WmDeviceModel.SJ_WATCH
     }
+
+
 }

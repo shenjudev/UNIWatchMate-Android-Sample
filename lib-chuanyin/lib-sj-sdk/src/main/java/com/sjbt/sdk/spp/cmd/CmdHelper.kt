@@ -257,6 +257,24 @@ object CmdHelper {
     }
 
     /**
+     * 获取重启命令
+     * @return
+     */
+    fun getRebootCmd(): ByteArray {
+        //LogUtils.logBlueTooth("解绑命令")
+
+        return constructCmd(
+            HEAD_COMMON,
+            CMD_ID_8030,
+            DIVIDE_N_2,
+            0,
+            0,
+            0,
+            null
+        )
+    }
+
+    /**
      * 新协议 校验命令
      *
      * @return 组装好的校验命令
