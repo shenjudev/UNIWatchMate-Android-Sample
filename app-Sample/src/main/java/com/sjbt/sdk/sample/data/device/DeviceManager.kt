@@ -207,7 +207,9 @@ internal class DeviceManagerImpl(
                                     WmBindInfo(
                                         userInfo.id.toString(),
                                         userInfo.name,
+                                        device!!.address,
                                         BindType.DISCOVERY,
+                                        "OSW-802N",
                                         storageDevice.wmDeviceMode
                                     )
                                 )

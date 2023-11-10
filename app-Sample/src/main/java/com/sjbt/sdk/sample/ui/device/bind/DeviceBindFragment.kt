@@ -36,6 +36,7 @@ import com.sjbt.sdk.sample.base.BaseFragment
 import com.sjbt.sdk.sample.data.device.DeviceManager
 import com.sjbt.sdk.sample.databinding.FragmentDeviceBindBinding
 import com.sjbt.sdk.sample.di.Injector
+import com.sjbt.sdk.sample.model.ScanStringParse
 import com.sjbt.sdk.sample.ui.bind.DeviceConnectDialogFragment
 import com.sjbt.sdk.sample.utils.*
 import com.sjbt.sdk.sample.utils.viewbinding.viewBinding
@@ -94,7 +95,14 @@ class DeviceBindFragment : BaseFragment(R.layout.fragment_device_bind),
         userInfo?.let {
             val wmDevice = UNIWatchMate.connect(
                 device.address,
-                WmBindInfo(it.id.toString(), it.name, BindType.DISCOVERY, device.mode)
+                WmBindInfo(
+                    it.id.toString(),
+                    it.name,
+                    device.address,
+                    BindType.DISCOVERY,
+                    device.deviceType,
+                    device.mode
+                )
             )
             wmDevice?.let { wmDevice ->
                 deviceManager.bind(
@@ -122,10 +130,17 @@ class DeviceBindFragment : BaseFragment(R.layout.fragment_device_bind),
             runCatchingWithLog {
                 this::class.simpleName?.let { Timber.tag(it).i("scanContent=$scanContent") }
                 val userInfo = userInfoRepository.flowCurrent.value ?: return@launchWithLog
-                val bindInfo = WmBindInfo(userInfo.id.toString(), userInfo.name, BindType.SCAN_QR)
+                val scanResult = parseScanContent(scanContent)
+                val bindInfo = WmBindInfo(
+                    userInfo.id.toString(),
+                    userInfo.name,
+                    scanResult.schemeMacAddress,
+                    BindType.SCAN_QR,
+                    scanResult.projectName,
+                    scanResult.modelType
+                )
 //                  deviceManager.delDevice()
                 val wmDevice = UNIWatchMate.connectScanQr(
-                    scanContent,
                     bindInfo
                 )
                 if (wmDevice != null && wmDevice.mode != WmDeviceModel.NOT_REG) {
@@ -145,6 +160,30 @@ class DeviceBindFragment : BaseFragment(R.layout.fragment_device_bind),
                 ToastUtil.showToast(it.message)
             }
         }
+    }
+
+    private fun parseScanContent(scanContent: String): ScanStringParse {
+        val urlParams = scanContent.split("?")
+        var model = WmDeviceModel.NOT_REG
+        var randomCode = ""
+        var projectName = ""
+        var schemeMacAddress = ""
+        if (urlParams.isNotEmpty() && urlParams.size >= 2) {
+            val params = urlParams[1].split("&")
+            model = WmDeviceModel.NOT_REG
+
+            if (params.isNotEmpty() && params.size >= 3) {
+                schemeMacAddress = params[0]
+                projectName = params[1]
+                randomCode = params[2]
+                model = if ("OSW-802N" == projectName) {
+                    WmDeviceModel.SJ_WATCH
+                } else {
+                    WmDeviceModel.NOT_REG
+                }
+            }
+        }
+        return ScanStringParse(randomCode, model, projectName, schemeMacAddress)
     }
 
     override fun onPromptCancel(promptId: Int, cancelReason: Int, tag: String?) {
@@ -284,7 +323,7 @@ class DeviceBindFragment : BaseFragment(R.layout.fragment_device_bind),
                         startSearch = false
                     }.collect {
                         this::class.simpleName?.let { it1 -> Timber.tag(it1).i(it.toString()) }
-                        searchDevicesAdapter.newScanResult(it, WmDeviceModel.SJ_WATCH)
+                        searchDevicesAdapter.newScanResult(it, WmDeviceModel.SJ_WATCH, "OSW-802N")
                     }
             }
         }
