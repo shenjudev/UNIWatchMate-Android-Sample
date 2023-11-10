@@ -136,7 +136,6 @@ dependencies {
     implementation "com.jakewharton.timber:timber:$timber_version"
     implementation "io.reactivex.rxjava3:rxjava:$rx_java_version"
     implementation "io.reactivex.rxjava3:rxandroid:$rx_android_version"
-
 //Base
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$kotlin_coroutines_version"
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
