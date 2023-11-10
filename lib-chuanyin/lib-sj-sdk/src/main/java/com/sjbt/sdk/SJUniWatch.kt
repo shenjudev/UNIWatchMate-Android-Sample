@@ -157,6 +157,7 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(), Li
     }
 
     private var unbindEmitter: CompletableEmitter? = null
+    private var mActionSupportBean: ActionSupport? = null
 
     override fun setLogEnable(logEnable: Boolean) {
         this.sdkLogEnable = logEnable
@@ -296,6 +297,16 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(), Li
         sendNormalMsg(CmdHelper.baseInfoCmd)
     }
 
+    /**
+     * 获取当前支持的功能
+     *
+     * @return
+     */
+    open fun getActionSupportCmd() {
+        sendNormalMsg(CmdHelper.supportActionInfoCmd)
+    }
+
+
     override fun socketNotify(state: Int, obj: Any?) {
         try {
             when (state) {
@@ -311,11 +322,8 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(), Li
                                 }
 
                                 CMD_ID_8002 -> {
-                                    mBindInfo?.let {
-                                        wmLog.logD(TAG, "bindinfo:$it")
-                                        mConnectTryCount = 0
-                                        sendNormalMsg(CmdHelper.getBindCmd(it))
-                                    }
+                                    mConnectTryCount = 0
+                                    sendNormalMsg(CmdHelper.supportActionInfoCmd)
                                 }
                             }
                         }
@@ -560,8 +568,18 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(), Li
                                     )
                                 }
 
-                                CMD_ID_802C -> {
-//                                    appCamera.cameraFlashSwitchEmitter.onNext()
+                                CMD_ID_802C -> {//发送 前后摄切换、闪光灯切换
+
+                                }
+
+                                CMD_ID_802D -> {//Action Support
+                                    mBindInfo?.let {
+                                        wmLog.logD(TAG, "bindinfo:$it")
+                                        sendNormalMsg(CmdHelper.getBindCmd(it))
+                                    }
+
+                                    mActionSupportBean =
+                                        ActionSupport.toActionSupportBean(msgBean.payload)
                                 }
 
                                 CMD_ID_802E -> {//绑定
@@ -569,6 +587,7 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(), Li
                                     wmLog.logD(TAG, "bind result:$result")
 
                                     if (result == 1) {
+
                                         btStateChange(WmConnectState.VERIFIED)
                                         mCurrAddress?.let {
                                             mBindStateMap.put(it, true)

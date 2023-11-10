@@ -354,6 +354,24 @@ object CmdHelper {
         }
 
     /**
+     * 获取当前支持的功能
+     *
+     * @return
+     */
+    val supportActionInfoCmd: ByteArray
+        get() {
+            //logSendMsg("3.发送基本信息:")
+            return constructCmd(
+                HEAD_COMMON,
+                CMD_ID_802D,
+                DIVIDE_N_2,
+                0, 0,
+                0,
+                null
+            )
+        }
+
+    /**
      * 获取APPView list
      *
      * @return
