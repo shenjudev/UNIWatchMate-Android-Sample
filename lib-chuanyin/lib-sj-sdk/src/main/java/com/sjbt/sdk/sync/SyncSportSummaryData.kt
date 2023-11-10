@@ -63,7 +63,7 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
 
     override fun syncData(startTime: Long): Single<WmSyncData<WmSportSummaryData>> {
         mStartTime = startTime
-
+        tenSecondsRequestIndex = 0
         return Single.create { emitter ->
             syncSportSummaryObserveEmitter = emitter
             msgList.clear()
@@ -547,6 +547,7 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
             parseTenSecondsData(URN_SPORT_10S_DISTANCE)
         } else if (nodeData.dataFmt == DataFormat.FMT_ERRCODE || nodeData.dataFmt == DataFormat.FMT_NODATA) {
             if (tenSecondsRequestIndex < mUrnArray.size) {
+                tenSecondsRequestIndex++
                 syncTenSecondsData(mUrnArray[tenSecondsRequestIndex])
             } else {
                 syncSportSummaryObserveEmitter?.onSuccess(wmSyncData)
@@ -560,6 +561,7 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
             parseTenSecondsData(URN_SPORT_10S_CALORIES)
         } else if (nodeData.dataFmt == DataFormat.FMT_ERRCODE || nodeData.dataFmt == DataFormat.FMT_NODATA) {
             if (tenSecondsRequestIndex < mUrnArray.size) {
+                tenSecondsRequestIndex++
                 syncTenSecondsData(mUrnArray[tenSecondsRequestIndex])
             } else {
                 syncSportSummaryObserveEmitter?.onSuccess(wmSyncData)
@@ -573,6 +575,7 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
             parseTenSecondsData(URN_SPORT_10S_RATE)
         } else if (nodeData.dataFmt == DataFormat.FMT_ERRCODE || nodeData.dataFmt == DataFormat.FMT_NODATA) {
             if (tenSecondsRequestIndex < mUrnArray.size) {
+                tenSecondsRequestIndex++
                 syncTenSecondsData(mUrnArray[tenSecondsRequestIndex])
             } else {
                 syncSportSummaryObserveEmitter?.onSuccess(wmSyncData)
@@ -586,6 +589,7 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
             parseTenSecondsData(URN_SPORT_10S_STEP_FREQUENCY)
         } else if (nodeData.dataFmt == DataFormat.FMT_ERRCODE || nodeData.dataFmt == DataFormat.FMT_NODATA) {
             if (tenSecondsRequestIndex < mUrnArray.size) {
+                tenSecondsRequestIndex++
                 syncTenSecondsData(mUrnArray[tenSecondsRequestIndex])
             } else {
                 syncSportSummaryObserveEmitter?.onSuccess(wmSyncData)
