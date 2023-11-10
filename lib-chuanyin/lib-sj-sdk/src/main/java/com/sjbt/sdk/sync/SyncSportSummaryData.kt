@@ -485,7 +485,7 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
 
                     sjUniWatch.wmLog.logD(
                         TAG,
-                        "calorie data: $dataIndex -> ${wmDistanceData}"
+                        "calorie data: $dataIndex -> $wmDistanceData"
                     )
 
                     val timeStampRateData =
@@ -510,7 +510,7 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
 
                     sjUniWatch.wmLog.logD(
                         TAG,
-                        "calorie data: $dataIndex -> ${wmCaloriesData}"
+                        "calorie data: $dataIndex -> $wmCaloriesData"
                     )
 
                     val timeStampRateData =

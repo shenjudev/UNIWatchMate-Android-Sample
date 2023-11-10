@@ -84,7 +84,6 @@ abstract class AbUniWatch {
      * @return 如果返回null，表示无法识别此[qrString]
      */
     abstract fun connectScanQr(
-        qrString: String,
         bindInfo: WmBindInfo,
     ): WmDevice?
 

@@ -68,9 +68,9 @@ object UNIWatchMate : AbUniWatch() {
         return uniWatchSubject.value.connect(device, bindInfo)
     }
 
-    override fun connectScanQr(qrString: String, bindInfo: WmBindInfo): WmDevice? {
+    override fun connectScanQr(bindInfo: WmBindInfo): WmDevice? {
         uniWatches.forEach {
-            val result = it.connectScanQr(qrString, bindInfo)
+            val result = it.connectScanQr(bindInfo)
             if (result != null) {
                 uniWatchSubject.onNext(it)
                 return result

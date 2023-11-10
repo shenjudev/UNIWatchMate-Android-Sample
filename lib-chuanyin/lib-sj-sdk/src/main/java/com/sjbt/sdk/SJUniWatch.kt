@@ -50,6 +50,7 @@ import java.nio.ByteBuffer
 abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(), Listener {
 
     private val TAG = "SJUniWatch"
+    private val mDeviceType = "OSW-802N"
 
     var mContext: Application
     var mMsgTimeOut: Int
@@ -311,13 +312,9 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(), Li
 
                                 CMD_ID_8002 -> {
                                     mBindInfo?.let {
-//                                        if (it.bindType != BindType.CONNECT_BACK) {
-                                        wmLog.logD(TAG, "bindinfo:" + it)
+                                        wmLog.logD(TAG, "bindinfo:$it")
                                         mConnectTryCount = 0
                                         sendNormalMsg(CmdHelper.getBindCmd(it))
-//                                        } else {
-//                                            btStateChange(WmConnectState.VERIFIED)
-//                                        }
                                     }
                                 }
                             }
@@ -1486,38 +1483,24 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(), Li
 
     //    https://static-ie.oraimo.com/oh.htm&mac=15:7E:78:A2:4B:30&projectname=OSW-802N&random=4536abcdhwer54q
     //    https://static-ie.oraimo.com/oh.htm&15:7E:78:A2:4B:30&OSW-802N&4536abcdhwer54q
-    override fun connectScanQr(qrString: String, bindInfo: WmBindInfo): WmDevice? {
+    override fun connectScanQr(bindInfo: WmBindInfo): WmDevice? {
         mBindInfo = bindInfo
-//        val params = UrlParse.getUrlParams(qrString)
 
-        val urlParams = qrString.split("?")
-
-        if (urlParams.isNotEmpty() && urlParams.size >= 2) {
-            val params = urlParams[1].split("&")
-
-            bindInfo.model = WmDeviceModel.NOT_REG
-
-            if (params.isNotEmpty() && params.size >= 3) {
-                val schemeMacAddress = params[0]
-                val projectName = params[1]
-                bindInfo.randomCode = params[2]
-                bindInfo.model = if ("OSW-802N" == projectName) {
-                    WmDeviceModel.SJ_WATCH
-                } else {
-                    WmDeviceModel.NOT_REG
-                }
-
-                return schemeMacAddress?.let {
-                    connect(it, bindInfo)
-                }
-
-
+        mBindInfo?.let {
+            bindInfo.model = if (bindInfo.deviceType == mDeviceType) {
+                WmDeviceModel.SJ_WATCH
             } else {
-                return WmDevice(bindInfo.model)
+                WmDeviceModel.NOT_REG
             }
-        } else {
+
+            return bindInfo.macAddress?.let {
+                connect(it, bindInfo)
+            }
+
+        } ?: run {
             return WmDevice(bindInfo.model)
         }
+
     }
 
     /**
@@ -1534,6 +1517,7 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(), Li
         val wmDevice = WmDevice(bindInfo.model)
         wmDevice.address = address
         wmDevice.mode = bindInfo.model
+        wmDevice.randomCode = bindInfo.randomCode
         mBindInfo = bindInfo
         wmDevice.isRecognized = bindInfo.model == WmDeviceModel.SJ_WATCH
 

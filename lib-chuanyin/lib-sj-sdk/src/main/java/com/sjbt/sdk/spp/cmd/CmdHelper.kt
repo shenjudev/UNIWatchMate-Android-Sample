@@ -216,12 +216,12 @@ object CmdHelper {
      * @return
      */
     fun getBindCmd(bindInfo: WmBindInfo): ByteArray {
-        //LogUtils.logBlueTooth("绑定命令")
+        Log.e(TAG_SJ, "bind device cmd")
         val byteBuffer = ByteBuffer.allocate(17)
         byteBuffer.put(bindInfo.bindType.ordinal.toByte())
 
         bindInfo.randomCode?.let {
-            //LogUtils.logBlueTooth("随机码:$it")
+            Log.d(TAG_SJ, "random code:$it")
             byteBuffer.put(it.toByteArray())
         }
 
