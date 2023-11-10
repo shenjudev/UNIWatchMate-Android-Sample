@@ -47,7 +47,7 @@ class SearchDevicesAdapter : RecyclerView.Adapter<SearchDevicesAdapter.DeviceVie
         return sorter.size()
     }
 
-    fun newScanResult(result: WmDiscoverDevice, sjWatch: WmDeviceModel) {
+    fun newScanResult(result: WmDiscoverDevice, sjWatch: WmDeviceModel,deviceType:String) {
         /**
          * ToNote:The data in [SortedList] is sorted, so the [SortedList.indexOf] method uses binary search to improve efficiency.
          * Unfortunately, this only works if the primary keys match the sort keys.That is, the [SortedListAdapterCallback.areItemsTheSame] method and [SortedListAdapterCallback.compare] need to maintain consistency.
@@ -75,12 +75,13 @@ class SearchDevicesAdapter : RecyclerView.Adapter<SearchDevicesAdapter.DeviceVie
                 exist.name = result.device.name
                 exist.rssi = result.rss.toInt()
                 exist.mode = sjWatch
+                exist.deviceType = deviceType
                 sorter.recalculatePositionOfItemAt(existIndex)
             }
         } else {
             val oldSize = sorter.size()
             //If it does not exist, then add
-            sorter.add(BlueToothDevice(result.device.address, result.device.name, result.rss.toInt(),sjWatch))
+            sorter.add(BlueToothDevice(result.device.address, result.device.name, result.rss.toInt(),sjWatch,deviceType))
             listener?.onItemSizeChanged(oldSize, oldSize + 1)
         }
     }
@@ -126,7 +127,8 @@ class BlueToothDevice(
     val address: String,
     var name: String?,
     var rssi: Int,
-    var mode: WmDeviceModel
+    var mode: WmDeviceModel,
+    var deviceType: String
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
