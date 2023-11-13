@@ -185,7 +185,6 @@ class AppWeather(val sjUniWatch: SJUniWatch) : AbAppWeather() {
         byteBuffer.put(wmWeather.location.city.toByteArray())
         byteBuffer.put(0)//字符串结束符
 
-
         //当天
         wmWeather.todayWeather.forEach {
 
@@ -308,7 +307,10 @@ class AppWeather(val sjUniWatch: SJUniWatch) : AbAppWeather() {
             }
 
             byteBuffer.putShort((it.humidity * 100).toInt().toShort())
+            byteBuffer.putShort((it.humidityNight * 100).toInt().toShort())
             byteBuffer.put(it.uvIndex.toByte())
+            byteBuffer.put(it.uvIndexNight.toByte())
+
             byteBuffer.put(it.dayCode.toByte())
             byteBuffer.put(it.nightCode.toByte())
 

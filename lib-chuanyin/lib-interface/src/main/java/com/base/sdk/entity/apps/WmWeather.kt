@@ -27,10 +27,13 @@ data class WmWeatherForecast(
      * 湿度（humidity）
      * */
     val humidity: Float,
+    val humidityNight: Float,
+
     /**
      * 紫外线指数（ultraviolet index）
      * */
     val uvIndex: Int,
+    val uvIndexNight: Int,
 
     /**
      * 白天天气代码（day weather code）

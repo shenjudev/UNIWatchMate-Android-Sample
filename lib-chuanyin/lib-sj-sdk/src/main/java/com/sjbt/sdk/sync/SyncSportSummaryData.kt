@@ -67,7 +67,7 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
             syncSportSummaryObserveEmitter = emitter
             msgList.clear()
             sjUniWatch.sendReadSubPkObserveNode(
-                this,
+                this@SyncSportSummaryData,
                 CmdHelper.getReadSportSyncData(
                     startTime,
                     0,
@@ -255,7 +255,8 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
                 sjUniWatch.wmLog.logD(TAG, "activity detail info:$it")
             }
 
-            syncTenSecondsData(mTenUrnArray[tenSecondsRequestIndex])
+//            syncTenSecondsData(mTenUrnArray[tenSecondsRequestIndex])
+            syncTenSecondsData(mTenUrnArray[1])
         }
     }
 
@@ -310,6 +311,8 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
                         bufferSize += it.payloadLen
                     }
 
+                    sjUniWatch.wmLog.logE(TAG, "$urn 所有十秒总长度:$bufferSize")
+
                     byteBufferSyncData =
                         ByteBuffer.allocate(bufferSize).order(ByteOrder.LITTLE_ENDIAN)
 
@@ -337,46 +340,47 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
 
                     sjUniWatch.wmLog.logE(TAG, "十秒数据请求index：$tenSecondsRequestIndex")
 
-                    if (tenSecondsRequestIndex < mTenUrnArray.size) {
-                        syncTenSecondsData(mTenUrnArray[tenSecondsRequestIndex])
-                    } else {
-                        wmSyncData?.value?.forEach {
+//                    if (tenSecondsRequestIndex < mTenUrnArray.size) {
+//                        syncTenSecondsData(mTenUrnArray[tenSecondsRequestIndex])
+//                    } else {
+                    wmSyncData?.value?.forEach {
 
-                            val rateTimeStampList =
-                                tenSecondsRealtimeRateMap.getBetween(it.startTime, it.endTime)
-                            val distanceTimeStampList =
-                                tenSecondsDistanceMap.getBetween(it.startTime, it.endTime)
-                            val caloriesTimeStampList =
-                                tenSecondsCaloriesMap.getBetween(it.startTime, it.endTime)
-                            val stepFrequencyTimeStampList =
-                                tenSecondsStepFrequencyMap.getBetween(it.startTime, it.endTime)
+//                            val rateTimeStampList =
+//                                tenSecondsRealtimeRateMap.getBetween(it.startTime, it.endTime)
+//                            val distanceTimeStampList =
+//                                tenSecondsDistanceMap.getBetween(it.startTime, it.endTime)
+//                            val caloriesTimeStampList =
+//                                tenSecondsCaloriesMap.getBetween(it.startTime, it.endTime)
+//
+                        val stepFrequencyTimeStampList =
+                            tenSecondsStepFrequencyMap.getBetween(it.startTime, it.endTime)
 
-                            val heartRateList = mutableListOf<WmRealtimeRateData>()
-                            val distanceList = mutableListOf<WmDistanceData>()
-                            val caloriesList = mutableListOf<WmCaloriesData>()
-                            val stepFrequencyList = mutableListOf<WmStepFrequencyData>()
+                        val heartRateList = mutableListOf<WmRealtimeRateData>()
+                        val distanceList = mutableListOf<WmDistanceData>()
+                        val caloriesList = mutableListOf<WmCaloriesData>()
+                        val stepFrequencyList = mutableListOf<WmStepFrequencyData>()
 
-                            rateTimeStampList.forEach { timeData ->
-                                heartRateList.add(timeData.data as WmRealtimeRateData)
-                            }
+//                            rateTimeStampList.forEach { timeData ->
+//                                heartRateList.add(timeData.data as WmRealtimeRateData)
+//                            }
+//
+//                            distanceTimeStampList.forEach { timeData ->
+//                                distanceList.add(timeData.data as WmDistanceData)
+//                            }
+//
+//                            caloriesTimeStampList.forEach { timeData ->
+//                                caloriesList.add(timeData.data as WmCaloriesData)
+//                            }
 
-                            distanceTimeStampList.forEach { timeData ->
-                                distanceList.add(timeData.data as WmDistanceData)
-                            }
-
-                            caloriesTimeStampList.forEach { timeData ->
-                                caloriesList.add(timeData.data as WmCaloriesData)
-                            }
-
-                            stepFrequencyTimeStampList.forEach { timeData ->
-                                stepFrequencyList.add(timeData.data as WmStepFrequencyData)
-                            }
-
-                            it.tenSecondsHeartRate = heartRateList
-                            it.tenSecondsCaloriesData = caloriesList
-                            it.tenSecondsDistanceData = distanceList
-                            it.tenSecondsStepFrequencyData = stepFrequencyList
+                        stepFrequencyTimeStampList.forEach { timeData ->
+                            stepFrequencyList.add(timeData.data as WmStepFrequencyData)
                         }
+
+//                            it.tenSecondsHeartRate = heartRateList
+//                            it.tenSecondsCaloriesData = caloriesList
+//                            it.tenSecondsDistanceData = distanceList
+                        it.tenSecondsStepFrequencyData = stepFrequencyList
+//                        }
 
 
                         syncSportSummaryObserveEmitter?.onSuccess(wmSyncData)

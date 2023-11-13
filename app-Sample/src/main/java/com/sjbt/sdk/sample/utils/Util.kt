@@ -307,7 +307,7 @@ fun step2Km(step: Int, stepLength: Float): Float {
     return stepLength * step / 1000
 }
 
-private var localSportLibrary:LocalSportLibrary?=null
+private var localSportLibrary: LocalSportLibrary? = null
 fun getSportLibrary(): LocalSportLibrary {
     if (localSportLibrary == null) {
         val sportsData = ResourceUtils.readAssets2String("sports_data.json")
@@ -370,7 +370,9 @@ fun getTestWeatherdata(wmWeatherTime: WmWeatherTime, code: Int): WmWeather {
                 20f,
                 WmUnitInfo.TemperatureUnit.CELSIUS,
                 90f,
+                95f,
                 5,
+                6,
                 code,
                 code,
                 "白天天气描述",

@@ -141,17 +141,12 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(), Li
         readSubPkMsg: ReadSubPkMsg,
         payloadPackage: PayloadPackage
     ): Observable<MsgBean> {
-        wmLog.logE(
-            TAG,
-            "发起分包流程1"
-        )
-
         return Observable.create { emitter ->
             mReadSubPkMsg = readSubPkMsg
             subPkObservableEmitter = emitter
             wmLog.logE(
                 TAG,
-                "发起分包流程2"
+                "发起分包请求${readSubPkMsg}"
             )
             sendReadNodeCmdList(payloadPackage)
         }
@@ -699,15 +694,14 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(), Li
 
                                         if (msgBean.divideType == DIVIDE_N_2) {//不分包消息
                                             subPkObservableEmitter?.onComplete()
+                                            wmLog.logE(
+                                                TAG,
+                                                "不分包消息Complete"
+                                            )
 
                                             var payloadPackage: PayloadPackage =
                                                 PayloadPackage.fromByteArray(msgBean.payload)
                                             parseResponseNodePayload(msgBean, payloadPackage)
-
-                                            wmLog.logE(
-                                                TAG,
-                                                "不分包消息Complete：" + BtUtils.bytesToHexString(msgBean.originData)
-                                            )
 
                                         } else {//分包消息
 
@@ -733,15 +727,13 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(), Li
 
                                                 wmLog.logE(
                                                     TAG,
-                                                    "分包消息Complete：" + BtUtils.bytesToHexString(msgBean.originData)
+                                                    "分包消息Complete：$mReadSubPkMsg"
                                                 )
 
                                                 mReadSubPkMsg?.let {
                                                     if (!it.getHasNext()) {
                                                         subPkObservableEmitter?.onComplete()
                                                     }
-                                                }?.let {
-                                                    subPkObservableEmitter?.onComplete()
                                                 }
                                             }
                                         }
