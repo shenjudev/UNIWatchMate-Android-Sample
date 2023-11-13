@@ -123,7 +123,7 @@ const val BT_MSG_BASE_LEN = 16
 /**
  * 节点类型数据配置
  **/
-const val URN_0: Byte = '0'.code.toByte()
+const val URN_0: Byte = '0'.code.toByte() //48
 const val URN_1: Byte = '1'.code.toByte()
 const val URN_2: Byte = '2'.code.toByte()
 const val URN_3: Byte = '3'.code.toByte()
@@ -132,15 +132,15 @@ const val URN_5: Byte = '5'.code.toByte()
 const val URN_6: Byte = '6'.code.toByte()
 const val URN_7: Byte = '7'.code.toByte()
 const val URN_8: Byte = '8'.code.toByte()
-const val URN_9: Byte = '9'.code.toByte()
-const val URN_A: Byte = 'A'.code.toByte()
+const val URN_9: Byte = '9'.code.toByte() //57
+const val URN_A: Byte = 'A'.code.toByte() //65
 const val URN_B: Byte = 'B'.code.toByte()
 const val URN_C: Byte = 'C'.code.toByte()
 const val URN_D: Byte = 'D'.code.toByte()
 const val URN_E: Byte = 'E'.code.toByte()
 const val URN_F: Byte = 'F'.code.toByte()
 const val URN_G: Byte = 'G'.code.toByte()
-const val URN_H: Byte = 'H'.code.toByte()
+const val URN_H: Byte = 'H'.code.toByte() //72
 
 const val URN_CONNECT: Byte = URN_1
 const val URN_SETTING: Byte = URN_2

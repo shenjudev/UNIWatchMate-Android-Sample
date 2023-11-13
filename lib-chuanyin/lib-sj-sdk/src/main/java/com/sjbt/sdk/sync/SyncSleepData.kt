@@ -235,7 +235,7 @@ class SyncSleepData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmSleepD
 
             sjUniWatch.wmLog.logD(
                 TAG,
-                "sleep record data: ${byteBufferSyncData.position()} -> ${wmSleepData}"
+                "sleep record data: $dataIndex -> $wmSleepData"
             )
 
             sleepDataList.add(wmSleepData)

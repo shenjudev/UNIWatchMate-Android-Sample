@@ -133,8 +133,8 @@ class MsgBean {
                                 ByteBuffer.wrap(msgBean.payload.copyOfRange(10, 14))
                                     .order(ByteOrder.LITTLE_ENDIAN).int
 
-                            Log.e(TAG_SJ, "requestId:" + msgBean.requestId)
-                            Log.e(TAG_SJ, "nodeId:" + msgBean.nodeId)
+                            Log.d(TAG_SJ, "requestId:" + msgBean.requestId)
+                            Log.d(TAG_SJ, "nodeId:" + msgBean.nodeId)
 
                             msgBean.timeOutCode =
                                 msgBean.requestId.toString() + msgBean.nodeId.toString()
@@ -172,8 +172,8 @@ class MsgBean {
                                 ByteBuffer.wrap(msgBean.payload.copyOfRange(10, 14))
                                     .order(ByteOrder.LITTLE_ENDIAN).int
 
-                            Log.e(TAG_SJ, "requestId:" + msgBean.requestId)
-                            Log.e(TAG_SJ, "nodeId:" + msgBean.nodeId)
+                            Log.d(TAG_SJ, "requestId:" + msgBean.requestId)
+                            Log.d(TAG_SJ, "nodeId:" + msgBean.nodeId)
 
                             msgBean.timeOutCode = msgBean.requestId.toString()
                         }

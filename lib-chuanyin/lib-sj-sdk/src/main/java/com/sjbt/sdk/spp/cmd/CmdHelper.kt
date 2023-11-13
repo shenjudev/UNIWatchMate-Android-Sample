@@ -493,7 +493,7 @@ object CmdHelper {
      */
     fun getNotificationCmd(notifyMsgBean: WmNotification?): ByteArray {
         val payload = gson.toJson(notifyMsgBean).toByteArray(StandardCharsets.UTF_8)
-        //logSendMsg("发送通知消息:" + gson.toJson(notifyMsgBean))
+        Log.d(TAG_SJ,"notification:" + gson.toJson(notifyMsgBean))
         return constructCmd(
             HEAD_COMMON,
             CMD_ID_8004,

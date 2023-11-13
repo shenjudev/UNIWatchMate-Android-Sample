@@ -13,6 +13,7 @@ class AppNotification(sjUniWatch: SJUniWatch) : AbAppNotification() {
     val sjUniWatch = sjUniWatch
     var sendNotificationEmitter: SingleEmitter<Boolean>? = null
 
+    val TAG = "AppNotification"
     val sms_package_name = "com.android.sms"
     val others_package_name = "com.android.others"
     // 所有的应用的包名列表(除了短信和others)
@@ -56,19 +57,19 @@ class AppNotification(sjUniWatch: SJUniWatch) : AbAppNotification() {
     }
 
     override fun sendNotification(notification: WmNotification): Single<Boolean> {
-        return Single.create(object : SingleOnSubscribe<Boolean> {
-            override fun subscribe(emitter: SingleEmitter<Boolean>) {
-                sendNotificationEmitter = emitter
+        return Single.create { emitter ->
+            sendNotificationEmitter = emitter
 
-                // 短信应用包名统一，其它应用包名统一
-                if (smsPackageList.indexOf(notification.packageName) != -1) {
-                    notification.packageName = sms_package_name
-                } else if (appPackageList.indexOf(notification.packageName) == -1) {
-                    notification.packageName = others_package_name
-                }
-
-                sjUniWatch.sendNormalMsg(CmdHelper.getNotificationCmd(notification))
+            // 短信应用包名统一，其它应用包名统一
+            if (smsPackageList.indexOf(notification.appPackage) != -1) {
+                notification.appPackage = sms_package_name
+            } else if (appPackageList.indexOf(notification.appPackage) == -1) {
+                notification.appPackage = others_package_name
             }
-        })
+
+            sjUniWatch.wmLog.logD(TAG, "sendNotification: $notification")
+
+            sjUniWatch.sendNormalMsg(CmdHelper.getNotificationCmd(notification))
+        }
     }
 }

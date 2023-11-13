@@ -141,10 +141,18 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(), Li
         readSubPkMsg: ReadSubPkMsg,
         payloadPackage: PayloadPackage
     ): Observable<MsgBean> {
+        wmLog.logE(
+            TAG,
+            "发起分包流程1"
+        )
 
         return Observable.create { emitter ->
             mReadSubPkMsg = readSubPkMsg
             subPkObservableEmitter = emitter
+            wmLog.logE(
+                TAG,
+                "发起分包流程2"
+            )
             sendReadNodeCmdList(payloadPackage)
         }
     }
@@ -690,20 +698,31 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(), Li
                                         )
 
                                         if (msgBean.divideType == DIVIDE_N_2) {//不分包消息
+                                            subPkObservableEmitter?.onComplete()
+
                                             var payloadPackage: PayloadPackage =
                                                 PayloadPackage.fromByteArray(msgBean.payload)
                                             parseResponseNodePayload(msgBean, payloadPackage)
 
-                                            subPkObservableEmitter?.onComplete()
+                                            wmLog.logE(
+                                                TAG,
+                                                "不分包消息Complete：" + BtUtils.bytesToHexString(msgBean.originData)
+                                            )
+
                                         } else {//分包消息
+
+                                            wmLog.logE(
+                                                TAG,
+                                                "分包消息：" + BtUtils.bytesToHexString(msgBean.originData)
+                                            )
 
                                             if (msgBean.divideType == DIVIDE_Y_F_2) {
                                                 val payloadPackage =
                                                     PayloadPackage.fromByteArray(msgBean.payload)
 
-                                                wmLog.logE(
-                                                    TAG, "hasNext:" + payloadPackage.hasNext()
-                                                )
+//                                                wmLog.logE(
+//                                                    TAG, "hasNext:" + payloadPackage.hasNext()
+//                                                )
 
                                                 mReadSubPkMsg?.setHasNext(payloadPackage.hasNext())
                                             }
@@ -711,6 +730,12 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(), Li
                                             subPkObservableEmitter?.onNext(msgBean)
 
                                             if (msgBean.divideType == DIVIDE_Y_E_2) {
+
+                                                wmLog.logE(
+                                                    TAG,
+                                                    "分包消息Complete：" + BtUtils.bytesToHexString(msgBean.originData)
+                                                )
+
                                                 mReadSubPkMsg?.let {
                                                     if (!it.getHasNext()) {
                                                         subPkObservableEmitter?.onComplete()
@@ -1922,7 +1947,7 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(), Li
              * 是否支持 REM快速眼动
              */
             FunctionType.SUPPORT_REM -> {
-                return true
+                return false
             }
 
             /**
