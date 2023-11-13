@@ -10,15 +10,15 @@ data class WmWeatherForecast(
     /**
      * 最低温度（low temperature）
      * */
-    val lowTemp: Int,
+    val lowTemp: Float,
     /**
      * 最高温度（high temperature）
      * */
-    val highTemp: Int,
+    val highTemp: Float,
     /**
      * 当前温度（current temperature）
      * */
-    val curTemp: Int,
+    val curTemp: Float,
     /**
      * 温度单位（temperature unit）
      * */
@@ -26,7 +26,7 @@ data class WmWeatherForecast(
     /**
      * 湿度（humidity）
      * */
-    val humidity: Int,
+    val humidity: Float,
     /**
      * 紫外线指数（ultraviolet index）
      * */
@@ -80,7 +80,7 @@ data class TodayWeather(
     /**
      * 当前温度（current temperature）
      * */
-    val curTemp: Int,
+    val curTemp: Float,
     /**
      * 温度单位（temperature unit）
      * */

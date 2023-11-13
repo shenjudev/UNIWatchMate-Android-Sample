@@ -20,13 +20,13 @@ class WmAlarm(
  */
 enum class AlarmRepeatOption(val value: Int) {
     NONE(0),
-    SUNDAY(1 shl 0),
-    MONDAY(1 shl 1),
-    TUESDAY(1 shl 2),
-    WEDNESDAY(1 shl 3),
-    THURSDAY(1 shl 4),
-    FRIDAY(1 shl 5),
-    SATURDAY(1 shl 6);
+    MONDAY(1 shl 0),
+    TUESDAY(1 shl 1),
+    WEDNESDAY(1 shl 2),
+    THURSDAY(1 shl 3),
+    FRIDAY(1 shl 4),
+    SATURDAY(1 shl 5),
+    SUNDAY(1 shl 6);
 
     companion object {
         fun fromValue(value: Int): Set<AlarmRepeatOption> {

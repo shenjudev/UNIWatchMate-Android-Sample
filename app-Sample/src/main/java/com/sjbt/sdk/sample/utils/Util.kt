@@ -357,7 +357,7 @@ fun getTestWeatherdata(wmWeatherTime: WmWeatherTime, code: Int): WmWeather {
     if (wmWeatherTime == WmWeatherTime.TODAY) {
         for (index in 0..23) {
             val toDayWeather = TodayWeather(
-                10, WmUnitInfo.TemperatureUnit.CELSIUS, 66, 5,
+                10f, WmUnitInfo.TemperatureUnit.CELSIUS, 66, 5,
                 code, "晴", System.currentTimeMillis() + index * 3600 * 1000, index
             )
             todayWeatherList.add(toDayWeather)
@@ -365,11 +365,11 @@ fun getTestWeatherdata(wmWeatherTime: WmWeatherTime, code: Int): WmWeather {
     } else {
         for (index in 0..6) {
             val wmWeatherForecast = WmWeatherForecast(
-                10,
-                30,
-                20,
+                10f,
+                30f,
+                20f,
                 WmUnitInfo.TemperatureUnit.CELSIUS,
-                90,
+                90f,
                 5,
                 code,
                 code,

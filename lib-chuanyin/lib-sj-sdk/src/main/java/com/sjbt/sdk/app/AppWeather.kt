@@ -207,16 +207,16 @@ class AppWeather(val sjUniWatch: SJUniWatch) : AbAppWeather() {
 
             val currTemp = when (temperatureUnit) {
                 WmUnitInfo.TemperatureUnit.CELSIUS -> {//摄氏度
-                    it.curTemp
+                    it.curTemp * 100
                 }
 
                 WmUnitInfo.TemperatureUnit.FAHRENHEIT -> {//华氏度
 //                 摄氏度=(华氏度 - 32°F) ÷ 1.8；
-                    (it.curTemp - 32) / 1.8
+                    (it.curTemp - 32) / 1.8 * 100
                 }
             }
 
-            byteBuffer.put(currTemp.toByte())
+            byteBuffer.putShort(currTemp.toShort())
             byteBuffer.putShort(it.humidity.toShort())
             byteBuffer.put(it.uvIndex.toByte())
             byteBuffer.put(it.weatherCode.toByte())
@@ -294,20 +294,20 @@ class AppWeather(val sjUniWatch: SJUniWatch) : AbAppWeather() {
 
             when (temperatureUnit) {
                 WmUnitInfo.TemperatureUnit.CELSIUS -> {//摄氏度
-                    byteBuffer.put(it.lowTemp.toByte())
-                    byteBuffer.put(it.highTemp.toByte())
-                    byteBuffer.put(it.curTemp.toByte())
+                    byteBuffer.putShort((it.lowTemp * 100).toInt().toShort())
+                    byteBuffer.putShort((it.highTemp * 100).toInt().toShort())
+                    byteBuffer.putShort((it.curTemp * 100).toInt().toShort())
                 }
 
                 WmUnitInfo.TemperatureUnit.FAHRENHEIT -> {//华氏度
 //                 摄氏度=(华氏度 - 32°F) ÷ 1.8；
-                    byteBuffer.put(((it.lowTemp - 32) / 1.8).toInt().toByte())
-                    byteBuffer.put(((it.highTemp - 32) / 1.8).toInt().toByte())
-                    byteBuffer.put(((it.highTemp - 32) / 1.8).toInt().toByte())
+                    byteBuffer.putShort(((it.lowTemp - 32) * 100 / 1.8).toInt().toShort())
+                    byteBuffer.putShort(((it.highTemp - 32) * 100 / 1.8).toInt().toShort())
+                    byteBuffer.putShort(((it.highTemp - 32) * 100 / 1.8).toInt().toShort())
                 }
             }
 
-            byteBuffer.putShort(it.humidity.toShort())
+            byteBuffer.putShort((it.humidity * 100).toInt().toShort())
             byteBuffer.put(it.uvIndex.toByte())
             byteBuffer.put(it.dayCode.toByte())
             byteBuffer.put(it.nightCode.toByte())
