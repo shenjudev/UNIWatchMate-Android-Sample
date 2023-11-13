@@ -95,7 +95,7 @@ class SyncDistanceData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmDis
                                 byteBufferSyncData.put(
                                     it.payload.copyOfRange(
                                         17,
-                                        it.payload.lastIndex
+                                        it.payload.size
                                     )
                                 )
                             } else {

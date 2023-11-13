@@ -94,7 +94,7 @@ class SyncSleepData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmSleepD
                                 byteBufferSyncData.put(
                                     it.payload.copyOfRange(
                                         17,
-                                        it.payload.lastIndex
+                                        it.payload.size
                                     )
                                 )
                             } else {

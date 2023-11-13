@@ -92,7 +92,7 @@ class SyncHeartRateData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmHe
                                 byteBufferSyncData.put(
                                     it.payload.copyOfRange(
                                         17,
-                                        it.payload.lastIndex
+                                        it.payload.size
                                     )
                                 )
                             } else {

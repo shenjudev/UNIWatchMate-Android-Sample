@@ -95,7 +95,7 @@ class SyncActivityDurationData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncDa
                                 byteBufferSyncData.put(
                                     it.payload.copyOfRange(
                                         17,
-                                        it.payload.lastIndex
+                                        it.payload.size
                                     )
                                 )
                             } else {

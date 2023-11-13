@@ -91,7 +91,7 @@ class SyncCaloriesData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmCal
                                 byteBufferSyncData.put(
                                     it.payload.copyOfRange(
                                         17,
-                                        it.payload.lastIndex
+                                        it.payload.size
                                     )
                                 )
                             } else {

@@ -94,7 +94,7 @@ class SyncRealtimeRateData(val sjUniWatch: SJUniWatch) :
                                 byteBufferSyncData.put(
                                     it.payload.copyOfRange(
                                         17,
-                                        it.payload.lastIndex
+                                        it.payload.size
                                     )
                                 )
                             } else {

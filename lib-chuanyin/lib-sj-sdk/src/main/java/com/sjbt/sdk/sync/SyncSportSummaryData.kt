@@ -109,7 +109,7 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
                                 byteBufferSyncData.put(
                                     it.payload.copyOfRange(
                                         17,
-                                        it.payload.lastIndex
+                                        it.payload.size
                                     )
                                 )
                             } else {
@@ -307,8 +307,12 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
                 if (msgList.size > 0) {
 
                     var bufferSize = 0
-                    msgList.forEach {
-                        bufferSize += it.payloadLen
+                    msgList.forEachIndexed { index, it ->
+                        if (it.divideType == DIVIDE_Y_F_2) {
+                            bufferSize += it.payloadLen - 17
+                        } else {
+                            bufferSize += it.payloadLen
+                        }
                     }
 
                     sjUniWatch.wmLog.logE(TAG, "$urn 所有十秒总长度:$bufferSize")
@@ -317,19 +321,44 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
                         ByteBuffer.allocate(bufferSize).order(ByteOrder.LITTLE_ENDIAN)
 
                     msgList.forEachIndexed { index, it ->
-//                        sjUniWatch.wmLog.logE(
-//                            TAG,
-//                            "sport summary data:" + BtUtils.bytesToHexString(it.originData)
-//                        )
 
-                        if (index == 0) {
+                        if (it.divideType == DIVIDE_Y_F_2 && index == 0) {
+                            sjUniWatch.wmLog.logE(
+                                TAG,
+                                "sport summary payload f0:" + BtUtils.bytesToHexString(
+                                    it.payload.copyOfRange(
+                                        17,
+                                        it.payload.size
+                                    )
+                                )
+                            )
                             byteBufferSyncData.put(
                                 it.payload.copyOfRange(
                                     17,
-                                    it.payload.lastIndex
+                                    it.payload.size
+                                )
+                            )
+                        } else if (it.divideType == DIVIDE_Y_F_2 && index != 0) {
+                            sjUniWatch.wmLog.logE(
+                                TAG,
+                                "sport summary payload f1:" + BtUtils.bytesToHexString(
+                                    it.payload.copyOfRange(
+                                        28,
+                                        it.payload.size
+                                    )
+                                )
+                            )
+                            byteBufferSyncData.put(
+                                it.payload.copyOfRange(
+                                    28,
+                                    it.payload.size
                                 )
                             )
                         } else {
+                            sjUniWatch.wmLog.logE(
+                                TAG,
+                                "sport summary payload fn:" + BtUtils.bytesToHexString(it.payload)
+                            )
                             byteBufferSyncData.put(it.payload)
                         }
                     }
@@ -510,7 +539,7 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
 
                     sjUniWatch.wmLog.logD(
                         TAG,
-                        "calorie data: $dataIndex -> $wmStepFrequencyData"
+                        "step frequency: $dataIndex -> $wmStepFrequencyData"
                     )
 
                     val timeStampRateData =
@@ -520,6 +549,10 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
                 }
             }
 
+            sjUniWatch.wmLog.logD(
+                TAG,
+                "urn：$urn dataIndex: $dataIndex"
+            )
             dataIndex++
         }
 
