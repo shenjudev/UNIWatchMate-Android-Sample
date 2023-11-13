@@ -38,7 +38,7 @@ class AppWeather(val sjUniWatch: SJUniWatch) : AbAppWeather() {
             sjUniWatch.wmLog.logD(TAG, "today weather payload_len:" + totalLen)
 
             weather.todayWeather.forEach {
-                totalLen += it.weatherDesc.toByteArray().size + 13 + 1
+                totalLen += it.weatherDesc.toByteArray().size + 15 + 1
             }
 
             sjUniWatch.wmLog.logD(TAG, "today weather payload_len:" + totalLen)
@@ -76,7 +76,7 @@ class AppWeather(val sjUniWatch: SJUniWatch) : AbAppWeather() {
                 sjUniWatch.wmLog.logD(TAG, "7 days weather payload_len:" + sevenDayLen)
 
                 weather.weatherForecast.forEach {
-                    sevenDayLen += it.dayDesc.toByteArray().size + it.nightDesc.toByteArray().size + 18 + 2
+                    sevenDayLen += it.dayDesc.toByteArray().size + it.nightDesc.toByteArray().size + 25 + 2
                 }
 
                 sjUniWatch.wmLog.logD(TAG, "7 days weather total bytes:" + sevenDayLen)

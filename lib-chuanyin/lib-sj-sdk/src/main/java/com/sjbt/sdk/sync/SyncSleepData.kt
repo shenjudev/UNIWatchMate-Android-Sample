@@ -141,7 +141,7 @@ class SyncSleepData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmSleepD
         val calendar = Calendar.getInstance()
         calendar.set(baseYear, baseMon, baseDay, 0, 0, 0)
 
-        val realTimeStamp = calendar.timeInMillis + timestamp
+        val realTimeStamp = calendar.timeInMillis / 1000 + timestamp
 
         val sleepDataList = mutableListOf<WmSleepData>()
 
@@ -163,9 +163,17 @@ class SyncSleepData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmSleepD
                 endMin
             )
 
-            var dateStamp: Int = byteBufferSyncData.int
-            var bedTime: Int = byteBufferSyncData.int
-            var getUpTime: Int = byteBufferSyncData.int
+            val sleepYear = byteBufferSyncData.short.toInt()
+            val sleepMon = byteBufferSyncData.get().toInt() - 1
+            val sleepDay = byteBufferSyncData.get().toInt()
+
+            val calendar = Calendar.getInstance()
+            calendar.set(sleepYear, sleepMon, sleepDay, 0, 0, 0)
+
+            var dateStamp = (calendar.timeInMillis / 1000).toInt()
+            var bedTime = byteBufferSyncData.int + dateStamp
+            var getUpTime = byteBufferSyncData.int + dateStamp
+
             var totalSleepMinutes: Int = byteBufferSyncData.int
 
             var sleepType: Int = byteBufferSyncData.get().toInt()
@@ -185,7 +193,7 @@ class SyncSleepData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmSleepD
             var deepSleepPercentage: Int = byteBufferSyncData.short.toInt()
             var remSleepPercentage: Int = byteBufferSyncData.short.toInt()
 
-            var sleepScore: Int = byteBufferSyncData.get().toInt()
+            var sleepScore: Int = byteBufferSyncData.short.toInt()
 
             val wmSleepSummary = WmSleepSummary(
                 dateStamp,
@@ -210,15 +218,11 @@ class SyncSleepData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmSleepD
 
             val sleepItems = mutableListOf<WmSleepItem>()
 
-            val itemCount = dataLen - 5 - 50
-            var itemIndex = 0
-
-            while (itemIndex < itemCount) {
+            while (byteBufferSyncData.hasRemaining()) {
                 val status = byteBufferSyncData.get().toInt()
                 val duration = byteBufferSyncData.short.toInt()
                 val sleepItem = WmSleepItem(status, duration)
                 sleepItems.add(sleepItem)
-                itemIndex++
             }
 
             val wmSleepData = WmSleepData(wmSleepSettings, wmSleepSummary, sleepItems)
@@ -252,11 +256,6 @@ class SyncSleepData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmSleepD
 
         activityObserveEmitter?.onSuccess(wmSyncData)
         lastSyncTime = System.currentTimeMillis()
-
-        sjUniWatch.wmLog.logE(
-            TAG,
-            "${wmSyncData}"
-        )
     }
 
     fun syncRealHeartRateBusiness(nodeData: NodeData) {

@@ -144,10 +144,6 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(), Li
         return Observable.create { emitter ->
             mReadSubPkMsg = readSubPkMsg
             subPkObservableEmitter = emitter
-            wmLog.logE(
-                TAG,
-                "发起分包请求${readSubPkMsg}"
-            )
             sendReadNodeCmdList(payloadPackage)
         }
     }
@@ -725,13 +721,19 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(), Li
 
                                             if (msgBean.divideType == DIVIDE_Y_E_2) {
 
-                                                wmLog.logE(
-                                                    TAG,
-                                                    "分包消息Complete：$mReadSubPkMsg"
-                                                )
-
                                                 mReadSubPkMsg?.let {
+
+                                                    wmLog.logE(
+                                                        TAG,
+                                                        "分包消息Complete hasNext：${it.getHasNext()}"
+                                                    )
+
                                                     if (!it.getHasNext()) {
+                                                        wmLog.logE(
+                                                            TAG,
+                                                            "分包消息Complete：$mReadSubPkMsg"
+                                                        )
+
                                                         subPkObservableEmitter?.onComplete()
                                                     }
                                                 }
