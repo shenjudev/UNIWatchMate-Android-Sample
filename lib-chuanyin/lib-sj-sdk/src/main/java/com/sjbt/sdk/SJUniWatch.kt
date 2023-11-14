@@ -688,7 +688,7 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(), Li
                                             subPkObservableEmitter?.onComplete()
                                             wmLog.logE(
                                                 TAG,
-                                                "不分包消息Complete"
+                                                "one package msg Complete"
                                             )
 
                                             var payloadPackage: PayloadPackage =
@@ -697,10 +697,10 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(), Li
 
                                         } else {//分包消息
 
-                                            wmLog.logE(
-                                                TAG,
-                                                "分包消息：" + BtUtils.bytesToHexString(msgBean.originData)
-                                            )
+//                                            wmLog.logE(
+//                                                TAG,
+//                                                "sub package msg：" + BtUtils.bytesToHexString(msgBean.originData)
+//                                            )
 
                                             if (msgBean.divideType == DIVIDE_Y_F_2) {
                                                 val payloadPackage =
@@ -721,15 +721,10 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(), Li
 
                                                     wmLog.logE(
                                                         TAG,
-                                                        "分包消息Complete hasNext：${it.getHasNext()}"
+                                                        "sub package msg Complete hasNext：${it.getHasNext()}"
                                                     )
 
                                                     if (!it.getHasNext()) {
-                                                        wmLog.logE(
-                                                            TAG,
-                                                            "分包消息Complete：$mReadSubPkMsg"
-                                                        )
-
                                                         subPkObservableEmitter?.onComplete()
                                                     }
                                                 }

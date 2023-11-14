@@ -474,10 +474,10 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
                             realTimeStamp + dataIndex * SYNC_DATA_INTERVAL_TEN_SECONDS
                     }
 
-                    sjUniWatch.wmLog.logD(
-                        TAG,
-                        "real time rate data: $dataIndex -> ${wmHeartRateData}"
-                    )
+//                    sjUniWatch.wmLog.logD(
+//                        TAG,
+//                        "real time rate data: $dataIndex -> ${wmHeartRateData}"
+//                    )
 
                     val timeStampRateData =
                         TimestampedData(wmHeartRateData.timestamp, wmHeartRateData)
@@ -495,10 +495,10 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
                             realTimeStamp + dataIndex * SYNC_DATA_INTERVAL_TEN_SECONDS
                     }
 
-                    sjUniWatch.wmLog.logD(
-                        TAG,
-                        "calorie data: $dataIndex -> $wmCalorieData"
-                    )
+//                    sjUniWatch.wmLog.logD(
+//                        TAG,
+//                        "calorie data: $dataIndex -> $wmCalorieData"
+//                    )
 
                     val timeStampRateData =
                         TimestampedData(wmCalorieData.timestamp, wmCalorieData)
@@ -516,10 +516,10 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
                             realTimeStamp + dataIndex * SYNC_DATA_INTERVAL_TEN_SECONDS
                     }
 
-                    sjUniWatch.wmLog.logD(
-                        TAG,
-                        "calorie data: $dataIndex -> $wmDistanceData"
-                    )
+//                    sjUniWatch.wmLog.logD(
+//                        TAG,
+//                        "calorie data: $dataIndex -> $wmDistanceData"
+//                    )
 
                     val timeStampRateData =
                         TimestampedData(wmDistanceData.timestamp, wmDistanceData)
@@ -536,10 +536,10 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
                             realTimeStamp + dataIndex * SYNC_DATA_INTERVAL_TEN_SECONDS
                     }
 
-                    sjUniWatch.wmLog.logD(
-                        TAG,
-                        "step frequency: $dataIndex -> $wmStepFrequencyData"
-                    )
+//                    sjUniWatch.wmLog.logD(
+//                        TAG,
+//                        "step frequency: $dataIndex -> $wmStepFrequencyData"
+//                    )
 
                     val timeStampRateData =
                         TimestampedData(wmStepFrequencyData.timestamp, wmStepFrequencyData)
