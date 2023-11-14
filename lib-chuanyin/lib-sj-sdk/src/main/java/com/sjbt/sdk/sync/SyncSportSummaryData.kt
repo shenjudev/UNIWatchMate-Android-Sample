@@ -382,6 +382,26 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
                                 val stepFrequencyTimeStampList =
                                     tenSecondsStepFrequencyMap.getBetween(it.startTime, it.endTime)
 
+                                sjUniWatch.wmLog.logE(
+                                    TAG,
+                                    "ten seconds rate size2: ${tenSecondsRealtimeRateMap.size()}"
+                                )
+
+                                sjUniWatch.wmLog.logE(
+                                    TAG,
+                                    "ten seconds distance size2: ${tenSecondsDistanceMap.size()}"
+                                )
+
+                                sjUniWatch.wmLog.logE(
+                                    TAG,
+                                    "ten seconds calories size2: ${tenSecondsCaloriesMap.size()}"
+                                )
+
+                                sjUniWatch.wmLog.logE(
+                                    TAG,
+                                    "ten seconds frequency size2: ${tenSecondsStepFrequencyMap.size()}"
+                                )
+
                                 val heartRateList = mutableListOf<WmRealtimeRateData>()
                                 val distanceList = mutableListOf<WmDistanceData>()
                                 val caloriesList = mutableListOf<WmCaloriesData>()

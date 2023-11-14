@@ -28,4 +28,8 @@ class TimestampedMap {
     fun remove(timestamp: Long) {
         dataMap.remove(timestamp)
     }
+
+    fun size(): Int {
+        return dataMap.size
+    }
 }
