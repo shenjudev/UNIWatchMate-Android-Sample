@@ -1838,11 +1838,11 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(), Li
             }
 
             FunctionType.SUPPORT_ALARM_LABEL -> {
-                return true
+                return false
             }
 
             FunctionType.SUPPORT_ALARM_REMARK -> {
-                return false
+                return true
             }
 
             FunctionType.SUPPORT_WEATHER -> {
