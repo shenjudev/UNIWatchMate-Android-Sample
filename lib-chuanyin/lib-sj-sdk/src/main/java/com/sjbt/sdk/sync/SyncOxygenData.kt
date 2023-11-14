@@ -8,6 +8,7 @@ import com.sjbt.sdk.entity.DataFormat
 import com.sjbt.sdk.entity.MsgBean
 import com.sjbt.sdk.entity.NodeData
 import com.sjbt.sdk.spp.cmd.CmdHelper
+import com.sjbt.sdk.spp.cmd.SYNC_DATA_INTERVAL_FIVE_MINUTES
 import com.sjbt.sdk.spp.cmd.SYNC_DATA_INTERVAL_HOUR
 import com.sjbt.sdk.spp.cmd.URN_SPORT_OXYGEN
 import com.sjbt.sdk.utils.BtUtils
@@ -154,12 +155,12 @@ class SyncOxygenData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmOxyge
                 )
 
                 wmOxygenData.timestamp =
-                    realTimeStamp + dataIndex * SYNC_DATA_INTERVAL_HOUR
+                    realTimeStamp + dataIndex * SYNC_DATA_INTERVAL_FIVE_MINUTES
             }
 
             sjUniWatch.wmLog.logD(
                 TAG,
-                "oxygen data: ${byteBufferSyncData.position()} -> ${wmOxygenData}"
+                "oxygen data: $dataIndex -> ${wmOxygenData}"
             )
 
             oxygenDataList.add(wmOxygenData)
@@ -193,7 +194,7 @@ class SyncOxygenData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmOxyge
                 WmSyncData(
                     WmSyncDataType.STEP,
                     0,
-                    WmIntervalType.ONE_HOUR,
+                    WmIntervalType.FIVE_MINUTES,
                     mutableListOf<WmOxygenData>()
                 )
 

@@ -203,7 +203,6 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
             val averageSpeed = byteBufferSyncData.short
 //            val paces:ShortArray = byteBufferSyncData.short
 
-
             val wmSportSummaryData = WmSportSummaryData(
                 dateTime,
                 startTime,
@@ -232,6 +231,8 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
                 slowestSpeed,
                 averageSpeed
             )
+
+            wmSportSummaryData.timestamp = dateTime
 
             activitySportSummaryList.add(wmSportSummaryData)
         }
@@ -311,8 +312,10 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
 
                         var bufferSize = 0
                         msgList.forEachIndexed { index, it ->
-                            if (it.divideType == DIVIDE_Y_F_2) {
-                                bufferSize += it.payloadLen - 17
+                            if (it.divideType == DIVIDE_Y_F_2 && index == 0) {
+                                bufferSize += it.payloadLen - 16
+                            } else if (it.divideType == DIVIDE_Y_F_2 && index != 0) {
+                                bufferSize += it.payloadLen - 27
                             } else {
                                 bufferSize += it.payloadLen
                             }
@@ -326,45 +329,35 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
                         msgList.forEachIndexed { index, it ->
 
                             if (it.divideType == DIVIDE_Y_F_2 && index == 0) {
-                                sjUniWatch.wmLog.logE(
-                                    TAG,
-                                    "sport summary payload urn$urn f0:" + BtUtils.bytesToHexString(
-                                        it.payload.copyOfRange(
-                                            17,
-                                            it.payload.size
-                                        )
-                                    )
+
+                                val f0 = it.payload.copyOfRange(
+                                    17,
+                                    it.payload.size
                                 )
-                                byteBufferSyncData.put(
-                                    it.payload.copyOfRange(
-                                        17,
-                                        it.payload.size
-                                    )
-                                )
+
+                                sjUniWatch.wmLog.logE(TAG,"sport summary payload urn$urn size:${f0.size} f0: ${ BtUtils.bytesToHexString(f0)}")
+
+                                byteBufferSyncData.put(f0)
+
                             } else if (it.divideType == DIVIDE_Y_F_2 && index != 0) {
-                                sjUniWatch.wmLog.logE(
-                                    TAG,
-                                    "sport summary payload urn$urn f1:" + BtUtils.bytesToHexString(
-                                        it.payload.copyOfRange(
-                                            28,
-                                            it.payload.size
-                                        )
-                                    )
+
+
+                                val f1 = it.payload.copyOfRange(
+                                    28,
+                                    it.payload.size
                                 )
-                                byteBufferSyncData.put(
-                                    it.payload.copyOfRange(
-                                        28,
-                                        it.payload.size
-                                    )
-                                )
+
+                                sjUniWatch.wmLog.logE(TAG,"sport summary payload urn$urn size:${f1.size} f1: ${ BtUtils.bytesToHexString(f1)}")
+
+                                byteBufferSyncData.put(f1)
+
                             } else {
-                                sjUniWatch.wmLog.logE(
-                                    TAG,
-                                    "sport summary payload urn$urn fn:" + BtUtils.bytesToHexString(
-                                        it.payload
-                                    )
-                                )
-                                byteBufferSyncData.put(it.payload)
+
+                                val fn = it.payload
+
+                                sjUniWatch.wmLog.logE(TAG,"sport summary payload urn$urn size:${fn.size} fn: ${ BtUtils.bytesToHexString(fn)}")
+
+                                byteBufferSyncData.put(fn)
                             }
                         }
 
@@ -431,12 +424,6 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
     }
 
     private fun parseTenSecondsData(urn: Byte) {
-        sjUniWatch.wmLog.logE(
-            TAG,
-            "ten seconds all payload len:" + byteBufferSyncData.limit() + " :data:" + BtUtils.bytesToHexString(
-                byteBufferSyncData.array()
-            )
-        )
         byteBufferSyncData.rewind()
         //0: 只有一个时间戳
         //1：每天一个时间戳
@@ -453,7 +440,7 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
 
         sjUniWatch.wmLog.logD(
             TAG,
-            "timestampType:$timestampType --> baseDate:$baseYear$baseMon$baseDay  timestamp:$timestamp  dataLen:$dataLen"
+            "timestampType:$timestampType --> baseDate:$baseYear$baseMon$baseDay timestamp:$timestamp dataLen:$dataLen dataSize:${byteBufferSyncData.array().size} data:${BtUtils.bytesToHexString(byteBufferSyncData.array())}"
         )
 
         val calendar = Calendar.getInstance()
@@ -528,6 +515,11 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
                 }
 
                 URN_SPORT_10S_STEP_FREQUENCY -> {
+                    sjUniWatch.wmLog.logE(
+                        TAG,
+                        "step frequency position: ${dataIndex}"
+                    )
+
                     val wmStepFrequencyData =
                         WmStepFrequencyData(byteBufferSyncData.short.toInt())
 
@@ -535,11 +527,6 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
                         wmStepFrequencyData.timestamp =
                             realTimeStamp + dataIndex * SYNC_DATA_INTERVAL_TEN_SECONDS
                     }
-
-//                    sjUniWatch.wmLog.logD(
-//                        TAG,
-//                        "step frequency: $dataIndex -> $wmStepFrequencyData"
-//                    )
 
                     val timeStampRateData =
                         TimestampedData(wmStepFrequencyData.timestamp, wmStepFrequencyData)

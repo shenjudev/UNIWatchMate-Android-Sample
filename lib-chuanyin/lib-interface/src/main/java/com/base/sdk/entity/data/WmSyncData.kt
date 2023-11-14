@@ -6,8 +6,9 @@ import java.io.Serializable
 import java.util.*
 
 abstract class WmBaseSyncData(
+){
     var timestamp: Long = 0
-)
+}
 
 /**
  * Sync Value 同步数据
