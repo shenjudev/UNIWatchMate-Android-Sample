@@ -4,16 +4,35 @@ import android.content.Context
 import android.os.Bundle
 import android.view.View
 import androidx.core.view.isVisible
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.base.api.UNIWatchMate
+import com.base.sdk.entity.apps.WmContact
+import com.base.sdk.entity.apps.WmDial
 import com.base.sdk.entity.apps.WmValueTypeData
 import com.base.sdk.entity.data.WmSportSummaryData
 import com.blankj.utilcode.util.GsonUtils
 import com.blankj.utilcode.util.ResourceUtils
+import com.sjbt.sdk.sample.R
+import com.sjbt.sdk.sample.base.Async
+import com.sjbt.sdk.sample.base.AsyncViewModel
+import com.sjbt.sdk.sample.base.Fail
+import com.sjbt.sdk.sample.base.Loading
+import com.sjbt.sdk.sample.base.SingleAsyncState
+import com.sjbt.sdk.sample.base.StateEventViewModel
+import com.sjbt.sdk.sample.base.Success
+import com.sjbt.sdk.sample.base.Uninitialized
+import com.sjbt.sdk.sample.di.internal.CoroutinesInstance.applicationScope
 import com.sjbt.sdk.sample.entity.SportSummaryEntity
 import com.sjbt.sdk.sample.model.LocalSportLibrary
+import com.sjbt.sdk.sample.model.user.DialMock
+import com.sjbt.sdk.sample.ui.device.contacts.PhoneContactsEvent
+import com.sjbt.sdk.sample.ui.device.contacts.PhoneContactsState
+import com.sjbt.sdk.sample.ui.device.dial.library.PushParamsAndPackets
 import com.sjbt.sdk.sample.utils.DateTimeUtils
 import com.sjbt.sdk.sample.utils.getSportLibrary
+import com.sjbt.sdk.sample.utils.runCatchingWithLog
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.rx3.await
 import java.text.SimpleDateFormat
@@ -22,13 +41,13 @@ import kotlin.collections.ArrayList
 
 class SportFragment : DataListFragment<WmSportSummaryData>(),
     DataListAdapter.Listener<WmSportSummaryData> {
-
+    val calendar = Calendar.getInstance()
     private val dateTimeFormat = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault())
-
+    private val viewModel: SportLibraryViewModel by viewModels()
     override val valueFormat: DataListAdapter.ValueFormat<WmSportSummaryData> =
         object : DataListAdapter.ValueFormat<WmSportSummaryData> {
             override fun format(context: Context, obj: WmSportSummaryData): String {
-                return dateTimeFormat.format(obj.timestamp) + "    " + sportTypeText(obj.sportId)
+                return dateTimeFormat.format(obj.startTime) + "    " + sportTypeText(obj.sportId)
             }
         }
 
@@ -38,7 +57,6 @@ class SportFragment : DataListFragment<WmSportSummaryData>(),
     }
 
     override fun queryData(date: Date): List<WmSportSummaryData>? {
-        val calendar = Calendar.getInstance()
         val start: Date = DateTimeUtils.getDayStartTime(calendar, date)
         val end: Date = DateTimeUtils.getDayEndTime(calendar, date)
         val result = runBlocking {
@@ -54,11 +72,13 @@ class SportFragment : DataListFragment<WmSportSummaryData>(),
     }
 
     private fun getSportName(sportId: Int): String {
-            getSportLibrary().sports.forEach { localSport ->
-                if (sportId == localSport.id) {
-                    return getSportLibrary().getNameById(sportId) + getSportLibrary().getTypeById(sportId)
-                }
+        getSportLibrary().sports.forEach { localSport ->
+            if (sportId == localSport.id) {
+                return getSportLibrary().getNameById(sportId) + getSportLibrary().getTypeById(
+                    sportId
+                )
             }
+        }
         return sportId.toString()
     }
 
@@ -67,4 +87,33 @@ class SportFragment : DataListFragment<WmSportSummaryData>(),
         findNavController().navigate(SportFragmentDirections.toSportDetail(item))
     }
 
+}
+
+data class SportsState(
+    val requestSports: Async<ArrayList<WmSportSummaryData>> = Uninitialized,
+)
+
+sealed class SportsEvent {
+    class RequestFail(val throwable: Throwable) : SportsEvent()
+    object NavigateUp : SportsEvent()
+}
+
+class SportLibraryViewModel(
+) : StateEventViewModel<SportsState, SportsEvent>(SportsState()) {
+
+    val calendar = Calendar.getInstance()
+    suspend fun requestSports(date: Date) {
+        val start: Date = DateTimeUtils.getDayStartTime(calendar, date)
+        state.copy(requestSports = Loading()).newState()
+        applicationScope.launch {
+            runCatchingWithLog {
+                UNIWatchMate.wmSync.syncSportSummaryData.syncData(start.time).await().value
+            }.onSuccess {
+                state.copy(requestSports = Success(ArrayList(it))).newState()
+            }.onFailure {
+                state.copy(requestSports = Fail(it)).newState()
+                SportsEvent.RequestFail(it).newEvent()
+            }
+        }
+    }
 }

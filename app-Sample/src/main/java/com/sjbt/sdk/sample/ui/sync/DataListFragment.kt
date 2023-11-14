@@ -79,10 +79,12 @@ abstract class DataListFragment<T> : BaseFragment() {
 
     private fun loadData(date: Date) {
         this.selectDate = date
+        promptProgress.showProgress("")
         btnDate.text = dateFormat.format(date)
         applicationScope.launch {
             adapter.sources = queryData(date)
             withContext(Dispatchers.Main){
+                promptProgress.dismiss()
                 adapter.notifyDataSetChanged()
             }
         }
