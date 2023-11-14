@@ -70,7 +70,6 @@ class DeviceService : LifecycleService() {
         val contentTitle = device?.name ?: getString(R.string.device_state_no_device)
 
         val contentText = when (state) {
-            WmConnectState.BT_DISABLE -> getString(R.string.device_state_bt_disabled)
             WmConnectState.DISCONNECTED -> getString(R.string.device_state_disconnected)
             WmConnectState.CONNECTING -> getString(R.string.device_state_connecting)
             WmConnectState.CONNECTED -> getString(R.string.device_state_connected)

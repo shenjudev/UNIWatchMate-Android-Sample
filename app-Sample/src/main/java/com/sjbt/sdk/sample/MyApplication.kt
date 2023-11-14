@@ -73,9 +73,6 @@ class MyApplication : Application() {
             Timber.e(TAG, it.name)
 
             when (it) {
-                WmConnectState.BT_DISABLE -> {
-
-                }
 
                 WmConnectState.VERIFIED -> {
                     UNIWatchMate.wmApps.appCamera.observeCameraOpenState.subscribe {

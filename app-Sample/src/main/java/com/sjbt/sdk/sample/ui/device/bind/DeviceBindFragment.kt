@@ -262,8 +262,6 @@ class DeviceBindFragment : BaseFragment(R.layout.fragment_device_bind),
                             promptId = promptBindSuccessId
                         )
                         toggleBluetoothAlert(false)
-                    } else if (it == WmConnectState.BT_DISABLE) {
-                        toggleBluetoothAlert(true)
                     } else {
                         toggleBluetoothAlert(false)
                     }

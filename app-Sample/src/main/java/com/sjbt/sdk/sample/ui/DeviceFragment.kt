@@ -37,7 +37,6 @@ import timber.log.Timber
 @StringRes
 fun WmConnectState.toStringRes(): Int {
     return when (this) {
-        WmConnectState.BT_DISABLE -> R.string.device_state_bt_disabled
         WmConnectState.DISCONNECTED -> R.string.device_state_disconnected
         WmConnectState.CONNECTING -> R.string.device_state_connecting
         WmConnectState.CONNECTED -> R.string.device_state_connected

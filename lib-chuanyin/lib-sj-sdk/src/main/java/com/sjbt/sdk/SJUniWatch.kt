@@ -204,7 +204,7 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(), Li
 
             override fun onClassicBtDisabled() {
                 wmLog.logD(TAG, "onClassicBtDisabled")
-                btStateChange(WmConnectState.BT_DISABLE)
+                btStateChange(WmConnectState.DISCONNECTED)
                 btDisconnectSet()
 
 //                removeCallBackRunner(mConnectTimeoutRunner)
@@ -244,10 +244,6 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(), Li
 //                }
             }
         })
-
-        if (mBtAdapter.isEnabled) {
-            btStateChange(WmConnectState.BT_DISABLE)
-        }
 
         rxBleClient = RxBleClient.create(mContext)
         RxBleClient.updateLogOptions(
@@ -808,7 +804,6 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(), Li
         mBtAdapter?.takeIf { !it.isEnabled }?.let {
             mBtEngine.clearMsgQueue()
             mBtEngine.clearStateMap()
-            btStateChange(WmConnectState.BT_DISABLE)
             disconnect()
         }
 
@@ -1562,11 +1557,6 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(), Li
         if (wmDevice.isRecognized) {
             wmLog.logD(TAG, " connect:${address}")
             try {
-                if (!mBtAdapter.isEnabled) {
-                    observeConnectState?.onNext(WmConnectState.BT_DISABLE)
-                    return wmDevice
-                }
-
                 observeConnectState?.onNext(WmConnectState.CONNECTING)
                 mCurrDevice = mBtAdapter.getRemoteDevice(address)
                 mBtEngine.connect(mCurrDevice)
@@ -1600,11 +1590,6 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(), Li
             }
 
             if (wmDevice.isRecognized) {
-
-                if (!mBtAdapter.isEnabled) {
-                    observeConnectState?.onNext(WmConnectState.BT_DISABLE)
-                    return wmDevice
-                }
 
                 wmLog.logE(TAG, "sdk pre connect:${wmDevice}")
                 observeConnectState?.onNext(WmConnectState.CONNECTING)
