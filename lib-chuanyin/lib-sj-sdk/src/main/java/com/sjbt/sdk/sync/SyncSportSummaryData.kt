@@ -63,6 +63,7 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
     override fun syncData(startTime: Long): Single<WmSyncData<WmSportSummaryData>> {
         mStartTime = startTime
         tenSecondsRequestIndex = 0
+        wmSyncData = null
         return Single.create { emitter ->
             syncSportSummaryObserveEmitter = emitter
             msgList.clear()
@@ -239,7 +240,7 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
             WmSyncData(
                 WmSyncDataType.SPORT_SUMMARY,
                 realTimeStamp,
-                WmIntervalType.FIVE_MINUTES,
+                WmIntervalType.TEN_SECONDS,
                 activitySportSummaryList
             )
 
@@ -301,121 +302,129 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
             }
 
             override fun onComplete() {
-                sjUniWatch.wmLog.logE(TAG, "ten seconds back msg:$urn msg size:" + msgList.size)
+                try {
 
-                if (msgList.size > 0) {
 
-                    var bufferSize = 0
-                    msgList.forEachIndexed { index, it ->
-                        if (it.divideType == DIVIDE_Y_F_2) {
-                            bufferSize += it.payloadLen - 17
-                        } else {
-                            bufferSize += it.payloadLen
+                    sjUniWatch.wmLog.logE(TAG, "ten seconds back msg:$urn msg size:" + msgList.size)
+
+                    if (msgList.size > 0) {
+
+                        var bufferSize = 0
+                        msgList.forEachIndexed { index, it ->
+                            if (it.divideType == DIVIDE_Y_F_2) {
+                                bufferSize += it.payloadLen - 17
+                            } else {
+                                bufferSize += it.payloadLen
+                            }
                         }
-                    }
 
-                    sjUniWatch.wmLog.logE(TAG, "urn：$urn buffer size:$bufferSize")
+                        sjUniWatch.wmLog.logE(TAG, "urn：$urn buffer size:$bufferSize")
 
-                    byteBufferSyncData =
-                        ByteBuffer.allocate(bufferSize).order(ByteOrder.LITTLE_ENDIAN)
+                        byteBufferSyncData =
+                            ByteBuffer.allocate(bufferSize).order(ByteOrder.LITTLE_ENDIAN)
 
-                    msgList.forEachIndexed { index, it ->
+                        msgList.forEachIndexed { index, it ->
 
-                        if (it.divideType == DIVIDE_Y_F_2 && index == 0) {
-                            sjUniWatch.wmLog.logE(
-                                TAG,
-                                "sport summary payload urn$urn f0:" + BtUtils.bytesToHexString(
+                            if (it.divideType == DIVIDE_Y_F_2 && index == 0) {
+                                sjUniWatch.wmLog.logE(
+                                    TAG,
+                                    "sport summary payload urn$urn f0:" + BtUtils.bytesToHexString(
+                                        it.payload.copyOfRange(
+                                            17,
+                                            it.payload.size
+                                        )
+                                    )
+                                )
+                                byteBufferSyncData.put(
                                     it.payload.copyOfRange(
                                         17,
                                         it.payload.size
                                     )
                                 )
-                            )
-                            byteBufferSyncData.put(
-                                it.payload.copyOfRange(
-                                    17,
-                                    it.payload.size
+                            } else if (it.divideType == DIVIDE_Y_F_2 && index != 0) {
+                                sjUniWatch.wmLog.logE(
+                                    TAG,
+                                    "sport summary payload urn$urn f1:" + BtUtils.bytesToHexString(
+                                        it.payload.copyOfRange(
+                                            28,
+                                            it.payload.size
+                                        )
+                                    )
                                 )
-                            )
-                        } else if (it.divideType == DIVIDE_Y_F_2 && index != 0) {
-                            sjUniWatch.wmLog.logE(
-                                TAG,
-                                "sport summary payload urn$urn f1:" + BtUtils.bytesToHexString(
+                                byteBufferSyncData.put(
                                     it.payload.copyOfRange(
                                         28,
                                         it.payload.size
                                     )
                                 )
-                            )
-                            byteBufferSyncData.put(
-                                it.payload.copyOfRange(
-                                    28,
-                                    it.payload.size
+                            } else {
+                                sjUniWatch.wmLog.logE(
+                                    TAG,
+                                    "sport summary payload urn$urn fn:" + BtUtils.bytesToHexString(
+                                        it.payload
+                                    )
                                 )
-                            )
+                                byteBufferSyncData.put(it.payload)
+                            }
+                        }
+
+                        parseTenSecondsData(urn)
+
+                        tenSecondsRequestIndex++
+
+                        sjUniWatch.wmLog.logE(TAG, "tenSecondsRequestIndex：$tenSecondsRequestIndex")
+
+                        if (tenSecondsRequestIndex < mTenUrnArray.size) {
+                            syncTenSecondsData(mTenUrnArray[tenSecondsRequestIndex])
                         } else {
-                            sjUniWatch.wmLog.logE(
-                                TAG,
-                                "sport summary payload urn$urn fn:" + BtUtils.bytesToHexString(it.payload)
-                            )
-                            byteBufferSyncData.put(it.payload)
-                        }
-                    }
+                            wmSyncData?.value?.forEach {
 
-                    parseTenSecondsData(urn)
+                                val rateTimeStampList =
+                                    tenSecondsRealtimeRateMap.getBetween(it.startTime, it.endTime)
+                                val distanceTimeStampList =
+                                    tenSecondsDistanceMap.getBetween(it.startTime, it.endTime)
+                                val caloriesTimeStampList =
+                                    tenSecondsCaloriesMap.getBetween(it.startTime, it.endTime)
 
-                    tenSecondsRequestIndex++
+                                val stepFrequencyTimeStampList =
+                                    tenSecondsStepFrequencyMap.getBetween(it.startTime, it.endTime)
 
-                    sjUniWatch.wmLog.logE(TAG, "tenSecondsRequestIndex：$tenSecondsRequestIndex")
+                                val heartRateList = mutableListOf<WmRealtimeRateData>()
+                                val distanceList = mutableListOf<WmDistanceData>()
+                                val caloriesList = mutableListOf<WmCaloriesData>()
+                                val stepFrequencyList = mutableListOf<WmStepFrequencyData>()
 
-                    if (tenSecondsRequestIndex < mTenUrnArray.size) {
-                        syncTenSecondsData(mTenUrnArray[tenSecondsRequestIndex])
-                    } else {
-                        wmSyncData?.value?.forEach {
+                                rateTimeStampList.forEach { timeData ->
+                                    heartRateList.add(timeData.data as WmRealtimeRateData)
+                                }
 
-                            val rateTimeStampList =
-                                tenSecondsRealtimeRateMap.getBetween(it.startTime, it.endTime)
-                            val distanceTimeStampList =
-                                tenSecondsDistanceMap.getBetween(it.startTime, it.endTime)
-                            val caloriesTimeStampList =
-                                tenSecondsCaloriesMap.getBetween(it.startTime, it.endTime)
+                                distanceTimeStampList.forEach { timeData ->
+                                    distanceList.add(timeData.data as WmDistanceData)
+                                }
 
-                            val stepFrequencyTimeStampList =
-                                tenSecondsStepFrequencyMap.getBetween(it.startTime, it.endTime)
+                                caloriesTimeStampList.forEach { timeData ->
+                                    caloriesList.add(timeData.data as WmCaloriesData)
+                                }
 
-                            val heartRateList = mutableListOf<WmRealtimeRateData>()
-                            val distanceList = mutableListOf<WmDistanceData>()
-                            val caloriesList = mutableListOf<WmCaloriesData>()
-                            val stepFrequencyList = mutableListOf<WmStepFrequencyData>()
+                                stepFrequencyTimeStampList.forEach { timeData ->
+                                    stepFrequencyList.add(timeData.data as WmStepFrequencyData)
+                                }
 
-                            rateTimeStampList.forEach { timeData ->
-                                heartRateList.add(timeData.data as WmRealtimeRateData)
+                                it.tenSecondsHeartRate = heartRateList
+                                it.tenSecondsCaloriesData = caloriesList
+                                it.tenSecondsDistanceData = distanceList
+                                it.tenSecondsStepFrequencyData = stepFrequencyList
                             }
 
-                            distanceTimeStampList.forEach { timeData ->
-                                distanceList.add(timeData.data as WmDistanceData)
-                            }
-
-                            caloriesTimeStampList.forEach { timeData ->
-                                caloriesList.add(timeData.data as WmCaloriesData)
-                            }
-
-                            stepFrequencyTimeStampList.forEach { timeData ->
-                                stepFrequencyList.add(timeData.data as WmStepFrequencyData)
-                            }
-
-                            it.tenSecondsHeartRate = heartRateList
-                            it.tenSecondsCaloriesData = caloriesList
-                            it.tenSecondsDistanceData = distanceList
-                            it.tenSecondsStepFrequencyData = stepFrequencyList
+                            syncSportSummaryObserveEmitter?.onSuccess(wmSyncData)
                         }
 
+                        sjUniWatch.wmLog.logD(TAG, "final data wmSyncData：$wmSyncData")
 
-                        syncSportSummaryObserveEmitter?.onSuccess(wmSyncData)
                     }
-
-                    sjUniWatch.wmLog.logD(TAG, "final data wmSyncData：$wmSyncData")
-
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    syncSportSummaryObserveEmitter?.onError(e)
                 }
             }
         })
@@ -555,7 +564,7 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
                     WmSyncData(
                         WmSyncDataType.STEP,
                         0,
-                        WmIntervalType.ONE_HOUR,
+                        WmIntervalType.TEN_SECONDS,
                         mutableListOf<WmSportSummaryData>()
                     )
             }
@@ -578,7 +587,7 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
                         WmSyncData(
                             WmSyncDataType.STEP,
                             0,
-                            WmIntervalType.ONE_HOUR,
+                            WmIntervalType.TEN_SECONDS,
                             mutableListOf<WmSportSummaryData>()
                         )
                 }
@@ -601,7 +610,7 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
                         WmSyncData(
                             WmSyncDataType.STEP,
                             0,
-                            WmIntervalType.ONE_HOUR,
+                            WmIntervalType.TEN_SECONDS,
                             mutableListOf<WmSportSummaryData>()
                         )
                 }
@@ -624,7 +633,7 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
                         WmSyncData(
                             WmSyncDataType.STEP,
                             0,
-                            WmIntervalType.ONE_HOUR,
+                            WmIntervalType.TEN_SECONDS,
                             mutableListOf<WmSportSummaryData>()
                         )
                 }
@@ -647,7 +656,7 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
                         WmSyncData(
                             WmSyncDataType.STEP,
                             0,
-                            WmIntervalType.ONE_HOUR,
+                            WmIntervalType.TEN_SECONDS,
                             mutableListOf<WmSportSummaryData>()
                         )
                 }
