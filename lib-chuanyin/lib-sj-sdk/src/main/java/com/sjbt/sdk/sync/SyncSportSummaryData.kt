@@ -268,7 +268,7 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
             }
 
             URN_SPORT_10S_STEP_FREQUENCY -> {
-                tenSecondsRealtimeRateMap.clearMap()
+                tenSecondsStepFrequencyMap.clearMap()
             }
 
             URN_SPORT_10S_DISTANCE -> {
