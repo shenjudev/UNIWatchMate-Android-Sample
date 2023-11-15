@@ -24,7 +24,9 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
 
     private var wmSyncData: WmSyncData<WmSportSummaryData>? = null
     private val TAG = "SyncSportSummaryData"
-    private val msgList = mutableSetOf<MsgBean>()
+    private val msgListSummary = mutableSetOf<MsgBean>()
+
+    //    private val msgListTenSeconds = mutableSetOf<MsgBean>()
     private var hasNext: Boolean = false
     private lateinit var byteBufferSummarySyncData: ByteBuffer
 
@@ -41,14 +43,14 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
     var tenSecondsRealTimeStamp = 0L
     var tenSecondsDataIndex = 0
 
-    private val mTenUrnArray: ByteArray = byteArrayOf(
-        URN_SPORT_10S_RATE,
-//        URN_SPORT_10S_STEP_FREQUENCY,
+//    private val mTenUrnArray: ByteArray = byteArrayOf(
+//        URN_SPORT_10S_RATE,
 //        URN_SPORT_10S_DISTANCE,
-//        URN_SPORT_10S_CALORIES
-    )
+////        URN_SPORT_10S_STEP_FREQUENCY,
+////        URN_SPORT_10S_CALORIES
+//    )
 
-    private var tenSecondsRequestIndex = 0
+//    private var tenSecondsRequestIndex = 0
 
     override fun latestSyncTime(): Long {
         return lastSyncTime
@@ -67,11 +69,11 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
 
     override fun syncData(startTime: Long): Single<WmSyncData<WmSportSummaryData>> {
         mStartTime = startTime
-        tenSecondsRequestIndex = 0
+//        tenSecondsRequestIndex = 0
         wmSyncData = null
         return Single.create { emitter ->
             syncSportSummaryObserveEmitter = emitter
-            msgList.clear()
+            msgListSummary.clear()
             sjUniWatch.sendReadSubPkObserveNode(
                 this@SyncSportSummaryData,
                 CmdHelper.getReadSportSyncData(
@@ -86,26 +88,26 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
 
                 override fun onNext(t: MsgBean) {
                     sjUniWatch.wmLog.logE(TAG, "sport summary back msg:$t")
-                    msgList.add(t)
+                    msgListSummary.add(t)
                 }
 
                 override fun onError(e: Throwable) {
                 }
 
                 override fun onComplete() {
-                    sjUniWatch.wmLog.logE(TAG, "back msg:" + msgList.size)
+                    sjUniWatch.wmLog.logE(TAG, "summary back msg:" + msgListSummary.size)
 
-                    if (msgList.size > 0) {
+                    if (msgListSummary.size > 0) {
 
                         var bufferSize = 0
-                        msgList.forEach {
+                        msgListSummary.forEach {
                             bufferSize += it.payloadLen
                         }
 
                         byteBufferSummarySyncData =
                             ByteBuffer.allocate(bufferSize).order(ByteOrder.LITTLE_ENDIAN)
 
-                        msgList.forEachIndexed { index, it ->
+                        msgListSummary.forEachIndexed { index, it ->
                             sjUniWatch.wmLog.logE(
                                 TAG,
                                 "sport summary data:" + BtUtils.bytesToHexString(it.originData)
@@ -126,7 +128,7 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
                         parseSportSummaryData()
                     }
 
-                    sjUniWatch.wmLog.logE(TAG,"MsgList iterator time onComplete")
+                    sjUniWatch.wmLog.logE(TAG, "MsgList iterator time onComplete")
 
                 }
             })
@@ -265,13 +267,12 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
                 sjUniWatch.wmLog.logD(TAG, "activity detail info:$it")
             }
 
-            syncTenSecondsData(mTenUrnArray[tenSecondsRequestIndex])
-            tenSecondsRequestIndex++
+            syncTenSecondsData(URN_SPORT_10S_RATE)
         }
     }
 
     private fun syncTenSecondsData(urn: Byte) {
-        msgList.clear()
+//        msgListTenSeconds.clear()
 
         when (urn) {
             URN_SPORT_10S_RATE -> {
@@ -303,151 +304,148 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
             override fun onSubscribe(d: Disposable) {
             }
 
-            override fun onNext(t: MsgBean) {
+            override fun onNext(it: MsgBean) {
                 sjUniWatch.wmLog.logE(TAG, "ten seconds back msg:$urn")
-                msgList.add(t)
-            }
 
-            override fun onError(e: Throwable) {
-            }
-
-            override fun onComplete() {
                 try {
+                    if (it.divideType == DIVIDE_Y_F_2) {
 
-                    sjUniWatch.wmLog.logE(TAG, "ten seconds back msg:$urn msg size:" + msgList.size)
+                        val f0 = it.payload.copyOfRange(
+                            17,
+                            it.payload.size
+                        )
 
-                    if (msgList.size > 0) {
+                        sjUniWatch.wmLog.logE(
+                            TAG,
+                            "sport summary payload urn$urn size:${f0.size} f0: ${
+                                BtUtils.bytesToHexString(f0)
+                            }"
+                        )
 
-                        msgList.forEachIndexed { index, it ->
+                        val byteBuffer = ByteBuffer.wrap(f0).order(ByteOrder.LITTLE_ENDIAN)
 
-                            if (it.divideType == DIVIDE_Y_F_2) {
+                        sjUniWatch.wmLog.logE(
+                            TAG,
+                            "++++++++++++++++++++++++++++++++++++++++++带头业务数据解析开始 - onComplete +++++++++++++++++++++++++++"
+                        )
 
-                                val f0 = it.payload.copyOfRange(
-                                    17,
-                                    it.payload.size
-                                )
-
-                                sjUniWatch.wmLog.logE(
-                                    TAG,
-                                    "sport summary payload urn$urn size:${f0.size} f0: ${
-                                        BtUtils.bytesToHexString(f0)
-                                    }"
-                                )
-
-                                val byteBuffer = ByteBuffer.wrap(f0).order(ByteOrder.LITTLE_ENDIAN)
-
-                                sjUniWatch.wmLog.logE(
-                                    TAG,
-                                    "++++++++++++++++++++++++++++++++++++++++++带头业务数据解析开始 - onComplete +++++++++++++++++++++++++++"
-                                )
-
-                                parseTenSecondsDataWithHead(byteBuffer, urn)
-
-                            } else {
-
-                                val fn = it.payload
-
-                                sjUniWatch.wmLog.logE(
-                                    TAG,
-                                    "sport summary payload urn$urn size:${fn.size} fn: ${
-                                        BtUtils.bytesToHexString(fn)
-                                    }"
-                                )
-
-                                val byteBuffer = ByteBuffer.wrap(fn).order(ByteOrder.LITTLE_ENDIAN)
-
-                                parseTenSecondsDataNoHead(byteBuffer, urn)
-
-                            }
-                        }
-
-                        tenSecondsRequestIndex++
-
-                        tenSecondsDataBackBusiness()
+                        parseTenSecondsDataWithHead(byteBuffer, urn)
 
                     } else {
-                        defaultBackData()
-                    }
 
+                        val fn = it.payload
+
+                        sjUniWatch.wmLog.logE(
+                            TAG,
+                            "sport summary payload urn$urn size:${fn.size} fn: ${
+                                BtUtils.bytesToHexString(fn)
+                            }"
+                        )
+
+                        val byteBuffer = ByteBuffer.wrap(fn).order(ByteOrder.LITTLE_ENDIAN)
+
+                        parseTenSecondsDataNoHead(byteBuffer, urn)
+
+                    }
                 } catch (e: Exception) {
                     e.printStackTrace()
                     syncSportSummaryObserveEmitter?.onError(e)
                 }
             }
+
+            override fun onError(e: Throwable) {
+
+            }
+
+            override fun onComplete() {
+
+                when (urn) {
+                    URN_SPORT_10S_RATE -> {
+                        syncTenSecondsData(URN_SPORT_10S_DISTANCE)
+                    }
+
+                    URN_SPORT_10S_DISTANCE -> {
+                        syncTenSecondsData(URN_SPORT_10S_CALORIES)
+                    }
+
+                    URN_SPORT_10S_CALORIES -> {
+                        syncTenSecondsData(URN_SPORT_10S_STEP_FREQUENCY)
+                    }
+
+                    URN_SPORT_10S_STEP_FREQUENCY -> {
+                        tenSecondAllComplete()
+                    }
+                }
+
+            }
         })
     }
 
-    private fun tenSecondsDataBackBusiness() {
-        sjUniWatch.wmLog.logE(
-            TAG,
-            " ++++++++++++++++++++++带头业务数据解析结束+++++++++++++++tenSecondsRequestIndex：$tenSecondsRequestIndex ++++++++++++++++++++++++++++"
-        )
+    private fun tenSecondAllComplete() {
+        wmSyncData?.value?.forEach {
 
-        if (tenSecondsRequestIndex < mTenUrnArray.size) {
-            syncTenSecondsData(mTenUrnArray[tenSecondsRequestIndex])
-        } else {
-            wmSyncData?.value?.forEach {
+            sjUniWatch.wmLog.logE(
+                TAG,
+                "search sport startTime:${it.startTime} endTime：${it.endTime}"
+            )
 
-                sjUniWatch.wmLog.logE(TAG,"search sport startTime:${it.startTime} endTime：${it.endTime}")
+            val rateTimeStampList =
+                tenSecondsRealtimeRateMap.getBetween(it.startTime, it.endTime)
+            val distanceTimeStampList =
+                tenSecondsDistanceMap.getBetween(it.startTime, it.endTime)
+            val caloriesTimeStampList =
+                tenSecondsCaloriesMap.getBetween(it.startTime, it.endTime)
+            val stepFrequencyTimeStampList =
+                tenSecondsStepFrequencyMap.getBetween(it.startTime, it.endTime)
 
-                val rateTimeStampList =
-                    tenSecondsRealtimeRateMap.getBetween(it.startTime, it.endTime)
-                val distanceTimeStampList =
-                    tenSecondsDistanceMap.getBetween(it.startTime, it.endTime)
-                val caloriesTimeStampList =
-                    tenSecondsCaloriesMap.getBetween(it.startTime, it.endTime)
-                val stepFrequencyTimeStampList =
-                    tenSecondsStepFrequencyMap.getBetween(it.startTime, it.endTime)
+            sjUniWatch.wmLog.logE(
+                TAG,
+                "ten seconds rate size2: ${tenSecondsRealtimeRateMap.size()}"
+            )
 
-                sjUniWatch.wmLog.logE(
-                    TAG,
-                    "ten seconds rate size2: ${tenSecondsRealtimeRateMap.size()}"
-                )
+            sjUniWatch.wmLog.logE(
+                TAG,
+                "ten seconds distance size2: ${tenSecondsDistanceMap.size()}"
+            )
 
-                sjUniWatch.wmLog.logE(
-                    TAG,
-                    "ten seconds distance size2: ${tenSecondsDistanceMap.size()}"
-                )
+            sjUniWatch.wmLog.logE(
+                TAG,
+                "ten seconds calories size2: ${tenSecondsCaloriesMap.size()}"
+            )
 
-                sjUniWatch.wmLog.logE(
-                    TAG,
-                    "ten seconds calories size2: ${tenSecondsCaloriesMap.size()}"
-                )
+            sjUniWatch.wmLog.logE(
+                TAG,
+                "ten seconds frequency size2: ${tenSecondsStepFrequencyMap.size()}"
+            )
 
-                sjUniWatch.wmLog.logE(
-                    TAG,
-                    "ten seconds frequency size2: ${tenSecondsStepFrequencyMap.size()}"
-                )
+            val heartRateList = mutableListOf<WmRealtimeRateData>()
+            val distanceList = mutableListOf<WmDistanceData>()
+            val caloriesList = mutableListOf<WmCaloriesData>()
+            val stepFrequencyList = mutableListOf<WmStepFrequencyData>()
 
-                val heartRateList = mutableListOf<WmRealtimeRateData>()
-                val distanceList = mutableListOf<WmDistanceData>()
-                val caloriesList = mutableListOf<WmCaloriesData>()
-                val stepFrequencyList = mutableListOf<WmStepFrequencyData>()
-
-                rateTimeStampList.forEach { timeData ->
-                    heartRateList.add(timeData.data as WmRealtimeRateData)
-                }
-
-                distanceTimeStampList.forEach { timeData ->
-                    distanceList.add(timeData.data as WmDistanceData)
-                }
-
-                caloriesTimeStampList.forEach { timeData ->
-                    caloriesList.add(timeData.data as WmCaloriesData)
-                }
-
-                stepFrequencyTimeStampList.forEach { timeData ->
-                    stepFrequencyList.add(timeData.data as WmStepFrequencyData)
-                }
-
-                it.tenSecondsHeartRate = heartRateList
-                it.tenSecondsCaloriesData = caloriesList
-                it.tenSecondsDistanceData = distanceList
-                it.tenSecondsStepFrequencyData = stepFrequencyList
+            rateTimeStampList.forEach { timeData ->
+                heartRateList.add(timeData.data as WmRealtimeRateData)
             }
 
-            syncSportSummaryObserveEmitter?.onSuccess(wmSyncData)
+            distanceTimeStampList.forEach { timeData ->
+                distanceList.add(timeData.data as WmDistanceData)
+            }
+
+            caloriesTimeStampList.forEach { timeData ->
+                caloriesList.add(timeData.data as WmCaloriesData)
+            }
+
+            stepFrequencyTimeStampList.forEach { timeData ->
+                stepFrequencyList.add(timeData.data as WmStepFrequencyData)
+            }
+
+            it.tenSecondsHeartRate = heartRateList
+            it.tenSecondsCaloriesData = caloriesList
+            it.tenSecondsDistanceData = distanceList
+            it.tenSecondsStepFrequencyData = stepFrequencyList
         }
+
+        syncSportSummaryObserveEmitter?.onSuccess(wmSyncData)
 
         sjUniWatch.wmLog.logD(TAG, "final data wmSyncData：$wmSyncData")
     }
@@ -486,14 +484,14 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
 
         parseTenSecondsDataNoHead(byteBuffer, urn)
 
-        tenSecondsDataBackBusiness()
     }
 
     private fun parseTenSecondsDataNoHead(byteBuffer: ByteBuffer, urn: Byte) {
 
         while (byteBuffer.hasRemaining()) {
 
-            tenSecondsRealTimeStamp = tenSecondsStartTimeStamp + tenSecondsDataIndex * SYNC_DATA_INTERVAL_TEN_SECONDS
+            tenSecondsRealTimeStamp =
+                tenSecondsStartTimeStamp + tenSecondsDataIndex * SYNC_DATA_INTERVAL_TEN_SECONDS
 
             sjUniWatch.wmLog.logE(
                 TAG,
@@ -595,7 +593,7 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
 //                tenSecondsRequestIndex++
 //                syncTenSecondsData(mTenUrnArray[tenSecondsRequestIndex])
 //            } else {
-                defaultBackData()
+            defaultBackData()
 //            }
         }
     }
@@ -617,7 +615,7 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
 //                tenSecondsRequestIndex++
 //                syncTenSecondsData(mTenUrnArray[tenSecondsRequestIndex])
 //            } else {
-                defaultBackData()
+            defaultBackData()
 //            }
         }
     }
@@ -639,7 +637,7 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
 //                tenSecondsRequestIndex++
 //                syncTenSecondsData(mTenUrnArray[tenSecondsRequestIndex])
 //            } else {
-                defaultBackData()
+            defaultBackData()
 //            }
         }
     }
@@ -661,7 +659,7 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
 //                tenSecondsRequestIndex++
 //                syncTenSecondsData(mTenUrnArray[tenSecondsRequestIndex])
 //            } else {
-                defaultBackData()
+            defaultBackData()
 //            }
         }
     }
