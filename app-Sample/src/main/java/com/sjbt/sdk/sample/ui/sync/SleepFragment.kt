@@ -43,7 +43,7 @@ class SleepFragment : DataListFragment<WmSleepItem>() {
                     WmSleepItem.STATUS_SOBER -> context.getString(R.string.awake_sleep)
                     else -> context.getString(R.string.awake_sleep)
                 }
-                return statusText + "    " + timeFormat.format(start!!.time+obj.duration*1000) + " ->  ${obj.duration}"
+                return statusText + "    " + timeFormat.format(start!!.time+obj.duration*1000) + " duration->  ${obj.duration}s"
             }
         }
 
@@ -71,8 +71,8 @@ class SleepFragment : DataListFragment<WmSleepItem>() {
             withContext(Dispatchers.Main) {
                 tvDeepSleep.text = FormatterUtil.second2Hmm(duration[0])
                 tvLightSleep.text = FormatterUtil.second2Hmm(duration[1])
-                tvAwakeSleep.text = FormatterUtil.second2Hmm(duration[2])
-                tvRem.text = FormatterUtil.second2Hmm(duration[3])
+                tvRem.text = FormatterUtil.second2Hmm(duration[2])
+                tvAwakeSleep.text = FormatterUtil.second2Hmm(duration[3])
             }
             sleepItemDatas
         }
