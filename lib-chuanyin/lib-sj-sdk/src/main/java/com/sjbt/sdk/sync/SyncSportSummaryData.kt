@@ -31,7 +31,6 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
     private lateinit var byteBufferSummarySyncData: ByteBuffer
 
     private var mStartTime: Long = 0
-    private var mEndTime: Long = System.currentTimeMillis()
 
     private val tenSecondsRealtimeRateMap = TimestampedMap()
     private val tenSecondsDistanceMap = TimestampedMap()
@@ -118,9 +117,6 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
 
                         parseSportSummaryData()
                     }
-
-                    sjUniWatch.wmLog.logE(TAG, "MsgList iterator time onComplete")
-
                 }
             })
         }
@@ -287,7 +283,7 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
             this,
             CmdHelper.getReadSportSyncData(
                 mStartTime,
-                mEndTime,
+                0,
                 childUrn = urn
             )
         ).subscribe(object :
