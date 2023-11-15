@@ -60,9 +60,10 @@ class SportFragment : DataListFragment<WmSportSummaryData>(),
         val start: Date = DateTimeUtils.getDayStartTime(calendar, date)
         val end: Date = DateTimeUtils.getDayEndTime(calendar, date)
         val result = runBlocking {
-            UNIWatchMate.wmSync.syncSportSummaryData.syncData(start.time).await()
+//            viewModel.requestSports(date)
+            UNIWatchMate.wmSync.syncSportSummaryData.syncData(start.time).await().value
         }
-        return result.value
+        return result
     }
 
     //TODO Only part game types are listed here.
@@ -90,7 +91,7 @@ class SportFragment : DataListFragment<WmSportSummaryData>(),
 }
 
 data class SportsState(
-    val requestSports: Async<ArrayList<WmSportSummaryData>> = Uninitialized,
+    val getports: Async<ArrayList<WmSportSummaryData>> = Uninitialized,
 )
 
 sealed class SportsEvent {
@@ -102,18 +103,21 @@ class SportLibraryViewModel(
 ) : StateEventViewModel<SportsState, SportsEvent>(SportsState()) {
 
     val calendar = Calendar.getInstance()
-    suspend fun requestSports(date: Date) {
-        val start: Date = DateTimeUtils.getDayStartTime(calendar, date)
-        state.copy(requestSports = Loading()).newState()
-        applicationScope.launch {
-            runCatchingWithLog {
-                UNIWatchMate.wmSync.syncSportSummaryData.syncData(start.time).await().value
-            }.onSuccess {
-                state.copy(requestSports = Success(ArrayList(it))).newState()
-            }.onFailure {
-                state.copy(requestSports = Fail(it)).newState()
-                SportsEvent.RequestFail(it).newEvent()
-            }
+    suspend fun requestSports(date: Date): ArrayList<WmSportSummaryData> {
+        if (state.getports() != null && !state.getports()!!.isEmpty()) {
+        } else {
+            val start: Date = DateTimeUtils.getDayStartTime(calendar, date)
+            val result =    UNIWatchMate.wmSync.syncSportSummaryData.syncData(start.time).await().value
+            state.copy(getports = Success(ArrayList(result))).newState()
+//            runCatchingWithLog {
+//
+//            }.onSuccess {
+//                state.copy(getports = Success(ArrayList(it))).newState()
+//            }.onFailure {
+//                SportsEvent.RequestFail(it).newEvent()
+//            }
         }
+
+        return state.getports() ?: arrayListOf()
     }
 }
