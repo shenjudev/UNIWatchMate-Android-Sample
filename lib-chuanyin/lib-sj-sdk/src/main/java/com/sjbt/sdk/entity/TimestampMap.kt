@@ -32,4 +32,9 @@ class TimestampedMap {
     fun size(): Int {
         return dataMap.size
     }
+
+    fun get(index: Int): WmBaseSyncData? {
+        val timeStamp = dataMap.keys.toList().get(index)
+        return dataMap[timeStamp]
+    }
 }
