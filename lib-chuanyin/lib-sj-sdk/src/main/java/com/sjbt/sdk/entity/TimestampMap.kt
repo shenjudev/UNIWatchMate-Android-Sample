@@ -1,11 +1,12 @@
 package com.sjbt.sdk.entity
 
 import com.base.sdk.entity.data.WmBaseSyncData
+import java.util.concurrent.ConcurrentHashMap
 
 class TimestampedData(val timestamp: Long, val data: WmBaseSyncData)
 
 class TimestampedMap {
-    private val dataMap = mutableMapOf<Long, WmBaseSyncData>()
+    private val dataMap = ConcurrentHashMap<Long, WmBaseSyncData>()
 
     fun put(timestampedData: TimestampedData) {
         dataMap[timestampedData.timestamp] = timestampedData.data

@@ -37,6 +37,7 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
     private val tenSecondsCaloriesMap = TimestampedMap()
 
     var tenSecondsTimeType = 0
+    var tenSecondsStartTimeStamp = 0L
     var tenSecondsRealTimeStamp = 0L
     var tenSecondsDataIndex = 0
 
@@ -124,6 +125,9 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
 
                         parseSportSummaryData()
                     }
+
+                    sjUniWatch.wmLog.logE(TAG,"MsgList iterator time onComplete")
+
                 }
             })
         }
@@ -262,6 +266,7 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
             }
 
             syncTenSecondsData(mTenUrnArray[tenSecondsRequestIndex])
+            tenSecondsRequestIndex++
         }
     }
 
@@ -331,6 +336,11 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
 
                                 val byteBuffer = ByteBuffer.wrap(f0).order(ByteOrder.LITTLE_ENDIAN)
 
+                                sjUniWatch.wmLog.logE(
+                                    TAG,
+                                    "++++++++++++++++++++++++++++++++++++++++++带头业务数据解析开始 - onComplete +++++++++++++++++++++++++++"
+                                )
+
                                 parseTenSecondsDataWithHead(byteBuffer, urn)
 
                             } else {
@@ -358,6 +368,7 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
                     } else {
                         defaultBackData()
                     }
+
                 } catch (e: Exception) {
                     e.printStackTrace()
                     syncSportSummaryObserveEmitter?.onError(e)
@@ -376,6 +387,8 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
             syncTenSecondsData(mTenUrnArray[tenSecondsRequestIndex])
         } else {
             wmSyncData?.value?.forEach {
+
+                sjUniWatch.wmLog.logE(TAG,"search sport startTime:${it.startTime} endTime：${it.endTime}")
 
                 val rateTimeStampList =
                     tenSecondsRealtimeRateMap.getBetween(it.startTime, it.endTime)
@@ -463,22 +476,24 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
         val calendar = Calendar.getInstance()
         calendar.set(baseYear, baseMon, baseDay, 0, 0, 0)
 
-        tenSecondsRealTimeStamp = calendar.timeInMillis + timestamp
+        tenSecondsStartTimeStamp = calendar.timeInMillis + timestamp
         tenSecondsDataIndex = 0
 
         sjUniWatch.wmLog.logE(
             TAG,
-            "++++++++++++++++++++++++++++++++++++++++++带头业务数据解析开始 tenSecondsRealTimeStamp:$tenSecondsRealTimeStamp +++++++++++++++++++++++++++"
+            "++++++++++++++++++++++++++++++++++++++++++开始带头业务数据解析开始 tenSecondsRealTimeStamp:$tenSecondsStartTimeStamp +++++++++++++++++++++++++++"
         )
 
         parseTenSecondsDataNoHead(byteBuffer, urn)
+
+        tenSecondsDataBackBusiness()
     }
 
     private fun parseTenSecondsDataNoHead(byteBuffer: ByteBuffer, urn: Byte) {
 
         while (byteBuffer.hasRemaining()) {
 
-            tenSecondsRealTimeStamp += tenSecondsDataIndex * SYNC_DATA_INTERVAL_TEN_SECONDS
+            tenSecondsRealTimeStamp = tenSecondsStartTimeStamp + tenSecondsDataIndex * SYNC_DATA_INTERVAL_TEN_SECONDS
 
             sjUniWatch.wmLog.logE(
                 TAG,
@@ -567,16 +582,21 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
         if (nodeData.dataFmt == DataFormat.FMT_BIN) {
             val byteBufferSyncDataDistance =
                 ByteBuffer.wrap(nodeData.data).order(ByteOrder.LITTLE_ENDIAN)
+
+            sjUniWatch.wmLog.logE(
+                TAG,
+                "++++++++++++++++++++++++++++++++++++++++++带头业务数据解析开始 - syncTenSecondsDistanceBusiness +++++++++++++++++++++++++++"
+            )
+
             parseTenSecondsDataWithHead(byteBufferSyncDataDistance, URN_SPORT_10S_DISTANCE)
 
-
         } else if (nodeData.dataFmt == DataFormat.FMT_ERRCODE || nodeData.dataFmt == DataFormat.FMT_NODATA) {
-            if (tenSecondsRequestIndex < mTenUrnArray.size) {
-                tenSecondsRequestIndex++
-                syncTenSecondsData(mTenUrnArray[tenSecondsRequestIndex])
-            } else {
+//            if (tenSecondsRequestIndex < mTenUrnArray.size) {
+//                tenSecondsRequestIndex++
+//                syncTenSecondsData(mTenUrnArray[tenSecondsRequestIndex])
+//            } else {
                 defaultBackData()
-            }
+//            }
         }
     }
 
@@ -584,14 +604,21 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
         if (nodeData.dataFmt == DataFormat.FMT_BIN) {
             val byteBufferSyncDataCalorie =
                 ByteBuffer.wrap(nodeData.data).order(ByteOrder.LITTLE_ENDIAN)
+
+            sjUniWatch.wmLog.logE(
+                TAG,
+                "++++++++++++++++++++++++++++++++++++++++++带头业务数据解析开始 - syncTenSecondsCaloriesBusiness +++++++++++++++++++++++++++"
+            )
+
             parseTenSecondsDataWithHead(byteBufferSyncDataCalorie, URN_SPORT_10S_CALORIES)
+
         } else if (nodeData.dataFmt == DataFormat.FMT_ERRCODE || nodeData.dataFmt == DataFormat.FMT_NODATA) {
-            if (tenSecondsRequestIndex < mTenUrnArray.size) {
-                tenSecondsRequestIndex++
-                syncTenSecondsData(mTenUrnArray[tenSecondsRequestIndex])
-            } else {
+//            if (tenSecondsRequestIndex < mTenUrnArray.size) {
+//                tenSecondsRequestIndex++
+//                syncTenSecondsData(mTenUrnArray[tenSecondsRequestIndex])
+//            } else {
                 defaultBackData()
-            }
+//            }
         }
     }
 
@@ -599,14 +626,21 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
         if (nodeData.dataFmt == DataFormat.FMT_BIN) {
             val byteBufferSyncDataRate =
                 ByteBuffer.wrap(nodeData.data).order(ByteOrder.LITTLE_ENDIAN)
+
+            sjUniWatch.wmLog.logE(
+                TAG,
+                "++++++++++++++++++++++++++++++++++++++++++带头业务数据解析开始 - syncTenSecondsRateBusiness +++++++++++++++++++++++++++"
+            )
+
             parseTenSecondsDataWithHead(byteBufferSyncDataRate, URN_SPORT_10S_RATE)
+
         } else if (nodeData.dataFmt == DataFormat.FMT_ERRCODE || nodeData.dataFmt == DataFormat.FMT_NODATA) {
-            if (tenSecondsRequestIndex < mTenUrnArray.size) {
-                tenSecondsRequestIndex++
-                syncTenSecondsData(mTenUrnArray[tenSecondsRequestIndex])
-            } else {
+//            if (tenSecondsRequestIndex < mTenUrnArray.size) {
+//                tenSecondsRequestIndex++
+//                syncTenSecondsData(mTenUrnArray[tenSecondsRequestIndex])
+//            } else {
                 defaultBackData()
-            }
+//            }
         }
     }
 
@@ -614,14 +648,21 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
         if (nodeData.dataFmt == DataFormat.FMT_BIN) {
             val byteBufferSyncDataFrequency =
                 ByteBuffer.wrap(nodeData.data).order(ByteOrder.LITTLE_ENDIAN)
+
+            sjUniWatch.wmLog.logE(
+                TAG,
+                "++++++++++++++++++++++++++++++++++++++++++带头业务数据解析开始 - syncTenSecondsStepFrequencyBusiness +++++++++++++++++++++++++++"
+            )
+
             parseTenSecondsDataWithHead(byteBufferSyncDataFrequency, URN_SPORT_10S_STEP_FREQUENCY)
+
         } else if (nodeData.dataFmt == DataFormat.FMT_ERRCODE || nodeData.dataFmt == DataFormat.FMT_NODATA) {
-            if (tenSecondsRequestIndex < mTenUrnArray.size) {
-                tenSecondsRequestIndex++
-                syncTenSecondsData(mTenUrnArray[tenSecondsRequestIndex])
-            } else {
+//            if (tenSecondsRequestIndex < mTenUrnArray.size) {
+//                tenSecondsRequestIndex++
+//                syncTenSecondsData(mTenUrnArray[tenSecondsRequestIndex])
+//            } else {
                 defaultBackData()
-            }
+//            }
         }
     }
 
