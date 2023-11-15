@@ -1,12 +1,12 @@
 package com.sjbt.sdk.entity
 
 import com.base.sdk.entity.data.WmBaseSyncData
-import java.util.concurrent.ConcurrentHashMap
+import java.util.TreeMap
 
 class TimestampedData(val timestamp: Long, val data: WmBaseSyncData)
 
 class TimestampedMap {
-    private val dataMap = ConcurrentHashMap<Long, WmBaseSyncData>()
+    private val dataMap = TreeMap<Long, WmBaseSyncData>()
 
     fun put(timestampedData: TimestampedData) {
         dataMap[timestampedData.timestamp] = timestampedData.data
@@ -35,7 +35,7 @@ class TimestampedMap {
     }
 
     fun get(index: Int): WmBaseSyncData? {
-        val timeStamp = dataMap.keys.toList().get(index)
+        val timeStamp = dataMap.keys.toList()[index]
         return dataMap[timeStamp]
     }
 }
