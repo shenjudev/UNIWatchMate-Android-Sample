@@ -24,7 +24,7 @@ class SleepFragment : DataListFragment<WmSleepItem>() {
     private lateinit var tvLightSleep: TextView
     private lateinit var tvAwakeSleep: TextView
     private lateinit var tvRem: TextView
-
+    private var start: Date?=null
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         tvDeepSleep = view.findViewById(R.id.tv_deep_sleep)
         tvLightSleep = view.findViewById(R.id.tv_light_sleep)
@@ -43,16 +43,16 @@ class SleepFragment : DataListFragment<WmSleepItem>() {
                     WmSleepItem.STATUS_SOBER -> context.getString(R.string.awake_sleep)
                     else -> context.getString(R.string.awake_sleep)
                 }
-                return statusText + "    " + timeFormat.format(obj.duration) + " ->  ${obj.duration}"
+                return statusText + "    " + timeFormat.format(start!!.time+obj.duration*1000) + " ->  ${obj.duration}"
             }
         }
 
     override fun queryData(date: Date): List<WmSleepItem>? {
         return runBlocking {
             val calendar = Calendar.getInstance()
-            val start: Date = DateTimeUtils.getDayStartTime(calendar, date)
+            start = DateTimeUtils.getDayStartTime(calendar, date)
             val end: Date = DateTimeUtils.getDayEndTime(calendar, date)
-            val data = UNIWatchMate.wmSync.syncSleepData.syncData(start.time).await().value
+            val data = UNIWatchMate.wmSync.syncSleepData.syncData(start!!.time).await().value
 
             val sleepItemDatas = mutableListOf<WmSleepItem>()
             val duration = IntArray(4)
