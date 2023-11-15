@@ -43,15 +43,6 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
     var tenSecondsRealTimeStamp = 0L
     var tenSecondsDataIndex = 0
 
-//    private val mTenUrnArray: ByteArray = byteArrayOf(
-//        URN_SPORT_10S_RATE,
-//        URN_SPORT_10S_DISTANCE,
-////        URN_SPORT_10S_STEP_FREQUENCY,
-////        URN_SPORT_10S_CALORIES
-//    )
-
-//    private var tenSecondsRequestIndex = 0
-
     override fun latestSyncTime(): Long {
         return lastSyncTime
     }
@@ -310,39 +301,21 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
                 try {
                     if (it.divideType == DIVIDE_Y_F_2) {
 
-                        val f0 = it.payload.copyOfRange(
+                        val byteBuffer = ByteBuffer.wrap(it.payload.copyOfRange(
                             17,
                             it.payload.size
-                        )
+                        )).order(ByteOrder.LITTLE_ENDIAN)
 
                         sjUniWatch.wmLog.logE(
                             TAG,
-                            "sport summary payload urn$urn size:${f0.size} f0: ${
-                                BtUtils.bytesToHexString(f0)
-                            }"
-                        )
-
-                        val byteBuffer = ByteBuffer.wrap(f0).order(ByteOrder.LITTLE_ENDIAN)
-
-                        sjUniWatch.wmLog.logE(
-                            TAG,
-                            "++++++++++++++++++++++++++++++++++++++++++带头业务数据解析开始 - onComplete +++++++++++++++++++++++++++"
+                            "++++++++++++++++++++++++++++++++++++++++++START PARSE DATA urn:$urn - onComplete +++++++++++++++++++++++++++"
                         )
 
                         parseTenSecondsDataWithHead(byteBuffer, urn)
 
                     } else {
 
-                        val fn = it.payload
-
-                        sjUniWatch.wmLog.logE(
-                            TAG,
-                            "sport summary payload urn$urn size:${fn.size} fn: ${
-                                BtUtils.bytesToHexString(fn)
-                            }"
-                        )
-
-                        val byteBuffer = ByteBuffer.wrap(fn).order(ByteOrder.LITTLE_ENDIAN)
+                        val byteBuffer = ByteBuffer.wrap(it.payload).order(ByteOrder.LITTLE_ENDIAN)
 
                         parseTenSecondsDataNoHead(byteBuffer, urn)
 
@@ -361,18 +334,40 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
 
                 when (urn) {
                     URN_SPORT_10S_RATE -> {
+
+                        sjUniWatch.wmLog.logE(
+                            TAG,
+                            "++++++++++++++++++++++++++++++++++++++++++END DATA URN_SPORT_10S_RATE - onComplete +++++++++++++++++++++++++++"
+                        )
+
                         syncTenSecondsData(URN_SPORT_10S_DISTANCE)
                     }
 
                     URN_SPORT_10S_DISTANCE -> {
+                        sjUniWatch.wmLog.logE(
+                            TAG,
+                            "++++++++++++++++++++++++++++++++++++++++++END DATA URN_SPORT_10S_DISTANCE - onComplete +++++++++++++++++++++++++++"
+                        )
+
                         syncTenSecondsData(URN_SPORT_10S_CALORIES)
                     }
 
                     URN_SPORT_10S_CALORIES -> {
+                        sjUniWatch.wmLog.logE(
+                            TAG,
+                            "++++++++++++++++++++++++++++++++++++++++++END DATA URN_SPORT_10S_CALORIES - onComplete +++++++++++++++++++++++++++"
+                        )
+
                         syncTenSecondsData(URN_SPORT_10S_STEP_FREQUENCY)
                     }
 
                     URN_SPORT_10S_STEP_FREQUENCY -> {
+
+                        sjUniWatch.wmLog.logE(
+                            TAG,
+                            "++++++++++++++++++++++++++++++++++++++++++END DATA URN_SPORT_10S_STEP_FREQUENCY - onComplete +++++++++++++++++++++++++++"
+                        )
+
                         tenSecondAllComplete()
                     }
                 }
@@ -479,7 +474,7 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
 
         sjUniWatch.wmLog.logE(
             TAG,
-            "++++++++++++++++++++++++++++++++++++++++++开始带头业务数据解析开始 tenSecondsRealTimeStamp:$tenSecondsStartTimeStamp +++++++++++++++++++++++++++"
+            "++++++++++++++++++++++++++++++++++++++++++START PARSE DATA urn:$urn parseTenSecondsDataWithHead:$tenSecondsStartTimeStamp +++++++++++++++++++++++++++"
         )
 
         parseTenSecondsDataNoHead(byteBuffer, urn)
@@ -583,7 +578,7 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
 
             sjUniWatch.wmLog.logE(
                 TAG,
-                "++++++++++++++++++++++++++++++++++++++++++带头业务数据解析开始 - syncTenSecondsDistanceBusiness +++++++++++++++++++++++++++"
+                "++++++++++++++++++++++++++++++++++++++++++START PARSE DATA urn:${URN_SPORT_10S_DISTANCE} - syncTenSecondsDistanceBusiness +++++++++++++++++++++++++++"
             )
 
             parseTenSecondsDataWithHead(byteBufferSyncDataDistance, URN_SPORT_10S_DISTANCE)
@@ -605,7 +600,7 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
 
             sjUniWatch.wmLog.logE(
                 TAG,
-                "++++++++++++++++++++++++++++++++++++++++++带头业务数据解析开始 - syncTenSecondsCaloriesBusiness +++++++++++++++++++++++++++"
+                "++++++++++++++++++++++++++++++++++++++++++START PARSE DATA urn:${URN_SPORT_10S_CALORIES} - syncTenSecondsCaloriesBusiness +++++++++++++++++++++++++++"
             )
 
             parseTenSecondsDataWithHead(byteBufferSyncDataCalorie, URN_SPORT_10S_CALORIES)
@@ -627,7 +622,7 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
 
             sjUniWatch.wmLog.logE(
                 TAG,
-                "++++++++++++++++++++++++++++++++++++++++++带头业务数据解析开始 - syncTenSecondsRateBusiness +++++++++++++++++++++++++++"
+                "++++++++++++++++++++++++++++++++++++++++++START PARSE DATA urn:${URN_SPORT_10S_RATE} - syncTenSecondsRateBusiness +++++++++++++++++++++++++++"
             )
 
             parseTenSecondsDataWithHead(byteBufferSyncDataRate, URN_SPORT_10S_RATE)
@@ -649,7 +644,7 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
 
             sjUniWatch.wmLog.logE(
                 TAG,
-                "++++++++++++++++++++++++++++++++++++++++++带头业务数据解析开始 - syncTenSecondsStepFrequencyBusiness +++++++++++++++++++++++++++"
+                "++++++++++++++++++++++++++++++++++++++++++START PARSE DATA urn:${URN_SPORT_10S_STEP_FREQUENCY} - syncTenSecondsStepFrequencyBusiness +++++++++++++++++++++++++++"
             )
 
             parseTenSecondsDataWithHead(byteBufferSyncDataFrequency, URN_SPORT_10S_STEP_FREQUENCY)
