@@ -68,40 +68,41 @@ class AppContact(val sjUniWatch: SJUniWatch) : AbAppContact(), ReadSubPkMsg {
                 }
 
                 override fun onComplete() {
-                    var byteBuffer = ByteBuffer.allocate(MAX_BUSINESS_BUFFER_SIZE * 10)
+                    if(msgList.isNotEmpty()){
+                        var byteBuffer = ByteBuffer.allocate(MAX_BUSINESS_BUFFER_SIZE * 10)
 
-                    msgList.forEachIndexed { index, msgBean ->
-                        byteBuffer.put(msgBean.payload)
-                    }
-
-                    val chunkSize = NAME_BYTES_LIMIT + NUMBER_BYTES_LIMIT
-
-                    var i = 17
-                    while ((i + chunkSize) < byteBuffer.array().size) {
-                        val nameBytes = byteBuffer.array().copyOfRange(i, i + NAME_BYTES_LIMIT)
-                            .takeWhile { it.toInt() != 0 }.toByteArray()
-                        val numBytes =
-                            byteBuffer.array().copyOfRange(i + NUMBER_BYTES_LIMIT, i + chunkSize)
-
-                        val name = String(nameBytes, StandardCharsets.UTF_8)
-                        val num = String(numBytes, StandardCharsets.UTF_8)
-
-                        sjUniWatch.wmLog.logE(TAG, "name:" + name + " num:" + num)
-
-                        if (!TextUtils.isEmpty(name)) {
-                            val contact = WmContact.create(name, num)
-
-                            mContacts.add(contact!!)
-                            i += chunkSize
-                        } else {
-                            break
+                        msgList.forEachIndexed { index, msgBean ->
+                            byteBuffer.put(msgBean.payload)
                         }
+
+                        val chunkSize = NAME_BYTES_LIMIT + NUMBER_BYTES_LIMIT
+
+                        var i = 17
+                        while ((i + chunkSize) < byteBuffer.array().size) {
+                            val nameBytes = byteBuffer.array().copyOfRange(i, i + NAME_BYTES_LIMIT)
+                                .takeWhile { it.toInt() != 0 }.toByteArray()
+                            val numBytes =
+                                byteBuffer.array().copyOfRange(i + NUMBER_BYTES_LIMIT, i + chunkSize)
+
+                            val name = String(nameBytes, StandardCharsets.UTF_8)
+                            val num = String(numBytes, StandardCharsets.UTF_8)
+
+                            sjUniWatch.wmLog.logE(TAG, "name:" + name + " num:" + num)
+
+                            if (!TextUtils.isEmpty(name)) {
+                                val contact = WmContact.create(name, num)
+
+                                mContacts.add(contact!!)
+                                i += chunkSize
+                            } else {
+                                break
+                            }
+                        }
+
+                        contactListEmitter?.onNext(mContacts)
+                        contactListEmitter?.onComplete()
                     }
-
-                    contactListEmitter?.onNext(mContacts)
-                    contactListEmitter?.onComplete()
                 }
-
             })
     }
 

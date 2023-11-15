@@ -693,6 +693,7 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(), Li
 
                                             var payloadPackage: PayloadPackage =
                                                 PayloadPackage.fromByteArray(msgBean.payload)
+
                                             parseResponseNodePayload(msgBean, payloadPackage)
 
                                         } else {//分包消息
