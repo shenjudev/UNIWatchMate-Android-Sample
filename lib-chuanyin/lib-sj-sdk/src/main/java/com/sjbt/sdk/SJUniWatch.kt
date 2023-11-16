@@ -260,7 +260,7 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(), Li
     }
 
     private fun btDisconnectSet() {
-        wmTransferFile.transferError(ERROR_DISCONNECT,"bt disconnect")
+        wmTransferFile.transferError(ERROR_DISCONNECT, "bt disconnect")
         mBtEngine.clearMsgQueue()
         mBtEngine.clearStateMap()
         appCamera.stopCameraPreview()
@@ -679,7 +679,7 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(), Li
                                     //
                                     sendCommunityResponse()
 
-                                    if (msgBean.payloadLen >= 10) {//设备应用层回复
+                                    if (msgBean.payloadLen >= 10 || msgBean.divideType != DIVIDE_N_2) {//设备应用层回复 包含带应用层payload的数据和分包数据的处理逻辑
                                         wmLog.logD(
                                             TAG,
                                             "Node Message DIVIDE TYPE：" + msgBean.divideType

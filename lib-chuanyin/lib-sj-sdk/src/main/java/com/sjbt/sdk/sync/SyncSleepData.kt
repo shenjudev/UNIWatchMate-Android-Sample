@@ -32,6 +32,8 @@ class SyncSleepData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmSleepD
     private var hasNext: Boolean = false
     private lateinit var byteBufferSyncData: ByteBuffer
 
+    var wmSyncData: WmSyncData<WmSleepData>? = null
+
     override fun latestSyncTime(): Long {
         return lastSyncTime
     }
@@ -216,9 +218,12 @@ class SyncSleepData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmSleepD
                 sleepScore
             )
 
+            val sleepItemCount = byteBufferSyncData.short.toUShort().toInt()
+            sjUniWatch.wmLog.logD(TAG, "sleepItemCount:$sleepItemCount")
+
             val sleepItems = mutableListOf<WmSleepItem>()
 
-            while (byteBufferSyncData.hasRemaining()) {
+            for (i in 0 until sleepItemCount) {
                 val status = byteBufferSyncData.get().toInt()
                 val duration = byteBufferSyncData.short.toInt()
                 val sleepItem = WmSleepItem(status, duration)
@@ -246,7 +251,7 @@ class SyncSleepData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmSleepD
             dataIndex++
         }
 
-        val wmSyncData =
+        wmSyncData =
             WmSyncData(
                 WmSyncDataType.HEART_RATE_FIVE_MINUTES,
                 realTimeStamp,
@@ -264,7 +269,7 @@ class SyncSleepData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmSleepD
             byteBufferSyncData = ByteBuffer.wrap(nodeData.data).order(ByteOrder.LITTLE_ENDIAN)
             parseStepData()
         } else if (nodeData.dataFmt == DataFormat.FMT_ERRCODE || nodeData.dataFmt == DataFormat.FMT_NODATA) {
-            val wmSyncData =
+            wmSyncData =
                 WmSyncData(
                     WmSyncDataType.STEP,
                     0,
