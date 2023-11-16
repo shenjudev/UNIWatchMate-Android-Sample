@@ -18,14 +18,37 @@ import java.nio.ByteOrder
  */
 class AppSport(val sjUniWatch: SJUniWatch) : AbAppSport() {
     private var getSportListEmitter: SingleEmitter<List<WmSport>>? = null
+    private var getSupportSportListEmitter: SingleEmitter<List<WmSport>>? = null
     private var updateSportListEmitter: SingleEmitter<Boolean>? = null
     private val mSportList = mutableListOf<WmSport>()
+    private val mSupportSportList = mutableListOf<WmSport>()
     private val TAG = "AppSport"
 
     override val getSportList: Single<List<WmSport>> = Single.create {
         mSportList.clear()
         getSportListEmitter = it
         sjUniWatch.sendReadNodeCmdList(getReadSportListPayloadPackage())
+    }
+
+    override val getSupportSportList: Single<List<WmSport>> = Single.create {
+        mSupportSportList.clear()
+        getSupportSportListEmitter = it
+        sjUniWatch.sendReadNodeCmdList(getReadSupportSportListPayloadPackage())
+    }
+
+    /**
+     * 获取支持的体育列表命令
+     */
+    private fun getReadSupportSportListPayloadPackage(): PayloadPackage {
+        val payloadPackage = PayloadPackage()
+        payloadPackage.putData(
+            CmdHelper.getUrnId(
+                URN_APP_SETTING,
+                URN_APP_SPORT,
+                URN_APP_SUPPORT_SPORT_LIST
+            ), ByteArray(0)
+        )
+        return payloadPackage
     }
 
     /**
@@ -91,13 +114,32 @@ class AppSport(val sjUniWatch: SJUniWatch) : AbAppSport() {
                     for (i in 0 until nodeData.data.size / 2) {
                         val sportId = byteBuffer.short.toInt()
                         val wmSport = WmSport(sportId, 0, false)
-                        sjUniWatch.wmLog.logD(TAG, "sport id:" + sportId);
+                        sjUniWatch.wmLog.logD(TAG, "sport id:$sportId");
                         if (sportId != 0) {
                             mSportList.add(wmSport)
                         }
                     }
 
                     getSportListEmitter?.onSuccess(mSportList)
+                }
+            }
+
+            URN_APP_SUPPORT_SPORT_LIST -> {
+
+                if (nodeData.data.size == 1) {
+                    getSupportSportListEmitter?.onSuccess(mSupportSportList)
+                } else {
+                    val byteBuffer = ByteBuffer.wrap(nodeData.data).order(ByteOrder.LITTLE_ENDIAN)
+
+                    for (i in 0 until nodeData.data.size / 2) {
+                        val sportId = byteBuffer.short.toInt()
+                        val wmSport = WmSport(sportId, 0, false)
+                        sjUniWatch.wmLog.logD(TAG, "support sport id:$sportId");
+                        if (sportId != 0) {
+                            mSupportSportList.add(wmSport)
+                        }
+                    }
+                    getSupportSportListEmitter?.onSuccess(mSupportSportList)
 
                 }
             }

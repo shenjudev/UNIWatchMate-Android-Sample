@@ -11,7 +11,12 @@ abstract class AbAppSport {
     /**
      * syncSportList 同步运动列表
      */
-    abstract val getSportList : Single<List<WmSport>>
+    abstract val getSportList: Single<List<WmSport>>
+
+    /**
+     * 获取支持的运动列表
+     */
+    abstract val getSupportSportList: Single<List<WmSport>>
 
     /**
      * sortFixedSportList 运动列表排序

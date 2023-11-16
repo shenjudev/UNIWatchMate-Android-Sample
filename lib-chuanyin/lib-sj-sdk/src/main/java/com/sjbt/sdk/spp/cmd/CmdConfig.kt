@@ -165,6 +165,7 @@ const val URN_APP_ALARM_LIST: Byte = URN_1
 
 const val URN_APP_SPORT: Byte = URN_2
 const val URN_APP_SPORT_LIST: Byte = URN_1
+const val URN_APP_SUPPORT_SPORT_LIST: Byte = URN_2
 
 const val URN_APP_CONTACT: Byte = URN_3
 const val URN_APP_CONTACT_COUNT: Byte = URN_1
