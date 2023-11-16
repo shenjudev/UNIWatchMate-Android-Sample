@@ -450,7 +450,7 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
         val baseDay = byteBuffer.get().toInt()
 
         //时间戳
-        val timestamp = byteBuffer.int
+        val timestamp = byteBuffer.int * 1000
         val dataLen = byteBuffer.short
 
         sjUniWatch.wmLog.logD(
