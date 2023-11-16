@@ -1,6 +1,7 @@
 package com.sjbt.sdk.sync
 
 import com.base.sdk.entity.data.*
+import com.base.sdk.exception.WmTimeOutException
 import com.base.sdk.port.sync.AbSyncData
 import com.sjbt.sdk.ReadSubPkMsg
 import com.sjbt.sdk.SJUniWatch
@@ -34,7 +35,7 @@ class SyncHeartRateData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmHe
     }
 
     fun onTimeOut(msg: MsgBean, nodeData: NodeData) {
-
+        heartRateObserveEmitter?.onError(WmTimeOutException())
     }
 
     override fun setHasNext(hasNext: Boolean) {

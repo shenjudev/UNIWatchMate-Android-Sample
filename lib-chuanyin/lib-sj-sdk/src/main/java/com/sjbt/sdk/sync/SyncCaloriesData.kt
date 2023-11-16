@@ -1,12 +1,14 @@
 package com.sjbt.sdk.sync
 
 import com.base.sdk.entity.data.*
+import com.base.sdk.exception.WmTimeOutException
 import com.base.sdk.port.sync.AbSyncData
 import com.sjbt.sdk.ReadSubPkMsg
 import com.sjbt.sdk.SJUniWatch
 import com.sjbt.sdk.entity.DataFormat
 import com.sjbt.sdk.entity.MsgBean
 import com.sjbt.sdk.entity.NodeData
+import com.sjbt.sdk.exception.SJException
 import com.sjbt.sdk.spp.cmd.CmdHelper
 import com.sjbt.sdk.spp.cmd.SYNC_DATA_INTERVAL_HOUR
 import com.sjbt.sdk.spp.cmd.URN_SPORT_CALORIES
@@ -44,6 +46,7 @@ class SyncCaloriesData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmCal
     }
 
     fun onTimeOut(msg: MsgBean, nodeData: NodeData) {
+        caloriesObserveEmitter?.onError(WmTimeOutException())
     }
 
     override fun syncData(startTime: Long): Single<WmSyncData<WmCaloriesData>> {
@@ -165,7 +168,7 @@ class SyncCaloriesData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmCal
             )
 
             caloriesList.add(wmCaloriesData)
-            dataIndex ++
+            dataIndex++
         }
 
         val wmSyncData =
@@ -187,7 +190,12 @@ class SyncCaloriesData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmCal
             parseStepData()
         } else if (nodeData.dataFmt == DataFormat.FMT_ERRCODE || nodeData.dataFmt == DataFormat.FMT_NODATA) {
             val wmSyncData =
-                WmSyncData(WmSyncDataType.STEP, 0, WmIntervalType.ONE_HOUR, mutableListOf<WmCaloriesData>())
+                WmSyncData(
+                    WmSyncDataType.STEP,
+                    0,
+                    WmIntervalType.ONE_HOUR,
+                    mutableListOf<WmCaloriesData>()
+                )
 
             caloriesObserveEmitter?.onSuccess(wmSyncData)
         }

@@ -2,6 +2,7 @@ package com.sjbt.sdk.sync
 
 import com.base.sdk.entity.data.*
 import com.base.sdk.entity.settings.WmSleepSettings
+import com.base.sdk.exception.WmTimeOutException
 import com.base.sdk.port.sync.AbSyncData
 import com.sjbt.sdk.ReadSubPkMsg
 import com.sjbt.sdk.SJUniWatch
@@ -47,6 +48,7 @@ class SyncSleepData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmSleepD
     }
 
     fun onTimeOut(msg: MsgBean, nodeData: NodeData) {
+        activityObserveEmitter?.onError(WmTimeOutException())
     }
 
     override fun syncData(startTime: Long): Single<WmSyncData<WmSleepData>> {

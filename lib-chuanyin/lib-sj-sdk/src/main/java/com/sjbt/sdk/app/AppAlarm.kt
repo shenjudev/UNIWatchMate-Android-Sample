@@ -2,6 +2,7 @@ package com.sjbt.sdk.app
 
 import com.base.sdk.entity.apps.AlarmRepeatOption
 import com.base.sdk.entity.apps.WmAlarm
+import com.base.sdk.exception.WmTimeOutException
 import com.base.sdk.port.app.AbAppAlarm
 import com.sjbt.sdk.ALARM_NAME_LEN
 import com.sjbt.sdk.SJUniWatch
@@ -44,6 +45,7 @@ class AppAlarm(val sjUniWatch: SJUniWatch) : AbAppAlarm() {
     }
 
     fun onTimeOut(msgBean: MsgBean, nodeData: NodeData) {
+        updateAlarmEmitter?.onError(WmTimeOutException())
     }
 
     fun alarmBusiness(nodeData: NodeData) {

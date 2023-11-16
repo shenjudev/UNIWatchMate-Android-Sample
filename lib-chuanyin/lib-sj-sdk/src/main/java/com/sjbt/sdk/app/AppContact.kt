@@ -68,7 +68,7 @@ class AppContact(val sjUniWatch: SJUniWatch) : AbAppContact(), ReadSubPkMsg {
                 }
 
                 override fun onComplete() {
-                    if(msgList.isNotEmpty()){
+                    if (msgList.isNotEmpty()) {
                         var byteBuffer = ByteBuffer.allocate(MAX_BUSINESS_BUFFER_SIZE * 10)
 
                         msgList.forEachIndexed { index, msgBean ->
@@ -82,7 +82,8 @@ class AppContact(val sjUniWatch: SJUniWatch) : AbAppContact(), ReadSubPkMsg {
                             val nameBytes = byteBuffer.array().copyOfRange(i, i + NAME_BYTES_LIMIT)
                                 .takeWhile { it.toInt() != 0 }.toByteArray()
                             val numBytes =
-                                byteBuffer.array().copyOfRange(i + NUMBER_BYTES_LIMIT, i + chunkSize)
+                                byteBuffer.array()
+                                    .copyOfRange(i + NUMBER_BYTES_LIMIT, i + chunkSize)
 
                             val name = String(nameBytes, StandardCharsets.UTF_8)
                             val num = String(numBytes, StandardCharsets.UTF_8)
@@ -129,6 +130,16 @@ class AppContact(val sjUniWatch: SJUniWatch) : AbAppContact(), ReadSubPkMsg {
 
     fun onTimeOut(msgBean: MsgBean, nodeData: NodeData) {
 
+        when (nodeData.urn[2]) {
+
+            URN_APP_CONTACT_LIST ->{
+
+            }
+
+            URN_APP_CONTACT_EMERGENCY ->{
+
+            }
+        }
     }
 
     private fun updateContactListBack(success: Boolean) {

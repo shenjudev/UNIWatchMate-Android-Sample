@@ -82,7 +82,7 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(), Li
     private val mBindStateMap = HashMap<String, Boolean>()
 
     //同步数据
-    private val syncActivity = wmSync.syncActivityDurationData as SyncActivityDurationData
+    private val syncActivityDuration = wmSync.syncActivityDurationData as SyncActivityDurationData
     private val syncCaloriesData = wmSync.syncCaloriesData as SyncCaloriesData
     private val syncDistanceData = wmSync.syncDistanceData as SyncDistanceData
     private val syncHeartRateData = wmSync.syncHeartRateData as SyncHeartRateData
@@ -1295,6 +1295,48 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(), Li
                 }
 
                 URN_SPORT_DATA -> {//运动同步
+                    when (it.urn[1]) {
+                        URN_SPORT_STEP -> {
+                            syncStepData.onTimeOut(msgBean, it)
+                        }
+
+                        URN_SPORT_CALORIES -> {
+                            syncCaloriesData.onTimeOut(msgBean, it)
+                        }
+
+                        URN_SPORT_OXYGEN -> {
+                            syncOxygenData.onTimeOut(msgBean, it)
+                        }
+
+                        URN_SPORT_ACTIVITY_LEN -> {
+                            syncActivityDuration.onTimeOut(msgBean, it)
+                        }
+
+                        URN_SPORT_DISTANCE -> {
+                            syncDistanceData.onTimeOut(msgBean, it)
+                        }
+
+                        URN_SPORT_RATE -> {
+
+                            when (it.urn[2]) {
+                                URN_SPORT_RATE_REALTIME -> {
+                                    syncRealtimeRateData.onTimeOut(msgBean, it)
+                                }
+
+                                URN_SPORT_RATE_RECORD -> {
+                                    syncHeartRateData.onTimeOut(msgBean, it)
+                                }
+                            }
+                        }
+
+                        URN_SPORT_SLEEP -> {
+                            syncSleepData.onTimeOut(msgBean, it)
+                        }
+
+                        URN_SPORT_SUMMARY, URN_SPORT_10S_DISTANCE, URN_SPORT_10S_RATE, URN_SPORT_10S_CALORIES, URN_SPORT_10S_STEP_FREQUENCY -> {
+                            syncSportSummaryData.onTimeOut(msgBean, it)
+                        }
+                    }
                 }
             }
         }
@@ -1412,7 +1454,7 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(), Li
 
                         URN_SPORT_ACTIVITY_LEN -> {
 
-                            syncActivity.syncActivityDurationDataBusiness(it)
+                            syncActivityDuration.syncActivityDurationDataBusiness(it)
                         }
 
                         URN_SPORT_DAILY_ACTIVITY_LEN -> {

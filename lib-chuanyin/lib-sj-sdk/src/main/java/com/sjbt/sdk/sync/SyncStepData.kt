@@ -4,6 +4,7 @@ import com.base.sdk.entity.data.WmIntervalType
 import com.base.sdk.entity.data.WmStepData
 import com.base.sdk.entity.data.WmSyncData
 import com.base.sdk.entity.data.WmSyncDataType
+import com.base.sdk.exception.WmTimeOutException
 import com.base.sdk.port.sync.AbSyncData
 import com.sjbt.sdk.ReadSubPkMsg
 import com.sjbt.sdk.SJUniWatch
@@ -47,6 +48,7 @@ class SyncStepData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmStepDat
     }
 
     fun onTimeOut(msg: MsgBean, nodeData: NodeData) {
+        stepObserveEmitter?.onError(WmTimeOutException())
     }
 
     override fun syncData(startTime: Long): Single<WmSyncData<WmStepData>> {

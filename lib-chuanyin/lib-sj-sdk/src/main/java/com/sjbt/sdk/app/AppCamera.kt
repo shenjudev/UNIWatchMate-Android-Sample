@@ -3,6 +3,7 @@ package com.sjbt.sdk.app
 import android.os.Handler
 import android.os.HandlerThread
 import com.base.sdk.entity.apps.WmCameraFrameInfo
+import com.base.sdk.exception.WmTimeOutException
 import com.base.sdk.port.app.AbAppCamera
 import com.base.sdk.port.app.WMCameraFlashMode
 import com.base.sdk.port.app.WMCameraPosition
@@ -95,8 +96,8 @@ class AppCamera(val sjUniWatch: SJUniWatch) : AbAppCamera() {
         }
     }
 
-    fun onTimeOut(nodeData: NodeData) {
-        TODO("Not yet implemented")
+    fun onTimeOut(msgBean: MsgBean) {
+//        updateAlarmEmitter?.onError(WmTimeOutException())
     }
 
     override fun openCloseCamera(open: Boolean): Single<Boolean> {
