@@ -16,6 +16,7 @@ import com.base.sdk.entity.common.WmDiscoverDevice
 import com.base.sdk.entity.common.WmTimeUnit
 import com.base.sdk.entity.data.WmBatteryInfo
 import com.base.sdk.entity.settings.*
+import com.base.sdk.port.ERROR_DISCONNECT
 import com.google.gson.Gson
 import com.polidea.rxandroidble3.LogConstants
 import com.polidea.rxandroidble3.LogOptions
@@ -259,7 +260,7 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(), Li
     }
 
     private fun btDisconnectSet() {
-        wmTransferFile.transferError("bt disconnect")
+        wmTransferFile.transferError(ERROR_DISCONNECT,"bt disconnect")
         mBtEngine.clearMsgQueue()
         mBtEngine.clearStateMap()
         appCamera.stopCameraPreview()

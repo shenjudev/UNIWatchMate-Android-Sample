@@ -1,14 +1,12 @@
 package com.sjbt.sdk.dfu
 
-import com.base.sdk.port.AbWmTransferFile
-import com.base.sdk.port.FileType
-import com.base.sdk.port.State
-import com.base.sdk.port.WmTransferState
+import com.base.sdk.port.*
 import com.sjbt.sdk.MAX_RETRY_COUNT
 import com.sjbt.sdk.MSG_INTERVAL
 import com.sjbt.sdk.SJUniWatch
 import com.sjbt.sdk.entity.MsgBean
 import com.sjbt.sdk.entity.OtaCmdInfo
+import com.sjbt.sdk.exception.SJTransferException
 import com.sjbt.sdk.spp.cmd.*
 import com.sjbt.sdk.utils.FileUtils
 import io.reactivex.rxjava3.core.*
@@ -105,7 +103,7 @@ class SJTransferFile(val sjUniWatch: SJUniWatch) : AbWmTransferFile() {
                 mSendFileCount = 0
                 mErrorSend = false
                 val ota_allow = msgBean.payload[0] //是否容许升级 0允许 1不允许
-                val reason = msgBean.payload[1] //是否容许升级 0允许 1不允许
+                val reason = msgBean.payload[1].toInt() //是否容许升级 0允许 1不允许
                 sjUniWatch.wmLog.logD(TAG, "1.Allow transfer:$ota_allow")
                 if (ota_allow.toInt() == 1) {
                     mSendingFile = mTransferFiles!![0]
@@ -127,7 +125,7 @@ class SJTransferFile(val sjUniWatch: SJUniWatch) : AbWmTransferFile() {
                     }
 
                 } else {
-                    transferError("device not allow transfer file , reason:$reason")
+                    transferError(reason, "device not allow transfer file , reason:$reason")
                 }
             }
             CMD_ID_8002 -> {
@@ -153,7 +151,7 @@ class SJTransferFile(val sjUniWatch: SJUniWatch) : AbWmTransferFile() {
                 } else {
                     mCanceledSend = true
                     transferEnd()
-                    transferError("transfer file fail,reason: cmd 02")
+                    transferError(ERROR_FILE_EXCEPTION, "transfer file fail,reason: cmd 02")
                 }
             }
 
@@ -274,16 +272,16 @@ class SJTransferFile(val sjUniWatch: SJUniWatch) : AbWmTransferFile() {
                 val reasonCancel = msgBean.payload[0]
                 sjUniWatch.wmLog.logD(TAG, "device cancel reason：$reasonCancel")
                 transferEnd()
-                transferError("file transfer error reason:06 Error")
+                transferError(ERROR_BUSY, "file transfer error reason:06 Error")
             }
         }
     }
 
-    fun transferError(errMsg: String) {
+    fun transferError(code: Int, errMsg: String) {
         mTransferring = false
-        if (observableTransferEmitter?.isDisposed == false ) {
+        if (observableTransferEmitter?.isDisposed == false) {
             observableTransferEmitter?.onError(
-                RuntimeException(errMsg)
+                SJTransferException(code, errMsg)
             )
         }
     }
