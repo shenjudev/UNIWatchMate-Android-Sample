@@ -57,6 +57,7 @@ class SleepFragment : DataListFragment<WmSleepItem>() {
             val sleepItemDatas = mutableListOf<WmSleepItem>()
             val duration = IntArray(4)
             data.forEach { wmSleepData ->
+                wmSleepData.wmSleepSettings
                 wmSleepData.wmSleepData.forEach {
                     sleepItemDatas.add(it)
                     when (it.status) {

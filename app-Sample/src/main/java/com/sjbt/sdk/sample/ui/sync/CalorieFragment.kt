@@ -11,6 +11,7 @@ import com.sjbt.sdk.sample.entity.HeartRateItemEntity
 import com.sjbt.sdk.sample.utils.DateTimeUtils
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.rx3.await
+import timber.log.Timber
 import java.util.*
 
 class CalorieFragment : DataListFragment<WmCaloriesData>() {
@@ -27,8 +28,10 @@ class CalorieFragment : DataListFragment<WmCaloriesData>() {
             val calendar = Calendar.getInstance()
             val start: Date = DateTimeUtils.getDayStartTime(calendar, date)
             val end: Date = DateTimeUtils.getDayEndTime(calendar, date)
-            UNIWatchMate.wmSync.syncCaloriesData.syncData(start.time)
-                .await().value
+           val result = UNIWatchMate.wmSync.syncCaloriesData.syncData(start.time)
+                .await()
+            Timber.i("queryData result=${result}")
+            result.value
         }
     }
 

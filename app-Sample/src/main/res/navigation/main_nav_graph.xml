@@ -70,7 +70,9 @@
         <action
             android:id="@+id/toSport"
             app:destination="@id/sportFragment" />
-
+        <action
+            android:id="@+id/toAllData"
+            app:destination="@id/AllData" />
     </fragment>
 
     <fragment
@@ -167,7 +169,13 @@
             android:id="@+id/toSportDetail"
             app:destination="@id/sportDetailFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/AllData"
+        android:name="com.sjbt.sdk.sample.ui.sync.AllDataFragment"
+        android:label="@string/data_all"
+        tools:layout="@layout/fragment_data_list">
 
+    </fragment>
     <fragment
         android:id="@+id/sportDetailFragment"
         android:name="com.sjbt.sdk.sample.ui.sync.SportDetailFragment"
