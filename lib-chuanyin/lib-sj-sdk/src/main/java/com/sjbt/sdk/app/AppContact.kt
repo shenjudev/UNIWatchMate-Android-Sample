@@ -277,7 +277,7 @@ class AppContact(val sjUniWatch: SJUniWatch) : AbAppContact(), ReadSubPkMsg {
 
                         val chunkSize = NAME_BYTES_LIMIT + NUMBER_BYTES_LIMIT
 
-                        if (it.dataLen.toInt() > chunkSize) {
+                        if (it.dataLen.toInt() >= chunkSize) {
                             var i = 0
                             while (i < byteArray.size) {
 
