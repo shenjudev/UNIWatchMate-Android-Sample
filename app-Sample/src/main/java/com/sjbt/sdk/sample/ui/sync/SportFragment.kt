@@ -109,6 +109,7 @@ class SportLibraryViewModel(
         if (state.getports() != null && !state.getports()!!.isEmpty()) {
         } else {
             val start: Date = DateTimeUtils.getDayStartTime(calendar, date)
+            UNIWatchMate.wmSync.syncAllData
             val result =    UNIWatchMate.wmSync.syncSportSummaryData.syncData(start.time).awaitFirst().value
             LogUtils.d("requestSports result = ${GsonUtils.toJson(result)}")
             state.copy(getports = Success(ArrayList(result))).newState()
@@ -120,7 +121,6 @@ class SportLibraryViewModel(
 //                SportsEvent.RequestFail(it).newEvent()
 //            }
         }
-
         return state.getports() ?: arrayListOf()
     }
 }

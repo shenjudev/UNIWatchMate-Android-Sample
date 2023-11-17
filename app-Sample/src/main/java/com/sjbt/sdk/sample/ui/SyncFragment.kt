@@ -39,6 +39,7 @@ class SyncFragment : BaseFragment(R.layout.fragment_sync) {
         viewBind.itemHeartRate.clickTrigger(block = blockClick)
         viewBind.itemOxygen.clickTrigger(block = blockClick)
         viewBind.itemSport.clickTrigger(block = blockClick)
+        viewBind.itemAll.clickTrigger(block = blockClick)
 
         viewLifecycle.launchRepeatOnStarted {
             val result = launch {
@@ -110,6 +111,10 @@ class SyncFragment : BaseFragment(R.layout.fragment_sync) {
 
             viewBind.itemSport -> {
                 findNavController().navigate(SyncFragmentDirections.toSport())
+            }
+
+            viewBind.itemAll -> {
+                findNavController().navigate(SyncFragmentDirections.toAllData())
             }
         }
     }

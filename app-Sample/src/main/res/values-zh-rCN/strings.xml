@@ -645,6 +645,7 @@
     <string name="data_temperature">体温</string>
     <string name="data_pressure">压力</string>
     <string name="data_ecg">心电</string>
+    <string name="data_all">全部数据</string>
     <string name="data_sport">运动</string>
     <string name="data_sport_detail">运动详情</string>
     <string name="data_game">游戏</string>

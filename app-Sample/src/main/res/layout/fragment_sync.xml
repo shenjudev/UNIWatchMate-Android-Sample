@@ -56,7 +56,10 @@
                 android:id="@+id/item_sport"
                 style="@style/Widget.Sample.PreferenceView.Item.Text"
                 app:preferenceTitle="@string/data_sport" />
-
+            <com.github.kilnn.tool.widget.item.PreferenceItem
+                android:id="@+id/item_all"
+                style="@style/Widget.Sample.PreferenceView.Item.Text"
+                app:preferenceTitle="@string/data_all" />
         </LinearLayout>
 
     </ScrollView>
