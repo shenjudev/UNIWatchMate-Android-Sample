@@ -48,17 +48,27 @@ class LocalSportLibrary {
         val language = locale.language;
         for (bean in sports) {
             if (bean.id == id) {
-                if (bean.names.contains(language)) {
-                    return getTypeName(bean.type)
-                }
-
+                    return getTypeName(bean.sportType)
             }
         }
         return ""
     }
 
     private fun getTypeName(type: Int): String {
-        return Config.SportTypeName.values()[type - 1].name
+        when (type) {
+            Config.SportTypeName.SPORT_RUN.id -> return "Run"
+            Config.SportTypeName.SPORT_WALKING.id -> return "Walking"
+            Config.SportTypeName.SPORT_RIDING.id -> return "Riding"
+            Config.SportTypeName.SPORT_FITNESS.id -> return "Fitness"
+            Config.SportTypeName.SPORT_OUTDOOR.id -> return "Outdoor"
+            Config.SportTypeName.SPORT_BALL.id -> return "Ball"
+            Config.SportTypeName.SPORT_YOGA.id -> return "Yoga"
+            Config.SportTypeName.SPORT_ICE.id -> return "Ice"
+            Config.SportTypeName.SPORT_DANCE.id -> return "Dance"
+            Config.SportTypeName.SPORT_LEISURE.id -> return "Leisure"
+            Config.SportTypeName.SPORT_OTHERS.id -> return "Others"
+        }
+        return ""
     }
 }
 

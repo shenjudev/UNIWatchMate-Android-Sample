@@ -12,6 +12,7 @@ import com.base.sdk.entity.apps.WmDial
 import com.base.sdk.entity.apps.WmValueTypeData
 import com.base.sdk.entity.data.WmSportSummaryData
 import com.blankj.utilcode.util.GsonUtils
+import com.blankj.utilcode.util.LogUtils
 import com.blankj.utilcode.util.ResourceUtils
 import com.sjbt.sdk.sample.R
 import com.sjbt.sdk.sample.base.Async
@@ -60,8 +61,8 @@ class SportFragment : DataListFragment<WmSportSummaryData>(),
         val start: Date = DateTimeUtils.getDayStartTime(calendar, date)
         val end: Date = DateTimeUtils.getDayEndTime(calendar, date)
         val result = runBlocking {
-//            viewModel.requestSports(date)
-            UNIWatchMate.wmSync.syncSportSummaryData.syncData(start.time).await().value
+            viewModel.requestSports(date)
+//            UNIWatchMate.wmSync.syncSportSummaryData.syncData(start.time).await()
         }
         return result
     }
@@ -108,6 +109,7 @@ class SportLibraryViewModel(
         } else {
             val start: Date = DateTimeUtils.getDayStartTime(calendar, date)
             val result =    UNIWatchMate.wmSync.syncSportSummaryData.syncData(start.time).await().value
+            LogUtils.d("requestSports result = ${GsonUtils.toJson(result)}")
             state.copy(getports = Success(ArrayList(result))).newState()
 //            runCatchingWithLog {
 //

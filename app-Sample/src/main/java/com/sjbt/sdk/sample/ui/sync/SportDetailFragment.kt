@@ -24,7 +24,9 @@ import java.util.*
 class SportDetailFragment : DataListFragment<WmSportSummaryData>() {
     override val layoutId: Int = R.layout.fragment_sport_detail
     private val dateTimeFormat = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault())
-    var localSportLibrary: LocalSportLibrary? = null
+    val localSportLibrary by lazy {
+        getSportLibrary()
+    }
     var tvDataSport: TextView? = null
     private var sportSummaryEntity: WmSportSummaryData? = null
 
@@ -41,15 +43,13 @@ class SportDetailFragment : DataListFragment<WmSportSummaryData>() {
             arguments?.getSerializableCompat<WmSportSummaryData>("wmSportSummaryData")
         tvDataSport = view.findViewById(R.id.tv_data_sport)
         btnDate.isVisible = false
-        tvDataSport?.text = "${sportSummaryEntity?.sportId}\n${sportSummaryEntity}"
+        sportSummaryEntity?.let {
+            tvDataSport?.text = "${sportTypeText(sportSummaryEntity!!.sportId)}\n${sportSummaryEntity}"
+        }
     }
 
     override fun queryData(date: Date): List<WmSportSummaryData>? {
         return runBlocking {
-            if (localSportLibrary == null) {
-
-                localSportLibrary = getSportLibrary()
-            }
             //detail里面获取每10秒的数据
             mutableListOf()
         }
@@ -63,11 +63,7 @@ class SportDetailFragment : DataListFragment<WmSportSummaryData>() {
 
     private fun getSportName(sportId: Int): String {
         localSportLibrary?.let {
-            it.sports.forEach { localSport ->
-                if (sportId == localSport.id) {
-                    return it.getNameById(sportId) + it.getTypeById(sportId)
-                }
-            }
+            return it.getNameById(sportId) +"   "+ it.getTypeById(sportId)
         }
         return ""
     }

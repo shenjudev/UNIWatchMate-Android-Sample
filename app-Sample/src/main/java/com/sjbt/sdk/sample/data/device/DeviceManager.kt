@@ -365,7 +365,7 @@ internal class DeviceManagerImpl(
     }
 
     override suspend fun reboot() {
-        Timber.d("reset")
+        Timber.d("reboot")
         UNIWatchMate.reboot().await()
     }
 

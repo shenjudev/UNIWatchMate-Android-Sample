@@ -37,17 +37,17 @@ object Config {
     const val FILE_TYPE_TXT = "txt"
     const val FILE_TYPE_VIDEO = "video"
     enum class SportTypeName(val id: Int) {
-        SPORT_RUN(1),
-        SPORT_WALKING(2),
-        SPORT_RIDING(3),
+        SPORT_RUN(0),
+        SPORT_WALKING(1),
+        SPORT_RIDING(2),
         SPORT_FITNESS(4),
         SPORT_OUTDOOR(5),
         SPORT_BALL(6),
         SPORT_YOGA(7),
         SPORT_ICE(8),
         SPORT_DANCE(9),
-        SPORT_LEISURE(10),
-        SPORT_OTHERS(11);
+        SPORT_LEISURE(11),
+        SPORT_OTHERS(12);
 
     }
 }
