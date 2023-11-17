@@ -10,6 +10,7 @@ import com.base.sdk.entity.data.WmBaseSyncData
 import com.base.sdk.entity.data.WmCaloriesData
 import com.base.sdk.entity.data.WmHeartRateData
 import com.base.sdk.entity.data.WmStepData
+import com.base.sdk.entity.data.WmSyncData
 import com.base.sdk.entity.settings.WmHeartRateAlerts
 import com.sjbt.sdk.sample.R
 import com.sjbt.sdk.sample.entity.HeartRateItemEntity
@@ -20,39 +21,41 @@ import kotlinx.coroutines.reactive.asFlow
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.rx3.asFlow
 import kotlinx.coroutines.rx3.await
-import kotlinx.coroutines.rx3.awaitFirst
+import kotlinx.coroutines.rx3.collect
 import timber.log.Timber
 import java.util.*
 
-class AllDataFragment : DataListFragment<WmBaseSyncData>() {
+class AllDataFragment : DataListFragment<WmSyncData<*>>() {
 
-    override val valueFormat: DataListAdapter.ValueFormat<WmBaseSyncData> = object : DataListAdapter.ValueFormat<WmBaseSyncData> {
-        override fun format(context: Context, obj: WmBaseSyncData): String {
+    override val valueFormat: DataListAdapter.ValueFormat<WmSyncData<*>> = object : DataListAdapter.ValueFormat<WmSyncData<*>> {
+        override fun format(context: Context, obj: WmSyncData<*>): String {
             return timeFormat.format(obj.timestamp) + "    ${obj}"
 
         }
     }
+    val dataList = mutableListOf<WmSyncData<*>>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
        lifecycle.launchRepeatOnStarted {
            launch {
-               UNIWatchMate.wmSync.syncAllData.observeSyncData.asFlow().collect{
-                   Timber.i("observeSyncData result=${it}")
-               }
+//               UNIWatchMate.wmSync.syncAllData.observeSyncData.asFlow().collect{
+//                   Timber.i("observeSyncData result=${it}")
+//               }
            }
        }
     }
-    override fun queryData(date: Date): List<WmBaseSyncData>? {
+    override fun queryData(date: Date): List<WmSyncData<*>>? {
         return runBlocking {
             val calendar = Calendar.getInstance()
             val start: Date = DateTimeUtils.getDayStartTime(calendar, date)
             val end: Date = DateTimeUtils.getDayEndTime(calendar, date)
-           val result = UNIWatchMate.wmSync.syncAllData.syncData(start.time)
-                .awaitFirst()
-            Timber.i("queryData result=${result}")
-            result.value
-            mutableListOf()
+            UNIWatchMate.wmSync.syncAllData.syncData(start.time).collect {
+               dataList.add(it)
+           }
+//            Timber.i("queryData result=${result}")
+//            result.value
+         dataList
         }
     }
 
