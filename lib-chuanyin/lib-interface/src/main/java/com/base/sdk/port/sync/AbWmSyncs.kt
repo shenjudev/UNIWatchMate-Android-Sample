@@ -52,8 +52,8 @@ abstract class AbWmSyncs {
     abstract val syncSportSummaryData: AbSyncData<WmSyncData<WmSportSummaryData>>
 
     /**
-     * syncTodayInfo(同步当日数据)
+     * syncTodayInfo(同步所有数据)
      */
-    abstract val syncTodayInfoData: AbSyncData<WmSyncData<WmTodayTotalData>>
+    abstract val syncAllData: AbSyncData<WmSyncData<out WmBaseSyncData>>
 
 }

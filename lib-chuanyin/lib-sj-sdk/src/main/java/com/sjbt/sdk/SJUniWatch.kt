@@ -91,7 +91,7 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(), Li
     private val syncSleepData = wmSync.syncSleepData as SyncSleepData
     private val syncSportSummaryData = wmSync.syncSportSummaryData as SyncSportSummaryData
     private val syncStepData = wmSync.syncStepData as SyncStepData
-    private val syncTodayTotalData = wmSync.syncTodayInfoData as SyncTodayTotalData
+    private val syncAllData = wmSync.syncAllData as SyncAllData
 
     //应用
     private val appDateTime = wmApps.appDateTime as AppDateTime
