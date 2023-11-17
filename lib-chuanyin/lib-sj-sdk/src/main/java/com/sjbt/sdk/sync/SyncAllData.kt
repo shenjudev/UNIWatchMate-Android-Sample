@@ -46,8 +46,8 @@ class SyncAllData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<out WmBase
                 WmSyncDataType.HEART_RATE_FIVE_MINUTES,
                 WmSyncDataType.OXYGEN,
                 WmSyncDataType.ACTIVITY_DURATION,
-                WmSyncDataType.SLEEP,
-                WmSyncDataType.SPORT_SUMMARY
+                WmSyncDataType.SPORT_SUMMARY,
+                WmSyncDataType.SLEEP
             )
 
             val characters: Observable<WmSyncData<out WmBaseSyncData>> = Observable
@@ -81,7 +81,9 @@ class SyncAllData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<out WmBase
                         WmSyncDataType.SPORT_SUMMARY -> {
                             sjUniWatch.wmSync.syncSportSummaryData.syncData(startTime)
                         }
-
+                        WmSyncDataType.SLEEP -> {
+                            sjUniWatch.wmSync.syncSleepData.syncData(startTime)
+                        }
                         else -> {
                             sjUniWatch.wmSync.syncSportSummaryData.syncData(startTime)
                         }
@@ -92,7 +94,7 @@ class SyncAllData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<out WmBase
                 sjUniWatch.wmLog.logE(TAG, "sync All back data${wmSyncData}")
                 emitter.onNext(wmSyncData)
 
-                if (wmSyncData.type == WmSyncDataType.SPORT_SUMMARY) {
+                if (wmSyncData.type == WmSyncDataType.SLEEP) {
                     emitter.onComplete()
                 }
             }
