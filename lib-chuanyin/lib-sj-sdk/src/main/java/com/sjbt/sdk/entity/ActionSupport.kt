@@ -51,99 +51,99 @@ class ActionSupport {
                     when (actionPosition) {
                         0 -> {
                             actionSupport.weatherSupportState = bit.code - v.code
-                            Log.d(TAG_SJ, "天气为 $bit")
+                            //Log.d(TAG_SJ, "天气为 $bit")
                         }
                         1 -> {
                             actionSupport.sportSupportState = bit.code - v.code
-                            Log.d(TAG_SJ, "健身为 $bit")
+                            //Log.d(TAG_SJ, "健身为 $bit")
                         }
                         2 -> {
                             actionSupport.rateSupportState = bit.code - v.code
-                            Log.d(TAG_SJ, "心率为 $bit")
+                            //Log.d(TAG_SJ, "心率为 $bit")
                         }
                         3 -> {
                             actionSupport.cameraSupportState = bit.code - v.code
-                            Log.d(TAG_SJ, "相机为 $bit")
+                            //Log.d(TAG_SJ, "相机为 $bit")
                         }
                         4 -> {
                             actionSupport.notifyMsgSupportState = bit.code - v.code
-                            Log.d(TAG_SJ, "通知为 $bit")
+                            //Log.d(TAG_SJ, "通知为 $bit")
                         }
                         5 -> {
                             actionSupport.alarmSupportState = bit.code - v.code
-                            Log.d(TAG_SJ, "闹钟为 $bit")
+                            //Log.d(TAG_SJ, "闹钟为 $bit")
                         }
                         6 -> {
                             actionSupport.musicSupportState = bit.code - v.code
-                            Log.d(TAG_SJ, "音乐为 $bit")
+                            //Log.d(TAG_SJ, "音乐为 $bit")
                         }
                         7 -> {
                             actionSupport.contactSupportState = bit.code - v.code
-                            Log.d(TAG_SJ, "联系人为 $bit")
+//                            Log.d(TAG_SJ, "联系人为 $bit")
                         }
                         8 -> {
                             actionSupport.searchDeviceSupportState = bit.code - v.code
-                            Log.d(TAG_SJ, "查找手表为 $bit")
+//                            Log.d(TAG_SJ, "查找手表为 $bit")
                         }
                         9 -> {
                             actionSupport.searchPhoneSupportState = bit.code - v.code
-                            Log.d(TAG_SJ, "查找手机为 $bit")
+//                            Log.d(TAG_SJ, "查找手机为 $bit")
                         }
                         10 -> {
                             actionSupport.appViewSupportState = bit.code - v.code
-                            Log.d(TAG_SJ, "【设置】应用视图为 $bit")
+//                            Log.d(TAG_SJ, "【设置】应用视图为 $bit")
                         }
                         11 -> {
                             actionSupport.setRingSupportState = bit.code - v.code
-                            Log.d(TAG_SJ, "【设置】来电响铃为$bit")
+//                            Log.d(TAG_SJ, "【设置】来电响铃为$bit")
                         }
                         12 -> {
                             actionSupport.setNotifyTouchSupportState = bit.code - v.code
-                            Log.d(TAG_SJ, "【设置】通知触感为$bit")
+//                            Log.d(TAG_SJ, "【设置】通知触感为$bit")
                         }
                         13 -> {
                             actionSupport.setWatchTouchSupportState = bit.code - v.code
-                            Log.d(TAG_SJ, "【设置】表冠触感为$bit")
+//                            Log.d(TAG_SJ, "【设置】表冠触感为$bit")
                         }
                         14 -> {
                             actionSupport.setSystemTouchSupportState = bit.code - v.code
-                            Log.d(TAG_SJ, "【设置】系统触感反馈为 $bit")
+//                            Log.d(TAG_SJ, "【设置】系统触感反馈为 $bit")
                         }
                         15 -> {
                             actionSupport.armSupportState = bit.code - v.code
-                            Log.d(TAG_SJ, "【设置】抬腕亮屏为 $bit")
+//                            Log.d(TAG_SJ, "【设置】抬腕亮屏为 $bit")
                         }
                         16 -> {
                             actionSupport.bloodOxSupportState = bit.code - v.code
-                            Log.d(TAG_SJ, "血氧为$bit")
+//                            Log.d(TAG_SJ, "血氧为$bit")
                         }
                         17 -> {
                             actionSupport.bloodPressSupportState = bit.code - v.code
-                            Log.d(TAG_SJ, "血压为$bit")
+//                            Log.d(TAG_SJ, "血压为$bit")
                         }
                         18 -> {
                             actionSupport.bloodSugarSupportState = bit.code - v.code
-                            Log.d(TAG_SJ, "血糖为$bit")
+//                            Log.d(TAG_SJ, "血糖为$bit")
                         }
                         19 -> {
                             actionSupport.sleepSupportState = bit.code - v.code
-                            Log.d(TAG_SJ, "睡眠为$bit")
+//                            Log.d(TAG_SJ, "睡眠为$bit")
                         }
                         20 -> {
                             actionSupport.ebookSupportState = bit.code - v.code
-                            Log.d(TAG_SJ, "电子书为$bit")
+//                            Log.d(TAG_SJ, "电子书为$bit")
                         }
                         21 -> {
                             actionSupport.supportSlowModel = bit.code - v.code
-                            Log.d(TAG_SJ, "支持慢速模式为$bit")
+//                            Log.d(TAG_SJ, "支持慢速模式为$bit")
                         }
                         22 -> {
                             actionSupport.supportCameraPreview = bit.code - v.code
-                            Log.d(TAG_SJ, "支持相机预览模式为$bit")
+//                            Log.d(TAG_SJ, "支持相机预览模式为$bit")
                         }
                         23 -> {
                             actionSupport.supportVideoTransfer = bit.code - v.code
-                            Log.d(TAG_SJ, "支持视频上传为$bit")
+//                            Log.d(TAG_SJ, "支持视频上传为$bit")
                         }
                     }
                     actionPosition++
