@@ -46,8 +46,8 @@ class SyncAllData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<out WmBase
                 WmSyncDataType.HEART_RATE_FIVE_MINUTES,
                 WmSyncDataType.OXYGEN,
                 WmSyncDataType.ACTIVITY_DURATION,
-                WmSyncDataType.SPORT_SUMMARY,
-                WmSyncDataType.SLEEP
+                WmSyncDataType.SLEEP,
+                WmSyncDataType.SPORT_SUMMARY
             )
 
             val characters: Observable<WmSyncData<out WmBaseSyncData>> = Observable
