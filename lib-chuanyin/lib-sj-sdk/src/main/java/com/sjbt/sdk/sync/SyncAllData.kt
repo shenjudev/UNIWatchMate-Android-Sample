@@ -16,6 +16,7 @@ class SyncAllData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<out WmBase
     private var syncDataEmitter: ObservableEmitter<WmSyncData<out WmBaseSyncData>>? = null
     private var observeChangeEmitter: ObservableEmitter<WmSyncData<out WmBaseSyncData>>? = null
     private var hasNext = false
+    private val TAG = "SyncAllData"
 
     override fun latestSyncTime(): Long {
         return lastSyncTime
@@ -39,7 +40,7 @@ class SyncAllData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<out WmBase
 
             val words = arrayOf(
                 WmSyncDataType.STEP,
-                WmSyncDataType.DISTANCE,
+//                WmSyncDataType.DISTANCE,
                 WmSyncDataType.CALORIE,
                 WmSyncDataType.HEART_RATE_ONE_HOUR,
                 WmSyncDataType.HEART_RATE_FIVE_MINUTES,
@@ -53,13 +54,15 @@ class SyncAllData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<out WmBase
                 .fromIterable(words.toList()) // create an observable from the input list
                 .concatMap { word ->
 
+                    sjUniWatch.wmLog.logE(TAG, "请求了:$word")
+
                     when (word) {
                         WmSyncDataType.STEP -> {
                             sjUniWatch.wmSync.syncStepData.syncData(startTime)
                         }
-                        WmSyncDataType.DISTANCE -> {
-                            sjUniWatch.wmSync.syncDistanceData.syncData(startTime)
-                        }
+//                        WmSyncDataType.DISTANCE -> {
+//                            sjUniWatch.wmSync.syncDistanceData.syncData(startTime)
+//                        }
                         WmSyncDataType.CALORIE -> {
                             sjUniWatch.wmSync.syncCaloriesData.syncData(startTime)
                         }
@@ -82,12 +85,16 @@ class SyncAllData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<out WmBase
                         else -> {
                             sjUniWatch.wmSync.syncSportSummaryData.syncData(startTime)
                         }
-
                     }
                 }
 
             characters.subscribe { wmSyncData ->
+                sjUniWatch.wmLog.logE(TAG, "sync All back data${wmSyncData}")
                 emitter.onNext(wmSyncData)
+
+                if (wmSyncData.type == WmSyncDataType.SPORT_SUMMARY) {
+                    emitter.onComplete()
+                }
             }
 
         }

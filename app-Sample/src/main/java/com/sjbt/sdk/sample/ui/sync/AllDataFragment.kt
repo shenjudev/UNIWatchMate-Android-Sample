@@ -20,6 +20,7 @@ import kotlinx.coroutines.reactive.asFlow
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.rx3.asFlow
 import kotlinx.coroutines.rx3.await
+import kotlinx.coroutines.rx3.awaitFirst
 import timber.log.Timber
 import java.util.*
 
@@ -47,10 +48,10 @@ class AllDataFragment : DataListFragment<WmBaseSyncData>() {
             val calendar = Calendar.getInstance()
             val start: Date = DateTimeUtils.getDayStartTime(calendar, date)
             val end: Date = DateTimeUtils.getDayEndTime(calendar, date)
-//           val result = UNIWatchMate.wmSync.syncAllData.syncData(start.time)
-//                .await()
-//            Timber.i("queryData result=${result}")
-//            result.value
+           val result = UNIWatchMate.wmSync.syncAllData.syncData(start.time)
+                .awaitFirst()
+            Timber.i("queryData result=${result}")
+            result.value
             mutableListOf()
         }
     }
