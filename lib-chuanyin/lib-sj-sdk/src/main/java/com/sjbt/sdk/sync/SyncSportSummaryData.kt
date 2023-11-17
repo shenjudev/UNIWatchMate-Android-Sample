@@ -299,10 +299,12 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
                 try {
                     if (it.divideType == DIVIDE_Y_F_2) {
 
-                        val byteBuffer = ByteBuffer.wrap(it.payload.copyOfRange(
-                            17,
-                            it.payload.size
-                        )).order(ByteOrder.LITTLE_ENDIAN)
+                        val byteBuffer = ByteBuffer.wrap(
+                            it.payload.copyOfRange(
+                                17,
+                                it.payload.size
+                            )
+                        ).order(ByteOrder.LITTLE_ENDIAN)
 
                         sjUniWatch.wmLog.logE(
                             TAG,
@@ -582,12 +584,7 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
             parseTenSecondsDataWithHead(byteBufferSyncDataDistance, URN_SPORT_10S_DISTANCE)
 
         } else if (nodeData.dataFmt == DataFormat.FMT_ERRCODE || nodeData.dataFmt == DataFormat.FMT_NODATA) {
-//            if (tenSecondsRequestIndex < mTenUrnArray.size) {
-//                tenSecondsRequestIndex++
-//                syncTenSecondsData(mTenUrnArray[tenSecondsRequestIndex])
-//            } else {
             defaultBackData()
-//            }
         }
     }
 
@@ -604,12 +601,7 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
             parseTenSecondsDataWithHead(byteBufferSyncDataCalorie, URN_SPORT_10S_CALORIES)
 
         } else if (nodeData.dataFmt == DataFormat.FMT_ERRCODE || nodeData.dataFmt == DataFormat.FMT_NODATA) {
-//            if (tenSecondsRequestIndex < mTenUrnArray.size) {
-//                tenSecondsRequestIndex++
-//                syncTenSecondsData(mTenUrnArray[tenSecondsRequestIndex])
-//            } else {
             defaultBackData()
-//            }
         }
     }
 
@@ -626,12 +618,7 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
             parseTenSecondsDataWithHead(byteBufferSyncDataRate, URN_SPORT_10S_RATE)
 
         } else if (nodeData.dataFmt == DataFormat.FMT_ERRCODE || nodeData.dataFmt == DataFormat.FMT_NODATA) {
-//            if (tenSecondsRequestIndex < mTenUrnArray.size) {
-//                tenSecondsRequestIndex++
-//                syncTenSecondsData(mTenUrnArray[tenSecondsRequestIndex])
-//            } else {
             defaultBackData()
-//            }
         }
     }
 
@@ -648,12 +635,7 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
             parseTenSecondsDataWithHead(byteBufferSyncDataFrequency, URN_SPORT_10S_STEP_FREQUENCY)
 
         } else if (nodeData.dataFmt == DataFormat.FMT_ERRCODE || nodeData.dataFmt == DataFormat.FMT_NODATA) {
-//            if (tenSecondsRequestIndex < mTenUrnArray.size) {
-//                tenSecondsRequestIndex++
-//                syncTenSecondsData(mTenUrnArray[tenSecondsRequestIndex])
-//            } else {
             defaultBackData()
-//            }
         }
     }
 
@@ -661,7 +643,7 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
         if (wmSyncData == null) {
             wmSyncData =
                 WmSyncData(
-                    WmSyncDataType.STEP,
+                    WmSyncDataType.SPORT_SUMMARY,
                     0,
                     WmIntervalType.TEN_SECONDS,
                     mutableListOf<WmSportSummaryData>()

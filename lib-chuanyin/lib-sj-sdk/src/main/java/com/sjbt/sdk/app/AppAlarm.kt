@@ -6,10 +6,7 @@ import com.base.sdk.exception.WmTimeOutException
 import com.base.sdk.port.app.AbAppAlarm
 import com.sjbt.sdk.ALARM_NAME_LEN
 import com.sjbt.sdk.SJUniWatch
-import com.sjbt.sdk.entity.ErrorCode
-import com.sjbt.sdk.entity.MsgBean
-import com.sjbt.sdk.entity.NodeData
-import com.sjbt.sdk.entity.PayloadPackage
+import com.sjbt.sdk.entity.*
 import com.sjbt.sdk.spp.cmd.*
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.core.ObservableEmitter
@@ -23,8 +20,9 @@ class AppAlarm(val sjUniWatch: SJUniWatch) : AbAppAlarm() {
 
     private var observeAlarmListEmitter: ObservableEmitter<List<WmAlarm>>? = null
     private var updateAlarmEmitter: SingleEmitter<Boolean>? = null
-
+    private var getAlarmEmitter: SingleEmitter<List<WmAlarm>>? = null
     private val TAG = "AppAlarm"
+    private var getData = false
 
     override fun updateAlarmList(alarms: List<WmAlarm>): Single<Boolean> {
         return Single.create {
@@ -35,17 +33,31 @@ class AppAlarm(val sjUniWatch: SJUniWatch) : AbAppAlarm() {
 
     override var observeAlarmList: Observable<List<WmAlarm>> = Observable.create {
         observeAlarmListEmitter = it
+    }
+
+    override var getAlarmList: Single<List<WmAlarm>> = Single.create {
+        getData = true
+        getAlarmEmitter = it
         sjUniWatch.sendReadNodeCmdList(getReadAlarmListCmd())
     }
 
     private fun syncAlarmListSuccess(alarmList: List<WmAlarm>) {
         alarmList?.let {
-            observeAlarmListEmitter?.onNext(it)
+            if (getData) {
+                getAlarmEmitter?.onSuccess(it)
+                getData = false
+            } else {
+                observeAlarmListEmitter?.onNext(it)
+            }
         }
     }
 
     fun onTimeOut(msgBean: MsgBean, nodeData: NodeData) {
-        updateAlarmEmitter?.onError(WmTimeOutException())
+        when (nodeData.urn[2]) {
+            URN_APP_ALARM_LIST -> {
+                updateAlarmEmitter?.onError(WmTimeOutException())
+            }
+        }
     }
 
     fun alarmBusiness(nodeData: NodeData) {
@@ -53,7 +65,7 @@ class AppAlarm(val sjUniWatch: SJUniWatch) : AbAppAlarm() {
 
             URN_APP_ALARM_LIST -> {
 
-                if (nodeData.data.size == 1) {
+                if (nodeData.data.size == 1 && nodeData.dataFmt == DataFormat.FMT_ERRCODE) {
                     updateAlarmEmitter?.let {
                         it.onSuccess(nodeData.data[0].toInt() == ErrorCode.ERR_CODE_OK.ordinal)
                     }
@@ -88,10 +100,6 @@ class AppAlarm(val sjUniWatch: SJUniWatch) : AbAppAlarm() {
 
                             wmAlarm.isOn = isEnable == 1
 
-//                            alarmIdStates.forEach {
-//                                it.used = it.value== id
-//                            }
-
                             sjUniWatch.wmLog.logD(TAG, "Alarm INFO:$wmAlarm ")
 
                             if (id != 0) {
@@ -115,12 +123,6 @@ class AppAlarm(val sjUniWatch: SJUniWatch) : AbAppAlarm() {
 
         val totalAlarms = mutableListOf<WmAlarm>()
         totalAlarms.addAll(alarms)
-
-//        if (alarms.size < 10) {
-//            for (i in 0 until 10 - alarms.size) {
-//                totalAlarms.add(WmAlarm("", 0, 0, AlarmRepeatOption.fromValue(0)))
-//            }
-//        }
 
         val byteBuffer: ByteBuffer =
             ByteBuffer.allocate(25 * totalAlarms.size).order(ByteOrder.LITTLE_ENDIAN)

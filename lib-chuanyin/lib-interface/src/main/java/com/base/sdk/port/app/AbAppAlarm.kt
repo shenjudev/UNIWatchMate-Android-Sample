@@ -14,8 +14,13 @@ abstract class AbAppAlarm {
     abstract fun updateAlarmList(alarms:List<WmAlarm>): Single<Boolean>
 
     /**
-     *  从设备端获取闹钟列表，并监听闹钟列表变化
+     *  监听闹钟列表变化
      */
     abstract var observeAlarmList: Observable<List<WmAlarm>>
+
+    /**
+     * 从设备获取闹钟列表
+     */
+    abstract var getAlarmList:Single<List<WmAlarm>>
 
 }
