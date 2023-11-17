@@ -9,10 +9,12 @@ import com.sjbt.sdk.sample.base.Loading
 import com.sjbt.sdk.sample.base.StateEventViewModel
 import com.sjbt.sdk.sample.base.Success
 import com.sjbt.sdk.sample.base.Uninitialized
+import com.sjbt.sdk.sample.utils.ToastUtil
 import com.sjbt.sdk.sample.utils.runCatchingWithLog
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.reactive.asFlow
 import kotlinx.coroutines.rx3.asFlow
 import kotlinx.coroutines.rx3.await
 import kotlinx.coroutines.rx3.awaitFirst
@@ -36,12 +38,13 @@ class AlarmViewModel : StateEventViewModel<AlarmState, AlarmEvent>(AlarmState())
     //    private val deviceManager = Injector.getDeviceManager()
     init {
         requestAlarms()
+        observeAlarms()
     }
 
     fun requestAlarms() {
         viewModelScope.launch {
             state.copy(requestAlarms = Loading()).newState()
-            UNIWatchMate.wmApps.appAlarm.observeAlarmList.asFlow().catch {
+            UNIWatchMate.wmApps.appAlarm.getAlarmList.toFlowable().asFlow().catch {
                 state.copy(requestAlarms = Fail(it)).newState()
                 AlarmEvent.RequestFail(it).newEvent()
             }.collect{
@@ -49,7 +52,19 @@ class AlarmViewModel : StateEventViewModel<AlarmState, AlarmEvent>(AlarmState())
             }
         }
     }
-
+    fun observeAlarms() {
+        viewModelScope.launch {
+            state.copy(requestAlarms = Loading()).newState()
+            UNIWatchMate.wmApps.appAlarm.observeAlarmList.asFlow().catch {
+//                state.copy(requestAlarms = Fail(it)).newState()
+//                AlarmEvent.RequestFail(it).newEvent()
+                ToastUtil.showToast(it.message)
+                Timber.e(it)
+            }.collect{
+                state.copy(requestAlarms = Success(ArrayList(AlarmHelper.sort(it)))).newState()
+            }
+        }
+    }
     private fun findAlarmAddPosition(alarm: WmAlarm, list: List<WmAlarm>): Int {
         var addPosition: Int? = null
         for (i in list.indices) {

@@ -76,7 +76,7 @@ class SportFragment : DataListFragment<WmSportSummaryData>(),
     private fun getSportName(sportId: Int): String {
         getSportLibrary().sports.forEach { localSport ->
             if (sportId == localSport.id) {
-                return getSportLibrary().getNameById(sportId) + getSportLibrary().getTypeById(
+                return getSportLibrary().getNameById(sportId) + "   "+getSportLibrary().getTypeById(
                     sportId
                 )
             }
