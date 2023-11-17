@@ -22,16 +22,13 @@ import java.nio.ByteBuffer
 import java.nio.charset.StandardCharsets
 
 class AppContact(val sjUniWatch: SJUniWatch) : AbAppContact(), ReadSubPkMsg {
-    private var contactListEmitter: ObservableEmitter<List<WmContact>>? = null
+    private var getContactListEmitter: SingleEmitter<List<WmContact>>? = null
     private var updateContactEmitter: SingleEmitter<Boolean>? = null
     private var updateEmergencyEmitter: SingleEmitter<WmEmergencyCall>? = null
     private var emergencyNumberEmitter: ObservableEmitter<WmEmergencyCall>? = null
     private var mEmergencyCall: WmEmergencyCall = WmEmergencyCall(false, mutableListOf())
     private val mContacts = mutableListOf<WmContact>()
     private val msgList = mutableSetOf<MsgBean>()
-
-    //    private val businessMap: LinkedHashMap<Int, LinkedHashMap<Int, MsgBean>> =
-//        linkedMapOf<Int, LinkedHashMap<Int, MsgBean>>()
     private val msgPkMap = LinkedHashMap<Int, MsgBean>()
 
     /**
@@ -49,9 +46,9 @@ class AppContact(val sjUniWatch: SJUniWatch) : AbAppContact(), ReadSubPkMsg {
         return hasNext
     }
 
-    override val getContactList: Observable<List<WmContact>> = Observable.create {
+    override val getContactList: Single<List<WmContact>> = Single.create {
         mContacts.clear()
-        contactListEmitter = it
+        getContactListEmitter = it
         msgList.clear()
 
         sjUniWatch.sendReadSubPkObserveNode(this, getReadContactListCmd())
@@ -100,8 +97,7 @@ class AppContact(val sjUniWatch: SJUniWatch) : AbAppContact(), ReadSubPkMsg {
                             }
                         }
 
-                        contactListEmitter?.onNext(mContacts)
-                        contactListEmitter?.onComplete()
+                        getContactListEmitter?.onSuccess(mContacts)
                     }
                 }
             })
@@ -132,11 +128,11 @@ class AppContact(val sjUniWatch: SJUniWatch) : AbAppContact(), ReadSubPkMsg {
 
         when (nodeData.urn[2]) {
 
-            URN_APP_CONTACT_LIST ->{
+            URN_APP_CONTACT_LIST -> {
 
             }
 
-            URN_APP_CONTACT_EMERGENCY ->{
+            URN_APP_CONTACT_EMERGENCY -> {
 
             }
         }
@@ -264,7 +260,11 @@ class AppContact(val sjUniWatch: SJUniWatch) : AbAppContact(), ReadSubPkMsg {
             URN_APP_CONTACT_LIST -> {
 
                 if (it.data.size == 1) {
-                    updateContactListBack(it.data[0].toInt() == ErrorCode.ERR_CODE_OK.ordinal)
+                    if (it.data[0].toInt() == 2 && it.dataFmt == DataFormat.FMT_ERRCODE) {
+                        getContactListEmitter?.onSuccess(mContacts)
+                    } else {
+                        updateContactListBack(it.data[0].toInt() == ErrorCode.ERR_CODE_OK.ordinal)
+                    }
 
                 } else {
                     if (payload.packageSeq == 0) {
@@ -298,8 +298,7 @@ class AppContact(val sjUniWatch: SJUniWatch) : AbAppContact(), ReadSubPkMsg {
                             }
                         }
 
-                        contactListEmitter?.onNext(mContacts)
-                        contactListEmitter?.onComplete()
+                        getContactListEmitter?.onSuccess(mContacts)
                     }
                 }
             }

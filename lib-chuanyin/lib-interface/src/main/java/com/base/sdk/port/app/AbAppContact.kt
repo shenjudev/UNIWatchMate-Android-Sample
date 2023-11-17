@@ -13,7 +13,7 @@ abstract class AbAppContact {
     /**
      * 从设备端获取通讯录列表
      */
-    abstract val getContactList: Observable<List<WmContact>>
+    abstract val getContactList: Single<List<WmContact>>
 
     /**
      * 设置联系人个数

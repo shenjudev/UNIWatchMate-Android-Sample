@@ -49,7 +49,7 @@ class ContactsViewModel() : StateEventViewModel<ContactsState, ContactsEvent>(Co
 
             runCatchingWithLog {
                 Timber.i("requestContacts: awaitFirst")
-                UNIWatchMate.wmApps.appContact.getContactList.awaitFirst()
+                UNIWatchMate.wmApps.appContact.getContactList.await()
             }.onSuccess {
                 state.copy(requestContacts = Success(ArrayList(it))).newState()
             }.onFailure {
