@@ -23,8 +23,7 @@ class SyncRealtimeRateData(val sjUniWatch: SJUniWatch) :
     AbSyncData<WmSyncData<WmRealtimeRateData>>(), ReadSubPkMsg {
 
     var lastSyncTime: Long = 0
-    private var realTimeHeartRateObserveEmitter: SingleEmitter<WmSyncData<WmRealtimeRateData>>? =
-        null
+    private var realTimeHeartRateObserveEmitter: ObservableEmitter<WmSyncData<WmRealtimeRateData>>? = null
     private var observeChangeEmitter: ObservableEmitter<WmSyncData<WmRealtimeRateData>>? = null
 
     private val TAG = "SyncRealtimeRateData"
@@ -45,12 +44,12 @@ class SyncRealtimeRateData(val sjUniWatch: SJUniWatch) :
     }
 
     fun onTimeOut(msg: MsgBean, nodeData: NodeData) {
-        realTimeHeartRateObserveEmitter?.onError(WmTimeOutException())
+//        realTimeHeartRateObserveEmitter?.onError(WmTimeOutException())
     }
 
-    override fun syncData(startTime: Long): Single<WmSyncData<WmRealtimeRateData>> {
+    override fun syncData(startTime: Long): Observable<WmSyncData<WmRealtimeRateData>> {
 
-        return Single.create { emitter ->
+        return Observable.create { emitter ->
             realTimeHeartRateObserveEmitter = emitter
             sjUniWatch.sendReadSubPkObserveNode(
                 this,
@@ -178,7 +177,8 @@ class SyncRealtimeRateData(val sjUniWatch: SJUniWatch) :
                 realTimeRateList
             )
 
-        realTimeHeartRateObserveEmitter?.onSuccess(wmSyncData)
+        realTimeHeartRateObserveEmitter?.onNext(wmSyncData)
+        realTimeHeartRateObserveEmitter?.onComplete()
         lastSyncTime = System.currentTimeMillis()
 
         sjUniWatch.wmLog.logE(
@@ -195,7 +195,8 @@ class SyncRealtimeRateData(val sjUniWatch: SJUniWatch) :
             val wmSyncData =
                 WmSyncData(WmSyncDataType.STEP, 0, WmIntervalType.ONE_HOUR, mutableListOf<WmRealtimeRateData>())
 
-            realTimeHeartRateObserveEmitter?.onSuccess(wmSyncData)
+            realTimeHeartRateObserveEmitter?.onNext(wmSyncData)
+            realTimeHeartRateObserveEmitter?.onComplete()
         }
     }
 

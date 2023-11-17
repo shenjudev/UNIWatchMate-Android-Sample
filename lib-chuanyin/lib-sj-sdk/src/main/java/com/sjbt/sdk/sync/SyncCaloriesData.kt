@@ -25,7 +25,7 @@ import java.util.*
 class SyncCaloriesData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmCaloriesData>>(),
     ReadSubPkMsg {
     var lastSyncTime: Long = 0
-    private var caloriesObserveEmitter: SingleEmitter<WmSyncData<WmCaloriesData>>? = null
+    private var caloriesObserveEmitter: ObservableEmitter<WmSyncData<WmCaloriesData>>? = null
     private var observeChangeEmitter: ObservableEmitter<WmSyncData<WmCaloriesData>>? = null
 
     private val TAG = "SyncCaloriesData"
@@ -46,16 +46,16 @@ class SyncCaloriesData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmCal
     }
 
     fun onTimeOut(msg: MsgBean, nodeData: NodeData) {
-        caloriesObserveEmitter?.onError(WmTimeOutException())
+//        caloriesObserveEmitter?.onError(WmTimeOutException())
     }
 
-    override fun syncData(startTime: Long): Single<WmSyncData<WmCaloriesData>> {
-        return Single.create { emitter ->
+    override fun syncData(startTime: Long): Observable<WmSyncData<WmCaloriesData>> {
+        return Observable.create { emitter ->
             caloriesObserveEmitter = emitter
             sjUniWatch.sendReadSubPkObserveNode(
                 this,
                 CmdHelper.getReadSportSyncData(
-                    startTime, lastSyncTime,
+                    startTime, 0,
                     childUrn = URN_SPORT_CALORIES
                 )
             ).subscribe(object :
@@ -174,7 +174,9 @@ class SyncCaloriesData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmCal
         val wmSyncData =
             WmSyncData(WmSyncDataType.CALORIE, realTimeStamp, WmIntervalType.ONE_HOUR, caloriesList)
 
-        caloriesObserveEmitter?.onSuccess(wmSyncData)
+        caloriesObserveEmitter?.onNext(wmSyncData)
+        caloriesObserveEmitter?.onComplete()
+
         lastSyncTime = System.currentTimeMillis()
 
         sjUniWatch.wmLog.logE(
@@ -197,7 +199,8 @@ class SyncCaloriesData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmCal
                     mutableListOf<WmCaloriesData>()
                 )
 
-            caloriesObserveEmitter?.onSuccess(wmSyncData)
+            caloriesObserveEmitter?.onNext(wmSyncData)
+            caloriesObserveEmitter?.onComplete()
         }
     }
 

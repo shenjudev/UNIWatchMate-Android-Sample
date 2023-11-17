@@ -25,7 +25,7 @@ import java.util.*
 class SyncSleepData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmSleepData>>(),
     ReadSubPkMsg {
     var lastSyncTime: Long = 0
-    private var activityObserveEmitter: SingleEmitter<WmSyncData<WmSleepData>>? = null
+    private var activityObserveEmitter: ObservableEmitter<WmSyncData<WmSleepData>>? = null
     private var observeChangeEmitter: ObservableEmitter<WmSyncData<WmSleepData>>? = null
 
     private val TAG = "SyncSleepData"
@@ -48,18 +48,18 @@ class SyncSleepData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmSleepD
     }
 
     fun onTimeOut(msg: MsgBean, nodeData: NodeData) {
-        activityObserveEmitter?.onError(WmTimeOutException())
+//        activityObserveEmitter?.onError(WmTimeOutException())
     }
 
-    override fun syncData(startTime: Long): Single<WmSyncData<WmSleepData>> {
+    override fun syncData(startTime: Long): Observable<WmSyncData<WmSleepData>> {
 
-        return Single.create { emitter ->
+        return Observable.create { emitter ->
             activityObserveEmitter = emitter
             sjUniWatch.sendReadSubPkObserveNode(
                 this,
                 CmdHelper.getReadSportSyncData(
                     startTime,
-                    lastSyncTime,
+                    0,
                     childUrn = URN_SPORT_SLEEP
                 )
             ).subscribe(object :
@@ -261,7 +261,8 @@ class SyncSleepData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmSleepD
                 sleepDataList
             )
 
-        activityObserveEmitter?.onSuccess(wmSyncData)
+        activityObserveEmitter?.onNext(wmSyncData)
+        activityObserveEmitter?.onComplete()
         lastSyncTime = System.currentTimeMillis()
     }
 
@@ -279,7 +280,8 @@ class SyncSleepData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmSleepD
                     mutableListOf<WmSleepData>()
                 )
 
-            activityObserveEmitter?.onSuccess(wmSyncData)
+            activityObserveEmitter?.onNext(wmSyncData)
+            activityObserveEmitter?.onComplete()
         }
     }
 

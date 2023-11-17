@@ -13,6 +13,7 @@ import com.sjbt.sdk.sample.utils.FormatterUtil
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.rx3.await
+import kotlinx.coroutines.rx3.awaitFirst
 import kotlinx.coroutines.withContext
 import java.util.*
 
@@ -52,7 +53,7 @@ class SleepFragment : DataListFragment<WmSleepItem>() {
             val calendar = Calendar.getInstance()
             start = DateTimeUtils.getDayStartTime(calendar, date)
             val end: Date = DateTimeUtils.getDayEndTime(calendar, date)
-            val data = UNIWatchMate.wmSync.syncSleepData.syncData(start!!.time).await().value
+            val data = UNIWatchMate.wmSync.syncSleepData.syncData(start!!.time).awaitFirst().value
 
             val sleepItemDatas = mutableListOf<WmSleepItem>()
             val duration = IntArray(4)

@@ -25,7 +25,7 @@ import java.util.*
 class SyncOxygenData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmOxygenData>>(),
     ReadSubPkMsg {
     var lastSyncTime: Long = 0
-    private var oxygenObserveEmitter: SingleEmitter<WmSyncData<WmOxygenData>>? = null
+    private var oxygenObserveEmitter: ObservableEmitter<WmSyncData<WmOxygenData>>? = null
     private var observeChangeEmitter: ObservableEmitter<WmSyncData<WmOxygenData>>? = null
 
     private val TAG = "SyncOxygenData"
@@ -46,11 +46,11 @@ class SyncOxygenData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmOxyge
     }
 
     fun onTimeOut(msg: MsgBean, nodeData: NodeData) {
-        oxygenObserveEmitter?.onError(WmTimeOutException())
+//        oxygenObserveEmitter?.onError(WmTimeOutException())
     }
 
-    override fun syncData(startTime: Long): Single<WmSyncData<WmOxygenData>> {
-        return Single.create { emitter ->
+    override fun syncData(startTime: Long): Observable<WmSyncData<WmOxygenData>> {
+        return Observable.create { emitter ->
             oxygenObserveEmitter = emitter
             sjUniWatch.sendReadSubPkObserveNode(
                 this,
@@ -179,7 +179,8 @@ class SyncOxygenData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmOxyge
                 oxygenDataList
             )
 
-        oxygenObserveEmitter?.onSuccess(wmSyncData)
+        oxygenObserveEmitter?.onNext(wmSyncData)
+        oxygenObserveEmitter?.onComplete()
         lastSyncTime = System.currentTimeMillis()
 
         sjUniWatch.wmLog.logE(
@@ -201,7 +202,8 @@ class SyncOxygenData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmOxyge
                     mutableListOf<WmOxygenData>()
                 )
 
-            oxygenObserveEmitter?.onSuccess(wmSyncData)
+            oxygenObserveEmitter?.onNext(wmSyncData)
+            oxygenObserveEmitter?.onComplete()
         }
     }
 

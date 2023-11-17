@@ -17,7 +17,7 @@ abstract class AbSyncData<T> {
     /**
      * 同步数据（最近7日）
      */
-    abstract fun syncData(startTime: Long): Single<T>
+    abstract fun syncData(startTime: Long): Observable<T>
 
     /**
      * 观察数据监听

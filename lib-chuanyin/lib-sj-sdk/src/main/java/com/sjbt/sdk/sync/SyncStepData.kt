@@ -27,7 +27,7 @@ class SyncStepData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmStepDat
     ReadSubPkMsg {
 
     var lastSyncTime: Long = 0
-    private var stepObserveEmitter: SingleEmitter<WmSyncData<WmStepData>>? = null
+    private var stepObserveEmitter: ObservableEmitter<WmSyncData<WmStepData>>? = null
     private var observeChangeEmitter: ObservableEmitter<WmSyncData<WmStepData>>? = null
     private val TAG = "SyncStepData"
 
@@ -48,13 +48,13 @@ class SyncStepData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmStepDat
     }
 
     fun onTimeOut(msg: MsgBean, nodeData: NodeData) {
-        stepObserveEmitter?.onError(WmTimeOutException())
+//        stepObserveEmitter?.onError(WmTimeOutException())
     }
 
-    override fun syncData(startTime: Long): Single<WmSyncData<WmStepData>> {
+    override fun syncData(startTime: Long): Observable<WmSyncData<WmStepData>> {
         msgList.clear()
 
-        return Single.create { emitter ->
+        return Observable.create { emitter ->
             stepObserveEmitter = emitter
             sjUniWatch.sendReadSubPkObserveNode(
                 this,
@@ -180,7 +180,9 @@ class SyncStepData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmStepDat
         val wmSyncData =
             WmSyncData(WmSyncDataType.STEP, realTimeStamp, WmIntervalType.ONE_HOUR, stepList)
 
-        stepObserveEmitter?.onSuccess(wmSyncData)
+        stepObserveEmitter?.onNext(wmSyncData)
+        stepObserveEmitter?.onComplete()
+
         lastSyncTime = System.currentTimeMillis()
 
         sjUniWatch.wmLog.logE(
@@ -205,7 +207,8 @@ class SyncStepData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmStepDat
                     mutableListOf<WmStepData>()
                 )
 
-            stepObserveEmitter?.onSuccess(wmSyncData)
+            stepObserveEmitter?.onNext(wmSyncData)
+            stepObserveEmitter?.onComplete()
         }
     }
 

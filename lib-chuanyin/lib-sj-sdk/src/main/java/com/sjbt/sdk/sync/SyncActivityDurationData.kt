@@ -28,7 +28,7 @@ class SyncActivityDurationData(val sjUniWatch: SJUniWatch) :
     AbSyncData<WmSyncData<WmActivityDurationData>>(), ReadSubPkMsg {
 
     var lastSyncTime: Long = 0
-    private var activityDurationObserveEmitter: SingleEmitter<WmSyncData<WmActivityDurationData>>? = null
+    private var activityDurationObserveEmitter: ObservableEmitter<WmSyncData<WmActivityDurationData>>? = null
     private var observeChangeEmitter: ObservableEmitter<WmSyncData<WmActivityDurationData>>? = null
 
     private val TAG = "SyncActivityDurationData"
@@ -49,17 +49,17 @@ class SyncActivityDurationData(val sjUniWatch: SJUniWatch) :
     }
 
     fun onTimeOut(msgBean: MsgBean, nodeData: NodeData) {
-        activityDurationObserveEmitter?.onError(WmTimeOutException())
+//        activityDurationObserveEmitter?.onError(WmTimeOutException())
     }
 
-    override fun syncData(startTime: Long): Single<WmSyncData<WmActivityDurationData>> {
+    override fun syncData(startTime: Long): Observable<WmSyncData<WmActivityDurationData>> {
 
-        return Single.create { emitter ->
+        return Observable.create { emitter ->
             activityDurationObserveEmitter = emitter
             sjUniWatch.sendReadSubPkObserveNode(
                 this,
                 CmdHelper.getReadSportSyncData(
-                    startTime, lastSyncTime,
+                    startTime, 0,
                     childUrn = URN_SPORT_ACTIVITY_LEN
                 )
             ).subscribe(object :
@@ -182,7 +182,9 @@ class SyncActivityDurationData(val sjUniWatch: SJUniWatch) :
                 activityDurationDataList
             )
 
-        activityDurationObserveEmitter?.onSuccess(wmSyncData)
+        activityDurationObserveEmitter?.onNext(wmSyncData)
+        activityDurationObserveEmitter?.onComplete()
+
         lastSyncTime = System.currentTimeMillis()
 
         sjUniWatch.wmLog.logE(
@@ -204,7 +206,8 @@ class SyncActivityDurationData(val sjUniWatch: SJUniWatch) :
                     mutableListOf<WmActivityDurationData>()
                 )
 
-            activityDurationObserveEmitter?.onSuccess(wmSyncData)
+            activityDurationObserveEmitter?.onNext(wmSyncData)
+            activityDurationObserveEmitter?.onComplete()
         }
     }
 

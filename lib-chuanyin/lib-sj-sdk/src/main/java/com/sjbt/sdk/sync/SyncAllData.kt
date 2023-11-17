@@ -6,18 +6,14 @@ import com.sjbt.sdk.ReadSubPkMsg
 import com.sjbt.sdk.SJUniWatch
 import com.sjbt.sdk.entity.MsgBean
 import com.sjbt.sdk.entity.NodeData
-import com.sjbt.sdk.spp.cmd.CmdHelper
-import com.sjbt.sdk.spp.cmd.URN_SPORT_10S_DISTANCE
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.core.ObservableEmitter
-import io.reactivex.rxjava3.core.Single
-import io.reactivex.rxjava3.core.SingleEmitter
 
 class SyncAllData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<out WmBaseSyncData>>(),
     ReadSubPkMsg {
 
     var lastSyncTime: Long = 0
-    private var activityObserveEmitter: SingleEmitter<WmSyncData<out WmBaseSyncData>>? = null
+    private var syncDataEmitter: ObservableEmitter<WmSyncData<out WmBaseSyncData>>? = null
     private var observeChangeEmitter: ObservableEmitter<WmSyncData<out WmBaseSyncData>>? = null
     private var hasNext = false
 
@@ -36,46 +32,64 @@ class SyncAllData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<out WmBase
         return hasNext
     }
 
-    override fun syncData(startTime: Long): Single<WmSyncData<out WmBaseSyncData>> {
-        return Single.create { emitter ->
-            activityObserveEmitter = emitter
+    override fun syncData(startTime: Long): Observable<WmSyncData<out WmBaseSyncData>> {
 
-            sjUniWatch.wmSync.syncStepData.syncData(startTime).subscribe { wmStepData ->
-                observeChangeEmitter?.onNext(wmStepData)
+        return Observable.create { emitter ->
+            syncDataEmitter = emitter
 
-                sjUniWatch.wmSync.syncCaloriesData.syncData(startTime).subscribe { wmCalories ->
-                    observeChangeEmitter?.onNext(wmCalories)
+            val words = arrayOf(
+                WmSyncDataType.STEP,
+                WmSyncDataType.DISTANCE,
+                WmSyncDataType.CALORIE,
+                WmSyncDataType.HEART_RATE_ONE_HOUR,
+                WmSyncDataType.HEART_RATE_FIVE_MINUTES,
+                WmSyncDataType.OXYGEN,
+                WmSyncDataType.ACTIVITY_DURATION,
+                WmSyncDataType.SPORT_SUMMARY,
+                WmSyncDataType.SLEEP
+            )
 
-                    sjUniWatch.wmSync.syncDistanceData.syncData(startTime).subscribe { wmDistance ->
-                        observeChangeEmitter?.onNext(wmDistance)
+            val characters: Observable<WmSyncData<out WmBaseSyncData>> = Observable
+                .fromIterable(words.toList()) // create an observable from the input list
+                .concatMap { word ->
 
-                        sjUniWatch.wmSync.syncOxygenData.syncData(startTime).subscribe { wmOxygenData ->
-                            observeChangeEmitter?.onNext(wmOxygenData)
-
-                            sjUniWatch.wmSync.syncHeartRateData.syncData(startTime).subscribe { wmRate ->
-                                observeChangeEmitter?.onNext(wmRate)
-
-                                sjUniWatch.wmSync.syncRealtimeRateData.syncData(startTime).subscribe { wmRealTimeRate ->
-                                    observeChangeEmitter?.onNext(wmRealTimeRate)
-
-                                    sjUniWatch.wmSync.syncSleepData.syncData(startTime).subscribe { wmSleepData->
-                                        observeChangeEmitter?.onNext(wmSleepData)
-
-                                        sjUniWatch.wmSync.syncActivityDurationData.syncData(startTime).subscribe { wmActivityDuration->
-                                            observeChangeEmitter?.onNext(wmActivityDuration)
-
-                                            sjUniWatch.wmSync.syncSportSummaryData.syncData(startTime).subscribe { wmSportSummary->
-                                                observeChangeEmitter?.onNext(wmSportSummary)
-                                                observeChangeEmitter?.onComplete()
-                                            }
-                                        }
-                                    }
-                                }
-                            }
+                    when (word) {
+                        WmSyncDataType.STEP -> {
+                            sjUniWatch.wmSync.syncStepData.syncData(startTime)
                         }
+                        WmSyncDataType.DISTANCE -> {
+                            sjUniWatch.wmSync.syncDistanceData.syncData(startTime)
+                        }
+                        WmSyncDataType.CALORIE -> {
+                            sjUniWatch.wmSync.syncCaloriesData.syncData(startTime)
+                        }
+                        WmSyncDataType.HEART_RATE_ONE_HOUR -> {
+                            sjUniWatch.wmSync.syncHeartRateData.syncData(startTime)
+                        }
+                        WmSyncDataType.HEART_RATE_FIVE_MINUTES -> {
+                            sjUniWatch.wmSync.syncRealtimeRateData.syncData(startTime)
+                        }
+                        WmSyncDataType.OXYGEN -> {
+                            sjUniWatch.wmSync.syncOxygenData.syncData(startTime)
+                        }
+                        WmSyncDataType.ACTIVITY_DURATION -> {
+                            sjUniWatch.wmSync.syncActivityDurationData.syncData(startTime)
+                        }
+                        WmSyncDataType.SPORT_SUMMARY -> {
+                            sjUniWatch.wmSync.syncSportSummaryData.syncData(startTime)
+                        }
+
+                        else -> {
+                            sjUniWatch.wmSync.syncSportSummaryData.syncData(startTime)
+                        }
+
                     }
                 }
+
+            characters.subscribe { wmSyncData ->
+                emitter.onNext(wmSyncData)
             }
+
         }
     }
 

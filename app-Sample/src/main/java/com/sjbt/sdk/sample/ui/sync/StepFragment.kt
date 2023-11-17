@@ -11,6 +11,7 @@ import com.sjbt.sdk.sample.entity.HeartRateItemEntity
 import com.sjbt.sdk.sample.utils.DateTimeUtils
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.rx3.await
+import kotlinx.coroutines.rx3.awaitFirst
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -31,7 +32,7 @@ class StepFragment : DataListFragment<WmStepData>() {
             val start: Date = DateTimeUtils.getDayStartTime(calendar, date)
             val end: Date = DateTimeUtils.getDayEndTime(calendar, date)
             UNIWatchMate.wmSync.syncStepData.syncData(start.time)
-                .await()
+                .awaitFirst()
         }
 //        WmSyncData<WmStepData>
 //        if (result is ArrayList) {

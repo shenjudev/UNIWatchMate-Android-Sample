@@ -7,6 +7,7 @@ import com.sjbt.sdk.sample.R
 import com.sjbt.sdk.sample.utils.DateTimeUtils
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.rx3.await
+import kotlinx.coroutines.rx3.awaitFirst
 import java.util.*
 
 class OxygenFragment : DataListFragment<WmOxygenData>() {
@@ -24,6 +25,6 @@ class OxygenFragment : DataListFragment<WmOxygenData>() {
             val calendar = Calendar.getInstance()
             val start: Date = DateTimeUtils.getDayStartTime(calendar, date)
             val end: Date = DateTimeUtils.getDayEndTime(calendar, date)
-            UNIWatchMate.wmSync.syncOxygenData.syncData(start.time).await().value }
+            UNIWatchMate.wmSync.syncOxygenData.syncData(start.time).awaitFirst().value }
     }
 }

@@ -19,7 +19,7 @@ import java.util.*
 class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
     AbSyncData<WmSyncData<WmSportSummaryData>>(), ReadSubPkMsg {
     var lastSyncTime: Long = 0
-    private var syncSportSummaryObserveEmitter: SingleEmitter<WmSyncData<WmSportSummaryData>>? =
+    private var syncSportSummaryObserveEmitter: ObservableEmitter<WmSyncData<WmSportSummaryData>>? =
         null
     private var observeChangeEmitter: ObservableEmitter<WmSyncData<WmSportSummaryData>>? = null
 
@@ -59,11 +59,11 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
         return hasNext
     }
 
-    override fun syncData(startTime: Long): Single<WmSyncData<WmSportSummaryData>> {
+    override fun syncData(startTime: Long): Observable<WmSyncData<WmSportSummaryData>> {
         mStartTime = startTime
 //        tenSecondsRequestIndex = 0
         wmSyncData = null
-        return Single.create { emitter ->
+        return Observable.create { emitter ->
             syncSportSummaryObserveEmitter = emitter
             msgListSummary.clear()
             sjUniWatch.sendReadSubPkObserveNode(
@@ -440,7 +440,8 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
             it.tenSecondsStepFrequencyData = stepFrequencyList
         }
 
-        syncSportSummaryObserveEmitter?.onSuccess(wmSyncData)
+        syncSportSummaryObserveEmitter?.onNext(wmSyncData)
+        syncSportSummaryObserveEmitter?.onComplete()
 
         sjUniWatch.wmLog.logD(TAG, "final data wmSyncData：$wmSyncData")
     }
@@ -649,7 +650,8 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
                     mutableListOf<WmSportSummaryData>()
                 )
         }
-        syncSportSummaryObserveEmitter?.onSuccess(wmSyncData)
+        syncSportSummaryObserveEmitter?.onNext(wmSyncData)
+        syncSportSummaryObserveEmitter?.onComplete()
     }
 
 }

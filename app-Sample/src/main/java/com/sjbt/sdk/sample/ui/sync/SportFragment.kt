@@ -36,6 +36,7 @@ import com.sjbt.sdk.sample.utils.runCatchingWithLog
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.rx3.await
+import kotlinx.coroutines.rx3.awaitFirst
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
@@ -108,7 +109,7 @@ class SportLibraryViewModel(
         if (state.getports() != null && !state.getports()!!.isEmpty()) {
         } else {
             val start: Date = DateTimeUtils.getDayStartTime(calendar, date)
-            val result =    UNIWatchMate.wmSync.syncSportSummaryData.syncData(start.time).await().value
+            val result =    UNIWatchMate.wmSync.syncSportSummaryData.syncData(start.time).awaitFirst().value
             LogUtils.d("requestSports result = ${GsonUtils.toJson(result)}")
             state.copy(getports = Success(ArrayList(result))).newState()
 //            runCatchingWithLog {

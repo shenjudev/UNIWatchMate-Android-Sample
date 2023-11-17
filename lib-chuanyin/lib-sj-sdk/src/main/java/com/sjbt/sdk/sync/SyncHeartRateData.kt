@@ -22,7 +22,7 @@ import java.util.*
 class SyncHeartRateData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmHeartRateData>>(),
     ReadSubPkMsg {
     var lastSyncTime: Long = 0
-    private var heartRateObserveEmitter: SingleEmitter<WmSyncData<WmHeartRateData>>? = null
+    private var heartRateObserveEmitter: ObservableEmitter<WmSyncData<WmHeartRateData>>? = null
     private var observeChangeEmitter: ObservableEmitter<WmSyncData<WmHeartRateData>>? = null
 
     private val TAG = "SyncHeartRateData"
@@ -35,7 +35,7 @@ class SyncHeartRateData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmHe
     }
 
     fun onTimeOut(msg: MsgBean, nodeData: NodeData) {
-        heartRateObserveEmitter?.onError(WmTimeOutException())
+//        heartRateObserveEmitter?.onError(WmTimeOutException())
     }
 
     override fun setHasNext(hasNext: Boolean) {
@@ -46,14 +46,14 @@ class SyncHeartRateData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmHe
         return hasNext
     }
 
-    override fun syncData(startTime: Long): Single<WmSyncData<WmHeartRateData>> {
+    override fun syncData(startTime: Long): Observable<WmSyncData<WmHeartRateData>> {
 
-        return Single.create { emitter ->
+        return Observable.create { emitter ->
             heartRateObserveEmitter = emitter
             sjUniWatch.sendReadSubPkObserveNode(
                 this,
                 CmdHelper.getReadSportSyncData(
-                    startTime, lastSyncTime,
+                    startTime, 0,
                     childUrn = URN_SPORT_RATE,
                     grandSon = URN_SPORT_RATE_RECORD
                 )
@@ -182,7 +182,8 @@ class SyncHeartRateData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmHe
                 realTimeRateList
             )
 
-        heartRateObserveEmitter?.onSuccess(wmSyncData)
+        heartRateObserveEmitter?.onNext(wmSyncData)
+        heartRateObserveEmitter?.onComplete()
         lastSyncTime = System.currentTimeMillis()
 
         sjUniWatch.wmLog.logE(
@@ -200,7 +201,8 @@ class SyncHeartRateData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmHe
             val wmSyncData =
                 WmSyncData(WmSyncDataType.STEP, 0, WmIntervalType.ONE_HOUR, mutableListOf<WmHeartRateData>())
 
-            heartRateObserveEmitter?.onSuccess(wmSyncData)
+            heartRateObserveEmitter?.onNext(wmSyncData)
+            heartRateObserveEmitter?.onComplete()
         }
     }
 

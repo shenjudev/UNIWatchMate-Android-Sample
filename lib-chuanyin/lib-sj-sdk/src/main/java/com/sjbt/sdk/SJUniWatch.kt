@@ -14,7 +14,9 @@ import com.base.sdk.entity.WmDeviceModel
 import com.base.sdk.entity.apps.WmConnectState
 import com.base.sdk.entity.common.WmDiscoverDevice
 import com.base.sdk.entity.common.WmTimeUnit
+import com.base.sdk.entity.data.WmBaseSyncData
 import com.base.sdk.entity.data.WmBatteryInfo
+import com.base.sdk.entity.data.WmSyncData
 import com.base.sdk.entity.settings.*
 import com.base.sdk.port.ERROR_DISCONNECT
 import com.google.gson.Gson
@@ -138,6 +140,7 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(), Li
     }
 
     private var mReadSubPkMsg: ReadSubPkMsg? = null
+
     fun sendReadSubPkObserveNode(
         readSubPkMsg: ReadSubPkMsg,
         payloadPackage: PayloadPackage
@@ -157,7 +160,7 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(), Li
     }
 
     private var unbindEmitter: CompletableEmitter? = null
-    private var mActionSupportBean: ActionSupport? = null
+    private lateinit var mActionSupportBean: ActionSupport
 
     override fun setLogEnable(logEnable: Boolean) {
         this.sdkLogEnable = logEnable
@@ -1553,8 +1556,6 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(), Li
         }
     }
 
-    //    https://static-ie.oraimo.com/oh.htm&mac=15:7E:78:A2:4B:30&projectname=OSW-802N&random=4536abcdhwer54q
-    //    https://static-ie.oraimo.com/oh.htm&15:7E:78:A2:4B:30&OSW-802N&4536abcdhwer54q
     override fun connectScanQr(bindInfo: WmBindInfo): WmDevice? {
         mBindInfo = bindInfo
 
@@ -1716,7 +1717,6 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(), Li
             discoveryObservableEmitter = emitter
 
             wmLog.logD(TAG, "discoveryObservableEmitter:$discoveryObservableEmitter")
-//            mBtAdapter?.startDiscovery()
 
             if (rxBleClient.isScanRuntimePermissionGranted) {
                 scanBleDevices()
@@ -1788,24 +1788,7 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(), Li
     private fun addScanResult(bleScanResult: ScanResult) {
         val bleDevice = bleScanResult.bleDevice
         if (!TextUtils.isEmpty(bleDevice.name)) {
-//            wmLog.logD(TAG, "scanResult device:" + bleScanResult.bleDevice)
-//            wmLog.logD(
-//                TAG,
-//                "scanResult scanRecord hex:" + BtUtils.bytesToHexString(bleScanResult.scanRecord.bytes)
-//            )
-//
-//            wmLog.logD(
-//                TAG,
-//                "scanResult scanRecord hex:" + bleScanResult.scanRecord.getManufacturerSpecificData()
-//            )
-
             val byteBuffer = ByteBuffer.wrap(bleScanResult.scanRecord.bytes)
-
-//             scanResult device:RxBleDeviceImpl{MAC='BE:CE:78:07:34:30', name=XS09 Ultra-430}
-//             scanResult device:0201020AFF A001A1 BECE7807343 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-
-//             scanResult device:RxBleDeviceImpl{MAC='D6:33:0C:31:0E:25', name=oraimo Watch ES_0E25}
-//             scanResult device:02010603020D18171678FE D6330C310E25 3D75010200B4000029330C310E2515096F7261696D6F2057617463682045535F30453235000000000000000000
 
             val id = byteBuffer.get(5).toInt().and(0xFF)
             val productType = byteBuffer.get(6).toInt().and(0xFF)
@@ -1830,7 +1813,6 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(), Li
                     }
                 }
             }
-
         }
     }
 
@@ -1848,275 +1830,7 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(), Li
     }
 
     override fun isFunctionAvailable(functionType: FunctionType): Boolean {
-        when (functionType) {
-            FunctionType.SUPPORT_CAMERA_PREVIEW -> {
-                return true
-            }
-
-            FunctionType.SUPPORT_DIAL_MARKET -> {
-                return true
-            }
-
-            FunctionType.BT_BLE_SAME_NAME -> {
-                return true
-            }
-
-            FunctionType.SPORT_SHOW_FIXED -> {
-                return false
-            }
-
-            FunctionType.NOTIFY_APPS_UNFOLD -> {
-                return false
-            }
-
-            FunctionType.SUPPORT_REBOOT -> {
-                return true
-            }
-
-            FunctionType.SUPPORT_ACTIVITY_DURATION_GOAL -> {
-                return false
-            }
-
-            FunctionType.SUPPORT_ALARM -> {
-                return true
-            }
-
-            FunctionType.SUPPORT_ALARM_LABEL -> {
-                return false
-            }
-
-            FunctionType.SUPPORT_ALARM_REMARK -> {
-                return true
-            }
-
-            FunctionType.SUPPORT_WEATHER -> {
-                return true
-            }
-
-            FunctionType.SUPPORT_FIND_PHONE -> {
-                return true
-            }
-
-            FunctionType.SUPPORT_FIND_WEAR -> {
-                return true
-            }
-
-            FunctionType.SUPPORT_NOTIFY -> {
-                return true
-            }
-
-            FunctionType.SUPPORT_BLE_PHONE -> {
-                return false
-            }
-
-            FunctionType.SUPPORT_CLOSE_BLE_PHONE -> {
-                return false
-            }
-            FunctionType.SUPPORT_CONTACTS -> {
-                return true
-            }
-
-            FunctionType.SUPPORT_EMERGENCY_CONTACT -> {
-                return true
-            }
-
-            FunctionType.SUPPORT_FAVORITE_CONTACTS -> {
-                return false
-            }
-
-            FunctionType.SUPPORT_QUICK_REPLY -> {
-                return false
-            }
-
-            FunctionType.SUPPORT_STEP_GOAL -> {
-                return true
-            }
-
-            FunctionType.SUPPORT_CALORIE_GOAL -> {
-                return false
-            }
-
-            FunctionType.SUPPORT_REMINDER_LONG_SIT -> {
-                return true
-            }
-
-            /**
-             * 是否支持 喝水提醒
-             */
-            FunctionType.SUPPORT_REMINDER_DRINK_WATER -> {
-                return true
-            }
-
-            /**
-             * 是否支持 洗手提醒
-             */
-            FunctionType.SUPPORT_REMINDER_WASH_HAND -> {
-                return false
-            }
-
-            /**
-             * 是否支持 心率自动检测
-             */
-            FunctionType.SUPPORT_HEART_RATE_MONITOR -> {
-                return true
-            }
-
-            /**
-             * 是否支持 REM快速眼动
-             */
-            FunctionType.SUPPORT_REM -> {
-                return false
-            }
-
-            /**
-             * 是否支持 运动分类
-             */
-            FunctionType.SUPPORT_SPORT_TYPE -> {
-                return false
-            }
-
-
-            /**
-             * 是否支持 运动自识别开始
-             */
-            FunctionType.SUPPORT_SPORT_AUTO_START -> {
-                return false
-            }
-
-            /**
-             * 是否支持 运动自识别结束
-             */
-            FunctionType.SUPPORT_SPORT_AUTO_PAUSE -> {
-                return false
-            }
-
-            /**
-             * 是否支持 世界时钟
-             */
-            FunctionType.SUPPORT_WORLD_CLOCK -> {
-                return false
-            }
-
-            /**
-             * 是否支持 摇摇拍照
-             */
-            FunctionType.SUPPORT_HID_BLE -> {
-                return true
-            }
-
-            /**
-             * 是否支持 遥控拍照
-             * APP内置拍照功能
-             *
-             */
-            FunctionType.SUPPORT_REMOTE_CAMERA -> {
-                return true
-            }
-
-            /**
-             * 是否支持 设备语言
-             */
-            FunctionType.SUPPORT_LANGUAGE -> {
-                return true
-            }
-            /**
-             * 是否支持 小部件
-             */
-            FunctionType.SUPPORT_SMALL_FUNCTION -> {
-                return false
-            }
-            /**
-             * 是否支持音量调节
-             *
-             * @return
-             */
-            FunctionType.SUPPORT_VOLUME_CONTROL -> {
-                return false
-            }
-
-            /**
-             * 是否支持安静心率过高提
-             * 与日常心率过高提醒互斥，
-             * 支持日常心率提醒，则不细分运动心率、安静心率过高提醒
-             * {@link BaseWatchFunctions#isSupportDailyHeartRateWarning()}
-             *
-             * @return
-             */
-            FunctionType.SUPPORT_RESTING_HEART_RATE_WARNING -> {
-                return true
-            }
-            /**
-             * 是否支持运动心率过高提醒
-             * 与日常心率过高提醒互斥，
-             * 支持日常心率提醒，则不细分运动心率、安静心率过高提醒
-             * {@link BaseWatchFunctions#isSupportDailyHeartRateWarning()}
-             *
-             * @return
-             */
-            FunctionType.SUPPORT_EXERCISE_HEART_RATE_WARNING -> {
-                return true
-            }
-
-            /**
-             * 是否支持日常心率过高提醒
-             * 与运动心率、安静心率过高提醒互斥，
-             * 支持日常心率提醒，则不细分运动心率、安静心率过高提醒
-             * {@link BaseWatchFunctions#isSupportRestingHeartRateWarning()}
-             * {@link BaseWatchFunctions#isSupportExerciseHeartRateWarning()}
-             *
-             * @return
-             */
-            FunctionType.SUPPORT_DAILY_HEART_RATE_WARNING -> {
-                return true
-            }
-            /**
-             * 是否支持连续血氧
-             *
-             * @return
-             */
-            FunctionType.SUPPORT_CONTINUOUS_BLOOD_OXYGEN -> {
-                return false
-            }
-
-            /**
-             * 是否支持蓝牙断连提醒设置
-             *
-             * @return
-             */
-            FunctionType.SUPPORT_BLUETOOTH_SETTINGS -> {
-                return true
-            }
-            /**
-             * 是否支持导入本地音乐
-             *
-             * @return
-             */
-            FunctionType.SUPPORT_IMPORT_LOCAL_MUSIC -> {
-                return true
-            }
-
-            /**
-             * 是否支持事件提醒
-             *
-             * @return
-             */
-            FunctionType.SUPPORT_EVENT_REMINDER -> {
-                return false
-            }
-
-            /**
-             * 是否支持亮屏提醒
-             *
-             * @return
-             */
-            FunctionType.SUPPORT_SCREEN_DURATION -> {
-                return false
-            }
-
-
-            else -> {
-                return false
-            }
-        }
+        return getFuncState(mActionSupportBean, functionType)
     }
+
 }

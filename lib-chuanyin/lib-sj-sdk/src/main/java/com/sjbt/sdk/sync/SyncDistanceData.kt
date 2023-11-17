@@ -27,7 +27,7 @@ class SyncDistanceData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmDis
     ReadSubPkMsg {
 
     var lastSyncTime: Long = 0
-    private var activityObserveEmitter: SingleEmitter<WmSyncData<WmDistanceData>>? = null
+    private var activityObserveEmitter: ObservableEmitter<WmSyncData<WmDistanceData>>? = null
     private var observeChangeEmitter: ObservableEmitter<WmSyncData<WmDistanceData>>? = null
 
     private val TAG = "SyncDistanceData"
@@ -48,11 +48,11 @@ class SyncDistanceData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmDis
     }
 
     fun onTimeOut(msg: MsgBean, nodeData: NodeData) {
-        activityObserveEmitter?.onError(WmTimeOutException())
+//        activityObserveEmitter?.onError(WmTimeOutException())
     }
 
-    override fun syncData(startTime: Long): Single<WmSyncData<WmDistanceData>> {
-        return Single.create { emitter ->
+    override fun syncData(startTime: Long): Observable<WmSyncData<WmDistanceData>> {
+        return Observable.create { emitter ->
             activityObserveEmitter = emitter
             sjUniWatch.sendReadSubPkObserveNode(
                 this,
@@ -179,7 +179,8 @@ class SyncDistanceData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmDis
                 distanceList
             )
 
-        activityObserveEmitter?.onSuccess(wmSyncData)
+        activityObserveEmitter?.onNext(wmSyncData)
+        activityObserveEmitter?.onComplete()
         lastSyncTime = System.currentTimeMillis()
 
         sjUniWatch.wmLog.logE(
@@ -196,7 +197,8 @@ class SyncDistanceData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmDis
             val wmSyncData =
                 WmSyncData(WmSyncDataType.STEP, 0, WmIntervalType.ONE_HOUR, mutableListOf<WmDistanceData>())
 
-            activityObserveEmitter?.onSuccess(wmSyncData)
+            activityObserveEmitter?.onNext(wmSyncData)
+            activityObserveEmitter?.onComplete()
         }
     }
 }

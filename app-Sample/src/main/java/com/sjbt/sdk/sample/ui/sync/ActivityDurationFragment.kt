@@ -7,6 +7,7 @@ import com.sjbt.sdk.sample.R
 import com.sjbt.sdk.sample.utils.DateTimeUtils
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.rx3.await
+import kotlinx.coroutines.rx3.awaitFirst
 import java.util.*
 
 class ActivityDurationFragment : DataListFragment<WmActivityDurationData>() {
@@ -24,7 +25,7 @@ class ActivityDurationFragment : DataListFragment<WmActivityDurationData>() {
             val start: Date = DateTimeUtils.getDayStartTime(calendar, date)
             val end: Date = DateTimeUtils.getDayEndTime(calendar, date)
             UNIWatchMate.wmSync.syncActivityDurationData.syncData(start.time)
-                .await().value
+                .awaitFirst().value
 
         }
     }
