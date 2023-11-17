@@ -193,7 +193,7 @@ class SyncCaloriesData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmCal
         } else if (nodeData.dataFmt == DataFormat.FMT_ERRCODE || nodeData.dataFmt == DataFormat.FMT_NODATA) {
             val wmSyncData =
                 WmSyncData(
-                    WmSyncDataType.STEP,
+                    WmSyncDataType.CALORIE,
                     0,
                     WmIntervalType.ONE_HOUR,
                     mutableListOf<WmCaloriesData>()

@@ -200,7 +200,7 @@ class SyncActivityDurationData(val sjUniWatch: SJUniWatch) :
         } else if (nodeData.dataFmt == DataFormat.FMT_ERRCODE || nodeData.dataFmt == DataFormat.FMT_NODATA) {
             val wmSyncData =
                 WmSyncData(
-                    WmSyncDataType.STEP,
+                    WmSyncDataType.ACTIVITY_DURATION,
                     0,
                     WmIntervalType.ONE_HOUR,
                     mutableListOf<WmActivityDurationData>()

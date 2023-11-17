@@ -199,7 +199,7 @@ class SyncHeartRateData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmHe
             parseStepData()
         } else if (nodeData.dataFmt == DataFormat.FMT_ERRCODE || nodeData.dataFmt == DataFormat.FMT_NODATA) {
             val wmSyncData =
-                WmSyncData(WmSyncDataType.STEP, 0, WmIntervalType.ONE_HOUR, mutableListOf<WmHeartRateData>())
+                WmSyncData(WmSyncDataType.HEART_RATE_FIVE_MINUTES, 0, WmIntervalType.ONE_HOUR, mutableListOf<WmHeartRateData>())
 
             heartRateObserveEmitter?.onNext(wmSyncData)
             heartRateObserveEmitter?.onComplete()

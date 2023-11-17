@@ -196,7 +196,7 @@ class SyncOxygenData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmOxyge
         } else if (nodeData.dataFmt == DataFormat.FMT_ERRCODE || nodeData.dataFmt == DataFormat.FMT_NODATA) {
             val wmSyncData =
                 WmSyncData(
-                    WmSyncDataType.STEP,
+                    WmSyncDataType.OXYGEN,
                     0,
                     WmIntervalType.FIVE_MINUTES,
                     mutableListOf<WmOxygenData>()

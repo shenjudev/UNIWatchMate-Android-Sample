@@ -274,7 +274,7 @@ class SyncSleepData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmSleepD
         } else if (nodeData.dataFmt == DataFormat.FMT_ERRCODE || nodeData.dataFmt == DataFormat.FMT_NODATA) {
             wmSyncData =
                 WmSyncData(
-                    WmSyncDataType.STEP,
+                    WmSyncDataType.SLEEP,
                     0,
                     WmIntervalType.ONE_HOUR,
                     mutableListOf<WmSleepData>()
