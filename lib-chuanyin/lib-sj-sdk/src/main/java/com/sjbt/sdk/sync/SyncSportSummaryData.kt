@@ -489,10 +489,10 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
             tenSecondsRealTimeStamp =
                 tenSecondsStartTimeStamp + tenSecondsDataIndex * SYNC_DATA_INTERVAL_TEN_SECONDS
 
-            sjUniWatch.wmLog.logE(
-                TAG,
-                "urn：$urn tenSecondsDataIndex $tenSecondsDataIndex tenSecondsRealTimeStamp: $tenSecondsRealTimeStamp "
-            )
+//            sjUniWatch.wmLog.logE(
+//                TAG,
+//                "urn：$urn tenSecondsDataIndex $tenSecondsDataIndex tenSecondsRealTimeStamp: $tenSecondsRealTimeStamp "
+//            )
 
             when (urn) {
                 URN_SPORT_10S_RATE -> {
