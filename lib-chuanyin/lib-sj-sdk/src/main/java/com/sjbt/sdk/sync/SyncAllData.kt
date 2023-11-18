@@ -98,7 +98,6 @@ class SyncAllData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<out WmBase
                     emitter.onComplete()
                 }
             }
-
         }
     }
 
