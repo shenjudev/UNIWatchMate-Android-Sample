@@ -38,6 +38,10 @@
                 style="@style/Widget.Sample.PreferenceView.Item.Text"
                 app:preferenceTitle="@string/data_activity_duration" />
             <com.github.kilnn.tool.widget.item.PreferenceItem
+                android:id="@+id/item_activity_distance"
+                style="@style/Widget.Sample.PreferenceView.Item.Text"
+                app:preferenceTitle="@string/exercise_data_distance" />
+            <com.github.kilnn.tool.widget.item.PreferenceItem
                 android:id="@+id/item_sleep"
                 style="@style/Widget.Sample.PreferenceView.Item.Text"
                 app:preferenceTitle="@string/data_sleep" />

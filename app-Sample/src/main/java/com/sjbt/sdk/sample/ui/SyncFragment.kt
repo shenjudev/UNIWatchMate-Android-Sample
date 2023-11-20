@@ -38,6 +38,7 @@ class SyncFragment : BaseFragment(R.layout.fragment_sync) {
         viewBind.itemSleep.clickTrigger(block = blockClick)
         viewBind.itemHeartRate.clickTrigger(block = blockClick)
         viewBind.itemOxygen.clickTrigger(block = blockClick)
+        viewBind.itemActivityDistance.clickTrigger(block = blockClick)
         viewBind.itemSport.clickTrigger(block = blockClick)
         viewBind.itemAll.clickTrigger(block = blockClick)
 
@@ -93,6 +94,9 @@ class SyncFragment : BaseFragment(R.layout.fragment_sync) {
                 findNavController().navigate(SyncFragmentDirections.toCalories())
             }
 
+            viewBind.itemActivityDistance -> {
+                findNavController().navigate(SyncFragmentDirections.toDistance())
+            }
             viewBind.itemActivityDuration -> {
                 findNavController().navigate(SyncFragmentDirections.toActivityDuration())
             }

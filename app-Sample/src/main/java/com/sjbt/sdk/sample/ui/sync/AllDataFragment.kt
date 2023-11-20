@@ -52,7 +52,7 @@ class AllDataFragment : DataListFragment<WmSyncData<*>>() {
             val end: Date = DateTimeUtils.getDayEndTime(calendar, date)
             UNIWatchMate.wmSync.syncAllData.syncData(start.time).collect {
                dataList.add(it)
-           }
+            }
 //            Timber.i("queryData result=${result}")
 //            result.value
          dataList

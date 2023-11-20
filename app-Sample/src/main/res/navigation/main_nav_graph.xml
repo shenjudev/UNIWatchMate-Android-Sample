@@ -56,6 +56,9 @@
             android:id="@+id/toCalories"
             app:destination="@id/calorieFragment" />
         <action
+            android:id="@+id/toDistance"
+            app:destination="@id/distanceFragment" />
+        <action
             android:id="@+id/toActivityDuration"
             app:destination="@id/activityDurationFragment" />
         <action
@@ -80,6 +83,12 @@
         android:name="com.sjbt.sdk.sample.ui.sync.CalorieFragment"
         android:label="@string/data_calorie"
         tools:layout="@layout/fragment_data_list" />
+    <fragment
+        android:id="@+id/distanceFragment"
+        android:name="com.sjbt.sdk.sample.ui.sync.DistanceFragment"
+        android:label="@string/exercise_data_distance"
+        tools:layout="@layout/fragment_data_list" />
+
     <fragment
         android:id="@+id/activityDurationFragment"
         android:name="com.sjbt.sdk.sample.ui.sync.ActivityDurationFragment"
