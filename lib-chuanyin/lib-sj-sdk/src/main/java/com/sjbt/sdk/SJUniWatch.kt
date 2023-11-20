@@ -158,7 +158,7 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(), Li
     }
 
     private var unbindEmitter: CompletableEmitter? = null
-    private lateinit var mActionSupportBean: ActionSupport
+    private var mActionSupportBean: ActionSupport = ActionSupport()
 
     override fun setLogEnable(logEnable: Boolean) {
         this.sdkLogEnable = logEnable
