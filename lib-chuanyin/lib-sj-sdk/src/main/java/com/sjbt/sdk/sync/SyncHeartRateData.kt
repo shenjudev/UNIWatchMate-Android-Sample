@@ -110,10 +110,12 @@ class SyncHeartRateData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmHe
                                     byteBufferSyncData.put(it.payload)
                                 }
                             }
+
+                            parseStepData()
                         }
 
-                        parseStepData()
-
+                    } else {
+                        defaultBack()
                     }
                 }
             })
@@ -207,18 +209,23 @@ class SyncHeartRateData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmHe
 
         if (nodeData.dataFmt == DataFormat.FMT_BIN) {
             byteBufferSyncData = ByteBuffer.wrap(nodeData.data).order(ByteOrder.LITTLE_ENDIAN)
+            parseStepData()
         } else if (nodeData.dataFmt == DataFormat.FMT_ERRCODE || nodeData.dataFmt == DataFormat.FMT_NODATA) {
-            val wmSyncData =
-                WmSyncData(
-                    WmSyncDataType.HEART_RATE_FIVE_MINUTES,
-                    0,
-                    WmIntervalType.ONE_HOUR,
-                    mutableListOf<WmHeartRateData>()
-                )
-
-            heartRateObserveEmitter?.onNext(wmSyncData)
-            heartRateObserveEmitter?.onComplete()
+            defaultBack()
         }
+    }
+
+    private fun defaultBack() {
+        val wmSyncData =
+            WmSyncData(
+                WmSyncDataType.HEART_RATE_FIVE_MINUTES,
+                0,
+                WmIntervalType.ONE_HOUR,
+                mutableListOf<WmHeartRateData>()
+            )
+
+        heartRateObserveEmitter?.onNext(wmSyncData)
+        heartRateObserveEmitter?.onComplete()
     }
 
 }

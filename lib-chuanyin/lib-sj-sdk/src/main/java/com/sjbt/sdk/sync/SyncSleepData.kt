@@ -112,9 +112,11 @@ class SyncSleepData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmSleepD
                                     byteBufferSyncData.put(it.payload)
                                 }
                             }
-                        }
 
-                        parseStepData()
+                            parseStepData()
+                        }
+                    } else {
+                        defaultBack()
                     }
                 }
             })
@@ -278,18 +280,23 @@ class SyncSleepData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmSleepD
 
         if (nodeData.dataFmt == DataFormat.FMT_BIN) {
             byteBufferSyncData = ByteBuffer.wrap(nodeData.data).order(ByteOrder.LITTLE_ENDIAN)
+            parseStepData()
         } else if (nodeData.dataFmt == DataFormat.FMT_ERRCODE || nodeData.dataFmt == DataFormat.FMT_NODATA) {
-            wmSyncData =
-                WmSyncData(
-                    WmSyncDataType.SLEEP,
-                    0,
-                    WmIntervalType.ONE_HOUR,
-                    mutableListOf<WmSleepData>()
-                )
-
-            activityObserveEmitter?.onNext(wmSyncData)
-            activityObserveEmitter?.onComplete()
+            defaultBack()
         }
+    }
+
+    private fun SyncSleepData.defaultBack() {
+        wmSyncData =
+            WmSyncData(
+                WmSyncDataType.SLEEP,
+                0,
+                WmIntervalType.ONE_HOUR,
+                mutableListOf<WmSleepData>()
+            )
+
+        activityObserveEmitter?.onNext(wmSyncData)
+        activityObserveEmitter?.onComplete()
     }
 
 }

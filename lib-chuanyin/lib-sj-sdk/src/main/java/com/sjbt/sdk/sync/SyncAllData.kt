@@ -40,7 +40,7 @@ class SyncAllData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<out WmBase
 
             val words = arrayOf(
                 WmSyncDataType.STEP,
-//                WmSyncDataType.DISTANCE,
+                WmSyncDataType.DISTANCE,
                 WmSyncDataType.CALORIE,
                 WmSyncDataType.HEART_RATE_ONE_HOUR,
                 WmSyncDataType.HEART_RATE_FIVE_MINUTES,
@@ -60,9 +60,9 @@ class SyncAllData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<out WmBase
                         WmSyncDataType.STEP -> {
                             sjUniWatch.wmSync.syncStepData.syncData(startTime)
                         }
-//                        WmSyncDataType.DISTANCE -> {
-//                            sjUniWatch.wmSync.syncDistanceData.syncData(startTime)
-//                        }
+                        WmSyncDataType.DISTANCE -> {
+                            sjUniWatch.wmSync.syncDistanceData.syncData(startTime)
+                        }
                         WmSyncDataType.CALORIE -> {
                             sjUniWatch.wmSync.syncCaloriesData.syncData(startTime)
                         }

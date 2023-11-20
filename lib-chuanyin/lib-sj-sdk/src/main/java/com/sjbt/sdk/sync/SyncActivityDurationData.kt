@@ -113,8 +113,11 @@ class SyncActivityDurationData(val sjUniWatch: SJUniWatch) :
                                     byteBufferSyncData.put(it.payload)
                                 }
                             }
+
+                            parseStepData()
                         }
-                        parseStepData()
+                    } else {
+                        defaultBack()
                     }
                 }
             })
@@ -204,18 +207,23 @@ class SyncActivityDurationData(val sjUniWatch: SJUniWatch) :
     fun syncActivityDurationDataBusiness(nodeData: NodeData) {
         if (nodeData.dataFmt == DataFormat.FMT_BIN) {
             byteBufferSyncData = ByteBuffer.wrap(nodeData.data).order(ByteOrder.LITTLE_ENDIAN)
+            parseStepData()
         } else if (nodeData.dataFmt == DataFormat.FMT_ERRCODE || nodeData.dataFmt == DataFormat.FMT_NODATA) {
-            val wmSyncData =
-                WmSyncData(
-                    WmSyncDataType.ACTIVITY_DURATION,
-                    0,
-                    WmIntervalType.ONE_HOUR,
-                    mutableListOf<WmActivityDurationData>()
-                )
-
-            activityDurationObserveEmitter?.onNext(wmSyncData)
-            activityDurationObserveEmitter?.onComplete()
+            defaultBack()
         }
+    }
+
+    private fun defaultBack() {
+        val wmSyncData =
+            WmSyncData(
+                WmSyncDataType.ACTIVITY_DURATION,
+                0,
+                WmIntervalType.ONE_HOUR,
+                mutableListOf<WmActivityDurationData>()
+            )
+
+        activityDurationObserveEmitter?.onNext(wmSyncData)
+        activityDurationObserveEmitter?.onComplete()
     }
 
 }

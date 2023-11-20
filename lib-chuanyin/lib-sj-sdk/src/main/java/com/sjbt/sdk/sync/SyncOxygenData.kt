@@ -109,9 +109,11 @@ class SyncOxygenData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmOxyge
                                 }
                             }
 
+                            parseStepData()
                         }
 
-                        parseStepData()
+                    } else {
+                        defaultBack()
                     }
                 }
             })
@@ -201,18 +203,23 @@ class SyncOxygenData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmOxyge
     fun syncOxygenDataBusiness(nodeData: NodeData) {
         if (nodeData.dataFmt == DataFormat.FMT_BIN) {
             byteBufferSyncData = ByteBuffer.wrap(nodeData.data).order(ByteOrder.LITTLE_ENDIAN)
+            parseStepData()
         } else if (nodeData.dataFmt == DataFormat.FMT_ERRCODE || nodeData.dataFmt == DataFormat.FMT_NODATA) {
-            val wmSyncData =
-                WmSyncData(
-                    WmSyncDataType.OXYGEN,
-                    0,
-                    WmIntervalType.FIVE_MINUTES,
-                    mutableListOf<WmOxygenData>()
-                )
-
-            oxygenObserveEmitter?.onNext(wmSyncData)
-            oxygenObserveEmitter?.onComplete()
+            defaultBack()
         }
+    }
+
+    private fun defaultBack() {
+        val wmSyncData =
+            WmSyncData(
+                WmSyncDataType.OXYGEN,
+                0,
+                WmIntervalType.FIVE_MINUTES,
+                mutableListOf<WmOxygenData>()
+            )
+
+        oxygenObserveEmitter?.onNext(wmSyncData)
+        oxygenObserveEmitter?.onComplete()
     }
 
 }

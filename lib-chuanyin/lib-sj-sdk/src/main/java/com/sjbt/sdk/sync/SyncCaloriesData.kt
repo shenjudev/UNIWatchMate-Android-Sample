@@ -109,10 +109,12 @@ class SyncCaloriesData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmCal
                                     byteBufferSyncData.put(it.payload)
                                 }
                             }
+
+                            parseStepData()
                         }
 
-                        parseStepData()
-
+                    } else {
+                        defaultBack()
                     }
                 }
             })
@@ -198,18 +200,23 @@ class SyncCaloriesData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmCal
 
         if (nodeData.dataFmt == DataFormat.FMT_BIN) {
             byteBufferSyncData = ByteBuffer.wrap(nodeData.data).order(ByteOrder.LITTLE_ENDIAN)
+            parseStepData()
         } else if (nodeData.dataFmt == DataFormat.FMT_ERRCODE || nodeData.dataFmt == DataFormat.FMT_NODATA) {
-            val wmSyncData =
-                WmSyncData(
-                    WmSyncDataType.CALORIE,
-                    0,
-                    WmIntervalType.ONE_HOUR,
-                    mutableListOf<WmCaloriesData>()
-                )
-
-            caloriesObserveEmitter?.onNext(wmSyncData)
-            caloriesObserveEmitter?.onComplete()
+            defaultBack()
         }
+    }
+
+    private fun defaultBack() {
+        val wmSyncData =
+            WmSyncData(
+                WmSyncDataType.CALORIE,
+                0,
+                WmIntervalType.ONE_HOUR,
+                mutableListOf<WmCaloriesData>()
+            )
+
+        caloriesObserveEmitter?.onNext(wmSyncData)
+        caloriesObserveEmitter?.onComplete()
     }
 
 }

@@ -128,9 +128,9 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
                                     byteBufferSummarySyncData.put(it.payload)
                                 }
                             }
-                        }
 
-                        parseSportSummaryData()
+                            parseSportSummaryData()
+                        }
 
                     } else {
                         defaultBackData()
@@ -590,6 +590,7 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
         if (nodeData.dataFmt == DataFormat.FMT_BIN) {
             byteBufferSummarySyncData =
                 ByteBuffer.wrap(nodeData.data).order(ByteOrder.LITTLE_ENDIAN)
+            parseSportSummaryData()
         } else if (nodeData.dataFmt == DataFormat.FMT_ERRCODE || nodeData.dataFmt == DataFormat.FMT_NODATA) {
             defaultBackData()
         }

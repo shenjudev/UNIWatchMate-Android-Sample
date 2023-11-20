@@ -112,9 +112,12 @@ class SyncDistanceData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmDis
                                     byteBufferSyncData.put(it.payload)
                                 }
                             }
+
+                            parseStepData()
                         }
 
-                        parseStepData()
+                    } else {
+                        defaultBack()
                     }
                 }
             })
@@ -202,17 +205,22 @@ class SyncDistanceData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmDis
     fun syncDistanceBusiness(nodeData: NodeData) {
         if (nodeData.dataFmt == DataFormat.FMT_BIN) {
             byteBufferSyncData = ByteBuffer.wrap(nodeData.data).order(ByteOrder.LITTLE_ENDIAN)
+            parseStepData()
         } else if (nodeData.dataFmt == DataFormat.FMT_ERRCODE || nodeData.dataFmt == DataFormat.FMT_NODATA) {
-            val wmSyncData =
-                WmSyncData(
-                    WmSyncDataType.DISTANCE,
-                    0,
-                    WmIntervalType.ONE_HOUR,
-                    mutableListOf<WmDistanceData>()
-                )
-
-            activityObserveEmitter?.onNext(wmSyncData)
-            activityObserveEmitter?.onComplete()
+            defaultBack()
         }
+    }
+
+    private fun defaultBack() {
+        val wmSyncData =
+            WmSyncData(
+                WmSyncDataType.DISTANCE,
+                0,
+                WmIntervalType.ONE_HOUR,
+                mutableListOf<WmDistanceData>()
+            )
+
+        activityObserveEmitter?.onNext(wmSyncData)
+        activityObserveEmitter?.onComplete()
     }
 }

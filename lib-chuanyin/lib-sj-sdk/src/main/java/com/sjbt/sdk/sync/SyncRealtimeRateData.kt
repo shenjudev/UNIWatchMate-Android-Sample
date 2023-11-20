@@ -23,7 +23,8 @@ class SyncRealtimeRateData(val sjUniWatch: SJUniWatch) :
     AbSyncData<WmSyncData<WmRealtimeRateData>>(), ReadSubPkMsg {
 
     var lastSyncTime: Long = 0
-    private var realTimeHeartRateObserveEmitter: ObservableEmitter<WmSyncData<WmRealtimeRateData>>? = null
+    private var realTimeHeartRateObserveEmitter: ObservableEmitter<WmSyncData<WmRealtimeRateData>>? =
+        null
     private var observeChangeEmitter: ObservableEmitter<WmSyncData<WmRealtimeRateData>>? = null
 
     private val TAG = "SyncRealtimeRateData"
@@ -110,9 +111,12 @@ class SyncRealtimeRateData(val sjUniWatch: SJUniWatch) :
                                     byteBufferSyncData.put(it.payload)
                                 }
                             }
+
+                            parseStepData()
                         }
 
-                        parseStepData()
+                    } else {
+                        defaultBack()
                     }
                 }
             })
@@ -200,13 +204,23 @@ class SyncRealtimeRateData(val sjUniWatch: SJUniWatch) :
     fun syncRealHeartRateBusiness(nodeData: NodeData) {
         if (nodeData.dataFmt == DataFormat.FMT_BIN) {
             byteBufferSyncData = ByteBuffer.wrap(nodeData.data).order(ByteOrder.LITTLE_ENDIAN)
+            parseStepData()
         } else if (nodeData.dataFmt == DataFormat.FMT_ERRCODE || nodeData.dataFmt == DataFormat.FMT_NODATA) {
-            val wmSyncData =
-                WmSyncData(WmSyncDataType.OXYGEN, 0, WmIntervalType.ONE_HOUR, mutableListOf<WmRealtimeRateData>())
-
-            realTimeHeartRateObserveEmitter?.onNext(wmSyncData)
-            realTimeHeartRateObserveEmitter?.onComplete()
+            defaultBack()
         }
+    }
+
+    private fun defaultBack() {
+        val wmSyncData =
+            WmSyncData(
+                WmSyncDataType.OXYGEN,
+                0,
+                WmIntervalType.ONE_HOUR,
+                mutableListOf<WmRealtimeRateData>()
+            )
+
+        realTimeHeartRateObserveEmitter?.onNext(wmSyncData)
+        realTimeHeartRateObserveEmitter?.onComplete()
     }
 
 }

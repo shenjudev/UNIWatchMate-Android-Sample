@@ -33,7 +33,7 @@ class SyncStepData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmStepDat
     private var observeChangeEmitter: ObservableEmitter<WmSyncData<WmStepData>>? = null
     private val TAG = "SyncStepData"
 
-    private val msgList = mutableSetOf<MsgBean>()
+    private val msgList = mutableListOf<MsgBean>()
     private lateinit var byteBufferSyncData: ByteBuffer
 
     override fun latestSyncTime(): Long {
@@ -83,43 +83,48 @@ class SyncStepData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmStepDat
                         sjUniWatch.wmLog.logE(TAG, "back msg:" + msgList.size)
 
                         if (msgList.size > 0) {
-
-                            var bufferSize = 0
-                            msgList.forEachIndexed() { index, it ->
-                                if (it.divideType == DIVIDE_N_2 || it.divideType == DIVIDE_Y_F_2) {
-                                    bufferSize += it.payloadLen - 17
-                                } else {
-                                    bufferSize += it.payloadLen
+                            if (msgList.size == 1) {
+                                msgList[0].payloadPackage?.itemList?.forEach {
+                                    syncStepBusiness(it)
                                 }
-                            }
 
-                            byteBufferSyncData =
-                                ByteBuffer.allocate(bufferSize).order(ByteOrder.LITTLE_ENDIAN)
+                            } else {
+                                var bufferSize = 0
+                                msgList.forEachIndexed() { index, it ->
+                                    if (it.divideType == DIVIDE_N_2 || it.divideType == DIVIDE_Y_F_2) {
+                                        bufferSize += it.payloadLen - 17
+                                    } else {
+                                        bufferSize += it.payloadLen
+                                    }
+                                }
 
-                            msgList.forEachIndexed { index, it ->
+                                byteBufferSyncData =
+                                    ByteBuffer.allocate(bufferSize).order(ByteOrder.LITTLE_ENDIAN)
 
-                                sjUniWatch.wmLog.logE(
-                                    TAG,
-                                    "step data:" + BtUtils.bytesToHexString(it.originData)
-                                )
+                                msgList.forEachIndexed { index, it ->
 
-                                if (it.divideType == DIVIDE_N_2 || it.divideType == DIVIDE_Y_F_2) {
-                                    byteBufferSyncData.put(
-                                        it.payload.copyOfRange(
-                                            17,
-                                            it.payload.size
-                                        )
+                                    sjUniWatch.wmLog.logE(
+                                        TAG,
+                                        "step data:" + BtUtils.bytesToHexString(it.originData)
                                     )
-                                } else {
-                                    val byteBuffer =
-                                        ByteBuffer.wrap(it.payload).order(ByteOrder.LITTLE_ENDIAN)
-                                    byteBufferSyncData.put(it.payload)
-                                }
 
+                                    if (it.divideType == DIVIDE_N_2 || it.divideType == DIVIDE_Y_F_2) {
+                                        byteBufferSyncData.put(
+                                            it.payload.copyOfRange(
+                                                17,
+                                                it.payload.size
+                                            )
+                                        )
+                                    } else {
+                                        byteBufferSyncData.put(it.payload)
+                                    }
+                                }
+                                
+                                parseStepData()
                             }
 
-                            parseStepData()
-
+                        } else {
+                            defaultBack()
                         }
                     }
                 })
@@ -201,17 +206,21 @@ class SyncStepData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmStepDat
             byteBufferSyncData = ByteBuffer.wrap(nodeData.data).order(ByteOrder.LITTLE_ENDIAN)
             parseStepData()
         } else if (nodeData.dataFmt == DataFormat.FMT_ERRCODE || nodeData.dataFmt == DataFormat.FMT_NODATA) {
-            val wmSyncData =
-                WmSyncData(
-                    WmSyncDataType.STEP,
-                    0,
-                    WmIntervalType.ONE_HOUR,
-                    mutableListOf<WmStepData>()
-                )
-
-            stepObserveEmitter?.onNext(wmSyncData)
-            stepObserveEmitter?.onComplete()
+            defaultBack()
         }
+    }
+
+    private fun defaultBack() {
+        val wmSyncData =
+            WmSyncData(
+                WmSyncDataType.STEP,
+                0,
+                WmIntervalType.ONE_HOUR,
+                mutableListOf<WmStepData>()
+            )
+
+        stepObserveEmitter?.onNext(wmSyncData)
+        stepObserveEmitter?.onComplete()
     }
 
 }
