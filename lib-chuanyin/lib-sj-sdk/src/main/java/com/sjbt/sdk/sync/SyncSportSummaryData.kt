@@ -24,7 +24,7 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
 
     private var wmSyncData: WmSyncData<WmSportSummaryData>? = null
     private val TAG = "SyncSportSummaryData"
-    private val msgListSummary = mutableSetOf<MsgBean>()
+    private val msgListSummary = mutableListOf<MsgBean>()
 
     //    private val msgListTenSeconds = mutableSetOf<MsgBean>()
     private var hasNext: Boolean = false
@@ -63,7 +63,6 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
 
     override fun syncData(startTime: Long): Observable<WmSyncData<WmSportSummaryData>> {
         mStartTime = startTime
-//        tenSecondsRequestIndex = 0
         wmSyncData = null
         return Observable.create { emitter ->
             syncSportSummaryObserveEmitter = emitter
@@ -93,37 +92,48 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
 
                     if (msgListSummary.size > 0) {
 
-                        var bufferSize = 0
-                        msgListSummary.forEach {
-                            if (it.divideType == DIVIDE_N_2 || it.divideType == DIVIDE_Y_F_2) {
-                                bufferSize += it.payloadLen - 17
-                            } else {
-                                bufferSize += it.payloadLen
+                        if (msgListSummary.size == 1) {
+                            msgListSummary[0].payloadPackage?.itemList?.forEach {
+                                syncOnePkSportSummaryData(it)
                             }
-                        }
 
-                        byteBufferSummarySyncData =
-                            ByteBuffer.allocate(bufferSize).order(ByteOrder.LITTLE_ENDIAN)
+                        } else {
 
-                        msgListSummary.forEachIndexed { index, it ->
-                            sjUniWatch.wmLog.logE(
-                                TAG,
-                                "sport summary data:" + BtUtils.bytesToHexString(it.originData)
-                            )
+                            var bufferSize = 0
+                            msgListSummary.forEach {
+                                if (it.divideType == DIVIDE_N_2 || it.divideType == DIVIDE_Y_F_2) {
+                                    bufferSize += it.payloadLen - 17
+                                } else {
+                                    bufferSize += it.payloadLen
+                                }
+                            }
 
-                            if (index == 0) {
-                                byteBufferSummarySyncData.put(
-                                    it.payload.copyOfRange(
-                                        17,
-                                        it.payload.size
-                                    )
+                            byteBufferSummarySyncData =
+                                ByteBuffer.allocate(bufferSize).order(ByteOrder.LITTLE_ENDIAN)
+
+                            msgListSummary.forEachIndexed { index, it ->
+                                sjUniWatch.wmLog.logE(
+                                    TAG,
+                                    "sport summary data:" + BtUtils.bytesToHexString(it.originData)
                                 )
-                            } else {
-                                byteBufferSummarySyncData.put(it.payload)
+
+                                if (index == 0) {
+                                    byteBufferSummarySyncData.put(
+                                        it.payload.copyOfRange(
+                                            17,
+                                            it.payload.size
+                                        )
+                                    )
+                                } else {
+                                    byteBufferSummarySyncData.put(it.payload)
+                                }
                             }
                         }
 
                         parseSportSummaryData()
+
+                    } else {
+                        defaultBackData()
                     }
                 }
             })
@@ -301,19 +311,21 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
                 try {
                     if (it.divideType == DIVIDE_Y_F_2 || it.divideType == DIVIDE_N_2) {
 
-                        val byteBuffer = ByteBuffer.wrap(
-                            it.payload.copyOfRange(
-                                17,
-                                it.payload.size
-                            )
-                        ).order(ByteOrder.LITTLE_ENDIAN)
+//                        val byteBuffer = ByteBuffer.wrap(
+//                            it.payload.copyOfRange(
+//                                17,
+//                                it.payload.size
+//                            )
+//                        ).order(ByteOrder.LITTLE_ENDIAN)
 
                         sjUniWatch.wmLog.logE(
                             TAG,
                             "++++++++++++++++++++++++++++++++++++++++++START PARSE DATA urn:$urn - onComplete +++++++++++++++++++++++++++"
                         )
 
-                        parseTenSecondsDataWithHead(byteBuffer, urn)
+                        it.payloadPackage?.itemList?.forEach {
+                            syncTenSecondsOnePkDataBusiness(it, urn)
+                        }
 
                     } else {
 
@@ -385,7 +397,6 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
                         }
                     }
                 }
-
             }
         })
     }
@@ -575,82 +586,89 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
         }
     }
 
-    fun syncSportSummaryDataBusiness(nodeData: NodeData) {
+    fun syncOnePkSportSummaryData(nodeData: NodeData) {
         if (nodeData.dataFmt == DataFormat.FMT_BIN) {
             byteBufferSummarySyncData =
                 ByteBuffer.wrap(nodeData.data).order(ByteOrder.LITTLE_ENDIAN)
-            parseSportSummaryData()
-        } else if (nodeData.dataFmt == DataFormat.FMT_ERRCODE || nodeData.dataFmt == DataFormat.FMT_NODATA) {
-
-            defaultBackData()
-        }
-    }
-
-    fun syncTenSecondsDistanceBusiness(nodeData: NodeData) {
-        if (nodeData.dataFmt == DataFormat.FMT_BIN) {
-            val byteBufferSyncDataDistance =
-                ByteBuffer.wrap(nodeData.data).order(ByteOrder.LITTLE_ENDIAN)
-
-            sjUniWatch.wmLog.logE(
-                TAG,
-                "++++++++++++++++++++++++++++++++++++++++++START PARSE DATA urn:${URN_SPORT_10S_DISTANCE} - syncTenSecondsDistanceBusiness +++++++++++++++++++++++++++"
-            )
-
-            parseTenSecondsDataWithHead(byteBufferSyncDataDistance, URN_SPORT_10S_DISTANCE)
-
         } else if (nodeData.dataFmt == DataFormat.FMT_ERRCODE || nodeData.dataFmt == DataFormat.FMT_NODATA) {
             defaultBackData()
         }
     }
 
-    fun syncTenSecondsCaloriesBusiness(nodeData: NodeData) {
-        if (nodeData.dataFmt == DataFormat.FMT_BIN) {
-            val byteBufferSyncDataCalorie =
-                ByteBuffer.wrap(nodeData.data).order(ByteOrder.LITTLE_ENDIAN)
+    fun syncTenSecondsOnePkDataBusiness(nodeData: NodeData, urn: Byte) {
+        when (urn) {
+            URN_SPORT_10S_DISTANCE -> {
+                if (nodeData.dataFmt == DataFormat.FMT_BIN) {
+                    val byteBufferSyncDataDistance =
+                        ByteBuffer.wrap(nodeData.data).order(ByteOrder.LITTLE_ENDIAN)
 
-            sjUniWatch.wmLog.logE(
-                TAG,
-                "++++++++++++++++++++++++++++++++++++++++++START PARSE DATA urn:${URN_SPORT_10S_CALORIES} - syncTenSecondsCaloriesBusiness +++++++++++++++++++++++++++"
-            )
+                    sjUniWatch.wmLog.logE(
+                        TAG,
+                        "++++++++++++++++++++++++++++++++++++++++++START PARSE DATA urn:${URN_SPORT_10S_DISTANCE} - syncTenSecondsDistanceBusiness +++++++++++++++++++++++++++"
+                    )
 
-            parseTenSecondsDataWithHead(byteBufferSyncDataCalorie, URN_SPORT_10S_CALORIES)
+                    parseTenSecondsDataWithHead(byteBufferSyncDataDistance, URN_SPORT_10S_DISTANCE)
 
-        } else if (nodeData.dataFmt == DataFormat.FMT_ERRCODE || nodeData.dataFmt == DataFormat.FMT_NODATA) {
-            defaultBackData()
-        }
-    }
+                } else if (nodeData.dataFmt == DataFormat.FMT_ERRCODE || nodeData.dataFmt == DataFormat.FMT_NODATA) {
+                    defaultBackData()
+                }
 
-    fun syncTenSecondsRateBusiness(nodeData: NodeData) {
-        if (nodeData.dataFmt == DataFormat.FMT_BIN) {
-            val byteBufferSyncDataRate =
-                ByteBuffer.wrap(nodeData.data).order(ByteOrder.LITTLE_ENDIAN)
+            }
 
-            sjUniWatch.wmLog.logE(
-                TAG,
-                "++++++++++++++++++++++++++++++++++++++++++START PARSE DATA urn:${URN_SPORT_10S_RATE} - syncTenSecondsRateBusiness +++++++++++++++++++++++++++"
-            )
+            URN_SPORT_10S_STEP_FREQUENCY -> {
+                if (nodeData.dataFmt == DataFormat.FMT_BIN) {
+                    val byteBufferSyncDataFrequency =
+                        ByteBuffer.wrap(nodeData.data).order(ByteOrder.LITTLE_ENDIAN)
 
-            parseTenSecondsDataWithHead(byteBufferSyncDataRate, URN_SPORT_10S_RATE)
+                    sjUniWatch.wmLog.logE(
+                        TAG,
+                        "++++++++++++++++++++++++++++++++++++++++++START PARSE DATA urn:${URN_SPORT_10S_STEP_FREQUENCY} - syncTenSecondsStepFrequencyBusiness +++++++++++++++++++++++++++"
+                    )
 
-        } else if (nodeData.dataFmt == DataFormat.FMT_ERRCODE || nodeData.dataFmt == DataFormat.FMT_NODATA) {
-            defaultBackData()
-        }
-    }
+                    parseTenSecondsDataWithHead(
+                        byteBufferSyncDataFrequency,
+                        URN_SPORT_10S_STEP_FREQUENCY
+                    )
 
-    fun syncTenSecondsStepFrequencyBusiness(nodeData: NodeData) {
-        if (nodeData.dataFmt == DataFormat.FMT_BIN) {
-            val byteBufferSyncDataFrequency =
-                ByteBuffer.wrap(nodeData.data).order(ByteOrder.LITTLE_ENDIAN)
+                } else if (nodeData.dataFmt == DataFormat.FMT_ERRCODE || nodeData.dataFmt == DataFormat.FMT_NODATA) {
+                    defaultBackData()
+                }
 
-            sjUniWatch.wmLog.logE(
-                TAG,
-                "++++++++++++++++++++++++++++++++++++++++++START PARSE DATA urn:${URN_SPORT_10S_STEP_FREQUENCY} - syncTenSecondsStepFrequencyBusiness +++++++++++++++++++++++++++"
-            )
+            }
 
-            parseTenSecondsDataWithHead(byteBufferSyncDataFrequency, URN_SPORT_10S_STEP_FREQUENCY)
+            URN_SPORT_10S_RATE -> {
+                if (nodeData.dataFmt == DataFormat.FMT_BIN) {
+                    val byteBufferSyncDataRate =
+                        ByteBuffer.wrap(nodeData.data).order(ByteOrder.LITTLE_ENDIAN)
 
-        } else if (nodeData.dataFmt == DataFormat.FMT_ERRCODE || nodeData.dataFmt == DataFormat.FMT_NODATA) {
-            defaultBackData()
+                    sjUniWatch.wmLog.logE(
+                        TAG,
+                        "++++++++++++++++++++++++++++++++++++++++++START PARSE DATA urn:${URN_SPORT_10S_RATE} - syncTenSecondsRateBusiness +++++++++++++++++++++++++++"
+                    )
+
+                    parseTenSecondsDataWithHead(byteBufferSyncDataRate, URN_SPORT_10S_RATE)
+
+                } else if (nodeData.dataFmt == DataFormat.FMT_ERRCODE || nodeData.dataFmt == DataFormat.FMT_NODATA) {
+                    defaultBackData()
+                }
+            }
+
+            URN_SPORT_10S_CALORIES -> {
+                if (nodeData.dataFmt == DataFormat.FMT_BIN) {
+                    val byteBufferSyncDataCalorie =
+                        ByteBuffer.wrap(nodeData.data).order(ByteOrder.LITTLE_ENDIAN)
+
+                    sjUniWatch.wmLog.logE(
+                        TAG,
+                        "++++++++++++++++++++++++++++++++++++++++++START PARSE DATA urn:${URN_SPORT_10S_CALORIES} - syncTenSecondsCaloriesBusiness +++++++++++++++++++++++++++"
+                    )
+
+                    parseTenSecondsDataWithHead(byteBufferSyncDataCalorie, URN_SPORT_10S_CALORIES)
+
+                } else if (nodeData.dataFmt == DataFormat.FMT_ERRCODE || nodeData.dataFmt == DataFormat.FMT_NODATA) {
+                    defaultBackData()
+                }
+            }
         }
     }
 

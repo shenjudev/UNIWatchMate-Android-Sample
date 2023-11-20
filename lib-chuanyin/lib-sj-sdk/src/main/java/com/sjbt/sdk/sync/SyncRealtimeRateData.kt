@@ -27,7 +27,7 @@ class SyncRealtimeRateData(val sjUniWatch: SJUniWatch) :
     private var observeChangeEmitter: ObservableEmitter<WmSyncData<WmRealtimeRateData>>? = null
 
     private val TAG = "SyncRealtimeRateData"
-    private val msgList = mutableSetOf<MsgBean>()
+    private val msgList = mutableListOf<MsgBean>()
     private var hasNext: Boolean = false
     private lateinit var byteBufferSyncData: ByteBuffer
 
@@ -48,7 +48,7 @@ class SyncRealtimeRateData(val sjUniWatch: SJUniWatch) :
     }
 
     override fun syncData(startTime: Long): Observable<WmSyncData<WmRealtimeRateData>> {
-
+        msgList.clear()
         return Observable.create { emitter ->
             realTimeHeartRateObserveEmitter = emitter
             sjUniWatch.sendReadSubPkObserveNode(
@@ -76,33 +76,39 @@ class SyncRealtimeRateData(val sjUniWatch: SJUniWatch) :
 
                     if (msgList.size > 0) {
 
-                        var bufferSize = 0
-                        msgList.forEach {
-                            if (it.divideType == DIVIDE_N_2 || it.divideType == DIVIDE_Y_F_2) {
-                                bufferSize += it.payloadLen - 17
-                            } else {
-                                bufferSize += it.payloadLen
+                        if (msgList.size == 1) {
+                            msgList[0].payloadPackage?.itemList?.forEach {
+                                syncRealHeartRateBusiness(it)
                             }
-                        }
+                        } else {
+                            var bufferSize = 0
+                            msgList.forEach {
+                                if (it.divideType == DIVIDE_N_2 || it.divideType == DIVIDE_Y_F_2) {
+                                    bufferSize += it.payloadLen - 17
+                                } else {
+                                    bufferSize += it.payloadLen
+                                }
+                            }
 
-                        byteBufferSyncData =
-                            ByteBuffer.allocate(bufferSize).order(ByteOrder.LITTLE_ENDIAN)
+                            byteBufferSyncData =
+                                ByteBuffer.allocate(bufferSize).order(ByteOrder.LITTLE_ENDIAN)
 
-                        msgList.forEachIndexed { index, it ->
-                            sjUniWatch.wmLog.logE(
-                                TAG,
-                                "real time rate data:" + BtUtils.bytesToHexString(it.originData)
-                            )
-
-                            if (index == 0) {
-                                byteBufferSyncData.put(
-                                    it.payload.copyOfRange(
-                                        17,
-                                        it.payload.size
-                                    )
+                            msgList.forEachIndexed { index, it ->
+                                sjUniWatch.wmLog.logE(
+                                    TAG,
+                                    "real time rate data:" + BtUtils.bytesToHexString(it.originData)
                                 )
-                            } else {
-                                byteBufferSyncData.put(it.payload)
+
+                                if (index == 0) {
+                                    byteBufferSyncData.put(
+                                        it.payload.copyOfRange(
+                                            17,
+                                            it.payload.size
+                                        )
+                                    )
+                                } else {
+                                    byteBufferSyncData.put(it.payload)
+                                }
                             }
                         }
 
@@ -194,7 +200,6 @@ class SyncRealtimeRateData(val sjUniWatch: SJUniWatch) :
     fun syncRealHeartRateBusiness(nodeData: NodeData) {
         if (nodeData.dataFmt == DataFormat.FMT_BIN) {
             byteBufferSyncData = ByteBuffer.wrap(nodeData.data).order(ByteOrder.LITTLE_ENDIAN)
-            parseStepData()
         } else if (nodeData.dataFmt == DataFormat.FMT_ERRCODE || nodeData.dataFmt == DataFormat.FMT_NODATA) {
             val wmSyncData =
                 WmSyncData(WmSyncDataType.OXYGEN, 0, WmIntervalType.ONE_HOUR, mutableListOf<WmRealtimeRateData>())

@@ -27,7 +27,7 @@ class SyncCaloriesData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmCal
     private var observeChangeEmitter: ObservableEmitter<WmSyncData<WmCaloriesData>>? = null
 
     private val TAG = "SyncCaloriesData"
-    private val msgList = mutableSetOf<MsgBean>()
+    private val msgList = mutableListOf<MsgBean>()
     private var hasNext: Boolean = false
     private lateinit var byteBufferSyncData: ByteBuffer
 
@@ -48,6 +48,7 @@ class SyncCaloriesData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmCal
     }
 
     override fun syncData(startTime: Long): Observable<WmSyncData<WmCaloriesData>> {
+        msgList.clear()
         return Observable.create { emitter ->
             caloriesObserveEmitter = emitter
             sjUniWatch.sendReadSubPkObserveNode(
@@ -74,33 +75,39 @@ class SyncCaloriesData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmCal
 
                     if (msgList.size > 0) {
 
-                        var bufferSize = 0
-                        msgList.forEach {
-                            if (it.divideType == DIVIDE_N_2 || it.divideType == DIVIDE_Y_F_2) {
-                                bufferSize += it.payloadLen - 17
-                            } else {
-                                bufferSize += it.payloadLen
+                        if (msgList.size == 1) {
+                            msgList[0].payloadPackage?.itemList?.forEach {
+                                syncCaloriesBusiness(it)
                             }
-                        }
+                        } else {
+                            var bufferSize = 0
+                            msgList.forEach {
+                                if (it.divideType == DIVIDE_N_2 || it.divideType == DIVIDE_Y_F_2) {
+                                    bufferSize += it.payloadLen - 17
+                                } else {
+                                    bufferSize += it.payloadLen
+                                }
+                            }
 
-                        byteBufferSyncData =
-                            ByteBuffer.allocate(bufferSize).order(ByteOrder.LITTLE_ENDIAN)
+                            byteBufferSyncData =
+                                ByteBuffer.allocate(bufferSize).order(ByteOrder.LITTLE_ENDIAN)
 
-                        msgList.forEachIndexed { index, it ->
-                            sjUniWatch.wmLog.logE(
-                                TAG,
-                                "step data:" + BtUtils.bytesToHexString(it.originData)
-                            )
-
-                            if (index == 0) {
-                                byteBufferSyncData.put(
-                                    it.payload.copyOfRange(
-                                        17,
-                                        it.payload.size
-                                    )
+                            msgList.forEachIndexed { index, it ->
+                                sjUniWatch.wmLog.logE(
+                                    TAG,
+                                    "step data:" + BtUtils.bytesToHexString(it.originData)
                                 )
-                            } else {
-                                byteBufferSyncData.put(it.payload)
+
+                                if (index == 0) {
+                                    byteBufferSyncData.put(
+                                        it.payload.copyOfRange(
+                                            17,
+                                            it.payload.size
+                                        )
+                                    )
+                                } else {
+                                    byteBufferSyncData.put(it.payload)
+                                }
                             }
                         }
 
@@ -191,7 +198,6 @@ class SyncCaloriesData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmCal
 
         if (nodeData.dataFmt == DataFormat.FMT_BIN) {
             byteBufferSyncData = ByteBuffer.wrap(nodeData.data).order(ByteOrder.LITTLE_ENDIAN)
-            parseStepData()
         } else if (nodeData.dataFmt == DataFormat.FMT_ERRCODE || nodeData.dataFmt == DataFormat.FMT_NODATA) {
             val wmSyncData =
                 WmSyncData(

@@ -26,7 +26,7 @@ class SyncOxygenData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmOxyge
     private var observeChangeEmitter: ObservableEmitter<WmSyncData<WmOxygenData>>? = null
 
     private val TAG = "SyncOxygenData"
-    private val msgList = mutableSetOf<MsgBean>()
+    private val msgList = mutableListOf<MsgBean>()
     private var hasNext: Boolean = false
     private lateinit var byteBufferSyncData: ByteBuffer
 
@@ -47,6 +47,7 @@ class SyncOxygenData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmOxyge
     }
 
     override fun syncData(startTime: Long): Observable<WmSyncData<WmOxygenData>> {
+        msgList.clear()
         return Observable.create { emitter ->
             oxygenObserveEmitter = emitter
             sjUniWatch.sendReadSubPkObserveNode(
@@ -73,34 +74,41 @@ class SyncOxygenData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmOxyge
 
                     if (msgList.size > 0) {
 
-                        var bufferSize = 0
-                        msgList.forEach {
-                            if (it.divideType == DIVIDE_N_2 || it.divideType == DIVIDE_Y_F_2) {
-                                bufferSize += it.payloadLen - 17
-                            } else {
-                                bufferSize += it.payloadLen
+                        if (msgList.size == 1) {
+                            msgList[0].payloadPackage?.itemList?.forEach {
+                                syncOxygenDataBusiness(it)
                             }
-                        }
+                        } else {
+                            var bufferSize = 0
+                            msgList.forEach {
+                                if (it.divideType == DIVIDE_N_2 || it.divideType == DIVIDE_Y_F_2) {
+                                    bufferSize += it.payloadLen - 17
+                                } else {
+                                    bufferSize += it.payloadLen
+                                }
+                            }
 
-                        byteBufferSyncData =
-                            ByteBuffer.allocate(bufferSize).order(ByteOrder.LITTLE_ENDIAN)
+                            byteBufferSyncData =
+                                ByteBuffer.allocate(bufferSize).order(ByteOrder.LITTLE_ENDIAN)
 
-                        msgList.forEachIndexed { index, it ->
-                            sjUniWatch.wmLog.logE(
-                                TAG,
-                                "oxygen data:" + BtUtils.bytesToHexString(it.originData)
-                            )
-
-                            if (index == 0) {
-                                byteBufferSyncData.put(
-                                    it.payload.copyOfRange(
-                                        17,
-                                        it.payload.size
-                                    )
+                            msgList.forEachIndexed { index, it ->
+                                sjUniWatch.wmLog.logE(
+                                    TAG,
+                                    "oxygen data:" + BtUtils.bytesToHexString(it.originData)
                                 )
-                            } else {
-                                byteBufferSyncData.put(it.payload)
+
+                                if (index == 0) {
+                                    byteBufferSyncData.put(
+                                        it.payload.copyOfRange(
+                                            17,
+                                            it.payload.size
+                                        )
+                                    )
+                                } else {
+                                    byteBufferSyncData.put(it.payload)
+                                }
                             }
+
                         }
 
                         parseStepData()
@@ -193,7 +201,6 @@ class SyncOxygenData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmOxyge
     fun syncOxygenDataBusiness(nodeData: NodeData) {
         if (nodeData.dataFmt == DataFormat.FMT_BIN) {
             byteBufferSyncData = ByteBuffer.wrap(nodeData.data).order(ByteOrder.LITTLE_ENDIAN)
-            parseStepData()
         } else if (nodeData.dataFmt == DataFormat.FMT_ERRCODE || nodeData.dataFmt == DataFormat.FMT_NODATA) {
             val wmSyncData =
                 WmSyncData(

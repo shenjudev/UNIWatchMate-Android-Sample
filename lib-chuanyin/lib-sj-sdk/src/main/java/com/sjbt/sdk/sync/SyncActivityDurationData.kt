@@ -26,11 +26,12 @@ class SyncActivityDurationData(val sjUniWatch: SJUniWatch) :
     AbSyncData<WmSyncData<WmActivityDurationData>>(), ReadSubPkMsg {
 
     var lastSyncTime: Long = 0
-    private var activityDurationObserveEmitter: ObservableEmitter<WmSyncData<WmActivityDurationData>>? = null
+    private var activityDurationObserveEmitter: ObservableEmitter<WmSyncData<WmActivityDurationData>>? =
+        null
     private var observeChangeEmitter: ObservableEmitter<WmSyncData<WmActivityDurationData>>? = null
 
     private val TAG = "SyncActivityDurationData"
-    private val msgList = mutableSetOf<MsgBean>()
+    private val msgList = mutableListOf<MsgBean>()
     private var hasNext: Boolean = false
     private lateinit var byteBufferSyncData: ByteBuffer
 
@@ -51,7 +52,7 @@ class SyncActivityDurationData(val sjUniWatch: SJUniWatch) :
     }
 
     override fun syncData(startTime: Long): Observable<WmSyncData<WmActivityDurationData>> {
-
+        msgList.clear()
         return Observable.create { emitter ->
             activityDurationObserveEmitter = emitter
             sjUniWatch.sendReadSubPkObserveNode(
@@ -78,36 +79,41 @@ class SyncActivityDurationData(val sjUniWatch: SJUniWatch) :
 
                     if (msgList.size > 0) {
 
-                        var bufferSize = 0
-                        msgList.forEach {
-                            if (it.divideType == DIVIDE_N_2 || it.divideType == DIVIDE_Y_F_2) {
-                                bufferSize += it.payloadLen - 17
-                            } else {
-                                bufferSize += it.payloadLen
+                        if (msgList.size == 1) {
+                            msgList[0].payloadPackage?.itemList?.forEach {
+                                syncActivityDurationDataBusiness(it)
                             }
-                        }
+                        } else {
+                            var bufferSize = 0
+                            msgList.forEach {
+                                if (it.divideType == DIVIDE_N_2 || it.divideType == DIVIDE_Y_F_2) {
+                                    bufferSize += it.payloadLen - 17
+                                } else {
+                                    bufferSize += it.payloadLen
+                                }
+                            }
 
-                        byteBufferSyncData =
-                            ByteBuffer.allocate(bufferSize).order(ByteOrder.LITTLE_ENDIAN)
+                            byteBufferSyncData =
+                                ByteBuffer.allocate(bufferSize).order(ByteOrder.LITTLE_ENDIAN)
 
-                        msgList.forEachIndexed { index, it ->
-                            sjUniWatch.wmLog.logE(
-                                TAG,
-                                "activity duration data:" + BtUtils.bytesToHexString(it.originData)
-                            )
-
-                            if (index == 0) {
-                                byteBufferSyncData.put(
-                                    it.payload.copyOfRange(
-                                        17,
-                                        it.payload.size
-                                    )
+                            msgList.forEachIndexed { index, it ->
+                                sjUniWatch.wmLog.logE(
+                                    TAG,
+                                    "activity duration data:" + BtUtils.bytesToHexString(it.originData)
                                 )
-                            } else {
-                                byteBufferSyncData.put(it.payload)
+
+                                if (index == 0) {
+                                    byteBufferSyncData.put(
+                                        it.payload.copyOfRange(
+                                            17,
+                                            it.payload.size
+                                        )
+                                    )
+                                } else {
+                                    byteBufferSyncData.put(it.payload)
+                                }
                             }
                         }
-
                         parseStepData()
                     }
                 }
@@ -198,7 +204,6 @@ class SyncActivityDurationData(val sjUniWatch: SJUniWatch) :
     fun syncActivityDurationDataBusiness(nodeData: NodeData) {
         if (nodeData.dataFmt == DataFormat.FMT_BIN) {
             byteBufferSyncData = ByteBuffer.wrap(nodeData.data).order(ByteOrder.LITTLE_ENDIAN)
-            parseStepData()
         } else if (nodeData.dataFmt == DataFormat.FMT_ERRCODE || nodeData.dataFmt == DataFormat.FMT_NODATA) {
             val wmSyncData =
                 WmSyncData(

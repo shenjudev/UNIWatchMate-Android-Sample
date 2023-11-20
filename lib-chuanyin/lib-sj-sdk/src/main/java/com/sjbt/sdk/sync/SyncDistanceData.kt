@@ -29,7 +29,7 @@ class SyncDistanceData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmDis
     private var observeChangeEmitter: ObservableEmitter<WmSyncData<WmDistanceData>>? = null
 
     private val TAG = "SyncDistanceData"
-    private val msgList = mutableSetOf<MsgBean>()
+    private val msgList = mutableListOf<MsgBean>()
     private var hasNext: Boolean = false
     private lateinit var byteBufferSyncData: ByteBuffer
 
@@ -50,6 +50,7 @@ class SyncDistanceData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmDis
     }
 
     override fun syncData(startTime: Long): Observable<WmSyncData<WmDistanceData>> {
+        msgList.clear()
         return Observable.create { emitter ->
             activityObserveEmitter = emitter
             sjUniWatch.sendReadSubPkObserveNode(
@@ -76,33 +77,40 @@ class SyncDistanceData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmDis
 
                     if (msgList.size > 0) {
 
-                        var bufferSize = 0
-                        msgList.forEach {
-                            if (it.divideType == DIVIDE_N_2 || it.divideType == DIVIDE_Y_F_2) {
-                                bufferSize += it.payloadLen - 17
-                            } else {
-                                bufferSize += it.payloadLen
+                        if (msgList.size == 1) {
+                            msgList[0].payloadPackage?.itemList?.forEach {
+                                syncDistanceBusiness(it)
                             }
-                        }
 
-                        byteBufferSyncData =
-                            ByteBuffer.allocate(bufferSize).order(ByteOrder.LITTLE_ENDIAN)
+                        } else {
+                            var bufferSize = 0
+                            msgList.forEach {
+                                if (it.divideType == DIVIDE_N_2 || it.divideType == DIVIDE_Y_F_2) {
+                                    bufferSize += it.payloadLen - 17
+                                } else {
+                                    bufferSize += it.payloadLen
+                                }
+                            }
 
-                        msgList.forEachIndexed { index, it ->
-                            sjUniWatch.wmLog.logE(
-                                TAG,
-                                "distance data:" + BtUtils.bytesToHexString(it.originData)
-                            )
+                            byteBufferSyncData =
+                                ByteBuffer.allocate(bufferSize).order(ByteOrder.LITTLE_ENDIAN)
 
-                            if (index == 0) {
-                                byteBufferSyncData.put(
-                                    it.payload.copyOfRange(
-                                        17,
-                                        it.payload.size
-                                    )
+                            msgList.forEachIndexed { index, it ->
+                                sjUniWatch.wmLog.logE(
+                                    TAG,
+                                    "distance data:" + BtUtils.bytesToHexString(it.originData)
                                 )
-                            } else {
-                                byteBufferSyncData.put(it.payload)
+
+                                if (index == 0) {
+                                    byteBufferSyncData.put(
+                                        it.payload.copyOfRange(
+                                            17,
+                                            it.payload.size
+                                        )
+                                    )
+                                } else {
+                                    byteBufferSyncData.put(it.payload)
+                                }
                             }
                         }
 
@@ -194,10 +202,14 @@ class SyncDistanceData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmDis
     fun syncDistanceBusiness(nodeData: NodeData) {
         if (nodeData.dataFmt == DataFormat.FMT_BIN) {
             byteBufferSyncData = ByteBuffer.wrap(nodeData.data).order(ByteOrder.LITTLE_ENDIAN)
-            parseStepData()
         } else if (nodeData.dataFmt == DataFormat.FMT_ERRCODE || nodeData.dataFmt == DataFormat.FMT_NODATA) {
             val wmSyncData =
-                WmSyncData(WmSyncDataType.DISTANCE, 0, WmIntervalType.ONE_HOUR, mutableListOf<WmDistanceData>())
+                WmSyncData(
+                    WmSyncDataType.DISTANCE,
+                    0,
+                    WmIntervalType.ONE_HOUR,
+                    mutableListOf<WmDistanceData>()
+                )
 
             activityObserveEmitter?.onNext(wmSyncData)
             activityObserveEmitter?.onComplete()

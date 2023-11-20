@@ -121,7 +121,7 @@ class MsgBean {
                             msgBean.payloadJson = payloadJson
                         }
 
-                        if (msgBean.head == HEAD_NODE_TYPE && msgBean.payload.size > 10) {
+                        if (msgBean.head == HEAD_NODE_TYPE && msgBean.cmdId != CMD_ID_8004.toInt()) {
 
                             msgBean.requestId = ByteBuffer.wrap(msgBean.payload)
                                 .order(ByteOrder.LITTLE_ENDIAN).short.toUShort().toInt()
@@ -129,6 +129,8 @@ class MsgBean {
                             msgBean.nodeId =
                                 ByteBuffer.wrap(msgBean.payload.copyOfRange(10, 14))
                                     .order(ByteOrder.LITTLE_ENDIAN).int
+
+                            msgBean.payloadPackage = PayloadPackage.fromByteArray(payload)
 
 //                            Log.d(TAG_SJ, "requestId:" + msgBean.requestId)
 //                            Log.d(TAG_SJ, "nodeId:" + msgBean.nodeId)
