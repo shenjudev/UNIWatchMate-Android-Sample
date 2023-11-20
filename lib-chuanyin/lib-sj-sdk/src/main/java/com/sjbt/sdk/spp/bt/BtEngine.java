@@ -2,6 +2,7 @@ package com.sjbt.sdk.spp.bt;
 
 import static com.sjbt.sdk.spp.cmd.CmdConfigKt.BT_MSG_BASE_LEN;
 import static com.sjbt.sdk.spp.cmd.CmdConfigKt.CMD_ID_8015;
+import static com.sjbt.sdk.spp.cmd.CmdConfigKt.DIVIDE_Y_F_2;
 import static com.sjbt.sdk.spp.cmd.CmdConfigKt.HEAD_COMMON;
 import static com.sjbt.sdk.spp.cmd.CmdConfigKt.HEAD_DEVICE_ERROR;
 
@@ -296,7 +297,7 @@ public class BtEngine {
         isSending = true;
         lock.unlock();
         try {
-            MsgBean msgBean = MsgBean.Companion.fromByteArrayToMsgBean( bytes);
+            MsgBean msgBean = MsgBean.Companion.fromByteArrayToMsgBean(bytes);
 
             if (!msgBean.isNotTimeOut()) {
                 String msgTimeCode = msgBean.getTimeOutCode();
@@ -508,16 +509,18 @@ public class BtEngine {
         int payloadLen = ((lenArray[2]) & 0XFF) | ((lenArray[3] & 0XFF) << 8);
 
         if (payloadLen == msg.length - BT_MSG_BASE_LEN) {
-            MsgBean msgBean = MsgBean.Companion.fromByteArrayToMsgBean( msg);
+            MsgBean msgBean = MsgBean.Companion.fromByteArrayToMsgBean(msg);
 
-            String msgTimeCode = msgBean.getTimeOutCode();
-            logD("back message timeout code 1：" + msgTimeCode);
-            Runnable runnable = msgQueueMap.get(msgTimeCode);
+            if (!msgBean.isNotTimeOut()) {
+                String msgTimeCode = msgBean.getTimeOutCode();
+                logD("back message timeout code 1：" + msgTimeCode);
+                Runnable runnable = msgQueueMap.get(msgTimeCode);
 
-            if (runnable != null) {
-                mHandler.removeCallbacks(runnable);
-                msgQueueMap.remove(msgTimeCode);
-                logD("remove back message timeout code 1：" + msgTimeCode);
+                if (runnable != null) {
+                    mHandler.removeCallbacks(runnable);
+                    msgQueueMap.remove(msgTimeCode);
+                    logD("remove back message timeout code 1：" + msgTimeCode);
+                }
             }
 
             notifyUI(Listener.MSG, msgBean);
@@ -539,16 +542,17 @@ public class BtEngine {
                 logD("suplit msg：" + BtUtils.bytesToHexString(singleMsg));
 
                 MsgBean msgBean = MsgBean.Companion.fromByteArrayToMsgBean(singleMsg);
-                String msgTimeCode = msgBean.getTimeOutCode();
 
-                logD("back message timeout code 2：" + msgTimeCode);
+                if (!msgBean.isNotTimeOut()) {
+                    String msgTimeCode = msgBean.getTimeOutCode();
+                    logD("back message timeout code 2：" + msgTimeCode);
+                    Runnable runnable = msgQueueMap.get(msgTimeCode);
 
-                Runnable runnable = msgQueueMap.get(msgTimeCode);
-
-                if (runnable != null) {
-                    mHandler.removeCallbacks(runnable);
-                    msgQueueMap.remove(msgTimeCode);
-                    logD("remove back message timeout code 2：" + msgTimeCode);
+                    if (runnable != null) {
+                        mHandler.removeCallbacks(runnable);
+                        msgQueueMap.remove(msgTimeCode);
+                        logD("remove back message timeout code 2：" + msgTimeCode);
+                    }
                 }
 
                 notifyUI(Listener.MSG, msgBean);

@@ -14,9 +14,7 @@ import com.base.sdk.entity.WmDeviceModel
 import com.base.sdk.entity.apps.WmConnectState
 import com.base.sdk.entity.common.WmDiscoverDevice
 import com.base.sdk.entity.common.WmTimeUnit
-import com.base.sdk.entity.data.WmBaseSyncData
 import com.base.sdk.entity.data.WmBatteryInfo
-import com.base.sdk.entity.data.WmSyncData
 import com.base.sdk.entity.settings.*
 import com.base.sdk.port.ERROR_DISCONNECT
 import com.google.gson.Gson
@@ -304,7 +302,6 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(), Li
     open fun getActionSupportCmd() {
         sendNormalMsg(CmdHelper.supportActionInfoCmd)
     }
-
 
     override fun socketNotify(state: Int, obj: Any?) {
         try {
@@ -664,7 +661,7 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(), Li
                                 CMD_ID_8001 -> {//请求
 
                                     if (msgBean.payload.size > 10) {//设备请求的消息
-                                        sendCommunityResponse()
+                                        sendCommunicateResponse()
 
                                         var payloadPackage: PayloadPackage =
                                             PayloadPackage.fromByteArray(msgBean.payload)
@@ -680,7 +677,7 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(), Li
 
                                 CMD_ID_8002 -> {//响应
                                     //
-                                    sendCommunityResponse()
+                                    sendCommunicateResponse()
 
                                     if (msgBean.payloadLen >= 10 || msgBean.divideType != DIVIDE_N_2) {//设备应用层回复 包含带应用层payload的数据和分包数据的处理逻辑
                                         wmLog.logD(
@@ -689,7 +686,6 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(), Li
                                         )
 
                                         if (msgBean.divideType == DIVIDE_N_2) {//不分包消息
-                                            subPkObservableEmitter?.onComplete()
                                             wmLog.logE(
                                                 TAG,
                                                 "one package msg Complete"
@@ -698,7 +694,23 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(), Li
                                             var payloadPackage: PayloadPackage =
                                                 PayloadPackage.fromByteArray(msgBean.payload)
 
-                                            parseResponseNodePayload(msgBean, payloadPackage)
+                                            subPkObservableEmitter?.let {
+
+                                                if (!it.isDisposed) {
+                                                    mReadSubPkMsg?.setHasNext(payloadPackage.hasNext())
+                                                    it.onNext(msgBean)
+                                                    it.onComplete()
+                                                } else {
+                                                    parseResponseNodePayload(
+                                                        msgBean,
+                                                        payloadPackage
+                                                    )
+                                                }
+
+                                            } ?: run {
+                                                parseResponseNodePayload(msgBean, payloadPackage)
+                                            }
+
 
                                         } else {//分包消息
 
@@ -791,7 +803,7 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(), Li
     /**
      * 回复通讯层消息
      */
-    private fun sendCommunityResponse() {
+    private fun sendCommunicateResponse() {
         sendNormalMsg(
             CmdHelper.communityMsg
         )
@@ -1440,76 +1452,76 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(), Li
                     }
                 }
 
-                URN_SPORT_DATA -> {//运动同步
-                    when (it.urn[1]) {
-
-                        URN_SPORT_STEP -> {
-                            syncStepData.syncStepBusiness(it)
-                        }
-
-                        URN_SPORT_DISTANCE -> {
-
-                        }
-
-                        URN_SPORT_CALORIES -> {
-                            syncCaloriesData.syncCaloriesBusiness(it)
-                        }
-
-                        URN_SPORT_ACTIVITY_LEN -> {
-
-                            syncActivityDuration.syncActivityDurationDataBusiness(it)
-                        }
-
-                        URN_SPORT_DAILY_ACTIVITY_LEN -> {
-
-                        }
-
-                        URN_SPORT_DISTANCE -> {
-                            syncDistanceData.syncDistanceBusiness(it)
-                        }
-
-                        URN_SPORT_OXYGEN -> {
-                            syncOxygenData.syncOxygenDataBusiness(it)
-                        }
-
-                        URN_SPORT_RATE -> {
-                            when (it.urn[2]) {
-                                URN_SPORT_RATE_RECORD -> {
-                                    syncHeartRateData.syncHeartRateBusiness(it)
-                                }
-
-                                URN_SPORT_RATE_REALTIME -> {
-                                    syncRealtimeRateData.syncRealHeartRateBusiness(it)
-                                }
-                            }
-                        }
-
-                        URN_SPORT_SLEEP -> {
-                            syncSleepData.syncRealHeartRateBusiness(it)
-                        }
-
-                        URN_SPORT_SUMMARY -> {
-                            syncSportSummaryData.syncSportSummaryDataBusiness(it)
-                        }
-
-                        URN_SPORT_10S_RATE -> {
-                            syncSportSummaryData.syncTenSecondsRateBusiness(it)
-                        }
-
-                        URN_SPORT_10S_STEP_FREQUENCY -> {
-                            syncSportSummaryData.syncTenSecondsStepFrequencyBusiness(it)
-                        }
-
-                        URN_SPORT_10S_DISTANCE -> {
-                            syncSportSummaryData.syncTenSecondsDistanceBusiness(it)
-                        }
-
-                        URN_SPORT_10S_CALORIES -> {
-                            syncSportSummaryData.syncTenSecondsCaloriesBusiness(it)
-                        }
-
-                    }
-                }
+//                URN_SPORT_DATA -> {//运动同步
+//                    when (it.urn[1]) {
+//
+//                        URN_SPORT_STEP -> {
+//                            syncStepData.syncStepBusiness(it)
+//                        }
+//
+//                        URN_SPORT_DISTANCE -> {
+//
+//                        }
+//
+//                        URN_SPORT_CALORIES -> {
+//                            syncCaloriesData.syncCaloriesBusiness(it)
+//                        }
+//
+//                        URN_SPORT_ACTIVITY_LEN -> {
+//
+//                            syncActivityDuration.syncActivityDurationDataBusiness(it)
+//                        }
+//
+//                        URN_SPORT_DAILY_ACTIVITY_LEN -> {
+//
+//                        }
+//
+//                        URN_SPORT_DISTANCE -> {
+//                            syncDistanceData.syncDistanceBusiness(it)
+//                        }
+//
+//                        URN_SPORT_OXYGEN -> {
+//                            syncOxygenData.syncOxygenDataBusiness(it)
+//                        }
+//
+//                        URN_SPORT_RATE -> {
+//                            when (it.urn[2]) {
+//                                URN_SPORT_RATE_RECORD -> {
+//                                    syncHeartRateData.syncHeartRateBusiness(it)
+//                                }
+//
+//                                URN_SPORT_RATE_REALTIME -> {
+//                                    syncRealtimeRateData.syncRealHeartRateBusiness(it)
+//                                }
+//                            }
+//                        }
+//
+//                        URN_SPORT_SLEEP -> {
+//                            syncSleepData.syncRealHeartRateBusiness(it)
+//                        }
+//
+//                        URN_SPORT_SUMMARY -> {
+//                            syncSportSummaryData.syncSportSummaryDataBusiness(it)
+//                        }
+//
+//                        URN_SPORT_10S_RATE -> {
+//                            syncSportSummaryData.syncTenSecondsRateBusiness(it)
+//                        }
+//
+//                        URN_SPORT_10S_STEP_FREQUENCY -> {
+//                            syncSportSummaryData.syncTenSecondsStepFrequencyBusiness(it)
+//                        }
+//
+//                        URN_SPORT_10S_DISTANCE -> {
+//                            syncSportSummaryData.syncTenSecondsDistanceBusiness(it)
+//                        }
+//
+//                        URN_SPORT_10S_CALORIES -> {
+//                            syncSportSummaryData.syncTenSecondsCaloriesBusiness(it)
+//                        }
+//
+//                    }
+//                }
             }
         }
     }

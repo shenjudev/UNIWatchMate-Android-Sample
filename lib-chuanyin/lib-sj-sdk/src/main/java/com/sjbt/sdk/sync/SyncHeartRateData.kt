@@ -77,7 +77,11 @@ class SyncHeartRateData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmHe
 
                         var bufferSize = 0
                         msgList.forEach {
-                            bufferSize += it.payloadLen
+                            if (it.divideType == DIVIDE_N_2 || it.divideType == DIVIDE_Y_F_2) {
+                                bufferSize += it.payloadLen - 17
+                            } else {
+                                bufferSize += it.payloadLen
+                            }
                         }
 
                         byteBufferSyncData =

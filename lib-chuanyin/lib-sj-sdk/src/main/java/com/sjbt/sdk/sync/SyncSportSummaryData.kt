@@ -95,7 +95,11 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
 
                         var bufferSize = 0
                         msgListSummary.forEach {
-                            bufferSize += it.payloadLen
+                            if (it.divideType == DIVIDE_N_2 || it.divideType == DIVIDE_Y_F_2) {
+                                bufferSize += it.payloadLen - 17
+                            } else {
+                                bufferSize += it.payloadLen
+                            }
                         }
 
                         byteBufferSummarySyncData =
@@ -295,7 +299,7 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
                 sjUniWatch.wmLog.logE(TAG, "ten seconds back msg:$urn")
 
                 try {
-                    if (it.divideType == DIVIDE_Y_F_2) {
+                    if (it.divideType == DIVIDE_Y_F_2 || it.divideType == DIVIDE_N_2) {
 
                         val byteBuffer = ByteBuffer.wrap(
                             it.payload.copyOfRange(

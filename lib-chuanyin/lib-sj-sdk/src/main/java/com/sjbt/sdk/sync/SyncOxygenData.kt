@@ -8,10 +8,7 @@ import com.sjbt.sdk.SJUniWatch
 import com.sjbt.sdk.entity.DataFormat
 import com.sjbt.sdk.entity.MsgBean
 import com.sjbt.sdk.entity.NodeData
-import com.sjbt.sdk.spp.cmd.CmdHelper
-import com.sjbt.sdk.spp.cmd.SYNC_DATA_INTERVAL_FIVE_MINUTES
-import com.sjbt.sdk.spp.cmd.SYNC_DATA_INTERVAL_HOUR
-import com.sjbt.sdk.spp.cmd.URN_SPORT_OXYGEN
+import com.sjbt.sdk.spp.cmd.*
 import com.sjbt.sdk.utils.BtUtils
 import com.sjbt.sdk.utils.TimeUtils
 import io.reactivex.rxjava3.core.*
@@ -78,7 +75,11 @@ class SyncOxygenData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmOxyge
 
                         var bufferSize = 0
                         msgList.forEach {
-                            bufferSize += it.payloadLen
+                            if (it.divideType == DIVIDE_N_2 || it.divideType == DIVIDE_Y_F_2) {
+                                bufferSize += it.payloadLen - 17
+                            } else {
+                                bufferSize += it.payloadLen
+                            }
                         }
 
                         byteBufferSyncData =

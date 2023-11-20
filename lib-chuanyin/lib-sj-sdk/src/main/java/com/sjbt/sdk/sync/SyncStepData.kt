@@ -12,6 +12,8 @@ import com.sjbt.sdk.entity.DataFormat
 import com.sjbt.sdk.entity.MsgBean
 import com.sjbt.sdk.entity.NodeData
 import com.sjbt.sdk.spp.cmd.CmdHelper.getReadSportSyncData
+import com.sjbt.sdk.spp.cmd.DIVIDE_N_2
+import com.sjbt.sdk.spp.cmd.DIVIDE_Y_F_2
 import com.sjbt.sdk.spp.cmd.SYNC_DATA_INTERVAL_HOUR
 import com.sjbt.sdk.spp.cmd.URN_SPORT_STEP
 import com.sjbt.sdk.utils.BtUtils
@@ -84,8 +86,8 @@ class SyncStepData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmStepDat
 
                             var bufferSize = 0
                             msgList.forEachIndexed() { index, it ->
-                                if (index == 0) {
-                                    bufferSize = it.payloadLen - 17
+                                if (it.divideType == DIVIDE_N_2 || it.divideType == DIVIDE_Y_F_2) {
+                                    bufferSize += it.payloadLen - 17
                                 } else {
                                     bufferSize += it.payloadLen
                                 }
@@ -101,7 +103,7 @@ class SyncStepData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmStepDat
                                     "step data:" + BtUtils.bytesToHexString(it.originData)
                                 )
 
-                                if (index == 0) {
+                                if (it.divideType == DIVIDE_N_2 || it.divideType == DIVIDE_Y_F_2) {
                                     byteBufferSyncData.put(
                                         it.payload.copyOfRange(
                                             17,

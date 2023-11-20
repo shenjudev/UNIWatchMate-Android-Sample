@@ -1,8 +1,5 @@
 package com.sjbt.sdk.entity
 
-import android.util.Log
-import com.sjbt.sdk.TAG_SJ
-import com.sjbt.sdk.log.SJLog
 import com.sjbt.sdk.spp.cmd.*
 import com.sjbt.sdk.utils.BtUtils
 import com.sjbt.sdk.utils.ByteUtil
@@ -29,8 +26,8 @@ class MsgBean {
     var divideIndex = 0
     lateinit var originData: ByteArray
     lateinit var payload: ByteArray
-
     var payloadJson: String? = null
+    var payloadPackage: PayloadPackage? = null
 
     override fun toString(): String {
         return "MsgBean{" +
@@ -61,7 +58,7 @@ class MsgBean {
                     (head == HEAD_FILE_SPP_A_2_D && cmdId == CMD_ID_8003.toInt()) ||//传输文件的过程中，采用连续传输的方式
                     (head == HEAD_CAMERA_PREVIEW && cmdId == CMD_ID_8002.toInt()) ||//相机预览
                     (head == HEAD_NODE_TYPE && cmdId == CMD_ID_8004.toInt()) || //通讯层节点消息
-                    (divideType == DIVIDE_Y_M_2)) //中间包没有超时设置
+                    (divideType != DIVIDE_Y_F_2 && divideType != DIVIDE_Y_F_JSON)) //中间包尾包没有超时设置
 
         }
 
@@ -163,8 +160,9 @@ class MsgBean {
                         val payload = ByteArray(payLoadLength)
                         System.arraycopy(msg, BT_MSG_BASE_LEN, payload, 0, payload.size)
                         msgBean.payload = payload
+                        msgBean.payloadPackage = PayloadPackage.fromByteArray(payload)
 
-                        if (msgBean.head == HEAD_NODE_TYPE && msgBean.payload.size > 10) {
+                        if ((msgBean.divideType == DIVIDE_Y_F_2 || msgBean.divideType == DIVIDE_N_2) && msgBean.payload.size > 10) {
                             msgBean.requestId = ByteBuffer.wrap(msgBean.payload)
                                 .order(ByteOrder.LITTLE_ENDIAN).short.toUShort().toInt()
 
