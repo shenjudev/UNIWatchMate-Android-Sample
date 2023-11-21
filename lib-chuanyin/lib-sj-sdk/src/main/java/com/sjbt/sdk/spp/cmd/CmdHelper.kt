@@ -10,10 +10,7 @@ import com.base.sdk.port.FileType
 import com.google.gson.Gson
 import com.sjbt.sdk.ALARM_NAME_LEN
 import com.sjbt.sdk.TAG_SJ
-import com.sjbt.sdk.entity.DivideInfo
-import com.sjbt.sdk.entity.MsgBean
-import com.sjbt.sdk.entity.OtaCmdInfo
-import com.sjbt.sdk.entity.PayloadPackage
+import com.sjbt.sdk.entity.*
 import com.sjbt.sdk.entity.old.TimeSyncBean
 import com.sjbt.sdk.utils.BtUtils
 import com.sjbt.sdk.utils.ByteUtil
@@ -1181,6 +1178,68 @@ object CmdHelper {
             byteBuffer.put(eSecond.toByte())
         }
 
+
+        payloadPackage.putData(
+            getUrnId(URN_SPORT_DATA, childUrn = childUrn, grandSon = grandSon),
+            byteBuffer.array()
+        )
+
+        return payloadPackage
+    }
+
+    /**
+     * 获取运动数据
+     */
+    fun getReadSportTenSecondsSyncData(
+        syncTimes: List<SyncTime>,
+        childUrn: Byte,
+        grandSon: Byte = URN_0
+    ): PayloadPackage {
+        val payloadPackage = PayloadPackage()
+        val calendar = Calendar.getInstance()
+
+        val byteBuffer = ByteBuffer.allocate(14 * syncTimes.size).order(ByteOrder.LITTLE_ENDIAN)
+
+        syncTimes.forEach {
+            calendar.timeInMillis = it.startTime
+            val sYear = calendar.get(Calendar.YEAR)
+            val sMonth = calendar.get(Calendar.MONTH) + 1 // 月份从0开始，需要加1
+            val sDay = calendar.get(Calendar.DAY_OF_MONTH)
+            val sHour = calendar.get(Calendar.HOUR_OF_DAY)
+            val sMinute = calendar.get(Calendar.MINUTE)
+            val sSecond = calendar.get(Calendar.SECOND)
+
+            calendar.timeInMillis = it.endTime
+            val eYear = calendar.get(Calendar.YEAR)
+            val eMonth = calendar.get(Calendar.MONTH) + 1
+            val eDay = calendar.get(Calendar.DAY_OF_MONTH)
+            val eHour = calendar.get(Calendar.HOUR_OF_DAY)
+            val eMinute = calendar.get(Calendar.MINUTE)
+            val eSecond = calendar.get(Calendar.SECOND)
+
+            Log.e(
+                TAG_SJ,
+                "URN:$childUrn startTime:$sYear$sMonth$sDay $sHour:$sMinute:$sSecond - endTime:$eYear$eMonth$eDay $eHour:$eMinute:$eSecond"
+            )
+
+            if (it.startTime != 0L) {
+                byteBuffer.putShort(sYear.toShort())
+                byteBuffer.put(sMonth.toByte())
+                byteBuffer.put(sDay.toByte())
+                byteBuffer.put(sHour.toByte())
+                byteBuffer.put(sMinute.toByte())
+                byteBuffer.put(sSecond.toByte())
+            }
+
+            if (it.endTime != 0L) {
+                byteBuffer.putShort(eYear.toShort())
+                byteBuffer.put(eMonth.toByte())
+                byteBuffer.put(eDay.toByte())
+                byteBuffer.put(eHour.toByte())
+                byteBuffer.put(eMinute.toByte())
+                byteBuffer.put(eSecond.toByte())
+            }
+        }
 
         payloadPackage.putData(
             getUrnId(URN_SPORT_DATA, childUrn = childUrn, grandSon = grandSon),

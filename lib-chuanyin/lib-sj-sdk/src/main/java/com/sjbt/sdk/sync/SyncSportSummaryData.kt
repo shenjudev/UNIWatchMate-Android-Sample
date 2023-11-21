@@ -281,23 +281,30 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
             tenSecondsCaloriesMap.clearMap()
 
             if (sportSize > 0) {
-                syncTenSecondsData(URN_SPORT_10S_RATE, it.value[0].startTime, it.value[0].endTime)
+
+                val syncTimes = mutableListOf<SyncTime>()
+
+                it.value.forEach { summary ->
+                    val syncTime = SyncTime(summary.startTime, summary.endTime)
+                    syncTimes.add(syncTime)
+                }
+
+                syncTenSecondsData(URN_SPORT_10S_RATE, syncTimes)
             }
         }
     }
 
-    private fun syncTenSecondsData(urn: Byte, startTime: Long, endTime: Long) {
+    private fun syncTenSecondsData(urn: Byte, syncTimes: List<SyncTime>) {
 
         sjUniWatch.wmLog.logE(
             TAG,
-            "++++++++++++++++++++++++++++++++++++++++++START DATA SYNC URN:$urn startTime:$startTime endTime:$endTime +++++++++++++++++++++++++++"
+            "++++++++++++++++++++++++++++++++++++++++++START DATA SYNC URN:$urn syncTime:${syncTimes} +++++++++++++++++++++++++++"
         )
 
         sjUniWatch.sendReadSubPkObserveNode(
             this,
-            CmdHelper.getReadSportSyncData(
-                startTime,
-                endTime,
+            CmdHelper.getReadSportTenSecondsSyncData(
+                syncTimes,
                 childUrn = urn
             )
         ).subscribe(object :
@@ -310,13 +317,6 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
 
                 try {
                     if (it.divideType == DIVIDE_Y_F_2 || it.divideType == DIVIDE_N_2) {
-
-//                        val byteBuffer = ByteBuffer.wrap(
-//                            it.payload.copyOfRange(
-//                                17,
-//                                it.payload.size
-//                            )
-//                        ).order(ByteOrder.LITTLE_ENDIAN)
 
                         sjUniWatch.wmLog.logE(
                             TAG,
@@ -354,7 +354,7 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
                             "++++++++++++++++++++++++++++++++++++++++++END DATA URN_SPORT_10S_RATE - onComplete +++++++++++++++++++++++++++"
                         )
 
-                        syncTenSecondsData(URN_SPORT_10S_DISTANCE, startTime, endTime)
+                        syncTenSecondsData(URN_SPORT_10S_DISTANCE, syncTimes)
                     }
 
                     URN_SPORT_10S_DISTANCE -> {
@@ -363,7 +363,7 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
                             "++++++++++++++++++++++++++++++++++++++++++END DATA URN_SPORT_10S_DISTANCE - onComplete +++++++++++++++++++++++++++"
                         )
 
-                        syncTenSecondsData(URN_SPORT_10S_CALORIES, startTime, endTime)
+                        syncTenSecondsData(URN_SPORT_10S_CALORIES, syncTimes)
                     }
 
                     URN_SPORT_10S_CALORIES -> {
@@ -372,7 +372,7 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
                             "++++++++++++++++++++++++++++++++++++++++++END DATA URN_SPORT_10S_CALORIES - onComplete +++++++++++++++++++++++++++"
                         )
 
-                        syncTenSecondsData(URN_SPORT_10S_STEP_FREQUENCY, startTime, endTime)
+                        syncTenSecondsData(URN_SPORT_10S_STEP_FREQUENCY, syncTimes)
                     }
 
                     URN_SPORT_10S_STEP_FREQUENCY -> {
@@ -385,11 +385,18 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
                         )
 
                         if (sportIndex < sportSize) {
-                            wmSyncData?.let {
+                            wmSyncData?.let { it ->
+
+                                val syncTimes = mutableListOf<SyncTime>()
+
+                                it.value.forEach { summary ->
+                                    val syncTime = SyncTime(summary.startTime, summary.endTime)
+                                    syncTimes.add(syncTime)
+                                }
+
                                 syncTenSecondsData(
                                     URN_SPORT_10S_RATE,
-                                    it.value[sportIndex].startTime,
-                                    it.value[sportIndex].endTime
+                                    syncTimes
                                 )
                             }
                         } else {
