@@ -286,7 +286,7 @@ class SyncSleepData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmSleepD
         }
     }
 
-    private fun SyncSleepData.defaultBack() {
+    private fun defaultBack() {
         wmSyncData =
             WmSyncData(
                 WmSyncDataType.SLEEP,

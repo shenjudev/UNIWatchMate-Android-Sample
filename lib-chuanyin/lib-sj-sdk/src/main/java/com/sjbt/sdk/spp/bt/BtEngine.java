@@ -539,7 +539,7 @@ public class BtEngine {
                 System.arraycopy(msg, tempPosition, singleMsg, 0, singleMsg.length);
                 tempPosition = tempPosition + singleMsg.length;
 
-                logD("suplit msg：" + BtUtils.bytesToHexString(singleMsg));
+                logD("split msg：" + BtUtils.bytesToHexString(singleMsg));
 
                 MsgBean msgBean = MsgBean.Companion.fromByteArrayToMsgBean(singleMsg);
 
