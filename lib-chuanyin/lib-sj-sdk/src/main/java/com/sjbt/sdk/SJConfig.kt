@@ -1,7 +1,7 @@
 package com.sjbt.sdk
 
 import com.base.sdk.FunctionType
-import com.sjbt.sdk.entity.ActionSupport
+import com.base.sdk.entity.settings.WmFunctionSupport
 
 const val TAG_SJ = "SJ_SDK>>>>>"
 const val MAX_RETRY_COUNT = 3
@@ -13,132 +13,132 @@ const val ALARM_NAME_LEN = 20
 const val BT_ADDRESS: String = "bt_mac"
 const val DEVICE_MANUFACTURER_CODE = 0xA1
 
-fun getFuncState(actionSupport: ActionSupport?, functionType: FunctionType): Boolean {
+fun getFuncState(wmFunctionSupport: WmFunctionSupport, functionType: FunctionType): Int {
     when (functionType) {
         FunctionType.SUPPORT_CAMERA_PREVIEW -> {
-            return true
+            return wmFunctionSupport.supportCameraPreview
         }
 
         FunctionType.SUPPORT_DIAL_MARKET -> {
-            return true
+            return wmFunctionSupport.supportDialMarket
         }
 
         FunctionType.BT_BLE_SAME_NAME -> {
-            return true
+            return wmFunctionSupport.supportBtBleSameName
         }
 
         FunctionType.SPORT_SHOW_FIXED -> {
-            return false
+            return wmFunctionSupport.supportShowFixMotionType
         }
 
         FunctionType.NOTIFY_APPS_UNFOLD -> {
-            return false
+            return wmFunctionSupport.supportUnfoldNotification
         }
 
         FunctionType.SUPPORT_REBOOT -> {
-            return true
+            return wmFunctionSupport.supportRebootDevice
         }
 
         FunctionType.SUPPORT_ACTIVITY_DURATION_GOAL -> {
-            return false
+            return wmFunctionSupport.supportActDurationGoal
         }
 
         FunctionType.SUPPORT_ALARM -> {
-            return true
+            return 1
         }
 
         FunctionType.SUPPORT_ALARM_LABEL -> {
-            return false
+            return wmFunctionSupport.supportAlarmLabel
         }
 
         FunctionType.SUPPORT_ALARM_REMARK -> {
-            return true
+            return wmFunctionSupport.supportAlarmRemark
         }
 
         FunctionType.SUPPORT_WEATHER -> {
-            return true
+            return wmFunctionSupport.supportWeatherState
         }
 
         FunctionType.SUPPORT_FIND_PHONE -> {
-            return true
+            return  wmFunctionSupport.supportFindPhoneState
         }
 
         FunctionType.SUPPORT_FIND_WEAR -> {
-            return true
+            return wmFunctionSupport.supportFindDeviceState
         }
 
         FunctionType.SUPPORT_NOTIFY -> {
-            return true
+            return 1
         }
 
         FunctionType.SUPPORT_BLE_PHONE -> {
-            return false
+            return wmFunctionSupport.supportBleDell
         }
 
         FunctionType.SUPPORT_CLOSE_BLE_PHONE -> {
-            return false
+            return wmFunctionSupport.supportShowBleDellSwitch
         }
         FunctionType.SUPPORT_CONTACTS -> {
-            return true
+            return 1
         }
 
         FunctionType.SUPPORT_EMERGENCY_CONTACT -> {
-            return true
+            return 1
         }
 
         FunctionType.SUPPORT_FAVORITE_CONTACTS -> {
-            return false
+            return 0
         }
 
         FunctionType.SUPPORT_QUICK_REPLY -> {
-            return false
+            return 0
         }
 
         FunctionType.SUPPORT_STEP_GOAL -> {
-            return true
+            return 1
         }
 
         FunctionType.SUPPORT_CALORIE_GOAL -> {
-            return false
+            return 0
         }
 
         FunctionType.SUPPORT_REMINDER_LONG_SIT -> {
-            return true
+            return 1
         }
 
         /**
          * 是否支持 喝水提醒
          */
         FunctionType.SUPPORT_REMINDER_DRINK_WATER -> {
-            return true
+            return 1
         }
 
         /**
          * 是否支持 洗手提醒
          */
         FunctionType.SUPPORT_REMINDER_WASH_HAND -> {
-            return false
+            return 0
         }
 
         /**
          * 是否支持 心率自动检测
          */
         FunctionType.SUPPORT_HEART_RATE_MONITOR -> {
-            return true
+            return 1
         }
 
         /**
          * 是否支持 REM快速眼动
          */
         FunctionType.SUPPORT_REM -> {
-            return false
+            return 0
         }
 
         /**
          * 是否支持 运动分类
          */
         FunctionType.SUPPORT_SPORT_TYPE -> {
-            return false
+            return 0
         }
 
 
@@ -146,28 +146,28 @@ fun getFuncState(actionSupport: ActionSupport?, functionType: FunctionType): Boo
          * 是否支持 运动自识别开始
          */
         FunctionType.SUPPORT_SPORT_AUTO_START -> {
-            return false
+            return 0
         }
 
         /**
          * 是否支持 运动自识别结束
          */
         FunctionType.SUPPORT_SPORT_AUTO_PAUSE -> {
-            return false
+            return 0
         }
 
         /**
          * 是否支持 世界时钟
          */
         FunctionType.SUPPORT_WORLD_CLOCK -> {
-            return false
+            return 0
         }
 
         /**
          * 是否支持 摇摇拍照
          */
         FunctionType.SUPPORT_HID_BLE -> {
-            return true
+            return 1
         }
 
         /**
@@ -176,20 +176,20 @@ fun getFuncState(actionSupport: ActionSupport?, functionType: FunctionType): Boo
          *
          */
         FunctionType.SUPPORT_REMOTE_CAMERA -> {
-            return true
+            return 1
         }
 
         /**
          * 是否支持 设备语言
          */
         FunctionType.SUPPORT_LANGUAGE -> {
-            return true
+            return 1
         }
         /**
          * 是否支持 小部件
          */
         FunctionType.SUPPORT_SMALL_FUNCTION -> {
-            return false
+            return 0
         }
         /**
          * 是否支持音量调节
@@ -197,7 +197,7 @@ fun getFuncState(actionSupport: ActionSupport?, functionType: FunctionType): Boo
          * @return
          */
         FunctionType.SUPPORT_VOLUME_CONTROL -> {
-            return false
+            return 0
         }
 
         /**
@@ -209,7 +209,7 @@ fun getFuncState(actionSupport: ActionSupport?, functionType: FunctionType): Boo
          * @return
          */
         FunctionType.SUPPORT_RESTING_HEART_RATE_WARNING -> {
-            return true
+            return 1
         }
         /**
          * 是否支持运动心率过高提醒
@@ -220,7 +220,7 @@ fun getFuncState(actionSupport: ActionSupport?, functionType: FunctionType): Boo
          * @return
          */
         FunctionType.SUPPORT_EXERCISE_HEART_RATE_WARNING -> {
-            return true
+            return 1
         }
 
         /**
@@ -233,7 +233,7 @@ fun getFuncState(actionSupport: ActionSupport?, functionType: FunctionType): Boo
          * @return
          */
         FunctionType.SUPPORT_DAILY_HEART_RATE_WARNING -> {
-            return true
+            return 1
         }
         /**
          * 是否支持连续血氧
@@ -241,7 +241,7 @@ fun getFuncState(actionSupport: ActionSupport?, functionType: FunctionType): Boo
          * @return
          */
         FunctionType.SUPPORT_CONTINUOUS_BLOOD_OXYGEN -> {
-            return false
+            return 0
         }
 
         /**
@@ -250,7 +250,7 @@ fun getFuncState(actionSupport: ActionSupport?, functionType: FunctionType): Boo
          * @return
          */
         FunctionType.SUPPORT_BLUETOOTH_SETTINGS -> {
-            return true
+            return 1
         }
         /**
          * 是否支持导入本地音乐
@@ -258,7 +258,7 @@ fun getFuncState(actionSupport: ActionSupport?, functionType: FunctionType): Boo
          * @return
          */
         FunctionType.SUPPORT_IMPORT_LOCAL_MUSIC -> {
-            return true
+            return 1
         }
 
         /**
@@ -267,7 +267,7 @@ fun getFuncState(actionSupport: ActionSupport?, functionType: FunctionType): Boo
          * @return
          */
         FunctionType.SUPPORT_EVENT_REMINDER -> {
-            return false
+            return 0
         }
 
         /**
@@ -276,12 +276,16 @@ fun getFuncState(actionSupport: ActionSupport?, functionType: FunctionType): Boo
          * @return
          */
         FunctionType.SUPPORT_SCREEN_DURATION -> {
-            return false
+            return 0
+        }
+
+        FunctionType.SUPPORT_REBOOT ->{
+            return 1
         }
 
 
         else -> {
-            return false
+            return 0
         }
     }
 }

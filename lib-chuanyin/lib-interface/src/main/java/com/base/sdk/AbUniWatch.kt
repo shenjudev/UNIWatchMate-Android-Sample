@@ -9,6 +9,7 @@ import com.base.sdk.entity.apps.WmConnectState
 import com.base.sdk.entity.common.WmTimeUnit
 import com.base.sdk.entity.data.WmBatteryInfo
 import com.base.sdk.entity.settings.WmDeviceInfo
+import com.base.sdk.entity.settings.WmFunctionSupport
 import com.base.sdk.port.log.AbWmLog
 import com.base.sdk.port.AbWmTransferFile
 import com.base.sdk.port.app.AbWmApps
@@ -157,9 +158,9 @@ abstract class AbUniWatch {
     abstract fun reboot(): Completable
 
     /**
-     * 功能是否支持
+     * 查询功能清单配置
      */
-    abstract fun isFunctionAvailable(functionType: FunctionType): Boolean
+    abstract fun getFunctionSupportState(): WmFunctionSupport
 
 }
 

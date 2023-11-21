@@ -7,7 +7,6 @@ import android.os.Handler
 import android.os.Looper
 import android.text.TextUtils
 import com.base.sdk.AbUniWatch
-import com.base.sdk.FunctionType
 import com.base.sdk.entity.WmBindInfo
 import com.base.sdk.entity.WmDevice
 import com.base.sdk.entity.WmDeviceModel
@@ -158,7 +157,7 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(), Li
     }
 
     private var unbindEmitter: CompletableEmitter? = null
-    private var mActionSupportBean: ActionSupport = ActionSupport()
+    private var mWmFunctionSupport: WmFunctionSupport = WmFunctionSupport()
 
     override fun setLogEnable(logEnable: Boolean) {
         this.sdkLogEnable = logEnable
@@ -300,7 +299,7 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(), Li
      * @return
      */
     open fun getActionSupportCmd() {
-        sendNormalMsg(CmdHelper.supportActionInfoCmd)
+        sendReadNodeCmdList(CmdHelper.getRequestActionListCmd())
     }
 
     override fun socketNotify(state: Int, obj: Any?) {
@@ -319,7 +318,7 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(), Li
 
                                 CMD_ID_8002 -> {
                                     mConnectTryCount = 0
-                                    sendNormalMsg(CmdHelper.supportActionInfoCmd)
+                                    getActionSupportCmd()
                                 }
                             }
                         }
@@ -568,15 +567,15 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(), Li
 
                                 }
 
-                                CMD_ID_802D -> {//Action Support
-                                    mBindInfo?.let {
-                                        wmLog.logD(TAG, "bindinfo:$it")
-                                        sendNormalMsg(CmdHelper.getBindCmd(it))
-                                    }
-
-                                    mActionSupportBean =
-                                        ActionSupport.toActionSupportBean(msgBean.payload)
-                                }
+//                                CMD_ID_802D -> {//旧协议 不用
+//                                    mBindInfo?.let {
+//                                        wmLog.logD(TAG, "bindinfo:$it")
+//                                        sendNormalMsg(CmdHelper.getBindCmd(it))
+//                                    }
+//
+//                                    mWmFunctionSupportBean =
+//                                        WmFunctionSupport.toActionSupportBean(msgBean.payload)
+//                                }
 
                                 CMD_ID_802E -> {//绑定
                                     val result = msgBean.payload[0].toInt()
@@ -1358,12 +1357,24 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(), Li
     }
 
     private fun parseResponseEachNode(
-        payloadPackage: PayloadPackage, msgBean: MsgBean?
+        payloadPackage: PayloadPackage, msgBean: MsgBean
     ) {
         payloadPackage.itemList.forEach {
             when (it.urn[0]) {
                 URN_CONNECT -> {//蓝牙连接 暂用旧协议格式
+                }
 
+                URN_FUN_LIST -> {
+                    mBindInfo?.let {
+                        wmLog.logD(TAG, "bindinfo:$it")
+                        sendNormalMsg(CmdHelper.getBindCmd(it))
+                    } ?: run {
+                        btStateChange(WmConnectState.DISCONNECTED)
+                    }
+
+                    mWmFunctionSupport = SJFunctionSupport.toActionSupportBean(msgBean.payloadPackage!!.itemList[0].data)
+
+                    wmLog.logD(TAG, mWmFunctionSupport.toString())
                 }
 
                 URN_SETTING -> {//设置同步
@@ -1841,8 +1852,7 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(), Li
         return WmDeviceModel.SJ_WATCH
     }
 
-    override fun isFunctionAvailable(functionType: FunctionType): Boolean {
-        return getFuncState(mActionSupportBean, functionType)
+    override fun getFunctionSupportState(): WmFunctionSupport {
+        return mWmFunctionSupport
     }
-
 }

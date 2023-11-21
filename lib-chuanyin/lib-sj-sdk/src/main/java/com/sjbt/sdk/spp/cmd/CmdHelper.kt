@@ -372,6 +372,15 @@ object CmdHelper {
         }
 
     /**
+     * 获取功能清单
+     */
+    fun getRequestActionListCmd(): PayloadPackage {
+        val payloadPackage = PayloadPackage()
+        payloadPackage.putData(getUrnId(URN_7, URN_1), ByteArray(0))
+        return payloadPackage
+    }
+
+    /**
      * 获取APPView list
      *
      * @return
@@ -493,7 +502,7 @@ object CmdHelper {
      */
     fun getNotificationCmd(notifyMsgBean: WmNotification?): ByteArray {
         val payload = gson.toJson(notifyMsgBean).toByteArray(StandardCharsets.UTF_8)
-        Log.d(TAG_SJ,"notification:" + gson.toJson(notifyMsgBean))
+        Log.d(TAG_SJ, "notification:" + gson.toJson(notifyMsgBean))
         return constructCmd(
             HEAD_COMMON,
             CMD_ID_8004,

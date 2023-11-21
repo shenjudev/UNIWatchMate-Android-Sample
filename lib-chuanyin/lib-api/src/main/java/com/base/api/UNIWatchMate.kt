@@ -2,7 +2,6 @@ package com.base.api
 
 import android.app.Application
 import android.bluetooth.BluetoothDevice
-import android.util.Log
 import com.base.sdk.AbUniWatch
 import com.base.sdk.FunctionType
 import com.base.sdk.entity.WmBindInfo
@@ -14,6 +13,7 @@ import com.base.sdk.entity.common.WmDiscoverDevice
 import com.base.sdk.entity.common.WmTimeUnit
 import com.base.sdk.entity.data.WmBatteryInfo
 import com.base.sdk.entity.settings.WmDeviceInfo
+import com.base.sdk.entity.settings.WmFunctionSupport
 import com.base.sdk.port.log.AbWmLog
 import com.base.sdk.port.AbWmTransferFile
 import com.base.sdk.port.app.AbWmApps
@@ -160,13 +160,12 @@ object UNIWatchMate : AbUniWatch() {
         uniWatchSubject.value?.stopDiscovery()
     }
 
-    override fun isFunctionAvailable(functionType: FunctionType): Boolean {
-        return uniWatchSubject.value?.let {
-            it.isFunctionAvailable(functionType)
-        } ?: run {
-            false
+    override fun getFunctionSupportState(): WmFunctionSupport {
+
+        uniWatchSubject.value?.let {
+            return it.getFunctionSupportState()
         }
+
+        return WmFunctionSupport()
     }
-
-
 }

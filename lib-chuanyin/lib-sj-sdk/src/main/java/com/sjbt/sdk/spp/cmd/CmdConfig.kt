@@ -207,6 +207,8 @@ const val URN_SPORT_10S_STEP_FREQUENCY: Byte = URN_B
 const val URN_SPORT_10S_DISTANCE: Byte = URN_C
 const val URN_SPORT_10S_CALORIES: Byte = URN_D
 
+const val URN_FUN_LIST :Byte = URN_7
+
 const val CHANGE_CAMERA = 0.toByte()
 const val CHANGE_FLASH = 1.toByte()
 
