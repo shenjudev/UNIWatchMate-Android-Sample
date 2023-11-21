@@ -1160,40 +1160,19 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(), Li
 
     }
 
-    /**
-     * 回复device Node节点消息
-     */
-    fun sendResponseNodeCmdList(payloadPackage: PayloadPackage) {
-        payloadPackage.toResponseByteArray(requestType = ResponseResultType.RESPONSE_ALL_OK)
-            .forEach {
-
-                val cmdArray = CmdHelper.constructCmd(
-                    HEAD_NODE_TYPE,
-                    CMD_ID_8001,
-                    DIVIDE_N_2,
-                    0,
-                    0,
-                    BtUtils.getCrc(HEX_FFFF, it, it.size),
-                    it
-                )
-
-                sendNormalMsg(cmdArray)
-            }
-
-        mPayloadPackage = payloadPackage
-
-    }
-
     private fun parseResponseNodePayload(
         msgBean: MsgBean,
         payloadPackage: PayloadPackage
     ) {
-
         if (payloadPackage.actionType == ResponseResultType.RESPONSE_ALL_OK.type) {
             wmLog.logD(TAG, "All OK:" + mPayloadMap.getPayload(payloadPackage._id).packageSeq)
 
         } else if (payloadPackage.actionType == ResponseResultType.RESPONSE_ALL_FAIL.type) {
             wmLog.logD(TAG, "All Fail" + mPayloadMap.getPayload(payloadPackage._id).packageSeq)
+
+        } else if (payloadPackage.actionType == RequestType.REQ_TYPE_NOTIFY.type) {
+
+            parseNotifyNode(payloadPackage, msgBean)
 
         } else if (payloadPackage.actionType == ResponseResultType.RESPONSE_EACH.type
             || payloadPackage.actionType == RequestType.REQ_TYPE_WRITE.type
@@ -1356,6 +1335,20 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(), Li
         }
     }
 
+    private fun parseNotifyNode(payloadPackage: PayloadPackage, msgBean: MsgBean) {
+        payloadPackage.itemList.forEach {
+            when (it.urn[0]) {
+                URN_APP_SETTING -> {
+                    when (it.urn[1]) {
+                        URN_APP_ALARM -> {
+                            appAlarm.alarmUpdate()
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     private fun parseResponseEachNode(
         payloadPackage: PayloadPackage, msgBean: MsgBean
     ) {
@@ -1372,7 +1365,8 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(), Li
                         btStateChange(WmConnectState.DISCONNECTED)
                     }
 
-                    mWmFunctionSupport = SJFunctionSupport.toActionSupportBean(msgBean.payloadPackage!!.itemList[0].data)
+                    mWmFunctionSupport =
+                        SJFunctionSupport.toActionSupportBean(msgBean.payloadPackage!!.itemList[0].data)
 
                     wmLog.logD(TAG, mWmFunctionSupport.toString())
                 }

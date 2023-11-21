@@ -93,6 +93,7 @@ enum class RequestType(val type: Int) {
     REQ_TYPE_READ(1),
     REQ_TYPE_WRITE(2),
     REQ_TYPE_EXECUTE(3),
+    REQ_TYPE_NOTIFY(4),
 }
 
 enum class ResponseResultType(val type: Int) {

@@ -60,6 +60,11 @@ class AppAlarm(val sjUniWatch: SJUniWatch) : AbAppAlarm() {
         }
     }
 
+    fun alarmUpdate() {
+        getData = false
+        sjUniWatch.sendReadNodeCmdList(getReadAlarmListCmd())
+    }
+
     fun alarmBusiness(nodeData: NodeData) {
         when (nodeData.urn[2]) {
 
