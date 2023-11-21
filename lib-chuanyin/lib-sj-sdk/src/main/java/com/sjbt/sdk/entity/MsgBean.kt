@@ -121,7 +121,7 @@ class MsgBean {
                             msgBean.payloadJson = payloadJson
                         }
 
-                        if (msgBean.head == HEAD_NODE_TYPE && msgBean.cmdId != CMD_ID_8004.toInt()) {
+                        if (msgBean.head == HEAD_NODE_TYPE && msgBean.cmdId != CMD_ID_8004.toInt() && ((msgBean.divideType == DIVIDE_Y_F_2 || msgBean.divideType == DIVIDE_N_2))) {
 
                             msgBean.requestId = ByteBuffer.wrap(msgBean.payload)
                                 .order(ByteOrder.LITTLE_ENDIAN).short.toUShort().toInt()
@@ -162,9 +162,10 @@ class MsgBean {
                         val payload = ByteArray(payLoadLength)
                         System.arraycopy(msg, BT_MSG_BASE_LEN, payload, 0, payload.size)
                         msgBean.payload = payload
-                        msgBean.payloadPackage = PayloadPackage.fromByteArray(payload)
 
                         if ((msgBean.divideType == DIVIDE_Y_F_2 || msgBean.divideType == DIVIDE_N_2) && msgBean.payload.size > 10) {
+                            msgBean.payloadPackage = PayloadPackage.fromByteArray(payload)
+
                             msgBean.requestId = ByteBuffer.wrap(msgBean.payload)
                                 .order(ByteOrder.LITTLE_ENDIAN).short.toUShort().toInt()
 
