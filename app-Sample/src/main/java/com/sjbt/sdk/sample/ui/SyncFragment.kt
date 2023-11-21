@@ -3,6 +3,9 @@ package com.sjbt.sdk.sample.ui
 import android.os.Bundle
 import android.view.View
 import androidx.navigation.fragment.findNavController
+import com.base.api.UNIWatchMate
+import com.blankj.utilcode.util.GsonUtils
+import com.blankj.utilcode.util.LogUtils
 import com.github.kilnn.tool.widget.ktx.clickTrigger
 import com.sjbt.sdk.sample.R
 import com.sjbt.sdk.sample.base.BaseFragment
@@ -14,6 +17,7 @@ import com.sjbt.sdk.sample.utils.setAllChildEnabled
 import com.sjbt.sdk.sample.utils.viewLifecycle
 import com.sjbt.sdk.sample.utils.viewbinding.viewBinding
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.reactive.asFlow
 
 /**
  * ***Description**
@@ -43,9 +47,15 @@ class SyncFragment : BaseFragment(R.layout.fragment_sync) {
         viewBind.itemAll.clickTrigger(block = blockClick)
 
         viewLifecycle.launchRepeatOnStarted {
-            val result = launch {
+            launch {
                 deviceManager.flowStateConnected().collect {
                     viewBind.refreshLayout.setAllChildEnabled(it)
+                }
+            }
+
+            launch {
+                UNIWatchMate.wmApps.appSport.getSupportSportList.toFlowable().asFlow().collect {
+                    LogUtils.d("getSupportSportList = ${GsonUtils.toJson(it)}")
                 }
             }
 //            launch {
@@ -97,6 +107,7 @@ class SyncFragment : BaseFragment(R.layout.fragment_sync) {
             viewBind.itemActivityDistance -> {
                 findNavController().navigate(SyncFragmentDirections.toDistance())
             }
+
             viewBind.itemActivityDuration -> {
                 findNavController().navigate(SyncFragmentDirections.toActivityDuration())
             }

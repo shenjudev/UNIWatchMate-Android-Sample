@@ -14,6 +14,7 @@ import com.base.sdk.entity.data.WmSportSummaryData
 import com.blankj.utilcode.util.GsonUtils
 import com.blankj.utilcode.util.LogUtils
 import com.blankj.utilcode.util.ResourceUtils
+import com.blankj.utilcode.util.TimeUtils
 import com.sjbt.sdk.sample.R
 import com.sjbt.sdk.sample.base.Async
 import com.sjbt.sdk.sample.base.AsyncViewModel
@@ -32,8 +33,12 @@ import com.sjbt.sdk.sample.ui.device.contacts.PhoneContactsState
 import com.sjbt.sdk.sample.ui.device.dial.library.PushParamsAndPackets
 import com.sjbt.sdk.sample.utils.DateTimeUtils
 import com.sjbt.sdk.sample.utils.getSportLibrary
+import com.sjbt.sdk.sample.utils.launchRepeatOnStarted
 import com.sjbt.sdk.sample.utils.runCatchingWithLog
+import com.sjbt.sdk.sample.utils.viewLifecycle
+import com.sjbt.sdk.sample.utils.viewLifecycleScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.reactive.asFlow
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.rx3.await
 import kotlinx.coroutines.rx3.awaitFirst
@@ -103,13 +108,14 @@ sealed class SportsEvent {
 
 class SportLibraryViewModel(
 ) : StateEventViewModel<SportsState, SportsEvent>(SportsState()) {
-
+    private var oldData = ""
     val calendar = Calendar.getInstance()
     suspend fun requestSports(date: Date): ArrayList<WmSportSummaryData> {
-        if (state.getports() != null && !state.getports()!!.isEmpty()) {
+        val start: Date = DateTimeUtils.getDayStartTime(calendar, date)
+        val startDate =  TimeUtils.date2String(start)
+        if (state.getports() != null && !state.getports()!!.isEmpty()&&startDate == oldData) {
         } else {
-            val start: Date = DateTimeUtils.getDayStartTime(calendar, date)
-            UNIWatchMate.wmSync.syncAllData
+            oldData = startDate
             val result =    UNIWatchMate.wmSync.syncSportSummaryData.syncData(start.time).awaitFirst().value
             LogUtils.d("requestSports result = ${GsonUtils.toJson(result)}")
             state.copy(getports = Success(ArrayList(result))).newState()
