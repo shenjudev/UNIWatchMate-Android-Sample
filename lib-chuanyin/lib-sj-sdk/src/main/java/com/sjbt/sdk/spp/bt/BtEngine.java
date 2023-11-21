@@ -262,7 +262,7 @@ public class BtEngine {
      */
     public void connect(BluetoothDevice dev) {
         try {
-            if (mSocketStateMap.size() > 0 && mSocketStateMap.get(dev.getAddress()) == SOCKET_STATE_CONNECTED) {
+            if (getSocketState(dev.getAddress()) == SOCKET_STATE_CONNECTED) {
                 closeSocket("BtClient connect ：" + dev.getAddress(), false);
             }
 
@@ -271,7 +271,7 @@ public class BtEngine {
         } catch (Throwable e) {
             closeSocket("BtClient Exception ", true);
             e.printStackTrace();
-            notifyErrorOnUI(e.getMessage());
+            notifyErrorOnUI("5-"+e.getMessage());
         }
     }
 
