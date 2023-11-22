@@ -96,11 +96,6 @@ class SyncSleepData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmSleepD
                                 ByteBuffer.allocate(bufferSize).order(ByteOrder.LITTLE_ENDIAN)
 
                             msgList.forEachIndexed { index, it ->
-                                sjUniWatch.wmLog.logE(
-                                    TAG,
-                                    "sleep record data:" + BtUtils.bytesToHexString(it.originData)
-                                )
-
                                 if (index == 0) {
                                     byteBufferSyncData.put(
                                         it.payload.copyOfRange(
@@ -140,7 +135,7 @@ class SyncSleepData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmSleepD
         val timestampType = byteBufferSyncData.get().toInt()
 
         val baseYear = byteBufferSyncData.short.toInt()
-        val baseMon = byteBufferSyncData.get().toInt() - 1
+        val baseMon = byteBufferSyncData.get().toInt()
         val baseDay = byteBufferSyncData.get().toInt()
 
         //时间戳
@@ -178,7 +173,7 @@ class SyncSleepData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmSleepD
             )
 
             val sleepYear = byteBufferSyncData.short.toInt()
-            val sleepMon = byteBufferSyncData.get().toInt() - 1
+            val sleepMon = byteBufferSyncData.get().toInt()
             val sleepDay = byteBufferSyncData.get().toInt()
 
             val calendar = Calendar.getInstance()
@@ -265,9 +260,9 @@ class SyncSleepData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmSleepD
 
         wmSyncData =
             WmSyncData(
-                WmSyncDataType.HEART_RATE_FIVE_MINUTES,
+                WmSyncDataType.SLEEP,
                 realTimeStamp,
-                WmIntervalType.FIVE_MINUTES,
+                WmIntervalType.UNKNOWN,
                 sleepDataList
             )
 

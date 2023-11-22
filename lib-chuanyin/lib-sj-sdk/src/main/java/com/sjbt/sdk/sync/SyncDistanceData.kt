@@ -182,13 +182,15 @@ class SyncDistanceData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmDis
             )
 
             distanceList.add(wmDistanceData)
+
+            dataIndex++
         }
 
         val wmSyncData =
             WmSyncData(
                 WmSyncDataType.DISTANCE,
                 realTimeStamp,
-                WmIntervalType.FIVE_MINUTES,
+                WmIntervalType.ONE_HOUR,
                 distanceList
             )
 

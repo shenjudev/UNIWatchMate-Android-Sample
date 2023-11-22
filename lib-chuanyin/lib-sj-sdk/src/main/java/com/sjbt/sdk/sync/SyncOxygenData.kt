@@ -63,57 +63,60 @@ class SyncOxygenData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmOxyge
 
                 override fun onNext(t: MsgBean) {
                     sjUniWatch.wmLog.logE(TAG, "oxygen back msg:$t")
+
                     msgList.add(t)
                 }
 
                 override fun onError(e: Throwable) {
+                    oxygenObserveEmitter?.onError(e)
                 }
 
                 override fun onComplete() {
-                    sjUniWatch.wmLog.logE(TAG, "back msg:" + msgList.size)
+                    try {
+                        sjUniWatch.wmLog.logE(TAG, "back msg:" + msgList.size)
 
-                    if (msgList.size > 0) {
+                        if (msgList.size > 0) {
 
-                        if (msgList.size == 1) {
-                            msgList[0].payloadPackage?.itemList?.forEach {
-                                syncOxygenDataBusiness(it)
-                            }
-                        } else {
-                            var bufferSize = 0
-                            msgList.forEach {
-                                if (it.divideType == DIVIDE_N_2 || it.divideType == DIVIDE_Y_F_2) {
-                                    bufferSize += it.payloadLen - 17
-                                } else {
-                                    bufferSize += it.payloadLen
+                            if (msgList.size == 1) {
+                                msgList[0].payloadPackage?.itemList?.forEach {
+                                    syncOxygenDataBusiness(it)
                                 }
-                            }
+                            } else {
+                                var bufferSize = 0
+                                msgList.forEach {
+                                    if (it.divideType == DIVIDE_N_2 || it.divideType == DIVIDE_Y_F_2) {
+                                        bufferSize += it.payloadLen - 17
+                                    } else {
+                                        bufferSize += it.payloadLen
+                                    }
+                                }
 
-                            byteBufferSyncData =
-                                ByteBuffer.allocate(bufferSize).order(ByteOrder.LITTLE_ENDIAN)
+                                byteBufferSyncData =
+                                    ByteBuffer.allocate(bufferSize).order(ByteOrder.LITTLE_ENDIAN)
 
-                            msgList.forEachIndexed { index, it ->
-                                sjUniWatch.wmLog.logE(
-                                    TAG,
-                                    "oxygen data:" + BtUtils.bytesToHexString(it.originData)
-                                )
+                                msgList.forEachIndexed { index, it ->
 
-                                if (index == 0) {
-                                    byteBufferSyncData.put(
-                                        it.payload.copyOfRange(
-                                            17,
-                                            it.payload.size
+                                    if (index == 0) {
+                                        byteBufferSyncData.put(
+                                            it.payload.copyOfRange(
+                                                17,
+                                                it.payload.size
+                                            )
                                         )
-                                    )
-                                } else {
-                                    byteBufferSyncData.put(it.payload)
+                                    } else {
+                                        byteBufferSyncData.put(it.payload)
+                                    }
                                 }
+
+                                parseStepData()
                             }
 
-                            parseStepData()
+                        } else {
+                            defaultBack()
                         }
-
-                    } else {
-                        defaultBack()
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+//                        oxygenObserveEmitter?.onError(e)
                     }
                 }
             })
@@ -124,12 +127,7 @@ class SyncOxygenData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmOxyge
         Observable.create { emitter -> observeChangeEmitter = emitter }
 
     private fun parseStepData() {
-        sjUniWatch.wmLog.logE(
-            TAG,
-            "all payload len:" + byteBufferSyncData.limit() + " :data:" + BtUtils.bytesToHexString(
-                byteBufferSyncData.array()
-            )
-        )
+
         byteBufferSyncData.rewind()
         //0: 只有一个时间戳
         //1：每天一个时间戳

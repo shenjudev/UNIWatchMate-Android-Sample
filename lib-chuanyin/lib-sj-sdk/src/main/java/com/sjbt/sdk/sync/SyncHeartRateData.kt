@@ -218,7 +218,7 @@ class SyncHeartRateData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmHe
     private fun defaultBack() {
         val wmSyncData =
             WmSyncData(
-                WmSyncDataType.HEART_RATE_FIVE_MINUTES,
+                WmSyncDataType.HEART_RATE_ONE_HOUR,
                 0,
                 WmIntervalType.ONE_HOUR,
                 mutableListOf<WmHeartRateData>()
