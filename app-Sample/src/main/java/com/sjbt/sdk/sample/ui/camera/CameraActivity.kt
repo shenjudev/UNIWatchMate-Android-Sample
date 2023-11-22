@@ -84,6 +84,7 @@ class CameraActivity : BaseActivity() {
         mediaActionSound = MediaActionSound()
         mediaActionSound!!.load(MediaActionSound.SHUTTER_CLICK)
         myOrientationListener = MyOrientationListener(this)
+
         var width = 320
         var height = 240
         val basicInfo = CacheDataHelper.getCurrentDeiceBean()
@@ -237,7 +238,7 @@ class CameraActivity : BaseActivity() {
             } else {
                 image_flash?.setImageResource(R.mipmap.biu_icon_flash_off)
             }
-            UNIWatchMate.wmApps.appCamera.cameraFlashSwitch(if (flashOn) WMCameraFlashMode.WMCameraFlashModeAuto else WMCameraFlashMode.WMCameraFlashModeOn).subscribe()
+            UNIWatchMate.wmApps.appCamera.cameraFlashSwitch(if (flashOn) WMCameraFlashMode.WMCameraFlashModeOn else WMCameraFlashMode.WMCameraFlashModeOff).subscribe()
         })
 
         ivTook?.setOnClickListener(View.OnClickListener {

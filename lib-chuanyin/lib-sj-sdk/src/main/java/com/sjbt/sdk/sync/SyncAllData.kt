@@ -17,6 +17,7 @@ class SyncAllData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<out WmBase
     private var observeChangeEmitter: ObservableEmitter<WmSyncData<out WmBaseSyncData>>? = null
     private var hasNext = false
     private val TAG = "SyncAllData"
+    private var progress = 0
 
     override fun latestSyncTime(): Long {
         return lastSyncTime
@@ -61,27 +62,35 @@ class SyncAllData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<out WmBase
                             sjUniWatch.wmSync.syncStepData.syncData(startTime)
                         }
                         WmSyncDataType.DISTANCE -> {
+                            progress = 100/9
                             sjUniWatch.wmSync.syncDistanceData.syncData(startTime)
                         }
                         WmSyncDataType.CALORIE -> {
+                            progress = 100/9*2
                             sjUniWatch.wmSync.syncCaloriesData.syncData(startTime)
                         }
                         WmSyncDataType.HEART_RATE_ONE_HOUR -> {
+                            progress = 100/9*3
                             sjUniWatch.wmSync.syncHeartRateData.syncData(startTime)
                         }
                         WmSyncDataType.HEART_RATE_FIVE_MINUTES -> {
+                            progress = 100/9*3
                             sjUniWatch.wmSync.syncRealtimeRateData.syncData(startTime)
                         }
                         WmSyncDataType.OXYGEN -> {
+                            progress = 100/9*5
                             sjUniWatch.wmSync.syncOxygenData.syncData(startTime)
                         }
                         WmSyncDataType.ACTIVITY_DURATION -> {
+                            progress = 100/9*6
                             sjUniWatch.wmSync.syncActivityDurationData.syncData(startTime)
                         }
                         WmSyncDataType.SPORT_SUMMARY -> {
+                            progress = 100/9*7
                             sjUniWatch.wmSync.syncSportSummaryData.syncData(startTime)
                         }
                         WmSyncDataType.SLEEP -> {
+                            progress = 100/9*8
                             sjUniWatch.wmSync.syncSleepData.syncData(startTime)
                         }
                         else -> {
@@ -95,6 +104,7 @@ class SyncAllData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<out WmBase
                 emitter.onNext(wmSyncData)
 
                 if (wmSyncData.type == WmSyncDataType.SLEEP) {
+                    progress = 100
                     emitter.onComplete()
                 }
             }

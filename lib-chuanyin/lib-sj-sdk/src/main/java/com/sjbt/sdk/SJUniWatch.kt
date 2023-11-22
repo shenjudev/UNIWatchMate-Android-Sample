@@ -68,6 +68,7 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(), Li
     private var mBindInfo: WmBindInfo? = null
     private var mCurrDevice: BluetoothDevice? = null
     private var mCurrAddress: String? = null
+    private var mDeviceName: String = ""
     private var mConnectTryCount = 0
     private var mConnectState: WmConnectState = WmConnectState.CONNECTING
 
@@ -331,6 +332,8 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(), Li
                                     val basicInfo: BasicInfo = gson.fromJson(
                                         msgBean.payloadJson, BasicInfo::class.java
                                     )
+
+                                    mDeviceName = basicInfo.dev_name
 
                                     basicInfo?.let {
                                         val wm = WmDeviceInfo(
@@ -691,14 +694,17 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(), Li
                                             )
 
                                             var payloadPackage: PayloadPackage =
-                                                PayloadPackage.fromByteArray(msgBean.payload)
+                                                msgBean.payloadPackage!!
 
                                             subPkObservableEmitter?.let {
 
                                                 if (!it.isDisposed) {
                                                     mReadSubPkMsg?.setHasNext(payloadPackage.hasNext())
                                                     it.onNext(msgBean)
-                                                    it.onComplete()
+
+                                                    if (!payloadPackage.hasNext()) {
+                                                        it.onComplete()
+                                                    }
                                                 } else {
                                                     parseResponseNodePayload(
                                                         msgBean,
@@ -713,18 +719,13 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(), Li
 
                                         } else {//分包消息
 
-//                                            wmLog.logE(
-//                                                TAG,
-//                                                "sub package msg：" + BtUtils.bytesToHexString(msgBean.originData)
-//                                            )
-
-                                            if (msgBean.divideType == DIVIDE_Y_F_2) {
+                                            if (msgBean.divideType == DIVIDE_Y_F_2 ) {//多个业务分包
                                                 val payloadPackage =
                                                     PayloadPackage.fromByteArray(msgBean.payload)
 
-//                                                wmLog.logE(
-//                                                    TAG, "hasNext:" + payloadPackage.hasNext()
-//                                                )
+                                                wmLog.logE(
+                                                    TAG, "hasNext:" + payloadPackage.hasNext()
+                                                )
 
                                                 mReadSubPkMsg?.setHasNext(payloadPackage.hasNext())
                                             }
@@ -747,7 +748,7 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(), Li
                                             }
                                         }
 
-                                    } else {//设备传输层回复
+                                    } else {//不带节点的消息
                                         wmLog.logD(TAG, "No Node MSg：" + msgBean.payloadLen)
                                     }
                                 }
@@ -1616,6 +1617,10 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(), Li
             try {
                 observeConnectState?.onNext(WmConnectState.CONNECTING)
                 mCurrDevice = mBtAdapter.getRemoteDevice(address)
+                mCurrDevice?.let {
+                    mDeviceName = it.name
+                    wmDevice.name = it.name
+                }
                 mBtEngine.connect(mCurrDevice)
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -1640,6 +1645,8 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(), Li
         mCurrAddress = bluetoothDevice.address
         wmDevice.address = bluetoothDevice.address
         wmDevice.isRecognized = bindInfo.model == WmDeviceModel.SJ_WATCH
+        mDeviceName = bluetoothDevice.name
+        wmDevice.name = bluetoothDevice.name
 
         if (mBtEngine.getSocketState(mCurrAddress) == SOCKET_STATE_NONE) {
             mBtStateReceiver?.let {
