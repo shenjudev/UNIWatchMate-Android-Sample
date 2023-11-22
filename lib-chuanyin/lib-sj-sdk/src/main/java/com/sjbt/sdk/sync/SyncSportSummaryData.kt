@@ -263,14 +263,7 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
         lastSyncTime = System.currentTimeMillis()
 
         wmSyncData?.let {
-            sjUniWatch.wmLog.logE(
-                TAG,
-                "$it"
-            )
-
-            it.value.forEachIndexed { index, summaryData ->
-                sjUniWatch.wmLog.logD(TAG, "activity detail info $index > $summaryData")
-            }
+            sjUniWatch.wmLog.logD(TAG, "activity detail info size：${it.value}")
 
             sportIndex = 0
             sportSize = it.value.size
@@ -318,11 +311,6 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
                 try {
                     if (it.divideType == DIVIDE_Y_F_2 || it.divideType == DIVIDE_N_2) {
 
-                        sjUniWatch.wmLog.logE(
-                            TAG,
-                            "++++++++++++++++++++++++++++++++++++++++++START PARSE DATA ONE PK urn:$urn - onComplete +++++++++++++++++++++++++++"
-                        )
-
                         it.payloadPackage?.itemList?.forEach {
                             parseTenSecondsDataType(it, urn)
                         }
@@ -351,7 +339,7 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
 
                         sjUniWatch.wmLog.logE(
                             TAG,
-                            "++++++++++++++++++++++++++++++++++++++++++END DATA URN_SPORT_10S_RATE - onComplete +++++++++++++++++++++++++++"
+                            "++++++++++++++++++++++++++++++++++++++++++END SYNC URN_SPORT_10S_RATE - onComplete +++++++++++++++++++++++++++"
                         )
 
                         sportIndex++
@@ -362,7 +350,7 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
                     URN_SPORT_10S_DISTANCE -> {
                         sjUniWatch.wmLog.logE(
                             TAG,
-                            "++++++++++++++++++++++++++++++++++++++++++END DATA URN_SPORT_10S_DISTANCE - onComplete +++++++++++++++++++++++++++"
+                            "++++++++++++++++++++++++++++++++++++++++++END SYNC URN_SPORT_10S_DISTANCE - onComplete +++++++++++++++++++++++++++"
                         )
 
                         sportIndex++
@@ -373,7 +361,7 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
                     URN_SPORT_10S_CALORIES -> {
                         sjUniWatch.wmLog.logE(
                             TAG,
-                            "++++++++++++++++++++++++++++++++++++++++++END DATA URN_SPORT_10S_CALORIES - onComplete +++++++++++++++++++++++++++"
+                            "++++++++++++++++++++++++++++++++++++++++++END SYNC URN_SPORT_10S_CALORIES - onComplete +++++++++++++++++++++++++++"
                         )
                         sportIndex++
 
@@ -384,35 +372,11 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
 
                         sjUniWatch.wmLog.logE(
                             TAG,
-                            "++++++++++++++++++++++++++++++++++++++++++END DATA URN_SPORT_10S_STEP_FREQUENCY sportSize：$sportSize ->> sportIndex：$sportIndex  - onComplete +++++++++++++++++++++++++++"
+                            "++++++++++++++++++++++++++++++++++++++++++END SYNC URN_SPORT_10S_STEP_FREQUENCY - onComplete +++++++++++++++++++++++++++"
                         )
 
                         sportIndex++
-
-//                        if (sportIndex >= sportSize) {
-//                            sportIndex = 0
-
-                            tenSecondAllComplete()
-//                        }
-
-//                        if (sportIndex < sportSize) {
-//                            wmSyncData?.let { it ->
-//
-//                                val syncTimes = mutableListOf<SyncTime>()
-//
-//                                it.value.forEach { summary ->
-//                                    val syncTime = SyncTime(summary.startTime, summary.endTime)
-//                                    syncTimes.add(syncTime)
-//                                }
-//
-//                                syncTenSecondsData(
-//                                    URN_SPORT_10S_RATE,
-//                                    syncTimes
-//                                )
-//                            }
-//                        } else {
-//                            tenSecondAllComplete()
-//                        }
+                        tenSecondAllComplete()
                     }
                 }
             }
@@ -420,12 +384,28 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
     }
 
     private fun tenSecondAllComplete() {
-        wmSyncData?.value?.forEach {
 
-            sjUniWatch.wmLog.logE(
-                TAG,
-                "search sport startTime:${it.startTime} endTime：${it.endTime}"
-            )
+        sjUniWatch.wmLog.logE(
+            TAG,
+            "ten seconds rate map size: ${tenSecondsRealtimeRateMap.size()}"
+        )
+
+        sjUniWatch.wmLog.logE(
+            TAG,
+            "ten seconds distance map size: ${tenSecondsDistanceMap.size()}"
+        )
+
+        sjUniWatch.wmLog.logE(
+            TAG,
+            "ten seconds calories map size: ${tenSecondsCaloriesMap.size()}"
+        )
+
+        sjUniWatch.wmLog.logE(
+            TAG,
+            "ten seconds frequency map size: ${tenSecondsStepFrequencyMap.size()}"
+        )
+
+        wmSyncData?.value?.forEach {
 
             val rateTimeStampList =
                 tenSecondsRealtimeRateMap.getBetween(it.startTime, it.endTime)
@@ -435,26 +415,6 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
                 tenSecondsCaloriesMap.getBetween(it.startTime, it.endTime)
             val stepFrequencyTimeStampList =
                 tenSecondsStepFrequencyMap.getBetween(it.startTime, it.endTime)
-
-            sjUniWatch.wmLog.logE(
-                TAG,
-                "ten seconds rate size2: ${tenSecondsRealtimeRateMap.size()}"
-            )
-
-            sjUniWatch.wmLog.logE(
-                TAG,
-                "ten seconds distance size2: ${tenSecondsDistanceMap.size()}"
-            )
-
-            sjUniWatch.wmLog.logE(
-                TAG,
-                "ten seconds calories size2: ${tenSecondsCaloriesMap.size()}"
-            )
-
-            sjUniWatch.wmLog.logE(
-                TAG,
-                "ten seconds frequency size2: ${tenSecondsStepFrequencyMap.size()}"
-            )
 
             val heartRateList = mutableListOf<WmRealtimeRateData>()
             val distanceList = mutableListOf<WmDistanceData>()
@@ -486,7 +446,7 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
         syncSportSummaryObserveEmitter?.onNext(wmSyncData)
         syncSportSummaryObserveEmitter?.onComplete()
 
-        sjUniWatch.wmLog.logD(TAG, "final data wmSyncData：$wmSyncData")
+        sjUniWatch.wmLog.logD(TAG, "All data wmSyncData：$wmSyncData")
     }
 
     private fun parseTenSecondsDataWithHead(byteBuffer: ByteBuffer, urn: Byte) {
@@ -501,25 +461,11 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
         val timestamp = byteBuffer.int * 1000
         val dataLen = byteBuffer.short
 
-        sjUniWatch.wmLog.logD(
-            TAG,
-            "urn:$urn tenSecondsTimestampType:$tenSecondsTimeType --> baseDate:$baseYear$baseMon$baseDay timestamp:$timestamp dataLen:$dataLen dataSize:${byteBuffer.array().size} data:${
-                BtUtils.bytesToHexString(
-                    byteBuffer.array()
-                )
-            }"
-        )
-
         val calendar = Calendar.getInstance()
         calendar.set(baseYear, baseMon, baseDay, 0, 0, 0)
 
         tenSecondsStartTimeStamp = calendar.timeInMillis + timestamp
         tenSecondsDataIndex = 0
-
-        sjUniWatch.wmLog.logE(
-            TAG,
-            "++++++++++++++++++++++++++++++++++++++++++START PARSE DATA urn:$urn parseTenSecondsDataWithHead:$tenSecondsStartTimeStamp +++++++++++++++++++++++++++"
-        )
 
         parseTenSecondsMiddleData(byteBuffer, urn)
 
@@ -531,11 +477,6 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
 
             tenSecondsRealTimeStamp =
                 tenSecondsStartTimeStamp + tenSecondsDataIndex * SYNC_DATA_INTERVAL_TEN_SECONDS
-
-//            sjUniWatch.wmLog.logE(
-//                TAG,
-//                "urn：$urn tenSecondsDataIndex $tenSecondsDataIndex tenSecondsRealTimeStamp: $tenSecondsRealTimeStamp "
-//            )
 
             when (urn) {
                 URN_SPORT_10S_RATE -> {
