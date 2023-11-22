@@ -91,7 +91,7 @@ class SyncAllData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<out WmBase
                 }
 
             characters.subscribe { wmSyncData ->
-                sjUniWatch.wmLog.logE(TAG, "sync All back data${wmSyncData}")
+                sjUniWatch.wmLog.logE(TAG, "sync All back data -> ${wmSyncData}")
                 emitter.onNext(wmSyncData)
 
                 if (wmSyncData.type == WmSyncDataType.SLEEP) {

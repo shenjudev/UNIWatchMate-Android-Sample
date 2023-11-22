@@ -256,7 +256,7 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
             WmSyncData(
                 WmSyncDataType.SPORT_SUMMARY,
                 realTimeStamp,
-                WmIntervalType.TEN_SECONDS,
+                WmIntervalType.UNKNOWN,
                 activitySportSummaryList
             )
 
@@ -679,7 +679,7 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
                 WmSyncData(
                     WmSyncDataType.SPORT_SUMMARY,
                     0,
-                    WmIntervalType.TEN_SECONDS,
+                    WmIntervalType.UNKNOWN,
                     mutableListOf<WmSportSummaryData>()
                 )
         }
