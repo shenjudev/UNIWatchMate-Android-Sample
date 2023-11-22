@@ -1613,7 +1613,6 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(), Li
         wmDevice.isRecognized = bindInfo.model == WmDeviceModel.SJ_WATCH
 
         if (wmDevice.isRecognized) {
-            wmLog.logD(TAG, " connect:${address}")
             try {
                 observeConnectState?.onNext(WmConnectState.CONNECTING)
                 mCurrDevice = mBtAdapter.getRemoteDevice(address)
@@ -1621,6 +1620,7 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(), Li
                     mDeviceName = it.name
                     wmDevice.name = it.name
                 }
+
                 mBtEngine.connect(mCurrDevice)
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -1629,6 +1629,8 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(), Li
         } else {
             observeConnectState?.onNext(WmConnectState.DISCONNECTED)
         }
+
+        wmLog.logD(TAG, " connect:${wmDevice}")
 
         return wmDevice
     }
@@ -1662,6 +1664,8 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(), Li
                 observeConnectState?.onError(RuntimeException("not recognized device"))
             }
         }
+
+        wmLog.logD(TAG, " connect:${wmDevice}")
 
         return wmDevice
     }
