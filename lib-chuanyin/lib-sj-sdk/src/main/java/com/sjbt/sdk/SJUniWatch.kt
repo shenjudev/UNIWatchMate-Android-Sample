@@ -691,14 +691,17 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(), Li
                                             )
 
                                             var payloadPackage: PayloadPackage =
-                                                PayloadPackage.fromByteArray(msgBean.payload)
+                                                msgBean.payloadPackage!!
 
                                             subPkObservableEmitter?.let {
 
                                                 if (!it.isDisposed) {
                                                     mReadSubPkMsg?.setHasNext(payloadPackage.hasNext())
                                                     it.onNext(msgBean)
-                                                    it.onComplete()
+
+                                                    if (!payloadPackage.hasNext()) {
+                                                        it.onComplete()
+                                                    }
                                                 } else {
                                                     parseResponseNodePayload(
                                                         msgBean,
@@ -713,18 +716,13 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(), Li
 
                                         } else {//分包消息
 
-//                                            wmLog.logE(
-//                                                TAG,
-//                                                "sub package msg：" + BtUtils.bytesToHexString(msgBean.originData)
-//                                            )
-
-                                            if (msgBean.divideType == DIVIDE_Y_F_2) {
+                                            if (msgBean.divideType == DIVIDE_Y_F_2 ) {//多个业务分包
                                                 val payloadPackage =
                                                     PayloadPackage.fromByteArray(msgBean.payload)
 
-//                                                wmLog.logE(
-//                                                    TAG, "hasNext:" + payloadPackage.hasNext()
-//                                                )
+                                                wmLog.logE(
+                                                    TAG, "hasNext:" + payloadPackage.hasNext()
+                                                )
 
                                                 mReadSubPkMsg?.setHasNext(payloadPackage.hasNext())
                                             }
@@ -747,7 +745,7 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(), Li
                                             }
                                         }
 
-                                    } else {//设备传输层回复
+                                    } else {//不带节点的消息
                                         wmLog.logD(TAG, "No Node MSg：" + msgBean.payloadLen)
                                     }
                                 }
