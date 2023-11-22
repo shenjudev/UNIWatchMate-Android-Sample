@@ -32,7 +32,7 @@ abstract class AbAppCamera {
     /**
      * 相机闪光灯设置
      */
-    abstract fun cameraFlashSwitch(type: WMCameraFlashMode): Observable<WMCameraFlashMode>
+    abstract fun cameraFlashSwitch(type: WMCameraFlashMode): Single<WMCameraFlashMode>
 
     /**
      * 相机前后摄像头监听
@@ -42,14 +42,9 @@ abstract class AbAppCamera {
     /**
      * 设置相机前后摄像头
      */
-    abstract fun cameraBackSwitch(isBack: WMCameraPosition): Observable<WMCameraPosition>
+    abstract fun cameraBackSwitch(isBack: WMCameraPosition): Single<WMCameraPosition>
 
     /**camera preview 相机预览相关**/
-
-    /**
-     * 是否支持相机预览
-     */
-    abstract fun isCameraPreviewEnable(): Boolean
 
     /**
      * 相机预览是否准备好
@@ -61,8 +56,6 @@ abstract class AbAppCamera {
      */
     abstract fun updateCameraPreview(data: WmCameraFrameInfo)
 
-    abstract fun stopCameraPreview()
-
 }
 
 enum class WMCameraPosition {
@@ -71,8 +64,8 @@ enum class WMCameraPosition {
 }
 
 enum class WMCameraFlashMode {
-    WMCameraFlashModeOn,     /// 闪光灯开启
     WMCameraFlashModeOff,    /// 闪光灯关闭
+    WMCameraFlashModeOn,     /// 闪光灯开启
     WMCameraFlashModeAuto    /// 闪光灯自动
 }
 

@@ -26,8 +26,8 @@ class AppCamera(val sjUniWatch: SJUniWatch) : AbAppCamera() {
     var cameraObserveTakePhotoEmitter: ObservableEmitter<Any>? = null
     var cameraObserveFlashEmitter: ObservableEmitter<WMCameraFlashMode>? = null
     var cameraObserveFrontBackEmitter: ObservableEmitter<WMCameraPosition>? = null
-    var cameraBackSwitchEmitter: ObservableEmitter<WMCameraPosition>? = null
-    var cameraFlashSwitchEmitter: ObservableEmitter<WMCameraFlashMode>? = null
+    var cameraBackSwitchEmitter: SingleEmitter<WMCameraPosition>? = null
+    var cameraFlashSwitchEmitter: SingleEmitter<WMCameraFlashMode>? = null
     var cameraPreviewReadyEmitter: SingleEmitter<Boolean>? = null
 
     private val cameraStateObserver: PublishSubject<Boolean> = PublishSubject.create()
@@ -127,9 +127,11 @@ class AppCamera(val sjUniWatch: SJUniWatch) : AbAppCamera() {
     override var observeCameraFrontBack: Observable<WMCameraPosition> =
         Observable.create { emitter -> cameraObserveFrontBackEmitter = emitter }
 
-    override fun cameraFlashSwitch(wmCameraFlashMode: WMCameraFlashMode): Observable<WMCameraFlashMode> {
-        return Observable.create { emitter ->
+    override fun cameraFlashSwitch(wmCameraFlashMode: WMCameraFlashMode): Single<WMCameraFlashMode> {
+        return Single.create { emitter ->
             cameraFlashSwitchEmitter = emitter
+
+            sjUniWatch.wmLog.logE(TAG, "WMCameraFlashMode:$wmCameraFlashMode")
 
             sjUniWatch.sendNormalMsg(
                 CmdHelper.getCameraStateActionCmd(
@@ -140,8 +142,8 @@ class AppCamera(val sjUniWatch: SJUniWatch) : AbAppCamera() {
         }
     }
 
-    override fun cameraBackSwitch(wmCameraPosition: WMCameraPosition): Observable<WMCameraPosition> {
-        return Observable.create { emitter ->
+    override fun cameraBackSwitch(wmCameraPosition: WMCameraPosition): Single<WMCameraPosition> {
+        return Single.create { emitter ->
             cameraBackSwitchEmitter = emitter
             sjUniWatch.sendNormalMsg(
                 CmdHelper.getCameraStateActionCmd(
@@ -150,10 +152,6 @@ class AppCamera(val sjUniWatch: SJUniWatch) : AbAppCamera() {
                 )
             )
         }
-    }
-
-    override fun isCameraPreviewEnable(): Boolean {
-        return continueUpdateFrame
     }
 
     override fun startCameraPreview(): Single<Boolean> {
@@ -336,12 +334,11 @@ class AppCamera(val sjUniWatch: SJUniWatch) : AbAppCamera() {
         }
     }
 
-    override fun stopCameraPreview() {
+    fun stopCameraPreview() {
         continueUpdateFrame = false
 //        sjUniWatch.logD(TAG, "停止更新frame数据continueUpdateFrame：$continueUpdateFrame")
         mH264FrameMap.clear()
     }
-
 
     private fun getCameraPreviewCmdInfo(
         mFramePackageCount: Int,
