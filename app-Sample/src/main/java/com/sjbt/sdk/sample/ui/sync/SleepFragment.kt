@@ -17,7 +17,7 @@ import kotlinx.coroutines.rx3.awaitFirst
 import kotlinx.coroutines.withContext
 import java.util.*
 
-class SleepFragment : DataListFragment<WmSleepItem>() {
+class SleepFragment : DataListFragment<WmSleepData>() {
 
     override val layoutId: Int = R.layout.fragment_sleep
 
@@ -34,49 +34,40 @@ class SleepFragment : DataListFragment<WmSleepItem>() {
         super.onViewCreated(view, savedInstanceState)
     }
 
-    override val valueFormat: DataListAdapter.ValueFormat<WmSleepItem> =
-        object : DataListAdapter.ValueFormat<WmSleepItem> {
-            override fun format(context: Context, obj: WmSleepItem): String {
-                val statusText = when (obj.status) {
-                    WmSleepItem.STATUS_DEEP -> context.getString(R.string.deep_sleep)
-                    WmSleepItem.STATUS_LIGHT -> context.getString(R.string.light_sleep)
-                    WmSleepItem.STATUS_REM -> context.getString(R.string.rapid_eye_movement)
-                    WmSleepItem.STATUS_SOBER -> context.getString(R.string.awake_sleep)
-                    else -> context.getString(R.string.awake_sleep)
-                }
-                return statusText + "    " + timeFormat.format(start!!.time+obj.duration*1000) + " duration->  ${obj.duration}s"
+    override val valueFormat: DataListAdapter.ValueFormat<WmSleepData> =
+        object : DataListAdapter.ValueFormat<WmSleepData> {
+            override fun format(context: Context, obj: WmSleepData): String {
+//                val statusText = when (obj.status) {
+//                    WmSleepItem.STATUS_DEEP -> context.getString(R.string.deep_sleep)
+//                    WmSleepItem.STATUS_LIGHT -> context.getString(R.string.light_sleep)
+//                    WmSleepItem.STATUS_REM -> context.getString(R.string.rapid_eye_movement)
+//                    WmSleepItem.STATUS_SOBER -> context.getString(R.string.awake_sleep)
+//                    else -> context.getString(R.string.awake_sleep)
+//                }
+                return "    bedTime=" + timeFormat.format(obj.wmSleepSummary.bedTime) + "    \n${obj}"
             }
         }
 
-    override fun queryData(date: Date): List<WmSleepItem>? {
+    override fun queryData(date: Date): List<WmSleepData>? {
         return runBlocking {
             val calendar = Calendar.getInstance()
             start = DateTimeUtils.getDayStartTime(calendar, date)
             val end: Date = DateTimeUtils.getDayEndTime(calendar, date)
             val data = UNIWatchMate.wmSync.syncSleepData.syncData(start!!.time).awaitFirst().value
 
-            val sleepItemDatas = mutableListOf<WmSleepItem>()
-            val duration = IntArray(4)
-            data.forEach { wmSleepData ->
-                wmSleepData.wmSleepSettings
-                wmSleepData.wmSleepData.forEach {
-                    sleepItemDatas.add(it)
-                    when (it.status) {
-                        WmSleepItem.STATUS_DEEP -> duration[0] = duration[0] + it.duration
-                        WmSleepItem.STATUS_LIGHT -> duration[1] = duration[1] + it.duration
-                        WmSleepItem.STATUS_REM -> duration[2] = duration[2] + it.duration
-                        WmSleepItem.STATUS_SOBER -> duration[3] = duration[3] + it.duration
-                        else -> duration[3] = duration[3] + it.duration
-                    }
-                }
-            }
-            withContext(Dispatchers.Main) {
-                tvDeepSleep.text = FormatterUtil.second2Hmm(duration[0])
-                tvLightSleep.text = FormatterUtil.second2Hmm(duration[1])
-                tvRem.text = FormatterUtil.second2Hmm(duration[2])
-                tvAwakeSleep.text = FormatterUtil.second2Hmm(duration[3])
-            }
-            sleepItemDatas
+            val sleepItemDataList = mutableListOf<WmSleepData>()
+//            val sleepItemDatas = mutableListOf<WmSleepItem>()
+//            val duration = IntArray(4)
+//            data.forEach { wmSleepData ->
+//                sleepItemDataList.add(wmSleepData)
+//            }
+//            withContext(Dispatchers.Main) {
+//                tvDeepSleep.text = FormatterUtil.second2Hmm(duration[0])
+//                tvLightSleep.text = FormatterUtil.second2Hmm(duration[1])
+//                tvRem.text = FormatterUtil.second2Hmm(duration[2])
+//                tvAwakeSleep.text = FormatterUtil.second2Hmm(duration[3])
+//            }
+            sleepItemDataList
         }
     }
 

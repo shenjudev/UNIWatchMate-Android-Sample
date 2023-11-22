@@ -551,7 +551,7 @@ class CameraActivity : BaseActivity() {
         Timber.d(  "$localClassName -> onPause")
         isPausedCamera = true
         isCameraOpened = false
-        UNIWatchMate.wmApps.appCamera.openCloseCamera(false).subscribe().dispose()
+        UNIWatchMate.wmApps.appCamera.openCloseCamera(false).subscribe()
     }
 
     override fun onResume() {

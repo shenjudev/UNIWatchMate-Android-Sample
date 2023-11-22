@@ -14,6 +14,7 @@ import com.sjbt.sdk.sample.utils.DateTimeUtils
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.rx3.await
 import kotlinx.coroutines.rx3.awaitFirst
+import timber.log.Timber
 import java.util.*
 
 class HeartRateFiveMinutesFragment : DataListFragment<WmRealtimeRateData>() {
@@ -31,8 +32,11 @@ class HeartRateFiveMinutesFragment : DataListFragment<WmRealtimeRateData>() {
             val calendar = Calendar.getInstance()
             val start: Date = DateTimeUtils.getDayStartTime(calendar, date)
             val end: Date = DateTimeUtils.getDayEndTime(calendar, date)
-            UNIWatchMate.wmSync.syncRealtimeRateData.syncData(start.time)
-                .awaitFirst().value
+
+                val bean =    UNIWatchMate.wmSync.syncRealtimeRateData.syncData(start.time)
+                .awaitFirst()
+            Timber.d("type="+bean.type.name)
+            bean.value
         }
     }
 

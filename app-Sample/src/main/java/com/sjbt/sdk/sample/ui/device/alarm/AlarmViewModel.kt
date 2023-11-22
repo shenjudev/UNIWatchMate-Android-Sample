@@ -3,6 +3,7 @@ package com.sjbt.sdk.sample.ui.device.alarm
 import androidx.lifecycle.viewModelScope
 import com.base.api.UNIWatchMate
 import com.base.sdk.entity.apps.WmAlarm
+import com.blankj.utilcode.util.GsonUtils
 import com.sjbt.sdk.sample.base.Async
 import com.sjbt.sdk.sample.base.Fail
 import com.sjbt.sdk.sample.base.Loading
@@ -61,6 +62,7 @@ class AlarmViewModel : StateEventViewModel<AlarmState, AlarmEvent>(AlarmState())
                 ToastUtil.showToast(it.message)
                 Timber.e(it)
             }.collect{
+                Timber.d(GsonUtils.toJson(it))
                 state.copy(requestAlarms = Success(ArrayList(AlarmHelper.sort(it)))).newState()
             }
         }
