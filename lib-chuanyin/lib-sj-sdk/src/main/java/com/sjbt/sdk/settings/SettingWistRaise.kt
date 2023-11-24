@@ -1,59 +1,58 @@
 package com.sjbt.sdk.settings
 
-import com.base.sdk.entity.settings.WmWistRaise
+import com.base.sdk.entity.settings.WmWristRaise
 import com.base.sdk.port.setting.AbWmSetting
 import com.sjbt.sdk.SJUniWatch
 import com.sjbt.sdk.entity.NodeData
 import com.sjbt.sdk.spp.cmd.CmdHelper
-import com.sjbt.sdk.utils.DevFinal
 import io.reactivex.rxjava3.core.*
 
-class SettingWistRaise(val sjUniWatch: SJUniWatch) : AbWmSetting<WmWistRaise>() {
-    private var observeEmitter: ObservableEmitter<WmWistRaise>? = null
-    private var setEmitter: SingleEmitter<WmWistRaise>? = null
-    private var getEmitter: SingleEmitter<WmWistRaise>? = null
+class SettingWistRaise(val sjUniWatch: SJUniWatch) : AbWmSetting<WmWristRaise>() {
+    private var observeEmitter: ObservableEmitter<WmWristRaise>? = null
+    private var setEmitter: SingleEmitter<WmWristRaise>? = null
+    private var getEmitter: SingleEmitter<WmWristRaise>? = null
 
-    private var mWmWistRaise: WmWistRaise? = null
-    private var backWmWistRaise = WmWistRaise();
+    private var mWmWristRaise: WmWristRaise? = null
+    private var backWmWristRaise = WmWristRaise();
     private var isGet = false
 
-    private fun getWmWistRaise(wmWistRaise: WmWistRaise) {
-        backWmWistRaise = wmWistRaise
-        mWmWistRaise = WmWistRaise(wmWistRaise.isScreenWakeEnabled)
-        getEmitter?.onSuccess(wmWistRaise)
+    private fun getWmWistRaise(wmWristRaise: WmWristRaise) {
+        backWmWristRaise = wmWristRaise
+        mWmWristRaise = WmWristRaise(wmWristRaise.isScreenWakeEnabled)
+        getEmitter?.onSuccess(wmWristRaise)
     }
 
-    private fun observeWmWistRaiseChange(wmWistRaise: WmWistRaise) {
-        backWmWistRaise = wmWistRaise
-        mWmWistRaise = WmWistRaise(wmWistRaise.isScreenWakeEnabled)
-        observeEmitter?.onNext(wmWistRaise)
+    private fun observeWmWistRaiseChange(wmWristRaise: WmWristRaise) {
+        backWmWristRaise = wmWristRaise
+        mWmWristRaise = WmWristRaise(wmWristRaise.isScreenWakeEnabled)
+        observeEmitter?.onNext(wmWristRaise)
     }
 
     fun observeWmWistRaiseChange(type: Int, value: Int) {
-        mWmWistRaise?.let {
+        mWmWristRaise?.let {
             if (type == 4) {
                 it.isScreenWakeEnabled = value == 1
-                backWmWistRaise = it
+                backWmWristRaise = it
                 observeEmitter?.onNext(it)
             }
         }
     }
 
     fun setSuccess() {
-        mWmWistRaise?.isScreenWakeEnabled = backWmWistRaise.isScreenWakeEnabled
-        setEmitter?.onSuccess(backWmWistRaise)
-        observeEmitter?.onNext(backWmWistRaise)
+        mWmWristRaise?.isScreenWakeEnabled = backWmWristRaise.isScreenWakeEnabled
+        setEmitter?.onSuccess(backWmWristRaise)
+        observeEmitter?.onNext(backWmWristRaise)
     }
 
-    override fun observeChange(): Observable<WmWistRaise> {
+    override fun observeChange(): Observable<WmWristRaise> {
         return Observable.create { emitter -> observeEmitter = emitter }
     }
 
-    override fun set(obj: WmWistRaise): Single<WmWistRaise> {
-        return Single.create(object : SingleOnSubscribe<WmWistRaise> {
-            override fun subscribe(emitter: SingleEmitter<WmWistRaise>) {
+    override fun set(obj: WmWristRaise): Single<WmWristRaise> {
+        return Single.create(object : SingleOnSubscribe<WmWristRaise> {
+            override fun subscribe(emitter: SingleEmitter<WmWristRaise>) {
                 setEmitter = emitter
-                backWmWistRaise.isScreenWakeEnabled = obj.isScreenWakeEnabled
+                backWmWristRaise.isScreenWakeEnabled = obj.isScreenWakeEnabled
                 sjUniWatch.sendNormalMsg(
                     CmdHelper.getSetDeviceRingStateCmd(
                         4,
@@ -64,7 +63,7 @@ class SettingWistRaise(val sjUniWatch: SJUniWatch) : AbWmSetting<WmWistRaise>() 
         })
     }
 
-    override fun get(): Single<WmWistRaise> {
+    override fun get(): Single<WmWristRaise> {
         return Single.create { emitter ->
             isGet = true
             getEmitter = emitter
@@ -72,12 +71,12 @@ class SettingWistRaise(val sjUniWatch: SJUniWatch) : AbWmSetting<WmWistRaise>() 
         }
     }
 
-    fun backWistRaiseSettings(wmWistRaise: WmWistRaise) {
+    fun backWistRaiseSettings(wmWristRaise: WmWristRaise) {
         if (isGet) {
             isGet = false
-            getWmWistRaise(wmWistRaise)
+            getWmWistRaise(wmWristRaise)
         } else {
-            observeWmWistRaiseChange(wmWistRaise)
+            observeWmWistRaiseChange(wmWristRaise)
         }
     }
 

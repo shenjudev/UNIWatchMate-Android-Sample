@@ -27,7 +27,7 @@ internal class AbWmSettingsDelegate(
         get() = watchObservable.value!!.wmSettings?.settingUnitInfo
         set(value) {}
 
-    override var settingWistRaise: AbWmSetting<WmWistRaise>
+    override var settingWistRaise: AbWmSetting<WmWristRaise>
         get() = watchObservable.value!!.wmSettings?.settingWistRaise
         set(value) {}
 

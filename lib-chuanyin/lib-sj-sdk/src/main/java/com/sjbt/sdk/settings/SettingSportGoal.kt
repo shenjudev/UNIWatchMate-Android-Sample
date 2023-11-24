@@ -91,19 +91,6 @@ class SettingSportGoal(val sjUniWatch: SJUniWatch) : AbWmSetting<WmSportGoal>() 
 
                 }
             }
-
-            URN_1 -> {//步数
-
-            }
-            URN_2 -> {//热量（卡）
-
-            }
-            URN_3 -> {//距离（米）
-
-            }
-            URN_4 -> {//活动时长（分钟）
-
-            }
         }
     }
 

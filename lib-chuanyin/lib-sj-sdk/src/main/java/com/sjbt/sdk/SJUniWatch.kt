@@ -481,9 +481,9 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(), Li
                                         }
                                     }
 
-                                    val wmWistRaise = WmWistRaise(armScreen == 1)
+                                    val wmWristRaise = WmWristRaise(armScreen == 1)
 
-                                    settingWistRaise.backWistRaiseSettings(wmWistRaise)
+                                    settingWistRaise.backWistRaiseSettings(wmWristRaise)
 
                                     val wmSoundAndHaptic = WmSoundAndHaptic(
                                         ringState == 1,

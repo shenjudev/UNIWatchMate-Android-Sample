@@ -31,7 +31,7 @@ abstract class AbWmSettings {
     /**
      * wistRaiseSetting 抬腕设置
      */
-    abstract val settingWistRaise: AbWmSetting<WmWistRaise>
+    abstract val settingWistRaise: AbWmSetting<WmWristRaise>
 
     /**
      * appViewSetting 应用视图设置

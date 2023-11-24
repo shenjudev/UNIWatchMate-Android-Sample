@@ -19,7 +19,7 @@ class FcSettings(
         get() = TODO("Not yet implemented")
     override val settingUnitInfo: AbWmSetting<WmUnitInfo>
         get() = TODO("Not yet implemented")
-    override val settingWistRaise: AbWmSetting<WmWistRaise>
+    override val settingWistRaise: AbWmSetting<WmWristRaise>
         get() = TODO("Not yet implemented")
     override val settingAppView: AbWmSetting<WmAppView>
         get() = TODO("Not yet implemented")

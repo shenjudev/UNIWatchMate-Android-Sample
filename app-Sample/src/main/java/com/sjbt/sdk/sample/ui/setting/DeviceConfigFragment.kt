@@ -5,8 +5,6 @@ import android.view.View
 import androidx.navigation.fragment.findNavController
 import com.base.api.UNIWatchMate
 import com.base.sdk.entity.apps.WmConnectState
-import com.base.sdk.entity.settings.WmDateTime
-import com.base.sdk.entity.settings.WmWistRaise
 import com.sjbt.sdk.sample.R
 import com.sjbt.sdk.sample.base.BaseFragment
 import com.sjbt.sdk.sample.databinding.FragmentDeviceConfigBinding

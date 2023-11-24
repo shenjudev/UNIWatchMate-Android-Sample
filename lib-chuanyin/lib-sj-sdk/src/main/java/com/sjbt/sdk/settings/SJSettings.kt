@@ -14,7 +14,7 @@ class SJSettings(val sjUniWatch: SJUniWatch) : AbWmSettings() {
     override val settingSoundAndHaptic: AbWmSetting<WmSoundAndHaptic> =
         SettingSoundAndHaptic(sjUniWatch)
     override val settingUnitInfo: AbWmSetting<WmUnitInfo> = SettingUnitInfo(sjUniWatch)
-    override val settingWistRaise: AbWmSetting<WmWistRaise> = SettingWistRaise(sjUniWatch)
+    override val settingWistRaise: AbWmSetting<WmWristRaise> = SettingWistRaise(sjUniWatch)
     override val settingAppView: AbWmSetting<WmAppView> = SettingAppView(sjUniWatch)
     override val settingDrinkWater: AbWmSetting<WmSedentaryReminder> =
         SettingDrinkWaterReminder(sjUniWatch)

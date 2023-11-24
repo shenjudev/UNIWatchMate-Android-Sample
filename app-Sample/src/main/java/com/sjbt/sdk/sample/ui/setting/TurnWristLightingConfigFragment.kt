@@ -5,7 +5,7 @@ import android.view.View
 import android.widget.CompoundButton
 import com.base.api.UNIWatchMate
 import com.base.sdk.entity.apps.WmConnectState
-import com.base.sdk.entity.settings.WmWistRaise
+import com.base.sdk.entity.settings.WmWristRaise
 import com.sjbt.sdk.sample.R
 import com.sjbt.sdk.sample.base.BaseFragment
 import com.sjbt.sdk.sample.databinding.FragmentTurnWristLightingConfigBinding
@@ -28,7 +28,7 @@ class TurnWristLightingConfigFragment : BaseFragment(R.layout.fragment_turn_wris
     private val deviceManager = Injector.getDeviceManager()
     private val applicationScope = Injector.getApplicationScope()
 
-    private  var config: WmWistRaise?=null
+    private  var config: WmWristRaise?=null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -72,7 +72,7 @@ class TurnWristLightingConfigFragment : BaseFragment(R.layout.fragment_turn_wris
         }
     }
 
-    private fun WmWistRaise.saveConfig() {
+    private fun WmWristRaise.saveConfig() {
         applicationScope.launchWithLog {
             UNIWatchMate.wmSettings.settingWistRaise.set(config!!).await()
         }
