@@ -214,7 +214,7 @@ class AppWeather(val sjUniWatch: SJUniWatch) : AbAppWeather() {
             }
 
             byteBuffer.putShort(currTemp.toShort())
-            byteBuffer.putShort(it.humidity.toShort())
+            byteBuffer.putShort((it.humidity * 100).toShort())
             byteBuffer.put(it.uvIndex.toByte())
             byteBuffer.put(it.weatherCode.toByte())
             byteBuffer.put((it.weatherDesc.toByteArray().size + 1).toByte())
