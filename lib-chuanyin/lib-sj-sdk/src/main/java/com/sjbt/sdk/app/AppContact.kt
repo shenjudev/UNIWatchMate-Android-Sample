@@ -29,7 +29,7 @@ class AppContact(val sjUniWatch: SJUniWatch) : AbAppContact(), ReadSubPkMsg {
     private var mEmergencyCall: WmEmergencyCall = WmEmergencyCall(false, mutableListOf())
     private val mContacts = mutableListOf<WmContact>()
     private val msgList = mutableSetOf<MsgBean>()
-    private val msgPkMap = LinkedHashMap<Int, MsgBean>()
+    private val msgSubPkMap = LinkedHashMap<Int, MsgBean>()
 
     /**
      * 分包发送写入类型Node节点消息
@@ -167,9 +167,9 @@ class AppContact(val sjUniWatch: SJUniWatch) : AbAppContact(), ReadSubPkMsg {
         val businessList = payloadPackage.toByteArray(requestType = RequestType.REQ_TYPE_WRITE)
         var divideType = DIVIDE_N_2
 //        businessMap.clear()
-        msgPkMap.clear()
+        msgSubPkMap.clear()
 
-        for (k in 0 until businessList.size) {
+        for (k in businessList.indices) {
 
             val businessArray = businessList[k]
 
@@ -212,7 +212,7 @@ class AppContact(val sjUniWatch: SJUniWatch) : AbAppContact(), ReadSubPkMsg {
                 val msgBean = MsgBean.fromByteArrayToMsgBean(cmdArray)
 
                 val order = msgBean.cmdOrder
-                msgPkMap[order] = msgBean
+                msgSubPkMap[order] = msgBean
 
                 if (k == 0 && i == 0) {
                     firstPkOrder = order
@@ -225,12 +225,12 @@ class AppContact(val sjUniWatch: SJUniWatch) : AbAppContact(), ReadSubPkMsg {
     }
 
     private fun sendObserveNode(order: Int) {
-        sjUniWatch.wmLog.logE(TAG, "total left ${msgPkMap.keys} send next order:$order")
-        msgPkMap[order]?.let { msgBean ->
+        sjUniWatch.wmLog.logE(TAG, "total left ${msgSubPkMap.keys} send next order:$order")
+        msgSubPkMap[order]?.let { msgBean ->
             sjUniWatch.wmLog.logE(TAG, "divideType： ${msgBean.divideType}  order:$order")
             sjUniWatch.sendAndObserveNode04(msgBean.originData).subscribe { order ->
                 sjUniWatch.wmLog.logE(TAG, "success order id：$order")
-                msgPkMap.remove(order)
+                msgSubPkMap.remove(order)
 
                 if (order != 0) {
                     if (order == MAX_ORDER_ID - 1) {
