@@ -27,7 +27,7 @@ import java.util.concurrent.locks.ReentrantLock
 /**
  * 客户端和服务端的基类，用于管理socket长连接
  */
-class BtEngineRx {
+class BtEngineRx2 {
 
     fun clearStateMap() {
         mSocketStateMap.clear()
@@ -42,6 +42,7 @@ class BtEngineRx {
     }
 
     private constructor() {}
+
     constructor(sjUniWatch: SJUniWatch?) {
         mSjUniWatch = sjUniWatch
         logD("BtEngine() 构建")
@@ -87,13 +88,11 @@ class BtEngineRx {
         }
 
         fun sendMessage(what: Int, obj: Any?) {
-//            logD("sendMessage:" + what);
             if (mBzyHandler != null) {
                 val message = mBzyHandler!!.obtainMessage()
                 message.what = what
                 message.obj = obj
                 val success = mBzyHandler!!.sendMessage(message)
-                //                logD("sendMessage结果:" + success);
                 if (!success) {
                     startThread()
                 }
@@ -137,23 +136,6 @@ class BtEngineRx {
     }
 
     /**
-     * BTSocket Spp连接状态
-     *
-     * @return
-     */
-    val isSocketConnected: Boolean
-        get() {
-            try {
-                return if (mSocket != null) {
-                    mSocket!!.isConnected
-                } else false
-            } catch (e: Exception) {
-                return false
-            }
-        }
-
-
-    /**
      * 释放监听引用(例如释放对Activity引用，避免内存泄漏)
      */
     fun unListener() {
@@ -191,14 +173,6 @@ class BtEngineRx {
         }
     }
 
-    // ============================================通知UI===========================================================
-    private fun checkSend(): Boolean {
-        return if (isSending) {
-//            BaseApplication.getInstance().toast("正在发送其它数据,请稍后再发...");
-            true
-        } else false
-    }
-
     fun clearMsgQueue() {
         if (msgQueueMap.size > 0) {
             for (str: String? in msgQueueMap.keys) {
@@ -228,10 +202,12 @@ class BtEngineRx {
         protected val TYPE_MSG = 0x11
         protected val TYPE_CONNECT = 0x12
         protected var myHandlerThread = MyHandlerThread("bt_thread")
+
         val SOCKET_STATE_NONE = 0
         val SOCKET_STATE_CONNECTING = 1
         val SOCKET_STATE_CONNECTED = 2
         private val mSocketStateMap: MutableMap<String, Int?> = HashMap()
+
         fun setDefaultMsgTimeout(defaultMsgTimeout: Int) {
             var defaultMsgTimeout = defaultMsgTimeout
             if (defaultMsgTimeout < MIN_MSG_TIMEOUT) {
@@ -241,6 +217,7 @@ class BtEngineRx {
         }
 
         private var mSjUniWatch: SJUniWatch? = null
+
         private fun logD(msg: String) {
             mSjUniWatch!!.wmLog.logD(TAG, msg)
         }

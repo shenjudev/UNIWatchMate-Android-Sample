@@ -36,6 +36,7 @@ import com.sjbt.sdk.spp.BtStateReceiver
 import com.sjbt.sdk.spp.OnBtStateListener
 import com.sjbt.sdk.spp.bt.BtEngine.*
 import com.sjbt.sdk.spp.bt.BtEngineRx
+import com.sjbt.sdk.spp.bt.BtEngineRx2
 import com.sjbt.sdk.spp.bt.BtStateListener
 import com.sjbt.sdk.spp.bt.BtStateListener.*
 import com.sjbt.sdk.spp.cmd.*
@@ -81,7 +82,7 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(),
     override val wmTransferFile = SJTransferFile(this)
     override val wmLog = SJLog(this)
 
-    private val mBtEngine: BtEngineRx = BtEngineRx(this)
+    private val mBtEngine: BtEngineRx2 = BtEngineRx2(this)
     private val mBindStateMap = HashMap<String, Boolean>()
 
     //同步数据
@@ -175,7 +176,7 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(),
         mContext = context
         mMsgTimeOut = timeout
 
-        mBtEngine.listener = this
+        mBtEngine.setListener(this)
         sharedPreferencesUtils = SharedPreferencesUtils.getInstance(mContext)
 
         mBtStateReceiver = BtStateReceiver(mContext!!, wmLog, object : OnBtStateListener {
@@ -200,7 +201,7 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(),
 
                 if (device.address == mCurrAddress) {
                     mBindInfo?.let {
-                        if (mBtEngine.getSocketState(mCurrAddress) == SOCKET_STATE_NONE) {
+                        if (mCurrAddress?.let { it1 -> mBtEngine.getSocketState(it1) } == SOCKET_STATE_NONE) {
                             connect(device, it)
                         }
                     }
@@ -722,7 +723,7 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(),
 
                                         } else {//分包消息
 
-                                            if (msgBean.divideType == DIVIDE_Y_F_2 ) {//多个业务分包
+                                            if (msgBean.divideType == DIVIDE_Y_F_2) {//多个业务分包
                                                 val payloadPackage =
                                                     PayloadPackage.fromByteArray(msgBean.payload)
 
@@ -1622,9 +1623,10 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(),
                 mCurrDevice?.let {
                     mDeviceName = it.name
                     wmDevice.name = it.name
+
+                    mBtEngine.connect(it)
                 }
 
-                mBtEngine.connect(mCurrDevice)
             } catch (e: Exception) {
                 e.printStackTrace()
                 observeConnectState?.onNext(WmConnectState.DISCONNECTED)
@@ -1653,22 +1655,25 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(),
         mDeviceName = bluetoothDevice.name
         wmDevice.name = bluetoothDevice.name
 
-        if (mBtEngine.getSocketState(mCurrAddress) == SOCKET_STATE_NONE) {
-            mBtStateReceiver?.let {
-                it.setmCurrDevice(mCurrAddress)
+        mCurrAddress?.let {
+            if (mBtEngine.getSocketState(it) == SOCKET_STATE_NONE) {
+                mBtStateReceiver?.let {
+                    it.setmCurrDevice(mCurrAddress)
+                }
+
+                if (wmDevice.isRecognized) {
+
+                    wmLog.logE(TAG, "sdk pre connect:${wmDevice}")
+                    observeConnectState?.onNext(WmConnectState.CONNECTING)
+                    mBtEngine.connect(bluetoothDevice)
+                } else {
+                    observeConnectState?.onError(WmDisconnectedException(bluetoothDevice.address))
+                }
             }
 
-            if (wmDevice.isRecognized) {
-
-                wmLog.logE(TAG, "sdk pre connect:${wmDevice}")
-                observeConnectState?.onNext(WmConnectState.CONNECTING)
-                mBtEngine.connect(bluetoothDevice)
-            } else {
-                observeConnectState?.onError(WmDisconnectedException(bluetoothDevice.address))
-            }
+            wmLog.logD(TAG, " connect:${wmDevice}")
         }
 
-        wmLog.logD(TAG, " connect:${wmDevice}")
 
         return wmDevice
     }

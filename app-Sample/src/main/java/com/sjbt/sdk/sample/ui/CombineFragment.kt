@@ -38,9 +38,10 @@ class CombineFragment : BaseFragment(R.layout.fragment_combine) {
                 UNIWatchMate.wmLog.logE("测试消息", "基本信息：" + it)
             }
 
-            UNIWatchMate.wmSync.syncStepData.syncData(System.currentTimeMillis()).subscribe {
-                UNIWatchMate.wmLog.logE("测试消息", "步数数据同步成功:"+it)
+            UNIWatchMate.wmSync.syncStepData.syncData(0).subscribe {
+                UNIWatchMate.wmLog.logE("测试消息", "步数数据同步成功:"+it.value.size)
             }
+
 
         }
 
