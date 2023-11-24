@@ -46,6 +46,7 @@ class SyncRealtimeRateData(val sjUniWatch: SJUniWatch) :
 
     fun onTimeOut(msg: MsgBean, nodeData: NodeData) {
 //        realTimeHeartRateObserveEmitter?.onError(WmTimeOutException())
+        sjUniWatch.wmLog.logE(TAG, "onTimeOut:$msg")
     }
 
     override fun syncData(startTime: Long): Observable<WmSyncData<WmRealtimeRateData>> {

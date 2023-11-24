@@ -49,6 +49,8 @@ class SyncActivityDurationData(val sjUniWatch: SJUniWatch) :
 
     fun onTimeOut(msgBean: MsgBean, nodeData: NodeData) {
 //        activityDurationObserveEmitter?.onError(WmTimeOutException())
+        sjUniWatch.wmLog.logE(TAG, "onTimeOut:$msgBean")
+
     }
 
     override fun syncData(startTime: Long): Observable<WmSyncData<WmActivityDurationData>> {

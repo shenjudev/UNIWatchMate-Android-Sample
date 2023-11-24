@@ -36,6 +36,7 @@ class SyncHeartRateData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmHe
 
     fun onTimeOut(msg: MsgBean, nodeData: NodeData) {
 //        heartRateObserveEmitter?.onError(WmTimeOutException())
+        sjUniWatch.wmLog.logE(TAG, "onTimeOut:$msg")
     }
 
     override fun setHasNext(hasNext: Boolean) {

@@ -1,6 +1,5 @@
 package com.sjbt.sdk.app
 
-import android.text.TextUtils
 import com.base.sdk.entity.apps.WmWeather
 import com.base.sdk.entity.apps.WmWeatherRequest
 import com.base.sdk.entity.apps.WmWeatherTime
@@ -14,7 +13,6 @@ import io.reactivex.rxjava3.core.SingleEmitter
 import io.reactivex.rxjava3.subjects.PublishSubject
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
-import java.nio.charset.StandardCharsets
 import java.util.*
 
 class AppWeather(val sjUniWatch: SJUniWatch) : AbAppWeather() {
@@ -101,7 +99,7 @@ class AppWeather(val sjUniWatch: SJUniWatch) : AbAppWeather() {
     }
 
     fun onTimeOut(msgBean: MsgBean, nodeData: NodeData) {
-        sjUniWatch.wmLog.logE(TAG, "msg time out:" + msgBean)
+        sjUniWatch.wmLog.logE(TAG, "msg time out:$msgBean")
     }
 
 

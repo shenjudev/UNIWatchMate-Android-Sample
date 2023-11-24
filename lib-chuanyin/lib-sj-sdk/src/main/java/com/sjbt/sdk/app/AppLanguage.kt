@@ -8,6 +8,7 @@ import com.sjbt.sdk.entity.MsgBean
 import com.sjbt.sdk.entity.NodeData
 import com.sjbt.sdk.entity.PayloadPackage
 import com.sjbt.sdk.spp.cmd.*
+import com.sjbt.sdk.utils.DevFinal
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.core.SingleEmitter
 import java.nio.ByteBuffer
@@ -36,7 +37,7 @@ class AppLanguage(val sjUniWatch: SJUniWatch) : AbAppLanguage() {
     }
 
     fun onTimeOut(msgBean: MsgBean,nodeData: NodeData) {
-
+        sjUniWatch.wmLog.logE(DevFinal.STR.TAG, "onTimeOut:$msgBean")
     }
 
     fun languageBusiness(

@@ -9,6 +9,7 @@ import com.sjbt.sdk.entity.MsgBean
 import com.sjbt.sdk.entity.NodeData
 import com.sjbt.sdk.entity.PayloadPackage
 import com.sjbt.sdk.spp.cmd.*
+import com.sjbt.sdk.utils.DevFinal
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.core.SingleEmitter
 import java.nio.ByteBuffer
@@ -98,7 +99,7 @@ class AppSport(val sjUniWatch: SJUniWatch) : AbAppSport() {
     }
 
     fun onTimeOut(msgBean: MsgBean, nodeData: NodeData) {
-
+        sjUniWatch.wmLog.logE(DevFinal.STR.TAG, "onTimeOut:$msgBean")
         when (nodeData.urn[2]) {
             URN_APP_SPORT_LIST -> getSportListEmitter?.onError(WmTimeOutException())
             URN_APP_SUPPORT_SPORT_LIST -> getSupportSportListEmitter?.onError(WmTimeOutException())

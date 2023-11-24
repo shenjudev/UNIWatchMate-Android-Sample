@@ -45,6 +45,7 @@ class SyncCaloriesData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmCal
 
     fun onTimeOut(msg: MsgBean, nodeData: NodeData) {
 //        caloriesObserveEmitter?.onError(WmTimeOutException())
+        sjUniWatch.wmLog.logE(TAG, "onTimeOut:$msg")
     }
 
     override fun syncData(startTime: Long): Observable<WmSyncData<WmCaloriesData>> {

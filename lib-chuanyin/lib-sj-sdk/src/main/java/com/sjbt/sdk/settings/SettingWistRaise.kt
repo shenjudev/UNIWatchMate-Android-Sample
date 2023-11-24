@@ -5,6 +5,7 @@ import com.base.sdk.port.setting.AbWmSetting
 import com.sjbt.sdk.SJUniWatch
 import com.sjbt.sdk.entity.NodeData
 import com.sjbt.sdk.spp.cmd.CmdHelper
+import com.sjbt.sdk.utils.DevFinal
 import io.reactivex.rxjava3.core.*
 
 class SettingWistRaise(val sjUniWatch: SJUniWatch) : AbWmSetting<WmWistRaise>() {

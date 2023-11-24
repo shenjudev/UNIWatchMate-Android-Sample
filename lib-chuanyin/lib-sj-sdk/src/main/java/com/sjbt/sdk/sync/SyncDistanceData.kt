@@ -47,6 +47,7 @@ class SyncDistanceData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmDis
 
     fun onTimeOut(msg: MsgBean, nodeData: NodeData) {
 //        activityObserveEmitter?.onError(WmTimeOutException())
+        sjUniWatch.wmLog.logE(TAG, "onTimeOut:$msg")
     }
 
     override fun syncData(startTime: Long): Observable<WmSyncData<WmDistanceData>> {

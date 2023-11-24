@@ -51,6 +51,7 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
 
     fun onTimeOut(msg: MsgBean, nodeData: NodeData) {
 //        syncSportSummaryObserveEmitter?.onError(WmTimeOutException())
+        sjUniWatch.wmLog.logE(TAG, "onTimeOut:$msg")
     }
 
     override fun setHasNext(hasNext: Boolean) {

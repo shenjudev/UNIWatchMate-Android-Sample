@@ -98,6 +98,7 @@ class AppCamera(val sjUniWatch: SJUniWatch) : AbAppCamera() {
 
     fun onTimeOut(msgBean: MsgBean) {
 //        updateAlarmEmitter?.onError(WmTimeOutException())
+        sjUniWatch.wmLog.logE(TAG, "onTimeOut:$msgBean")
     }
 
     override fun openCloseCamera(open: Boolean): Single<Boolean> {

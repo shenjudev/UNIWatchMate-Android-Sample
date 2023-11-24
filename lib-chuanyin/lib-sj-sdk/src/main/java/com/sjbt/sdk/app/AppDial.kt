@@ -9,6 +9,7 @@ import com.sjbt.sdk.spp.cmd.CmdHelper
 import com.sjbt.sdk.spp.cmd.DIAL_MSG_LEN
 import com.sjbt.sdk.uparser.model.JpgInfo
 import com.sjbt.sdk.utils.BtUtils
+import com.sjbt.sdk.utils.DevFinal
 import com.sjbt.sdk.utils.UParseUtil
 import io.reactivex.rxjava3.core.*
 import io.reactivex.rxjava3.core.Observable
@@ -54,7 +55,7 @@ class AppDial(sjUniWatch: SJUniWatch) : AbAppDial() {
     }
 
     fun onTimeOut(nodeData: NodeData) {
-        TODO("Not yet implemented")
+        sjUniWatch.wmLog.logE(DevFinal.STR.TAG, "onTimeOut")
     }
 
     fun addDialList(msgBean: MsgBean) {
