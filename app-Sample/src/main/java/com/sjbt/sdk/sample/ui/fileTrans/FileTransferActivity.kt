@@ -403,7 +403,7 @@ class FileTransferActivity : BaseActivity(), View.OnClickListener,
 //                    }
 //                });
 //            } else {
-            wmTransferFile.cancelTransfer()
+            wmTransferFile.cancelTransfer().subscribe()
             setTransferring(false)
             finish()
             //            }
@@ -420,7 +420,7 @@ class FileTransferActivity : BaseActivity(), View.OnClickListener,
                 when (o) {
                     Config.CLICK_CANCEL -> {
                         sendEndTransferFile()
-                        wmTransferFile.cancelTransfer()
+                        wmTransferFile.cancelTransfer().subscribe()
                     }
                     Config.CLICK_RETRY -> prepareSendFiles()
                 }
