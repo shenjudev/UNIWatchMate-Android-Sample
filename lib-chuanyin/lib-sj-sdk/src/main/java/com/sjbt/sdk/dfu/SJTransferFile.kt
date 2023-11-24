@@ -1,12 +1,13 @@
 package com.sjbt.sdk.dfu
 
+import com.base.sdk.exception.WmTransferError
+import com.base.sdk.exception.WmTransferException
 import com.base.sdk.port.*
 import com.sjbt.sdk.MAX_RETRY_COUNT
 import com.sjbt.sdk.MSG_INTERVAL
 import com.sjbt.sdk.SJUniWatch
 import com.sjbt.sdk.entity.MsgBean
 import com.sjbt.sdk.entity.OtaCmdInfo
-import com.sjbt.sdk.exception.SJTransferException
 import com.sjbt.sdk.spp.cmd.*
 import com.sjbt.sdk.utils.FileUtils
 import io.reactivex.rxjava3.core.*
@@ -125,7 +126,32 @@ class SJTransferFile(val sjUniWatch: SJUniWatch) : AbWmTransferFile() {
                     }
 
                 } else {
-                    transferError(reason, "device not allow transfer file , reason:$reason")
+
+                   val error = when(reason){
+                        0->{
+                            WmTransferError.ERROR_OTHER
+                        }
+                        1->{
+                            WmTransferError.ERROR_BUSY
+                        }
+                        2->{
+                            WmTransferError.ERROR_CRC
+                        }
+                        3->{
+                            WmTransferError.ERROR_LOW_MEMORY
+                        }
+                        4->{
+                            WmTransferError.ERROR_LOW_POWER
+                        }
+                        5->{
+                            WmTransferError.ERROR_TIME_OUT
+                        }
+                       else -> {
+                           WmTransferError.ERROR_OTHER
+                       }
+                   }
+
+                    transferError(error, "device not allow transfer file , reason:$reason")
                 }
             }
             CMD_ID_8002 -> {
@@ -151,7 +177,7 @@ class SJTransferFile(val sjUniWatch: SJUniWatch) : AbWmTransferFile() {
                 } else {
                     mCanceledSend = true
                     transferEnd()
-                    transferError(ERROR_FILE_EXCEPTION, "transfer file fail,reason: cmd 02")
+                    transferError(WmTransferError.ERROR_FILE_EXCEPTION, "transfer file fail,reason: cmd 02")
                 }
             }
 
@@ -272,16 +298,16 @@ class SJTransferFile(val sjUniWatch: SJUniWatch) : AbWmTransferFile() {
                 val reasonCancel = msgBean.payload[0]
                 sjUniWatch.wmLog.logD(TAG, "device cancel reason：$reasonCancel")
                 transferEnd()
-                transferError(ERROR_BUSY, "file transfer error reason:06 Error")
+                transferError(WmTransferError.ERROR_BUSY, "file transfer error reason:06 Error")
             }
         }
     }
 
-    fun transferError(code: Int, errMsg: String) {
+    fun transferError(code: WmTransferError, errMsg: String) {
         mTransferring = false
         if (observableTransferEmitter?.isDisposed == false) {
             observableTransferEmitter?.onError(
-                SJTransferException(code, errMsg)
+                WmTransferException(code, errMsg)
             )
         }
     }
