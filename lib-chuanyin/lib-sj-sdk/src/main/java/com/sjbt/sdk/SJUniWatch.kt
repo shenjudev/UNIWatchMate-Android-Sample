@@ -29,7 +29,7 @@ import com.sjbt.sdk.dfu.SJTransferFile
 import com.sjbt.sdk.entity.*
 import com.sjbt.sdk.entity.old.AppViewBean
 import com.sjbt.sdk.entity.old.BasicInfo
-import com.sjbt.sdk.entity.old.BiuBatteryBean
+import com.sjbt.sdk.entity.old.BatteryBean
 import com.sjbt.sdk.log.SJLog
 import com.sjbt.sdk.settings.*
 import com.sjbt.sdk.spp.BtStateReceiver
@@ -363,7 +363,7 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(),
 
                                 CMD_ID_8003 -> {//电量消息
                                     val batteryBean = gson.fromJson(
-                                        msgBean.payloadJson, BiuBatteryBean::class.java
+                                        msgBean.payloadJson, BatteryBean::class.java
                                     )
 
                                     batteryBean?.let {
@@ -722,7 +722,7 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(),
 
                                         } else {//分包消息
 
-                                            if (msgBean.divideType == DIVIDE_Y_F_2 ) {//多个业务分包
+                                            if (msgBean.divideType == DIVIDE_Y_F_2) {//多个业务分包
                                                 val payloadPackage =
                                                     PayloadPackage.fromByteArray(msgBean.payload)
 
@@ -1603,39 +1603,41 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(),
     override fun connect(
         address: String, bindInfo: WmBindInfo
     ): WmDevice {
-        mCurrAddress = address
-        mBtStateReceiver?.let {
-            it.setmCurrDevice(mCurrAddress)
-        }
+        synchronized(this) {
+            mCurrAddress = address
+            mBtStateReceiver?.let {
+                it.setmCurrDevice(mCurrAddress)
+            }
 
-        val wmDevice = WmDevice(bindInfo.model)
-        wmDevice.address = address
-        wmDevice.mode = bindInfo.model
-        wmDevice.randomCode = bindInfo.randomCode
-        mBindInfo = bindInfo
-        wmDevice.isRecognized = bindInfo.model == WmDeviceModel.SJ_WATCH
+            val wmDevice = WmDevice(bindInfo.model)
+            wmDevice.address = address
+            wmDevice.mode = bindInfo.model
+            wmDevice.randomCode = bindInfo.randomCode
+            mBindInfo = bindInfo
+            wmDevice.isRecognized = bindInfo.model == WmDeviceModel.SJ_WATCH
 
-        if (wmDevice.isRecognized) {
-            try {
-                observeConnectState?.onNext(WmConnectState.CONNECTING)
-                mCurrDevice = mBtAdapter.getRemoteDevice(address)
-                mCurrDevice?.let {
-                    mDeviceName = it.name
-                    wmDevice.name = it.name
+            if (wmDevice.isRecognized) {
+                try {
+                    observeConnectState?.onNext(WmConnectState.CONNECTING)
+                    mCurrDevice = mBtAdapter.getRemoteDevice(address)
+                    mCurrDevice?.let {
+                        mDeviceName = it.name
+                        wmDevice.name = it.name
+                    }
+
+                    mBtEngine.connect(mCurrDevice)
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    observeConnectState?.onNext(WmConnectState.DISCONNECTED)
                 }
-
-                mBtEngine.connect(mCurrDevice)
-            } catch (e: Exception) {
-                e.printStackTrace()
+            } else {
                 observeConnectState?.onNext(WmConnectState.DISCONNECTED)
             }
-        } else {
-            observeConnectState?.onNext(WmConnectState.DISCONNECTED)
+
+            wmLog.logD(TAG, " connect:${wmDevice}")
+
+            return wmDevice
         }
-
-        wmLog.logD(TAG, " connect:${wmDevice}")
-
-        return wmDevice
     }
 
     /**
@@ -1644,33 +1646,35 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(),
     override fun connect(
         bluetoothDevice: BluetoothDevice, bindInfo: WmBindInfo
     ): WmDevice {
-        mBindInfo = bindInfo
-        mCurrDevice = bluetoothDevice
-        val wmDevice = WmDevice(bindInfo.model)
-        mCurrAddress = bluetoothDevice.address
-        wmDevice.address = bluetoothDevice.address
-        wmDevice.isRecognized = bindInfo.model == WmDeviceModel.SJ_WATCH
-        mDeviceName = bluetoothDevice.name
-        wmDevice.name = bluetoothDevice.name
+        synchronized(this) {
+            mBindInfo = bindInfo
+            mCurrDevice = bluetoothDevice
+            val wmDevice = WmDevice(bindInfo.model)
+            mCurrAddress = bluetoothDevice.address
+            wmDevice.address = bluetoothDevice.address
+            wmDevice.isRecognized = bindInfo.model == WmDeviceModel.SJ_WATCH
+            mDeviceName = bluetoothDevice.name
+            wmDevice.name = bluetoothDevice.name
 
-        if (mBtEngine.getSocketState(mCurrAddress) == SOCKET_STATE_NONE) {
-            mBtStateReceiver?.let {
-                it.setmCurrDevice(mCurrAddress)
+            if (mBtEngine.getSocketState(mCurrAddress) == SOCKET_STATE_NONE) {
+                mBtStateReceiver?.let {
+                    it.setmCurrDevice(mCurrAddress)
+                }
+
+                if (wmDevice.isRecognized) {
+
+                    wmLog.logE(TAG, "sdk pre connect:${wmDevice}")
+                    observeConnectState?.onNext(WmConnectState.CONNECTING)
+                    mBtEngine.connect(bluetoothDevice)
+                } else {
+                    observeConnectState?.onError(WmDisconnectedException(bluetoothDevice.address))
+                }
             }
 
-            if (wmDevice.isRecognized) {
+            wmLog.logD(TAG, " connect:${wmDevice}")
 
-                wmLog.logE(TAG, "sdk pre connect:${wmDevice}")
-                observeConnectState?.onNext(WmConnectState.CONNECTING)
-                mBtEngine.connect(bluetoothDevice)
-            } else {
-                observeConnectState?.onError(WmDisconnectedException(bluetoothDevice.address))
-            }
+            return wmDevice
         }
-
-        wmLog.logD(TAG, " connect:${wmDevice}")
-
-        return wmDevice
     }
 
     /**

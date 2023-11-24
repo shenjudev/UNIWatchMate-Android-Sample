@@ -3,7 +3,7 @@ package com.sjbt.sdk.entity.old;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class BiuBatteryBean implements Parcelable {
+public class BatteryBean implements Parcelable {
 
     /**
      * is_charging : false
@@ -11,7 +11,6 @@ public class BiuBatteryBean implements Parcelable {
      * battery_r1 : -1
      * battery_r2 : -1
      */
-
     private int is_charging;
     private int battery_main;
     private int battery_r1;
@@ -69,31 +68,31 @@ public class BiuBatteryBean implements Parcelable {
         this.battery_r2 = source.readInt();
     }
 
-    public BiuBatteryBean() {
+    public BatteryBean() {
     }
 
-    protected BiuBatteryBean(Parcel in) {
+    protected BatteryBean(Parcel in) {
         this.is_charging = in.readInt();
         this.battery_main = in.readInt();
         this.battery_r1 = in.readInt();
         this.battery_r2 = in.readInt();
     }
 
-    public static final Creator<BiuBatteryBean> CREATOR = new Creator<BiuBatteryBean>() {
+    public static final Creator<BatteryBean> CREATOR = new Creator<BatteryBean>() {
         @Override
-        public BiuBatteryBean createFromParcel(Parcel source) {
-            return new BiuBatteryBean(source);
+        public BatteryBean createFromParcel(Parcel source) {
+            return new BatteryBean(source);
         }
 
         @Override
-        public BiuBatteryBean[] newArray(int size) {
-            return new BiuBatteryBean[size];
+        public BatteryBean[] newArray(int size) {
+            return new BatteryBean[size];
         }
     };
 
     @Override
     public String toString() {
-        return "BiuBatteryBean{" +
+        return "BatteryBean{" +
                 "is_charging=" + is_charging +
                 ", battery_main=" + battery_main +
                 ", battery_r1=" + battery_r1 +
