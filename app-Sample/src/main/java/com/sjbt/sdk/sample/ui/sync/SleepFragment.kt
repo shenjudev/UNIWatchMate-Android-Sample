@@ -67,7 +67,7 @@ class SleepFragment : DataListFragment<WmSleepData>() {
 //                tvRem.text = FormatterUtil.second2Hmm(duration[2])
 //                tvAwakeSleep.text = FormatterUtil.second2Hmm(duration[3])
 //            }
-            sleepItemDataList
+            data
         }
     }
 

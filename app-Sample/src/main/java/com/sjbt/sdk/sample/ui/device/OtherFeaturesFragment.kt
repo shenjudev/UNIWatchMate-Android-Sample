@@ -215,37 +215,37 @@ class OtherFeaturesFragment : BaseFragment(R.layout.fragment_other_features) {
     private fun otaFileResult(it: WmTransferState) {
         Timber.i("WmTransferState = ${it}")
         when (it.state) {
-            State.PRE_TRANSFER -> {
-            }
+                State.PRE_TRANSFER -> {
+                }
 
-            State.TRANSFERRING -> {
-                UNIWatchMate.wmLog.logI(
-                    "OtherFeaturesFragment",
-                    getString(R.string.action_updating_progress) + NumberUtils.format(
-                        it.progress.toDouble(),
-                        2
-                    ) + "%"
-                )
-                if (isLocalUpdate) {
-                    showInfoDialog(
+                State.TRANSFERRING -> {
+                    UNIWatchMate.wmLog.logI(
+                        "OtherFeaturesFragment",
                         getString(R.string.action_updating_progress) + NumberUtils.format(
                             it.progress.toDouble(),
                             2
                         ) + "%"
                     )
-//                   promptProgress.showProgress()
+                    if (isLocalUpdate) {
+                        showInfoDialog(
+                            getString(R.string.action_updating_progress) + NumberUtils.format(
+                                it.progress.toDouble(),
+                                2
+                            ) + "%"
+                        )
+    //                   promptProgress.showProgress()
+                    }
                 }
-            }
 
-            State.FINISH -> {
-                hideInfoDialog()
-                showToast(getString(R.string.tip_success))
-//                applicationScope.launchWithLog {
-//                    runCatchingWithLog {
-//                        deviceManager.delDevice()
-//                    }
-//                }
-            }
+                State.FINISH -> {
+                    hideInfoDialog()
+                    showToast(getString(R.string.tip_success))
+    //                applicationScope.launchWithLog {
+    //                    runCatchingWithLog {
+    //                        deviceManager.delDevice()
+    //                    }
+    //                }
+                }
         }
     }
 

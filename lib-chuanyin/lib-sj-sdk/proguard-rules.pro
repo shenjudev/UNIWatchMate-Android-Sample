@@ -207,6 +207,6 @@ public static final int *;
 -keep class com.sjbt.sdk.utils.**{*;}
 -keep class com.sjbt.sdk.entity.**{*;}
 -keep class com.sjbt.sdk.SJUniWatch{*;}
-
+-keep class com.sjbt.sdk.exception.**{*;}
 -keep class com.sjbt.sdk.uparser.model.**{*;}
 -keep class com.sjbt.sdk.uparser.**{*;}

@@ -23,3 +23,4 @@
 -keep class com.base.sdk.BaseUNIWatch{*;}
 -keep class com.base.sdk.action.**{*;}
 -keep class com.base.sdk.entity.**{*;}
+-keep class com.base.sdk.exception.**{*;}
