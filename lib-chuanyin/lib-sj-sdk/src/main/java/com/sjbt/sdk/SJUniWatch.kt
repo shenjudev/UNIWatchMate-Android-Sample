@@ -1662,7 +1662,7 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(), Li
                 observeConnectState?.onNext(WmConnectState.CONNECTING)
                 mBtEngine.connect(bluetoothDevice)
             } else {
-                observeConnectState?.onError(WmDisconnectedException("not recognized device"))
+                observeConnectState?.onError(WmDisconnectedException(bluetoothDevice.address))
             }
         }
 
