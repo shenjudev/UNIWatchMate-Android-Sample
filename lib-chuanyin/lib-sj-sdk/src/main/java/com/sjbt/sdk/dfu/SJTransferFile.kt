@@ -103,6 +103,8 @@ class SJTransferFile(val sjUniWatch: SJUniWatch) : AbWmTransferFile() {
             CMD_ID_8001 -> {
                 mSendFileCount = 0
                 mErrorSend = false
+                mCanceledSend = false
+
                 val ota_allow = msgBean.payload[0] //是否容许升级 0允许 1不允许
                 val reason = msgBean.payload[1].toInt() //是否容许升级 0允许 1不允许
                 sjUniWatch.wmLog.logD(TAG, "1.Allow transfer:$ota_allow")
@@ -308,6 +310,7 @@ class SJTransferFile(val sjUniWatch: SJUniWatch) : AbWmTransferFile() {
 
     fun transferError(code: WmTransferError, errMsg: String) {
         mTransferring = false
+        mErrorSend = true
         if (observableTransferEmitter?.isDisposed == false) {
             observableTransferEmitter?.onError(
                 WmTransferException(code, errMsg)
