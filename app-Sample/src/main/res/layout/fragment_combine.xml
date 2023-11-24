@@ -26,6 +26,11 @@
                 android:id="@+id/item_exercise_goal"
                 style="@style/Widget.Sample.PreferenceView.Item.Text"
                 app:preferenceTitle="@string/exercise_goal" />
+
+            <com.github.kilnn.tool.widget.item.PreferenceItem
+                android:id="@+id/item_test"
+                style="@style/Widget.Sample.PreferenceView.Item.Text"
+                app:preferenceTitle="Test Multi Msg" />
         </LinearLayout>
     </ScrollView>
 

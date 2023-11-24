@@ -33,6 +33,17 @@ class CombineFragment : BaseFragment(R.layout.fragment_combine) {
             findNavController().navigate(CombineFragmentDirections.toEditUserInfo())
         }
 
+        viewBind.itemTest.setOnClickListener {
+            UNIWatchMate.getDeviceInfo().subscribe { it->
+                UNIWatchMate.wmLog.logE("测试消息", "基本信息：" + it)
+            }
+
+            UNIWatchMate.wmSync.syncStepData.syncData(System.currentTimeMillis()).subscribe {
+                UNIWatchMate.wmLog.logE("测试消息", "步数数据同步成功:"+it)
+            }
+
+        }
+
         viewBind.tvVersion.text = getString(R.string.version_app,BuildConfig.VERSION_NAME)
         viewBind.btnSignOut.setOnClickListener {
             viewModel.signOut()

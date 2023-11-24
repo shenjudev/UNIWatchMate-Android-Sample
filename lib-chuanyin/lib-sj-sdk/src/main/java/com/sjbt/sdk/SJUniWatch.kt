@@ -34,9 +34,10 @@ import com.sjbt.sdk.log.SJLog
 import com.sjbt.sdk.settings.*
 import com.sjbt.sdk.spp.BtStateReceiver
 import com.sjbt.sdk.spp.OnBtStateListener
-import com.sjbt.sdk.spp.bt.BtEngine
 import com.sjbt.sdk.spp.bt.BtEngine.*
-import com.sjbt.sdk.spp.bt.BtEngine.Listener.*
+import com.sjbt.sdk.spp.bt.BtEngineRx
+import com.sjbt.sdk.spp.bt.BtStateListener
+import com.sjbt.sdk.spp.bt.BtStateListener.*
 import com.sjbt.sdk.spp.cmd.*
 import com.sjbt.sdk.sync.*
 import com.sjbt.sdk.utils.BtUtils
@@ -48,7 +49,8 @@ import io.reactivex.rxjava3.disposables.Disposable
 import io.reactivex.rxjava3.subjects.PublishSubject
 import java.nio.ByteBuffer
 
-abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(), Listener {
+abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(),
+    BtStateListener {
 
     private val TAG = "SJUniWatch"
     private val mDeviceType = "OSW-802N"
@@ -79,7 +81,7 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(), Li
     override val wmTransferFile = SJTransferFile(this)
     override val wmLog = SJLog(this)
 
-    private val mBtEngine: BtEngine = BtEngine(this)
+    private val mBtEngine: BtEngineRx = BtEngineRx(this)
     private val mBindStateMap = HashMap<String, Boolean>()
 
     //同步数据

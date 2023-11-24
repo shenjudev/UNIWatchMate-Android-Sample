@@ -35,7 +35,7 @@ import java.util.concurrent.locks.ReentrantLock;
  * 客户端和服务端的基类，用于管理socket长连接
  */
 @SuppressWarnings("MissingPermission")
-public class BtEngine {
+public class BtEngineRx {
 
     private static final UUID SPP_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
     private static String TAG = "BtEngine";
@@ -92,10 +92,10 @@ public class BtEngine {
 
     private static SJUniWatch mSjUniWatch;
 
-    private BtEngine() {
+    private BtEngineRx() {
     }
 
-    public BtEngine(SJUniWatch sjUniWatch) {
+    public BtEngineRx(SJUniWatch sjUniWatch) {
         mSjUniWatch = sjUniWatch;
         logD("BtEngine() 构建");
         myHandlerThread.startThread();
@@ -580,6 +580,8 @@ public class BtEngine {
             });
         }
     }
+
+
 
     public void clearMsgQueue() {
         if (msgQueueMap.size() > 0) {

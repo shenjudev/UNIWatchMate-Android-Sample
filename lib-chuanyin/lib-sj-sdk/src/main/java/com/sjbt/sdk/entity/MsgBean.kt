@@ -52,9 +52,9 @@ class MsgBean {
     companion object {
 
         private fun isNotTimeOut(head: Byte, divideType: Byte, cmdId: Int): Boolean {
-            return ((head == HEAD_COMMON && cmdId == CMD_ID_800D.toInt()) ||//绑定
+            return ((head == HEAD_COMMON && cmdId == CMD_ID_800D.toInt()) ||//云端绑定同步
                     (head == HEAD_COMMON && cmdId == CMD_ID_800F.toInt()) ||//我的表盘列表
-                    (head == HEAD_COMMON && cmdId == CMD_ID_802E.toInt()) ||//绑定
+                    (head == HEAD_COMMON && cmdId == CMD_ID_802E.toInt()) ||//与设备绑定
                     (head == HEAD_FILE_SPP_A_2_D && cmdId == CMD_ID_8003.toInt()) ||//传输文件的过程中，采用连续传输的方式
                     (head == HEAD_CAMERA_PREVIEW && cmdId == CMD_ID_8002.toInt()) ||//相机预览
                     (head == HEAD_NODE_TYPE && cmdId == CMD_ID_8004.toInt()) || //通讯层节点消息
