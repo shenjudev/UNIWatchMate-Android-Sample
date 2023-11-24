@@ -1,5 +1,8 @@
 package com.base.sdk.entity
 
+/**
+ * 连接返回设备信息
+ */
 open class WmDevice(var mode: WmDeviceModel) {
     var name: String? = null
     var address: String? = null

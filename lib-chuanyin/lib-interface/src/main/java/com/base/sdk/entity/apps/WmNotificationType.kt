@@ -1,5 +1,8 @@
 package com.base.sdk.entity.apps
 
+/**
+ * 通知类型包名定义
+ */
 enum class WmNotificationType(
     val type:Int = 0,
     val packageName:String=""

@@ -1,5 +1,8 @@
 package com.base.sdk.entity.settings
 
+/**
+ * WmFunctionSupport 功能是否支持数据结构定义
+ */
 open class WmFunctionSupport {
 
     var supportFunctionVersion = 0
