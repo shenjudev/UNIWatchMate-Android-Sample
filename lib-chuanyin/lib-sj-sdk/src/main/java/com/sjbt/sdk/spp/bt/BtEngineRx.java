@@ -465,7 +465,7 @@ public class BtEngineRx {
                                 try {
                                     if (msgBean.cmdId == CMD_ID_8015 && msgBean.head == HEAD_COMMON) {
 
-                                        deviceBusing = msgBean.payload[16] == 1;
+                                        deviceBusing = msgBean.getPayload()[16] == 1;
 
                                         logD("msg busy：" + deviceBusing);
 

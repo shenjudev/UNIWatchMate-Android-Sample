@@ -25,7 +25,7 @@ class MsgBean {
     var crc = 0
     var divideIndex = 0
     lateinit var originData: ByteArray
-    lateinit var payload: ByteArray
+    var payload: ByteArray = byteArrayOf()
     var payloadJson: String? = null
     var payloadPackage: PayloadPackage? = null
 

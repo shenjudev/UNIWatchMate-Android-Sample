@@ -60,6 +60,8 @@ class AppDial(sjUniWatch: SJUniWatch) : AbAppDial() {
 
     fun addDialList(msgBean: MsgBean) {
         if (msgBean.payload == null) {
+            syncDialListEmitter?.onNext(mMyDialList)
+            syncDialListEmitter?.onComplete()
             return
         }
         val dialIdLen: Int = msgBean.payload.size
