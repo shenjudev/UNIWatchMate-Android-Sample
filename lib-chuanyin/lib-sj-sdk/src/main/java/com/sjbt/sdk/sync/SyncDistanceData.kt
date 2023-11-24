@@ -165,7 +165,7 @@ class SyncDistanceData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmDis
 
         while (byteBufferSyncData.hasRemaining()) {
 
-            val wmDistanceData = WmDistanceData(byteBufferSyncData.get().toInt() and 0XFF)
+            val wmDistanceData = WmDistanceData(byteBufferSyncData.int and 0XFF)
 
             if (timestampType == 0) {//只有一个时间戳
                 sjUniWatch.wmLog.logD(
