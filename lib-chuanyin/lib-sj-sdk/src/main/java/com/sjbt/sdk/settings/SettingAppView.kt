@@ -32,6 +32,7 @@ class SettingAppView(val sjUniWatch: SJUniWatch) : AbWmSetting<WmAppView>() {
 
     override fun get(): Single<WmAppView> {
         return Single.create { emitter ->
+            isGet = true
             getEmitter = emitter
             sjUniWatch.sendNormalMsg(CmdHelper.appViewList)
         }

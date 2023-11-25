@@ -35,8 +35,7 @@ import com.sjbt.sdk.settings.*
 import com.sjbt.sdk.spp.BtStateReceiver
 import com.sjbt.sdk.spp.OnBtStateListener
 import com.sjbt.sdk.spp.bt.BtEngine.*
-import com.sjbt.sdk.spp.bt.BtEngineRx
-import com.sjbt.sdk.spp.bt.BtEngineRx2
+import com.sjbt.sdk.spp.bt.BtEngineMsgQue
 import com.sjbt.sdk.spp.bt.BtStateListener
 import com.sjbt.sdk.spp.bt.BtStateListener.*
 import com.sjbt.sdk.spp.cmd.*
@@ -82,7 +81,7 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(),
     override val wmTransferFile = SJTransferFile(this)
     override val wmLog = SJLog(this)
 
-    private val mBtEngine: BtEngineRx2 = BtEngineRx2(this)
+    private val mBtEngine: BtEngineMsgQue = BtEngineMsgQue(this)
     private val mBindStateMap = HashMap<String, Boolean>()
 
     //同步数据
@@ -665,15 +664,14 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(),
                         HEAD_NODE_TYPE -> {
                             when (msgBean.cmdId.toShort()) {
                                 CMD_ID_8001 -> {//请求
-
                                     if (msgBean.payload.size > 10) {//设备请求的消息
-                                        sendCommunicateResponse()
+                                        sendCommunicateMsg()
 
                                         var payloadPackage: PayloadPackage =
                                             PayloadPackage.fromByteArray(msgBean.payload)
 
                                         parseResponseNodePayload(msgBean, payloadPackage)
-                                    } else {//设备传输层回复
+                                    } else {
                                         wmLog.logD(
                                             TAG,
                                             "No Node Msg：" + msgBean.payload.size
@@ -682,8 +680,7 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(),
                                 }
 
                                 CMD_ID_8002 -> {//响应
-                                    //
-                                    sendCommunicateResponse()
+                                    sendCommunicateMsg()
 
                                     if (msgBean.payloadLen >= 10 || msgBean.divideType != DIVIDE_N_2) {//设备应用层回复 包含带应用层payload的数据和分包数据的处理逻辑
                                         wmLog.logD(
@@ -802,15 +799,6 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(),
         } catch (e: Exception) {
             e.printStackTrace()
         }
-    }
-
-    /**
-     * 回复通讯层消息
-     */
-    private fun sendCommunicateResponse() {
-        sendNormalMsg(
-            CmdHelper.communityMsg
-        )
     }
 
     private fun msgTimeOut(msgBean: MsgBean) {
@@ -1076,6 +1064,10 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(),
 
     fun clearMsg() {
         mBtEngine.clearMsgQueue()
+    }
+
+    private fun sendCommunicateMsg(){
+        mBtEngine.sendCommunicateMsg(CmdHelper.communityMsg)
     }
 
     fun sendNormalMsg(msg: ByteArray) {
@@ -1624,9 +1616,9 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(),
                     mCurrDevice?.let {
                         mDeviceName = it.name
                         wmDevice.name = it.name
+                        mBtEngine.connect(it)
                     }
 
-                    mBtEngine.connect(mCurrDevice)
                 } catch (e: Exception) {
                     e.printStackTrace()
                     observeConnectState?.onNext(WmConnectState.DISCONNECTED)
@@ -1657,24 +1649,24 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(),
             mDeviceName = bluetoothDevice.name
             wmDevice.name = bluetoothDevice.name
 
-        mCurrAddress?.let {
-            if (mBtEngine.getSocketState(it) == SOCKET_STATE_NONE) {
-                mBtStateReceiver?.let {
-                    it.setmCurrDevice(mCurrAddress)
+            mCurrAddress?.let {
+                if (mBtEngine.getSocketState(it) == SOCKET_STATE_NONE) {
+                    mBtStateReceiver?.let {
+                        it.setmCurrDevice(mCurrAddress)
+                    }
+
+                    if (wmDevice.isRecognized) {
+
+                        wmLog.logE(TAG, "sdk pre connect:${wmDevice}")
+                        observeConnectState?.onNext(WmConnectState.CONNECTING)
+                        mBtEngine.connect(bluetoothDevice)
+                    } else {
+                        observeConnectState?.onError(WmDisconnectedException(bluetoothDevice.address))
+                    }
                 }
 
-                if (wmDevice.isRecognized) {
-
-                    wmLog.logE(TAG, "sdk pre connect:${wmDevice}")
-                    observeConnectState?.onNext(WmConnectState.CONNECTING)
-                    mBtEngine.connect(bluetoothDevice)
-                } else {
-                    observeConnectState?.onError(WmDisconnectedException(bluetoothDevice.address))
-                }
+                wmLog.logD(TAG, " connect:${wmDevice}")
             }
-
-            wmLog.logD(TAG, " connect:${wmDevice}")
-        }
 
             wmLog.logD(TAG, " connect:${wmDevice}")
 

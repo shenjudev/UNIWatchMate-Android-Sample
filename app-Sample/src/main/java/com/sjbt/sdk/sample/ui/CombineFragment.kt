@@ -6,6 +6,8 @@ import android.view.View
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.base.api.UNIWatchMate
+import com.base.sdk.entity.common.WmTimeUnit
+import com.base.sdk.entity.settings.WmUnitInfo
 import com.sjbt.sdk.sample.BuildConfig
 import com.sjbt.sdk.sample.R
 import com.sjbt.sdk.sample.base.*
@@ -28,25 +30,55 @@ class CombineFragment : BaseFragment(R.layout.fragment_combine) {
         viewBind.itemExerciseGoal.setOnClickListener {
             findNavController().navigate(CombineFragmentDirections.toExerciseGoal())
         }
-        
+
         viewBind.itemUserInfo.setOnClickListener {
             findNavController().navigate(CombineFragmentDirections.toEditUserInfo())
         }
 
-        viewBind.itemTest.visibility = View.GONE
+        viewBind.itemTest.visibility = View.VISIBLE
         viewBind.itemTest.setOnClickListener {
-            UNIWatchMate.getDeviceInfo().subscribe { it->
-                UNIWatchMate.wmLog.logE("测试消息", "基本信息：" + it)
+
+            UNIWatchMate.getDeviceInfo().subscribe { it ->
+                UNIWatchMate.wmLog.logE("测试消息1", "基本信息：" + it)
             }
 
-            UNIWatchMate.wmSync.syncStepData.syncData(0).subscribe {
-                UNIWatchMate.wmLog.logE("测试消息", "步数数据同步成功:"+it.value.size)
+            val wmUnitInfo = WmUnitInfo(
+                WmUnitInfo.WeightUnit.LB,
+                WmUnitInfo.TemperatureUnit.FAHRENHEIT,
+
+                WmUnitInfo.TimeFormat.TWENTY_FOUR_HOUR,
+                WmUnitInfo.DistanceUnit.MILE,
+
+                )
+
+            UNIWatchMate.wmSettings.settingUnitInfo.set(wmUnitInfo).subscribe { it->
+                UNIWatchMate.wmLog.logE("测试消息6", "单位设置成功:" + it)
             }
+
+            UNIWatchMate.wmSettings.settingAppView.get().subscribe { it->
+                UNIWatchMate.wmLog.logE("测试消息7", "应用视图获取成功:" + it)
+            }
+
+//            UNIWatchMate.wmSync.syncStepData.syncData(0).subscribe {
+//                UNIWatchMate.wmLog.logE("测试消息2", "步数数据同步成功:" + it.value.size)
+//            }
+//
+//            UNIWatchMate.wmSync.syncActivityDurationData.syncData(0).subscribe {
+//                UNIWatchMate.wmLog.logE("测试消息3", "活动时长数据同步成功:" + it.value.size)
+//            }
+//
+//            UNIWatchMate.wmSync.syncCaloriesData.syncData(0).subscribe {
+//                UNIWatchMate.wmLog.logE("测试消息4", "卡路里同步成功:" + it.value.size)
+//            }
+//
+//            UNIWatchMate.wmSync.syncOxygenData.syncData(0).subscribe {
+//                UNIWatchMate.wmLog.logE("测试消息5", "血氧同步成功:" + it.value.size)
+//            }
 
 
         }
 
-        viewBind.tvVersion.text = getString(R.string.version_app,BuildConfig.VERSION_NAME)
+        viewBind.tvVersion.text = getString(R.string.version_app, BuildConfig.VERSION_NAME)
         viewBind.btnSignOut.setOnClickListener {
             viewModel.signOut()
         }

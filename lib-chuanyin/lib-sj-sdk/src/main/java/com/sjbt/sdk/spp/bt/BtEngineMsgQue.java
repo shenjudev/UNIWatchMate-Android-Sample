@@ -20,11 +20,13 @@ import com.sjbt.sdk.utils.BtUtils;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
 import java.util.Formatter;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.locks.Lock;
@@ -39,9 +41,6 @@ public class BtEngineMsgQue {
     private static final UUID SPP_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
     private static String TAG = "BtEngine";
     public static final Executor EXECUTOR = Executors.newSingleThreadExecutor();
-    private static final int FLAG_MSG = 0;  //消息标记
-    private static final int FLAG_FILE = 1; //文件标记
-
     private static BluetoothSocket mSocket;
     private static DataOutputStream mOut;
     private static BtStateListener mBtStateListener;
@@ -53,7 +52,7 @@ public class BtEngineMsgQue {
     public static final int TRANSFER_END_TIMEOUT = 15000;
     private static int DEFAULT_MSG_TIMEOUT = 10 * 1000;
     private static int MIN_MSG_TIMEOUT = 5 * 1000;
-    private static HashMap<String, Runnable> sendingMsgQueueMap = new HashMap<>();
+    private static Map<String, Runnable> sendingMsgQueueMap = new ConcurrentHashMap<>();
     private static LinkedHashMap<String, MsgBean> cachedMsgLinkedMap = new LinkedHashMap<>();
     private static Handler mHandler = new Handler(Looper.myLooper());
     private static Handler mUIHandler = new Handler(Looper.getMainLooper());
@@ -137,7 +136,9 @@ public class BtEngineMsgQue {
                     try {
                         mOut = new DataOutputStream(mSocket.getOutputStream());
                         InputStream inputStream = mSocket.getInputStream();
-                        sendSendingState(true);
+                        lock.lock();
+                        isRunning = true;
+                        lock.unlock();
 
                         byte[] result = new byte[0];
 
@@ -172,18 +173,21 @@ public class BtEngineMsgQue {
                                     return;
                                 }
 
-                                sendSendingState(false);
+                                setSendingState(false);
 
                                 parseMsg(result);
                                 // 清空
                                 result = new byte[0];
                             } catch (Exception e) {
                                 e.printStackTrace();
+                                setSendingState(false);
                                 notifyErrorOnUI("2-" + e.getMessage());
+
                             }
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
+                        setSendingState(false);
                         notifyUI(BtStateListener.ON_SOCKET_CLOSE, mDevice);
                     }
                 }
@@ -291,45 +295,61 @@ public class BtEngineMsgQue {
         sendHandleMessage(TYPE_MSG, bytes);
     }
 
-    public static void sendMsg(byte[] bytes) {
+    public void sendCommunicateMsg(byte[] bytes) {
+        try {
+            mOut.write(bytes);
+            mOut.flush();
+            logD("send communicate message：" + BtUtils.bytesToHexString(bytes));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
+    private synchronized static void sendMsg(byte[] bytes) {
         MsgBean msgBean = MsgBean.Companion.fromByteArrayToMsgBean(bytes);
+        String msgTimeCode = msgBean.getTimeOutCode();
 
-        if (isSending) {
-
-            sendSendingState(true);
-
-            try {
-                if (!msgBean.isNotTimeOut()) {
-                    String msgTimeCode = msgBean.getTimeOutCode();
-                    logD("send message timeout code：" + msgTimeCode);
-                    sendingMsgQueueMap.put(msgTimeCode, new Runnable() {
-                        @Override
-                        public void run() {
-                            notifyUI(BtStateListener.TIME_OUT, msgBean);
-                            mHandler.removeCallbacks(sendingMsgQueueMap.get(msgTimeCode));
-                            sendingMsgQueueMap.remove(msgTimeCode);
-                            if (cachedMsgLinkedMap.containsKey(msgTimeCode)) {
-                                cachedMsgLinkedMap.remove(msgTimeCode);
-                            }
-                        }
-                    });
-
-                    mHandler.postDelayed(sendingMsgQueueMap.get(msgTimeCode), DEFAULT_MSG_TIMEOUT);
-                }
-
-                mSocket.getOutputStream().write(bytes);
-                mSocket.getOutputStream().flush();
-                logD("send message：" + BtUtils.bytesToHexString(bytes));
-            } catch (Throwable e) {
-                e.printStackTrace();
-                notifyErrorOnUI("4-" + e.getMessage());
-            }
-
-        } else {
+        if (!sendingMsgQueueMap.isEmpty()) {
             cachedMsgLinkedMap.put(msgBean.getTimeOutCode(), msgBean);
+            return;
+        } else {
+            sendingMsgQueueMap.put(msgTimeCode, new Runnable() {
+                @Override
+                public void run() {
+                    notifyUI(BtStateListener.TIME_OUT, msgBean);
+                    removeMsgQue(msgTimeCode);
+                }
+            });
         }
 
+        try {
+            if (msgBean.isNeedTimeOut()) {
+                logD("send message timeout code：" + msgTimeCode);
+                mHandler.postDelayed(sendingMsgQueueMap.get(msgTimeCode), DEFAULT_MSG_TIMEOUT);
+            } else {
+                removeMsgQue(msgTimeCode);
+            }
+
+            mOut.write(bytes);
+            mOut.flush();
+            logD("send message：" + BtUtils.bytesToHexString(bytes));
+        } catch (Throwable e) {
+            e.printStackTrace();
+            notifyErrorOnUI("4-" + e.getMessage());
+        }
+    }
+
+    private static void removeMsgQue(String msgTimeCode) {
+
+        Runnable runnable = sendingMsgQueueMap.get(msgTimeCode);
+        if (runnable != null) {
+            mHandler.removeCallbacks(sendingMsgQueueMap.get(msgTimeCode));
+        }
+        sendingMsgQueueMap.remove(msgTimeCode);
+
+        if (cachedMsgLinkedMap.containsKey(msgTimeCode)) {
+            cachedMsgLinkedMap.remove(msgTimeCode);
+        }
     }
 
     private static Runnable busyRun = new Runnable() {
@@ -361,9 +381,9 @@ public class BtEngineMsgQue {
     public void closeSocket(String name, boolean isNotify) {
         try {
             mSocketStateMap.clear();
-
+            isRunning = false;
             deviceBusing = false;
-            sendSendingState(false);
+            setSendingState(false);
 
             if (mSocket != null && mSocket.isConnected()) {
                 mSocket.close();
@@ -442,26 +462,15 @@ public class BtEngineMsgQue {
         if (payloadLen == msg.length - BT_MSG_BASE_LEN) {
             MsgBean msgBean = MsgBean.Companion.fromByteArrayToMsgBean(msg);
 
-            if (!msgBean.isNotTimeOut()) {
+            if (msgBean.isNeedTimeOut()) {
                 String msgTimeCode = msgBean.getTimeOutCode();
                 logD("back message timeout code 1：" + msgTimeCode);
-                Runnable runnable = sendingMsgQueueMap.get(msgTimeCode);
-                logD("back message map size 1：" + sendingMsgQueueMap.size());
-
-                if (runnable != null) {
-                    mHandler.removeCallbacks(runnable);
-                    sendingMsgQueueMap.remove(msgTimeCode);
-                    logD("remove back message timeout code 1：" + msgTimeCode);
-                }
-
-                if (cachedMsgLinkedMap.containsKey(msgTimeCode)) {
-                    cachedMsgLinkedMap.remove(msgTimeCode);
-                }
+                removeMsgQue(msgTimeCode);
+                logD("back message sending map size 1：" + sendingMsgQueueMap.size());
+                sendCachedMsgBusiness();
             }
 
             notifyUI(BtStateListener.MSG, msgBean);
-
-            sendCachedMsgBusiness();
 
         } else {
             int tempPosition = 0;
@@ -482,42 +491,36 @@ public class BtEngineMsgQue {
 
                 MsgBean msgBean = MsgBean.Companion.fromByteArrayToMsgBean(singleMsg);
 
-                if (!msgBean.isNotTimeOut()) {
+                if (msgBean.isNeedTimeOut()) {
                     String msgTimeCode = msgBean.getTimeOutCode();
                     logD("back message timeout code 2：" + msgTimeCode);
-                    Runnable runnable = sendingMsgQueueMap.get(msgTimeCode);
-                    logD("back message map size 2：" + sendingMsgQueueMap.size());
+                    logD("back message sending size 2：" + sendingMsgQueueMap.size());
 
-                    if (runnable != null) {
-                        mHandler.removeCallbacks(runnable);
-                        sendingMsgQueueMap.remove(msgTimeCode);
-                        logD("remove back message timeout code 2：" + msgTimeCode);
-                    }
+                    removeMsgQue(msgTimeCode);
+                    sendCachedMsgBusiness();
                 }
 
                 notifyUI(BtStateListener.MSG, msgBean);
-
-//                logD("tempPosition：" + tempPosition);
             }
-
-            sendCachedMsgBusiness();
         }
+
     }
 
     private static void sendCachedMsgBusiness() {
         if (sendingMsgQueueMap.isEmpty()) {
-            sendSendingState(false);
+            setSendingState(false);
 
-            logD("cached msg queue size:" + cachedMsgLinkedMap.size());
+            logD("cached msg queue:" + cachedMsgLinkedMap);
 
             if (!cachedMsgLinkedMap.isEmpty()) {
                 Object[] msgKeySet = cachedMsgLinkedMap.keySet().toArray();
+                logD("send cached msg:" + cachedMsgLinkedMap.get(msgKeySet[0].toString()).originData);
                 sendMsg(cachedMsgLinkedMap.get(msgKeySet[0].toString()).originData);
             }
         }
     }
 
-    private static void sendSendingState(boolean sendingState) {
+    private static void setSendingState(boolean sendingState) {
         lock.lock();
         isSending = sendingState;
         lock.unlock();
@@ -550,6 +553,8 @@ public class BtEngineMsgQue {
             }
             sendingMsgQueueMap.clear();
         }
+
+        cachedMsgLinkedMap.clear();
     }
 
     private static void clearMessageQueue() {
@@ -559,6 +564,7 @@ public class BtEngineMsgQue {
             }
             sendingMsgQueueMap.clear();
         }
+        cachedMsgLinkedMap.clear();
     }
 
     /**

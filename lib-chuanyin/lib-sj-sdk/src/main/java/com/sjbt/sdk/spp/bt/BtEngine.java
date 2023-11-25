@@ -298,7 +298,7 @@ public class BtEngine {
         try {
             MsgBean msgBean = MsgBean.Companion.fromByteArrayToMsgBean(bytes);
 
-            if (!msgBean.isNotTimeOut()) {
+            if (!msgBean.isNeedTimeOut()) {
                 String msgTimeCode = msgBean.getTimeOutCode();
                 logD("send message timeout code：" + msgTimeCode);
                 msgQueueMap.put(msgTimeCode, new Runnable() {
@@ -510,7 +510,7 @@ public class BtEngine {
         if (payloadLen == msg.length - BT_MSG_BASE_LEN) {
             MsgBean msgBean = MsgBean.Companion.fromByteArrayToMsgBean(msg);
 
-            if (!msgBean.isNotTimeOut()) {
+            if (!msgBean.isNeedTimeOut()) {
                 String msgTimeCode = msgBean.getTimeOutCode();
                 logD("back message timeout code 1：" + msgTimeCode);
                 Runnable runnable = msgQueueMap.get(msgTimeCode);
@@ -542,7 +542,7 @@ public class BtEngine {
 
                 MsgBean msgBean = MsgBean.Companion.fromByteArrayToMsgBean(singleMsg);
 
-                if (!msgBean.isNotTimeOut()) {
+                if (!msgBean.isNeedTimeOut()) {
                     String msgTimeCode = msgBean.getTimeOutCode();
                     logD("back message timeout code 2：" + msgTimeCode);
                     Runnable runnable = msgQueueMap.get(msgTimeCode);

@@ -40,10 +40,11 @@ class MsgBean {
                 ", requestId=" + requestId +
                 ", nodeId=" + nodeId +
                 ", timeOutCode=" + timeOutCode +
+                ", isNeedTimeOut=" + isNeedTimeOut +
                 '}'
     }
 
-    var isNotTimeOut: Boolean = false
+    var isNeedTimeOut: Boolean = true
     var isNodeMsg: Boolean = head == HEAD_NODE_TYPE
 
     //节点消息的
@@ -51,14 +52,14 @@ class MsgBean {
 
     companion object {
 
-        private fun isNotTimeOut(head: Byte, divideType: Byte, cmdId: Int): Boolean {
-            return ((head == HEAD_COMMON && cmdId == CMD_ID_800D.toInt()) ||//云端绑定同步
+        private fun isNeedTimeOut(head: Byte, divideType: Byte, cmdId: Int): Boolean {
+            return !((head == HEAD_COMMON && cmdId == CMD_ID_800D.toInt()) ||//云端绑定同步
                     (head == HEAD_COMMON && cmdId == CMD_ID_800F.toInt()) ||//我的表盘列表
                     (head == HEAD_COMMON && cmdId == CMD_ID_802E.toInt()) ||//与设备绑定
                     (head == HEAD_FILE_SPP_A_2_D && cmdId == CMD_ID_8003.toInt()) ||//传输文件的过程中，采用连续传输的方式
                     (head == HEAD_CAMERA_PREVIEW && cmdId == CMD_ID_8002.toInt()) ||//相机预览
                     (head == HEAD_NODE_TYPE && cmdId == CMD_ID_8004.toInt()) || //通讯层节点消息
-                    (divideType != DIVIDE_Y_F_2 && divideType != DIVIDE_Y_F_JSON)) //中间包尾包没有超时设置
+                    (divideType == DIVIDE_Y_M_2 || divideType == DIVIDE_Y_M_JSON || divideType == DIVIDE_Y_E_2|| divideType == DIVIDE_Y_E_JSON)) //中间包尾包没有超时设置
 
         }
 
@@ -83,9 +84,6 @@ class MsgBean {
                 msgBean.cmdIdStr = BtUtils.bytesToHexString(cmdId)
                 msgBean.cmdId = BtUtils.byte2short(cmdId).toInt()
 
-//            Log.e("SJ_SDK>>>>>", "response:" + response + "  cmdIdStr:" + msgBean.cmdIdStr)
-
-                //            LogUtils.logBlueTooth("返回命令cmdId:" + msgBean.cmdId);
                 val divideArray = ByteArray(2)
                 divideArray[0] = byteBuffer[4]
                 divideArray[1] = byteBuffer[5]
@@ -96,7 +94,7 @@ class MsgBean {
                 msgBean.divideType = divideType
                 msgBean.payloadPackTotalLen = divideInfo.payloadPackTotalLen
 
-                msgBean.isNotTimeOut = isNotTimeOut(msgBean.head, divideType, msgBean.cmdId)
+                msgBean.isNeedTimeOut = isNeedTimeOut(msgBean.head, divideType, msgBean.cmdId)
 
                 val payLoadLength = msg.size - BT_MSG_BASE_LEN
 
@@ -131,9 +129,6 @@ class MsgBean {
                                     .order(ByteOrder.LITTLE_ENDIAN).int
 
                             msgBean.payloadPackage = PayloadPackage.fromByteArray(payload)
-
-//                            Log.d(TAG_SJ, "requestId:" + msgBean.requestId)
-//                            Log.d(TAG_SJ, "nodeId:" + msgBean.nodeId)
 
                             msgBean.timeOutCode =
                                 msgBean.requestId.toString() + msgBean.nodeId.toString()
@@ -172,9 +167,6 @@ class MsgBean {
                             msgBean.nodeId =
                                 ByteBuffer.wrap(msgBean.payload.copyOfRange(10, 14))
                                     .order(ByteOrder.LITTLE_ENDIAN).int
-
-//                            Log.d(TAG_SJ, "requestId:" + msgBean.requestId)
-//                            Log.d(TAG_SJ, "nodeId:" + msgBean.nodeId)
 
                             msgBean.timeOutCode = msgBean.requestId.toString()
                         }
