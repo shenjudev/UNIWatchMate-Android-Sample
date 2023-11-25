@@ -81,7 +81,7 @@ class SyncStepData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmStepDat
                     }
 
                     override fun onComplete() {
-                        sjUniWatch.wmLog.logE(TAG, "back msg:" + msgList.size)
+                        sjUniWatch.wmLog.logE(TAG, "step back msg:" + msgList.size)
 
                         if (msgList.size > 0) {
                             if (msgList.size == 1) {

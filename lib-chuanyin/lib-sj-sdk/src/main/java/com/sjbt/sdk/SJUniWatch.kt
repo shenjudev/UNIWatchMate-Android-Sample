@@ -48,6 +48,7 @@ import io.reactivex.rxjava3.core.*
 import io.reactivex.rxjava3.disposables.Disposable
 import io.reactivex.rxjava3.subjects.PublishSubject
 import java.nio.ByteBuffer
+import java.util.concurrent.ConcurrentHashMap
 
 abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(),
     BtStateListener {
@@ -130,25 +131,28 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(),
     var MTU: Int = 600
     private var mtuEmitter: SingleEmitter<Int>? = null
     private var node04Emitter: SingleEmitter<Int>? = null
-    private var subPkObservableEmitter: ObservableEmitter<MsgBean>? = null
-
     private val mPayloadMap = PayloadMap()
-    private var discoveryTag: String = ""
 
+    private var discoveryTag: String = ""
     val observableMtu: Single<Int> = Single.create { emitter ->
         mtuEmitter = emitter
         sendNormalMsg(CmdHelper.getMTUCmd)
     }
 
-    private var mReadSubPkMsg: ReadSubPkMsg? = null
+    private var readSubPkMsg: ReadSubPkMsg? = null
+    private var subPkObservableEmitter: ObservableEmitter<MsgBean>? = null
+
+    private val subPkEmitterMap = ConcurrentHashMap<Short, ObservableEmitter<MsgBean>>()
+    private val readSubPkMsgMap = ConcurrentHashMap<Short, ReadSubPkMsg>()
 
     fun sendReadSubPkObserveNode(
         readSubPkMsg: ReadSubPkMsg,
         payloadPackage: PayloadPackage
     ): Observable<MsgBean> {
         return Observable.create { emitter ->
-            mReadSubPkMsg = readSubPkMsg
-            subPkObservableEmitter = emitter
+            subPkEmitterMap.put(payloadPackage._id, emitter)
+            readSubPkMsgMap.put(payloadPackage._id, readSubPkMsg)
+
             sendReadNodeCmdList(payloadPackage)
         }
     }
@@ -689,18 +693,24 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(),
                                         )
 
                                         if (msgBean.divideType == DIVIDE_N_2) {//不分包消息
-                                            wmLog.logE(
-                                                TAG,
-                                                "one package msg Complete"
-                                            )
 
                                             var payloadPackage: PayloadPackage =
                                                 msgBean.payloadPackage!!
 
-                                            subPkObservableEmitter?.let {
+                                            wmLog.logE(
+                                                TAG,
+                                                "one package msg Complete packageSeq：" + payloadPackage.packageSeq
+                                            )
+
+                                            subPkEmitterMap[payloadPackage._id]?.let {
+
+                                                subPkObservableEmitter = it
 
                                                 if (!it.isDisposed) {
-                                                    mReadSubPkMsg?.setHasNext(payloadPackage.hasNext())
+
+                                                    readSubPkMsg =
+                                                        readSubPkMsgMap[payloadPackage._id]
+                                                    readSubPkMsg?.setHasNext(payloadPackage.hasNext())
                                                     it.onNext(msgBean)
 
                                                     if (!payloadPackage.hasNext()) {
@@ -717,25 +727,32 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(),
                                                 parseResponseNodePayload(msgBean, payloadPackage)
                                             }
 
-
                                         } else {//分包消息
 
                                             if (msgBean.divideType == DIVIDE_Y_F_2) {//多个业务分包
                                                 val payloadPackage =
                                                     PayloadPackage.fromByteArray(msgBean.payload)
 
+                                                subPkObservableEmitter =
+                                                    subPkEmitterMap[payloadPackage._id]
+
+                                                readSubPkMsg =
+                                                    readSubPkMsgMap[payloadPackage._id]
+
                                                 wmLog.logE(
-                                                    TAG, "hasNext:" + payloadPackage.hasNext()
+                                                    TAG, "sub package msg first hasNext:" + payloadPackage.hasNext()
                                                 )
 
-                                                mReadSubPkMsg?.setHasNext(payloadPackage.hasNext())
+                                                readSubPkMsg?.setHasNext(
+                                                    payloadPackage.hasNext()
+                                                )
                                             }
 
                                             subPkObservableEmitter?.onNext(msgBean)
 
                                             if (msgBean.divideType == DIVIDE_Y_E_2) {
 
-                                                mReadSubPkMsg?.let {
+                                                readSubPkMsg?.let {
 
                                                     wmLog.logE(
                                                         TAG,
@@ -1066,7 +1083,7 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(),
         mBtEngine.clearMsgQueue()
     }
 
-    private fun sendCommunicateMsg(){
+    private fun sendCommunicateMsg() {
         mBtEngine.sendCommunicateMsg(CmdHelper.communityMsg)
     }
 

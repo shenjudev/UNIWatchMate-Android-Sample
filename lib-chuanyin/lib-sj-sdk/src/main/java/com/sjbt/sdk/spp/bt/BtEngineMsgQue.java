@@ -2,6 +2,10 @@ package com.sjbt.sdk.spp.bt;
 
 import static com.sjbt.sdk.spp.cmd.CmdConfigKt.BT_MSG_BASE_LEN;
 import static com.sjbt.sdk.spp.cmd.CmdConfigKt.CMD_ID_8015;
+import static com.sjbt.sdk.spp.cmd.CmdConfigKt.DIVIDE_N_2;
+import static com.sjbt.sdk.spp.cmd.CmdConfigKt.DIVIDE_N_JSON;
+import static com.sjbt.sdk.spp.cmd.CmdConfigKt.DIVIDE_Y_E_2;
+import static com.sjbt.sdk.spp.cmd.CmdConfigKt.DIVIDE_Y_E_JSON;
 import static com.sjbt.sdk.spp.cmd.CmdConfigKt.HEAD_COMMON;
 import static com.sjbt.sdk.spp.cmd.CmdConfigKt.HEAD_DEVICE_ERROR;
 
@@ -318,6 +322,8 @@ public class BtEngineMsgQue {
                 public void run() {
                     notifyUI(BtStateListener.TIME_OUT, msgBean);
                     removeMsgQue(msgTimeCode);
+
+                    sendCachedMsgBusiness();
                 }
             });
         }
@@ -464,9 +470,12 @@ public class BtEngineMsgQue {
 
             if (msgBean.isNeedTimeOut()) {
                 String msgTimeCode = msgBean.getTimeOutCode();
-                logD("back message timeout code 1：" + msgTimeCode);
+                logD("back message timeout code 1：" + msgTimeCode + " divide type:" + msgBean.getDivideType());
                 removeMsgQue(msgTimeCode);
                 logD("back message sending map size 1：" + sendingMsgQueueMap.size());
+            }
+
+            if (msgBean.getDivideType() == DIVIDE_N_2 || msgBean.getDivideType() == DIVIDE_N_JSON || msgBean.getDivideType() == DIVIDE_Y_E_2 || msgBean.getDivideType() == DIVIDE_Y_E_JSON) {
                 sendCachedMsgBusiness();
             }
 
@@ -497,6 +506,9 @@ public class BtEngineMsgQue {
                     logD("back message sending size 2：" + sendingMsgQueueMap.size());
 
                     removeMsgQue(msgTimeCode);
+                }
+
+                if (msgBean.getDivideType() == DIVIDE_N_2 || msgBean.getDivideType() == DIVIDE_Y_E_2 || msgBean.getDivideType() == DIVIDE_Y_E_JSON) {
                     sendCachedMsgBusiness();
                 }
 
@@ -514,7 +526,7 @@ public class BtEngineMsgQue {
 
             if (!cachedMsgLinkedMap.isEmpty()) {
                 Object[] msgKeySet = cachedMsgLinkedMap.keySet().toArray();
-                logD("send cached msg:" + cachedMsgLinkedMap.get(msgKeySet[0].toString()).originData);
+                logD("send cached msg");
                 sendMsg(cachedMsgLinkedMap.get(msgKeySet[0].toString()).originData);
             }
         }
