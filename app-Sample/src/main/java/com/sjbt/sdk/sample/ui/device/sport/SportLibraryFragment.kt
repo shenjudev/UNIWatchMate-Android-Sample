@@ -190,11 +190,14 @@ class SportLibraryViewModel(
     private fun getWmportLibrarys(requestSports: MutableList<WmSport>?): MutableList<LocalSportLibrary.LocalSport> {
         val localSportLibrary = getSportLibrary()
         requestSports?.let {
-            for (wmSport in it) {
-                for (localSport in localSportLibrary.sports) {
+
+            for (localSport in localSportLibrary.sports) {
+                localSport.installed = false
+                for (wmSport in it) {
                     if (wmSport.id == localSport.id) {
                         localSport.buildIn = wmSport.buildIn
                         localSport.installed = true
+                        break
                     }
                 }
             }

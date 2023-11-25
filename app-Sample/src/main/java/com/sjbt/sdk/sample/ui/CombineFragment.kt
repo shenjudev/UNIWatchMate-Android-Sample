@@ -33,6 +33,7 @@ class CombineFragment : BaseFragment(R.layout.fragment_combine) {
             findNavController().navigate(CombineFragmentDirections.toEditUserInfo())
         }
 
+        viewBind.itemTest.visibility = View.GONE
         viewBind.itemTest.setOnClickListener {
             UNIWatchMate.getDeviceInfo().subscribe { it->
                 UNIWatchMate.wmLog.logE("测试消息", "基本信息：" + it)
