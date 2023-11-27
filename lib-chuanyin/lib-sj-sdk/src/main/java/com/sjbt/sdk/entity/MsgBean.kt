@@ -63,18 +63,18 @@ class MsgBean {
 
         }
 
-        fun fromByteArrayToMsgBean(msg: ByteArray): MsgBean {
+        fun fromByteArrayToMsgBean(msgBytes: ByteArray): MsgBean {
             val msgBean = MsgBean()
             try {
-                val byteBuffer = ByteBuffer.wrap(msg)
-                msgBean.originData = msg
+                val byteBuffer = ByteBuffer.wrap(msgBytes)
+                msgBean.originData = msgBytes
                 msgBean.head = byteBuffer.get()
                 msgBean.cmdOrder = byteBuffer.get().toUByte().toInt()
                 msgBean.isNodeMsg = msgBean.head == HEAD_NODE_TYPE
 
                 val cmdId = ByteArray(2)
 
-                System.arraycopy(msg, 2, cmdId, 0, cmdId.size)
+                System.arraycopy(msgBytes, 2, cmdId, 0, cmdId.size)
 
                 val temp = cmdId[0]
                 cmdId[0] = cmdId[1]
@@ -96,23 +96,23 @@ class MsgBean {
 
                 msgBean.isNeedTimeOut = isNeedTimeOut(msgBean.head, divideType, msgBean.cmdId)
 
-                val payLoadLength = msg.size - BT_MSG_BASE_LEN
+                val payLoadLength = msgBytes.size - BT_MSG_BASE_LEN
 
                 msgBean.payloadLen = payLoadLength
                 val offsetArray = ByteArray(4)
-                System.arraycopy(msg, 8, offsetArray, 0, offsetArray.size)
+                System.arraycopy(msgBytes, 8, offsetArray, 0, offsetArray.size)
                 msgBean.offset = ByteUtil.bytesToInt(offsetArray, ByteOrder.LITTLE_ENDIAN)
                 val crcArray = ByteArray(4)
-                System.arraycopy(msg, 12, crcArray, 0, crcArray.size)
+                System.arraycopy(msgBytes, 12, crcArray, 0, crcArray.size)
                 msgBean.crc = ByteUtil.bytesToInt(crcArray, ByteOrder.LITTLE_ENDIAN)
 
-                if (msgBean.divideType == DIVIDE_N_2 || msgBean.divideType == DIVIDE_N_JSON) {
+                if (msgBean.divideType == DIVIDE_N_2 || msgBean.divideType == DIVIDE_N_JSON) {//不分包
 
                     msgBean.timeOutCode = (msgBean.head + msgBean.cmdOrder).toString()
 
                     if (payLoadLength > 0) {
                         val payload = ByteArray(payLoadLength)
-                        System.arraycopy(msg, BT_MSG_BASE_LEN, payload, 0, payLoadLength)
+                        System.arraycopy(msgBytes, BT_MSG_BASE_LEN, payload, 0, payLoadLength)
                         msgBean.payload = payload
                         if (divideType == DIVIDE_N_JSON) {
                             val payloadJson = String(payload, StandardCharsets.UTF_8)
@@ -141,7 +141,7 @@ class MsgBean {
                     if (msgBean.head != HEAD_NODE_TYPE) {//如果不是节点数据，分包前四个是序号
                         val divideIndexArray = ByteArray(4)
                         System.arraycopy(
-                            msg,
+                            msgBytes,
                             BT_MSG_BASE_LEN,
                             divideIndexArray,
                             0,
@@ -150,15 +150,15 @@ class MsgBean {
                         msgBean.divideIndex = ByteUtil.bytesToInt(divideIndexArray)
 
                         val payload = ByteArray(payLoadLength - 4)
-                        System.arraycopy(msg, 20, payload, 0, payload.size)
+                        System.arraycopy(msgBytes, 20, payload, 0, payload.size)
                         msgBean.payload = payload
 
-                    } else {
+                    } else {//节点消息
                         val payload = ByteArray(payLoadLength)
-                        System.arraycopy(msg, BT_MSG_BASE_LEN, payload, 0, payload.size)
+                        System.arraycopy(msgBytes, BT_MSG_BASE_LEN, payload, 0, payload.size)
                         msgBean.payload = payload
 
-                        if ((msgBean.divideType == DIVIDE_Y_F_2 || msgBean.divideType == DIVIDE_N_2) && msgBean.payload.size > 10) {
+                        if ((msgBean.divideType == DIVIDE_Y_F_2 || msgBean.divideType == DIVIDE_Y_F_JSON) && msgBean.payload.size > 10) {//节点消息只有首包
                             msgBean.payloadPackage = PayloadPackage.fromByteArray(payload)
 
                             msgBean.requestId = ByteBuffer.wrap(msgBean.payload)
@@ -168,7 +168,7 @@ class MsgBean {
                                 ByteBuffer.wrap(msgBean.payload.copyOfRange(10, 14))
                                     .order(ByteOrder.LITTLE_ENDIAN).int
 
-                            msgBean.timeOutCode = msgBean.requestId.toString()
+                            msgBean.timeOutCode = msgBean.requestId.toString() + msgBean.nodeId.toString()
                         }
                     }
                 }
