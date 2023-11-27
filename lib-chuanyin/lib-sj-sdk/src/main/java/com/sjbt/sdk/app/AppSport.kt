@@ -19,17 +19,49 @@ import java.nio.ByteOrder
  * 应用 - 运动 列表获取和更新
  */
 class AppSport(val sjUniWatch: SJUniWatch) : AbAppSport() {
-    private var getSportListEmitter: SingleEmitter<List<WmSport>>? = null
+    private var getFixedSportListEmitter: SingleEmitter<List<WmSport>>? = null
+    private var getDynamicSportListEmitter: SingleEmitter<List<WmSport>>? = null
     private var getSupportSportListEmitter: SingleEmitter<List<WmSport>>? = null
     private var updateSportListEmitter: SingleEmitter<Boolean>? = null
-    private val mSportList = mutableListOf<WmSport>()
+    private val mFixedSportList = mutableListOf<WmSport>()
+    private val mDynamicSportList = mutableListOf<WmSport>()
     private val mSupportSportList = mutableListOf<WmSport>()
     private val TAG = "AppSport"
 
-    override val getSportList: Single<List<WmSport>> = Single.create {
-        mSportList.clear()
-        getSportListEmitter = it
-        sjUniWatch.sendReadNodeCmdList(getReadSportListPayloadPackage())
+    override val getFixedSportList: Single<List<WmSport>> = Single.create {
+        mFixedSportList.clear()
+        getFixedSportListEmitter = it
+        sjUniWatch.sendReadNodeCmdList(getReadSportListPayloadPackage(URN_APP_FIXED_SPORT_LIST))
+    }
+
+    override fun updateFixedSportList(list: List<WmSport>): Single<Boolean> {
+
+        return Single.create {
+            updateSportListEmitter = it
+            sjUniWatch.sendWriteNodeCmdList(
+                getWriteSportListPayloadPackage(
+                    URN_APP_FIXED_SPORT_LIST,
+                    list
+                )
+            )
+        }
+    }
+
+    override fun updateDynamicSportList(list: List<WmSport>): Single<Boolean> {
+        return Single.create {
+            updateSportListEmitter = it
+            sjUniWatch.sendWriteNodeCmdList(
+                getWriteSportListPayloadPackage(
+                    URN_APP_DYNAMIC_SPORT_LIST, list
+                )
+            )
+        }
+    }
+
+    override val getDynamicSportList: Single<List<WmSport>> = Single.create {
+        mDynamicSportList.clear()
+        getDynamicSportListEmitter = it
+        sjUniWatch.sendReadNodeCmdList(getReadSportListPayloadPackage(URN_APP_DYNAMIC_SPORT_LIST))
     }
 
     override val getSupportSportList: Single<List<WmSport>> = Single.create {
@@ -56,13 +88,13 @@ class AppSport(val sjUniWatch: SJUniWatch) : AbAppSport() {
     /**
      * 获取体育列表命令
      */
-    private fun getReadSportListPayloadPackage(): PayloadPackage {
+    private fun getReadSportListPayloadPackage(urn: Byte): PayloadPackage {
         val payloadPackage = PayloadPackage()
         payloadPackage.putData(
             CmdHelper.getUrnId(
                 URN_APP_SETTING,
                 URN_APP_SPORT,
-                URN_APP_SPORT_LIST
+                urn
             ), ByteArray(0)
         )
         return payloadPackage
@@ -71,7 +103,10 @@ class AppSport(val sjUniWatch: SJUniWatch) : AbAppSport() {
     /**
      * 更新体育列表命令
      */
-    private fun getWriteUpdateSportListPayloadPackage(sportList: List<WmSport>): PayloadPackage {
+    private fun getWriteSportListPayloadPackage(
+        urn: Byte,
+        sportList: List<WmSport>
+    ): PayloadPackage {
         val payloadPackage = PayloadPackage()
         val byteBuffer = ByteBuffer.allocate(sportList.size * 2).order(ByteOrder.LITTLE_ENDIAN)
 
@@ -84,24 +119,17 @@ class AppSport(val sjUniWatch: SJUniWatch) : AbAppSport() {
             CmdHelper.getUrnId(
                 URN_APP_SETTING,
                 URN_APP_SPORT,
-                URN_APP_SPORT_LIST
+                urn
             ), byteBuffer.array()
         )
 
         return payloadPackage
     }
 
-    override fun updateSportList(list: List<WmSport>): Single<Boolean> {
-        return Single.create {
-            updateSportListEmitter = it
-            sjUniWatch.sendWriteNodeCmdList(getWriteUpdateSportListPayloadPackage(list))
-        }
-    }
-
     fun onTimeOut(msgBean: MsgBean, nodeData: NodeData) {
         sjUniWatch.wmLog.logE(DevFinal.STR.TAG, "onTimeOut:$msgBean")
         when (nodeData.urn[2]) {
-            URN_APP_SPORT_LIST -> getSportListEmitter?.onError(WmTimeOutException("$TAG get sport list time out"))
+            URN_APP_FIXED_SPORT_LIST -> getFixedSportListEmitter?.onError(WmTimeOutException("$TAG get sport list time out"))
             URN_APP_SUPPORT_SPORT_LIST -> getSupportSportListEmitter?.onError(WmTimeOutException("$TAG get support sport list time out"))
         }
     }
@@ -109,7 +137,7 @@ class AppSport(val sjUniWatch: SJUniWatch) : AbAppSport() {
     fun appSportBusiness(nodeData: NodeData) {
 
         when (nodeData.urn[2]) {
-            URN_APP_SPORT_LIST -> {
+            URN_APP_FIXED_SPORT_LIST -> {
 
                 if (nodeData.data.size == 1) {
                     updateSportListEmitter?.onSuccess(nodeData.data[0].toInt() == ErrorCode.ERR_CODE_OK.ordinal)
@@ -122,12 +150,16 @@ class AppSport(val sjUniWatch: SJUniWatch) : AbAppSport() {
                         val wmSport = WmSport(sportId, 0, false)
                         sjUniWatch.wmLog.logD(TAG, "sport id:$sportId");
                         if (sportId != 0) {
-                            mSportList.add(wmSport)
+                            mFixedSportList.add(wmSport)
                         }
                     }
 
-                    getSportListEmitter?.onSuccess(mSportList)
+                    getFixedSportListEmitter?.onSuccess(mFixedSportList)
                 }
+            }
+
+            URN_APP_DYNAMIC_SPORT_LIST -> {
+
             }
 
             URN_APP_SUPPORT_SPORT_LIST -> {
@@ -151,6 +183,5 @@ class AppSport(val sjUniWatch: SJUniWatch) : AbAppSport() {
             }
         }
     }
-
 
 }

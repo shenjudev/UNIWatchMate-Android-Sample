@@ -9,18 +9,29 @@ import io.reactivex.rxjava3.core.Single
 abstract class AbAppSport {
 
     /**
-     * syncSportList 同步运动列表
+     * getFixedSportList 获取固定运动列表
      */
-    abstract val getSportList: Single<List<WmSport>>
+    abstract val getFixedSportList: Single<List<WmSport>>
+
 
     /**
-     * 获取支持的运动列表
+     * getDynamicSportList 获取动态运动列表
+     */
+    abstract val getDynamicSportList: Single<List<WmSport>>
+
+    /**
+     * getSupportSportList 获取支持的运动列表
      */
     abstract val getSupportSportList: Single<List<WmSport>>
 
     /**
-     * sortFixedSportList 运动列表排序
+     * updateDynamicSportList 更新动态运动列表
      */
-    abstract fun updateSportList(list: List<WmSport>): Single<Boolean>
+    abstract fun updateDynamicSportList(list: List<WmSport>): Single<Boolean>
+
+    /**
+     * updateFixedSportList 更新固定运动列表
+     */
+    abstract fun updateFixedSportList(list: List<WmSport>): Single<Boolean>
 
 }
