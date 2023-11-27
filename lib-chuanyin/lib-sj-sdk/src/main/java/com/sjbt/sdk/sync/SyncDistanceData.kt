@@ -57,7 +57,7 @@ class SyncDistanceData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmDis
             sjUniWatch.sendReadSubPkObserveNode(
                 this,
                 CmdHelper.getReadSportSyncData(
-                    startTime, lastSyncTime,
+                    startTime, 0,
                     childUrn = URN_SPORT_DISTANCE
                 )
             ).subscribe(object :

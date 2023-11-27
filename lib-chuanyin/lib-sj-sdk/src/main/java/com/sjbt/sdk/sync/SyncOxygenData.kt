@@ -54,7 +54,7 @@ class SyncOxygenData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmOxyge
             sjUniWatch.sendReadSubPkObserveNode(
                 this,
                 CmdHelper.getReadSportSyncData(
-                    startTime, lastSyncTime,
+                    startTime, 0,
                     childUrn = URN_SPORT_OXYGEN
                 )
             ).subscribe(object :

@@ -189,8 +189,6 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(),
 
                 if (device == mCurrDevice) {
                     btStateChange(WmConnectState.DISCONNECTED)
-                    btDisconnectSet()
-
                     //                        removeCallBackRunner(mConnectTimeoutRunner)
                 }
             }
@@ -214,8 +212,6 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(),
             override fun onClassicBtDisabled() {
                 wmLog.logD(TAG, "onClassicBtDisabled")
                 btStateChange(WmConnectState.DISCONNECTED)
-                btDisconnectSet()
-
 //                removeCallBackRunner(mConnectTimeoutRunner)
             }
 
@@ -1628,20 +1624,19 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(),
 
             if (wmDevice.isRecognized) {
                 try {
-                    observeConnectState?.onNext(WmConnectState.CONNECTING)
+                    btStateChange(WmConnectState.CONNECTING)
                     mCurrDevice = mBtAdapter.getRemoteDevice(address)
                     mCurrDevice?.let {
                         mDeviceName = it.name
                         wmDevice.name = it.name
                         mBtEngine.connect(it)
                     }
-
                 } catch (e: Exception) {
                     e.printStackTrace()
-                    observeConnectState?.onNext(WmConnectState.DISCONNECTED)
+                    btStateChange(WmConnectState.DISCONNECTED)
                 }
             } else {
-                observeConnectState?.onNext(WmConnectState.DISCONNECTED)
+                observeConnectState.onNext(WmConnectState.DISCONNECTED)
             }
 
             wmLog.logD(TAG, " connect:${wmDevice}")
@@ -1675,10 +1670,10 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(),
                     if (wmDevice.isRecognized) {
 
                         wmLog.logE(TAG, "sdk pre connect:${wmDevice}")
-                        observeConnectState?.onNext(WmConnectState.CONNECTING)
+                        btStateChange(WmConnectState.CONNECTING)
                         mBtEngine.connect(bluetoothDevice)
                     } else {
-                        observeConnectState?.onError(WmDisconnectedException(bluetoothDevice.address))
+                        btStateChange(WmConnectState.DISCONNECTED)
                     }
                 }
 
@@ -1702,8 +1697,12 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(),
 
     fun btStateChange(state: WmConnectState) {
         wmTransferFile.mTransferring = false
-        observeConnectState?.onNext(state)
+        observeConnectState.onNext(state)
         mConnectState = state
+
+        if(state == WmConnectState.DISCONNECTED){
+            btDisconnectSet()
+        }
     }
 
     override fun disconnect() {
@@ -1747,6 +1746,7 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(),
 
     private val mObservableConnectState: PublishSubject<WmConnectState> =
         PublishSubject.create()
+
     override val observeConnectState: PublishSubject<WmConnectState> = mObservableConnectState
 
     override fun getConnectState(): WmConnectState {
