@@ -35,7 +35,12 @@ class CombineFragment : BaseFragment(R.layout.fragment_combine) {
             findNavController().navigate(CombineFragmentDirections.toEditUserInfo())
         }
 
-        viewBind.itemTest.visibility = View.VISIBLE
+        viewBind.itemTest.visibility = if (BuildConfig.DEBUG) {
+            View.VISIBLE
+        } else {
+            View.GONE
+        }
+
         viewBind.itemTest.setOnClickListener {
 
             UNIWatchMate.getDeviceInfo().subscribe { it ->
@@ -51,11 +56,11 @@ class CombineFragment : BaseFragment(R.layout.fragment_combine) {
 
                 )
 
-            UNIWatchMate.wmSettings.settingUnitInfo.set(wmUnitInfo).subscribe { it->
+            UNIWatchMate.wmSettings.settingUnitInfo.set(wmUnitInfo).subscribe { it ->
                 UNIWatchMate.wmLog.logE("测试消息6", "单位设置成功:" + it)
             }
 
-            UNIWatchMate.wmSettings.settingAppView.get().subscribe { it->
+            UNIWatchMate.wmSettings.settingAppView.get().subscribe { it ->
                 UNIWatchMate.wmLog.logE("测试消息7", "应用视图获取成功:" + it)
             }
 
