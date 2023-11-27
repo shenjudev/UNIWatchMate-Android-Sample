@@ -62,8 +62,8 @@ class SettingUnitInfo(val sjUniWatch: SJUniWatch) : AbWmSetting<WmUnitInfo>() {
                         ByteBuffer.wrap(it.data)
 
                     val timeUnit = byteBuffer.get()
-                    val distanceUnit = byteBuffer.get()
                     val temperatureUnit = byteBuffer.get()
+                    val distanceUnit = byteBuffer.get()
                     val weightUnit = byteBuffer.get()
 
                     wmUnitInfo = WmUnitInfo(
@@ -110,8 +110,8 @@ class SettingUnitInfo(val sjUniWatch: SJUniWatch) : AbWmSetting<WmUnitInfo>() {
         val payloadPackage = PayloadPackage()
         val bbSport: ByteBuffer = ByteBuffer.allocate(4).order(ByteOrder.LITTLE_ENDIAN)
         bbSport.put(wmUnitInfo.timeFormat.ordinal.toByte())
-        bbSport.put(wmUnitInfo.distanceUnit.ordinal.toByte())
         bbSport.put(wmUnitInfo.temperatureUnit.ordinal.toByte())
+        bbSport.put(wmUnitInfo.distanceUnit.ordinal.toByte())
         bbSport.put(wmUnitInfo.weightUnit.ordinal.toByte())
 
         payloadPackage.putData(CmdHelper.getUrnId(URN_2, URN_3), bbSport.array())
