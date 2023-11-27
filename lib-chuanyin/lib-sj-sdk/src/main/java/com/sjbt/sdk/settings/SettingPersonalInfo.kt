@@ -40,6 +40,7 @@ class SettingPersonalInfo(val sjUniWatch: SJUniWatch) : AbWmSetting<WmPersonalIn
     }
 
     fun onTimeOut(msgBean: MsgBean, nodeData: NodeData) {
+
     }
 
     fun personalInfoBusiness(it: NodeData) {

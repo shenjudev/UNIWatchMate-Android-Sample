@@ -44,7 +44,7 @@ class SyncCaloriesData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmCal
     }
 
     fun onTimeOut(msg: MsgBean, nodeData: NodeData) {
-//        caloriesObserveEmitter?.onError(WmTimeOutException())
+        caloriesObserveEmitter?.onError(WmTimeOutException("$TAG time out exception"))
         sjUniWatch.wmLog.logE(TAG, "onTimeOut:$msg")
     }
 

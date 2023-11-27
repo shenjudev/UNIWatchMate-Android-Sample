@@ -46,7 +46,7 @@ class SyncSleepData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmSleepD
     }
 
     fun onTimeOut(msg: MsgBean, nodeData: NodeData) {
-//        activityObserveEmitter?.onError(WmTimeOutException())
+        activityObserveEmitter?.onError(WmTimeOutException("$TAG time out exception"))
         sjUniWatch.wmLog.logE(TAG, "onTimeOut:$msg")
     }
 

@@ -45,6 +45,7 @@ class SettingDrinkWaterReminder(val sjUniWatch: SJUniWatch) : AbWmSetting<WmSede
     }
 
     fun onTimeOut(msgBean: MsgBean, nodeData: NodeData) {
+
     }
 
     fun drinkWaterBusiness(it: NodeData) {

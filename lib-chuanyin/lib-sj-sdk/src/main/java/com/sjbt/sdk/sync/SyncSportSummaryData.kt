@@ -1,6 +1,7 @@
 package com.sjbt.sdk.sync
 
 import com.base.sdk.entity.data.*
+import com.base.sdk.exception.WmTimeOutException
 import com.base.sdk.port.sync.AbSyncData
 import com.sjbt.sdk.ReadSubPkMsg
 import com.sjbt.sdk.SJUniWatch
@@ -50,7 +51,7 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
     }
 
     fun onTimeOut(msg: MsgBean, nodeData: NodeData) {
-//        syncSportSummaryObserveEmitter?.onError(WmTimeOutException())
+        syncSportSummaryObserveEmitter?.onError(WmTimeOutException("$TAG time out exception"))
         sjUniWatch.wmLog.logE(TAG, "onTimeOut:$msg")
     }
 

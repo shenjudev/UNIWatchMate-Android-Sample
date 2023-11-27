@@ -50,7 +50,7 @@ class SyncStepData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmStepDat
     }
 
     fun onTimeOut(msg: MsgBean, nodeData: NodeData) {
-//        stepObserveEmitter?.onError(WmTimeOutException())
+        stepObserveEmitter?.onError(WmTimeOutException("$TAG time out exception"))
         sjUniWatch.wmLog.logE(TAG, "onTimeOut:$msg")
     }
 

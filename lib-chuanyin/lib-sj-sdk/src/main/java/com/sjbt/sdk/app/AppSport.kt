@@ -101,8 +101,8 @@ class AppSport(val sjUniWatch: SJUniWatch) : AbAppSport() {
     fun onTimeOut(msgBean: MsgBean, nodeData: NodeData) {
         sjUniWatch.wmLog.logE(DevFinal.STR.TAG, "onTimeOut:$msgBean")
         when (nodeData.urn[2]) {
-            URN_APP_SPORT_LIST -> getSportListEmitter?.onError(WmTimeOutException())
-            URN_APP_SUPPORT_SPORT_LIST -> getSupportSportListEmitter?.onError(WmTimeOutException())
+            URN_APP_SPORT_LIST -> getSportListEmitter?.onError(WmTimeOutException("$TAG get sport list time out"))
+            URN_APP_SUPPORT_SPORT_LIST -> getSupportSportListEmitter?.onError(WmTimeOutException("$TAG get support sport list time out"))
         }
     }
 

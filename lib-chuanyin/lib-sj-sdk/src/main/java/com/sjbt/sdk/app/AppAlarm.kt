@@ -56,7 +56,7 @@ class AppAlarm(val sjUniWatch: SJUniWatch) : AbAppAlarm() {
         sjUniWatch.wmLog.logE(TAG, "onTimeOut:$msgBean")
         when (nodeData.urn[2]) {
             URN_APP_ALARM_LIST -> {
-                updateAlarmEmitter?.onError(WmTimeOutException())
+                updateAlarmEmitter?.onError(WmTimeOutException("$TAG URN_APP_ALARM_LIST TIMEOUT"))
             }
         }
     }

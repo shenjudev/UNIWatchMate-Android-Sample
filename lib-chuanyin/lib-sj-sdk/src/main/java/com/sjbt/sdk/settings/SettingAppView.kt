@@ -1,6 +1,7 @@
 package com.sjbt.sdk.settings
 
 import com.base.sdk.entity.settings.WmAppView
+import com.base.sdk.exception.WmTimeOutException
 import com.base.sdk.port.setting.AbWmSetting
 import com.sjbt.sdk.SJUniWatch
 import com.sjbt.sdk.exception.SJException
@@ -39,11 +40,11 @@ class SettingAppView(val sjUniWatch: SJUniWatch) : AbWmSetting<WmAppView>() {
     }
 
     fun appViewsSetTimeOut() {
-        setEmitter?.onError(SJException("set app view time out"))
+        setEmitter?.onError(WmTimeOutException("set app view time out"))
     }
 
     fun appViewsBackTimeOut() {
-        getEmitter?.onError(SJException("get app views time out"))
+        getEmitter?.onError(WmTimeOutException("get app views time out"))
     }
 
     fun setAppViewResult(isSuccess: Boolean) {

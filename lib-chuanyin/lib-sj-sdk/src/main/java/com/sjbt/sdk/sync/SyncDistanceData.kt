@@ -46,7 +46,7 @@ class SyncDistanceData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmDis
     }
 
     fun onTimeOut(msg: MsgBean, nodeData: NodeData) {
-//        activityObserveEmitter?.onError(WmTimeOutException())
+        activityObserveEmitter?.onError(WmTimeOutException("$TAG time out exception"))
         sjUniWatch.wmLog.logE(TAG, "onTimeOut:$msg")
     }
 

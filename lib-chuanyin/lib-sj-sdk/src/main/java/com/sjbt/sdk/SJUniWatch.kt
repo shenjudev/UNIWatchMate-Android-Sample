@@ -15,7 +15,6 @@ import com.base.sdk.entity.common.WmDiscoverDevice
 import com.base.sdk.entity.common.WmTimeUnit
 import com.base.sdk.entity.data.WmBatteryInfo
 import com.base.sdk.entity.settings.*
-import com.base.sdk.exception.WmDisconnectedException
 import com.base.sdk.exception.WmTransferError
 import com.google.gson.Gson
 import com.polidea.rxandroidble3.LogConstants
@@ -34,8 +33,8 @@ import com.sjbt.sdk.log.SJLog
 import com.sjbt.sdk.settings.*
 import com.sjbt.sdk.spp.BtStateReceiver
 import com.sjbt.sdk.spp.OnBtStateListener
-import com.sjbt.sdk.spp.bt.BtEngine.*
 import com.sjbt.sdk.spp.bt.BtEngineMsgQue
+import com.sjbt.sdk.spp.bt.BtEngineMsgQue.SOCKET_STATE_NONE
 import com.sjbt.sdk.spp.bt.BtStateListener
 import com.sjbt.sdk.spp.bt.BtStateListener.*
 import com.sjbt.sdk.spp.cmd.*
@@ -268,6 +267,7 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(),
         mBtEngine.clearMsgQueue()
         mBtEngine.clearStateMap()
         appCamera.stopCameraPreview()
+
         disconnect()
     }
 
@@ -695,7 +695,7 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(),
 
                                             wmLog.logE(
                                                 TAG,
-                                                "one package msg Complete packageSeq：" + payloadPackage.packageSeq
+                                                "one package msg Complete packageSeq：" + payloadPackage._id
                                             )
 
                                             subPkEmitterMap[payloadPackage._id]?.let {

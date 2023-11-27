@@ -43,7 +43,7 @@ class SyncOxygenData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmOxyge
     }
 
     fun onTimeOut(msg: MsgBean, nodeData: NodeData) {
-//        oxygenObserveEmitter?.onError(WmTimeOutException())
+        oxygenObserveEmitter?.onError(WmTimeOutException("$TAG time out exception"))
         sjUniWatch.wmLog.logE(TAG, "onTimeOut:$msg")
     }
 
