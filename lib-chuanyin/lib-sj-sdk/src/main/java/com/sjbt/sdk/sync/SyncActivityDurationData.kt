@@ -191,7 +191,7 @@ class SyncActivityDurationData(val sjUniWatch: SJUniWatch) :
             WmSyncData(
                 WmSyncDataType.ACTIVITY_DURATION,
                 realTimeStamp,
-                WmIntervalType.FIVE_MINUTES,
+                WmIntervalType.ONE_HOUR,
                 activityDurationDataList
             )
 
