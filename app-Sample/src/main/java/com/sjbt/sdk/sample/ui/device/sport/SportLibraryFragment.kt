@@ -42,7 +42,7 @@ class SportLibraryFragment : BaseFragment(R.layout.fragment_sport_library) {
     private val sportLibraryViewModel: SportLibraryViewModel by viewModels()
     private val sportInstalledViewModel: SportInstalledViewModel by viewModels()
     private var wmSports: MutableList<LocalSportLibrary.LocalSport>? = mutableListOf()
-    private var wmIntalledSports: MutableList<WmSport>? = mutableListOf()
+    private var wmIntalledSports: MutableList<WmSport> = mutableListOf()
     private lateinit var adapter: SportlLibraryAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -94,8 +94,17 @@ class SportLibraryFragment : BaseFragment(R.layout.fragment_sport_library) {
                         }
 
                         is Success -> {
-                            wmIntalledSports = state.requestSports()
-                            sportLibraryViewModel.requestLibrarySports(state.requestSports())
+                            val sportsMap=  state.requestSports()
+                            sportsMap?.let {
+                                wmIntalledSports.clear()
+                                sportsMap[0]?.let {
+                                    wmIntalledSports.addAll(it)
+                                }
+                                sportsMap[1]?.let {
+                                    wmIntalledSports.addAll(it)
+                                }
+                            }
+                            sportLibraryViewModel.requestLibrarySports(wmIntalledSports)
 
                         }
 

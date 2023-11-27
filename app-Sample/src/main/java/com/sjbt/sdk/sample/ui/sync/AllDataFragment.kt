@@ -46,16 +46,17 @@ class AllDataFragment : DataListFragment<WmSyncData<*>>() {
        }
     }
     override fun queryData(date: Date): List<WmSyncData<*>>? {
+        Timber.i("queryData runBlocking")
         return runBlocking {
             val calendar = Calendar.getInstance()
             val start: Date = DateTimeUtils.getDayStartTime(calendar, date)
             val end: Date = DateTimeUtils.getDayEndTime(calendar, date)
-            UNIWatchMate.wmSync.syncAllData.syncData(start.time).collect {
+            UNIWatchMate.wmSync.syncAllData.syncData(0).collect {
                dataList.add(it)
             }
-//            Timber.i("queryData result=${result}")
+            Timber.i("queryData result=${dataList}")
 //            result.value
-         dataList
+            dataList
         }
     }
 

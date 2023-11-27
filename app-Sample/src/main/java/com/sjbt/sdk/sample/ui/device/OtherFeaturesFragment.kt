@@ -11,6 +11,8 @@ import android.view.View
 import com.base.api.UNIWatchMate
 import com.base.sdk.entity.apps.WmConnectState
 import com.base.sdk.entity.apps.WmFind
+import com.base.sdk.exception.WmTransferError
+import com.base.sdk.exception.WmTransferException
 import com.base.sdk.port.FileType
 import com.base.sdk.port.State
 import com.base.sdk.port.WmTransferState
@@ -190,7 +192,7 @@ class OtherFeaturesFragment : BaseFragment(R.layout.fragment_other_features) {
                         UNIWatchMate.wmTransferFile.startTransfer(FileType.OTA, fileList).asFlow()
                             .catch {
                                 hideInfoDialog()
-                                showToast(it.message, true)
+                                dealThrowable(it)
                             }
                             .collect {
                                 otaFileResult(it)
@@ -200,7 +202,7 @@ class OtherFeaturesFragment : BaseFragment(R.layout.fragment_other_features) {
                             .asFlow()
                             .catch {
                                 hideInfoDialog()
-                                showToast(it.message, true)
+                                dealThrowable(it)
                             }
                             .collect {
                                 otaFileResult(it)
@@ -210,6 +212,15 @@ class OtherFeaturesFragment : BaseFragment(R.layout.fragment_other_features) {
                 }
             }
         }
+    }
+
+    private fun dealThrowable(it: Throwable) {
+        if (it is WmTransferException) {
+            showToast(it.error.name, true)
+        }else{
+            showToast(it.message, true)
+        }
+
     }
 
     private fun otaFileResult(it: WmTransferState) {

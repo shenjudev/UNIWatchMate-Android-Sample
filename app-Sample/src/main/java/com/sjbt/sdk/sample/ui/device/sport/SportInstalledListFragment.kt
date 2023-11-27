@@ -98,27 +98,22 @@ class SportInstalledListFragment : BaseFragment(R.layout.fragment_sport_installe
                         }
 
                         is Success -> {
-                            val alarms = state.requestSports()
-                            if (alarms == null || alarms.isEmpty()) {
+                            val sportsMap = state.requestSports()
+                            if (sportsMap == null || sportsMap.size()==0) {
                                 viewBind.loadingView.showError(R.string.ds_no_data)
                             } else {
-                                if (alarms!!.size > 8) {
-                                    installDatas.clear()
-                                    installDatas.addAll(alarms.subList(8, alarms!!.size))
-                                    adapter.sources =installDatas
-                                    adapter.notifyDataSetChanged()
+                                installDatas.clear()
+                                installDatas.addAll(sportsMap[0])
+                                adapter.sources = installDatas
+                                adapter.notifyDataSetChanged()
+                                if (sportsMap.size() > 1) {
                                     buildInDatas.clear()
-                                    buildInDatas.addAll(alarms.subList(0, 8))
-                                    dragAdapter.notifyDataSetChanged()
-                                } else {
-                                    buildInDatas.clear()
-                                    buildInDatas.addAll(alarms)
+                                    buildInDatas.addAll(sportsMap[1])
                                     dragAdapter.notifyDataSetChanged()
                                 }
                                 viewBind.loadingView.visibility = View.GONE
                             }
                         }
-
                         else -> {}
                     }
                 }
