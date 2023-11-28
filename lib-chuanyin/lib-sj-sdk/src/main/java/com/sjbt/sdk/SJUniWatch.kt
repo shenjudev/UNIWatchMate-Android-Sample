@@ -156,10 +156,13 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(),
         }
     }
 
+    /**
+     * App给设备分包传输的时候要监听04回复
+     */
     fun sendAndObserveNode04(msg: ByteArray): Single<Int> {
         return Single.create { emitter ->
             node04Emitter = emitter
-            sendThreadTimeOutMsg(msg)
+            sendNoTimeOutMsg(msg)
         }
     }
 
@@ -665,7 +668,7 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(),
                             when (msgBean.cmdId.toShort()) {
                                 CMD_ID_8001 -> {//请求
                                     if (msgBean.payload.size > 10) {//设备请求的消息
-                                        sendCommunicateMsg()
+                                        sendNoTimeOutMsg(CmdHelper.communityMsg)
 
                                         var payloadPackage: PayloadPackage =
                                             PayloadPackage.fromByteArray(msgBean.payload)
@@ -680,7 +683,7 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(),
                                 }
 
                                 CMD_ID_8002 -> {//响应
-                                    sendCommunicateMsg()
+                                    sendNoTimeOutMsg(CmdHelper.communityMsg)
 
                                     if (msgBean.payloadLen >= 10 || msgBean.divideType != DIVIDE_N_2) {//设备应用层回复 包含带应用层payload的数据和分包数据的处理逻辑
                                         wmLog.logD(
@@ -1035,7 +1038,7 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(),
                 wmTransferFile.mTransferring = false
                 when (msgBean.cmdId.toShort()) {
                     CMD_ID_8001 -> {
-//                        if (cameraPreviewEmitter != null) {
+//                    if (cameraPreviewEmitter != null) {
 //                        cameraPreviewEmitter.onError(RuntimeException("camera preview timeout"))
 //                    }
                     }
@@ -1078,10 +1081,6 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(),
 
     fun clearMsg() {
         mBtEngine.clearMsgQueue()
-    }
-
-    private fun sendCommunicateMsg() {
-        mBtEngine.sendCommunicateMsg(CmdHelper.communityMsg)
     }
 
     fun sendNoTimeOutMsg(bytes: ByteArray) {
@@ -1714,7 +1713,6 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(),
         mBtEngine.closeSocket("app", true)
     }
 
-
     override fun reset(): Completable {
         return Completable.create { emitter ->
             unbindEmitter = emitter
@@ -1722,7 +1720,7 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(),
             if (mConnectState == WmConnectState.VERIFIED) {
                 sendThreadTimeOutMsg(CmdHelper.getUnBindCmd())
             } else {
-                emitter.onError(RuntimeException("not VERIFIED"))
+                emitter.onError(RuntimeException("NOT VERIFIED"))
             }
         }
     }

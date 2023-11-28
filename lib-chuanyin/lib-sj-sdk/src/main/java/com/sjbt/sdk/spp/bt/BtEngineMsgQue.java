@@ -49,9 +49,7 @@ public class BtEngineMsgQue {
     private static DataOutputStream mOut;
     private static BtStateListener mBtStateListener;
     private static boolean isRunning;
-    private static boolean isSending;
     private static boolean deviceBusing;
-    private static Lock lock = new ReentrantLock();// 锁对象
 
     public static final int TRANSFER_END_TIMEOUT = 15000;
     private static int DEFAULT_MSG_TIMEOUT = 10 * 1000;
@@ -140,9 +138,7 @@ public class BtEngineMsgQue {
                     try {
                         mOut = new DataOutputStream(mSocket.getOutputStream());
                         InputStream inputStream = mSocket.getInputStream();
-                        lock.lock();
                         isRunning = true;
-                        lock.unlock();
 
                         byte[] result = new byte[0];
 
@@ -177,21 +173,17 @@ public class BtEngineMsgQue {
                                     return;
                                 }
 
-                                setSendingState(false);
-
                                 parseMsg(result);
                                 // 清空
                                 result = new byte[0];
                             } catch (Exception e) {
                                 e.printStackTrace();
-                                setSendingState(false);
                                 notifyErrorOnUI("2-" + e.getMessage());
 
                             }
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
-                        setSendingState(false);
                         notifyUI(BtStateListener.ON_SOCKET_CLOSE, mDevice);
                     }
                 }
@@ -389,7 +381,6 @@ public class BtEngineMsgQue {
             mSocketStateMap.clear();
             isRunning = false;
             deviceBusing = false;
-            setSendingState(false);
 
             if (mSocket != null && mSocket.isConnected()) {
                 mSocket.close();
@@ -520,7 +511,6 @@ public class BtEngineMsgQue {
 
     private static void sendCachedMsgBusiness() {
         if (sendingMsgQueueMap.isEmpty()) {
-            setSendingState(false);
 
             logD("cached msg queue:" + cachedMsgLinkedMap);
 
@@ -530,12 +520,6 @@ public class BtEngineMsgQue {
                 sendMsg(cachedMsgLinkedMap.get(msgKeySet[0].toString()).originData);
             }
         }
-    }
-
-    private static void setSendingState(boolean sendingState) {
-        lock.lock();
-        isSending = sendingState;
-        lock.unlock();
     }
 
     protected static void notifyErrorOnUI(String msg) {

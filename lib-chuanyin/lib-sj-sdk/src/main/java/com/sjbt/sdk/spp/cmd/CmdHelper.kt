@@ -36,6 +36,9 @@ object CmdHelper {
     private var mKeyData2: String? = null
     private val gson = Gson()
 
+    /**
+     * order id 最大值
+     */
     const val MAX_ORDER_ID = 0xfd
 
     /**

@@ -85,12 +85,13 @@ class AppContact(val sjUniWatch: SJUniWatch) : AbAppContact(), ReadSubPkMsg {
                             val name = String(nameBytes, StandardCharsets.UTF_8)
                             val num = String(numBytes, StandardCharsets.UTF_8)
 
-                            sjUniWatch.wmLog.logE(TAG, "name:" + name + " num:" + num)
+//                            sjUniWatch.wmLog.logE(TAG, "name:" + name + " num:" + num)
 
                             if (!TextUtils.isEmpty(name)) {
                                 val contact = WmContact.create(name, num)
-
-                                mContacts.add(contact!!)
+                                contact?.let {
+                                    mContacts.add(it)
+                                }
                                 i += chunkSize
                             } else {
                                 break
