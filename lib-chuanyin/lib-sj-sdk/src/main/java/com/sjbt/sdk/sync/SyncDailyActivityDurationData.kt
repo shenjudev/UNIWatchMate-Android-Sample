@@ -7,6 +7,7 @@ import com.google.gson.Gson
 import com.sjbt.sdk.ReadSubPkMsg
 import com.sjbt.sdk.SJUniWatch
 import com.sjbt.sdk.entity.*
+import com.sjbt.sdk.utils.TimeUtils
 import com.sjbt.sdk.utils.readSportTypeJsonFromAssets
 import io.reactivex.rxjava3.core.*
 import io.reactivex.rxjava3.core.Observable
@@ -29,17 +30,19 @@ class SyncDailyActivityDurationData(val sjUniWatch: SJUniWatch) :
     private var hasNext: Boolean = false
     private val msgListSummary = mutableListOf<MsgBean>()
 
-    private val dailyActivitySummaryMap = mutableMapOf<Long, List<WmSportSummaryData>>()
-    private val dailyActivityDurationMap = mutableMapOf<Long, List<WmActivityDurationData>>()
+    /**
+     * 按天分类的活动时长
+     */
+    private val dailyActivityDurationMap = mutableMapOf<Long, Int>()
 
-    private val sportSummaryDataList = mutableListOf<WmSportSummaryData>()
-    private val activityDurationDataList = mutableListOf<WmActivityDurationData>()
+    /**
+     * 按天分类的运动概览
+     */
+    private val dailyActivitySummaryMap = mutableMapOf<Long, Int>()
 
-    private val dailyActivityDurationDataList = mutableListOf<WmDailyActivityDurationData>()
+    private val sportTypeMap = mutableMapOf<Int, Int>()
 
-    private val sportTypeMap = mutableMapOf<Int, Short>()
-
-    private fun getSportTypeById(sportId: Int): Short {
+    private fun getSportTypeById(sportId: Int): Int {
         sportTypeMap.get(sportId)?.let {
             return it
         } ?: kotlin.run {
@@ -66,13 +69,14 @@ class SyncDailyActivityDurationData(val sjUniWatch: SJUniWatch) :
 
     override fun syncData(startTime: Long): Observable<WmSyncData<WmDailyActivityDurationData>> {
         msgListSummary.clear()
-        activityDurationDataList.clear()
+        dailyActivityDurationMap.clear()
+        dailyActivitySummaryMap.clear()
 
         readSportTypeJsonFromAssets(sjUniWatch.mContext)?.let {
             sjUniWatch.wmLog.logE(TAG, "readJsonFromAssets:$it")
             val sportTypeData = Gson().fromJson(it, SportTypeData::class.java)
-            sportTypeData.sports.forEach {
-                sportTypeMap.put(it.id, it.sport_type.toShort())
+            sportTypeData.sports.forEach { sportType ->
+                sportTypeMap[sportType.id] = sportType.sport_type
             }
         }
 
@@ -82,24 +86,91 @@ class SyncDailyActivityDurationData(val sjUniWatch: SJUniWatch) :
             sjUniWatch.syncActivityDuration.syncData(startTime).subscribe { activityDuration ->
                 sjUniWatch.wmLog.logE(TAG, "activity duration:$activityDuration")
 
+                activityDuration.value.forEach { durationData ->
+                    if (durationData.timestamp % 10000 < 1000) {
+
+                        val timeStamp = durationData.timestamp / 1000 * 1000
+
+                        var duration = dailyActivityDurationMap.get(timeStamp)
+
+                        if (duration != null) {
+                            duration += durationData.duration
+                            dailyActivityDurationMap.put(timeStamp, duration)
+                        } else {
+                            dailyActivityDurationMap.put(
+                                timeStamp,
+                                durationData.duration
+                            )
+                        }
+                    }
+                }
+
                 sjUniWatch.syncSportSummaryData.withTenSeconds = false
                 sjUniWatch.syncSportSummaryData.syncData(startTime).subscribe { summaryData ->
-                    sjUniWatch.wmLog.logE(TAG, "activity summary:$summaryData")
+
                     sjUniWatch.syncSportSummaryData.withTenSeconds = true
 
                     val dailyActivityList = mutableListOf<WmDailyActivityDurationData>()
 
                     summaryData.value.forEach {
+
                         val dailyActivityDurationData =
                             WmDailyActivityDurationData(
                                 getSportTypeById(it.sportId),
-                                (it.endTime - it.startTime).toShort()
+                                it.actTime.toInt()
                             )
+
+                        dailyActivityDurationData.timestamp = it.timestamp
+
                         dailyActivityList.add(dailyActivityDurationData)
 
+                        if (it.timestamp % 10000 < 1000) {//一天开始时间戳判断
+
+                            val timeStamp = it.timestamp / 1000 * 1000
+
+                            var actTime = dailyActivitySummaryMap.get(timeStamp)
+
+                            if (actTime != null) {
+                                actTime += it.actTime
+                                dailyActivitySummaryMap.put(timeStamp, actTime)
+                            } else {
+                                dailyActivitySummaryMap.put(timeStamp, it.actTime.toInt())
+                            }
+                        }
+                    }
+
+                    sjUniWatch.wmLog.logE(
+                        TAG,
+                        "daily activity duration map :$dailyActivityDurationMap"
+                    )
+
+                    sjUniWatch.wmLog.logE(
+                        TAG,
+                        "daily activity summary map :$dailyActivitySummaryMap"
+                    )
+
+                    for ((timeStamp, duration) in dailyActivitySummaryMap) {
+
+                        var notSportDuration = dailyActivityDurationMap.get(timeStamp)?.let {
+                            it.minus(duration)
+                        }
+
+                        notSportDuration?.let {
+                            val dailyActivityDurationData =
+                                WmDailyActivityDurationData(
+                                    -99,
+                                    it
+                                )
+
+                            dailyActivityDurationData.timestamp = timeStamp
+                            dailyActivityList.add(dailyActivityDurationData)
+                        }
+                    }
+
+                    dailyActivityList.forEach {
                         sjUniWatch.wmLog.logE(
                             TAG,
-                            "daily activity duration:$dailyActivityDurationData"
+                            "daily activity duration :$it"
                         )
                     }
 

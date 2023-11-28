@@ -1,6 +1,11 @@
 {
     "sports": [
         {
+            "id": 0,
+            "sport_type": -99,
+            "type": 0
+        },
+        {
             "id": 1,
             "sport_type": 0,
             "type": 1

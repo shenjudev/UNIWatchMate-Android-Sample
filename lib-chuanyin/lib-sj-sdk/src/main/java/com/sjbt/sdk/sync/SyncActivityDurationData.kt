@@ -158,7 +158,7 @@ class SyncActivityDurationData(val sjUniWatch: SJUniWatch) :
         val calendar = Calendar.getInstance()
         calendar.set(baseYear, baseMon, baseDay, 0, 0, 0)
 
-        val realTimeStamp = calendar.timeInMillis + timestamp
+        val realTimeStamp = (calendar.timeInMillis + timestamp) / 1000 * 1000
 
         val activityDurationDataList = mutableListOf<WmActivityDurationData>()
 

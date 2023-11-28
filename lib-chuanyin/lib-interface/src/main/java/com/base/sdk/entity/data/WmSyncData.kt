@@ -140,9 +140,9 @@ class WmSportSummaryData(
 /**
  * 日常活动时长
  */
-class WmDailyActivityDurationData(val sportType: Short, val duration: Short) : WmBaseSyncData(){
+class WmDailyActivityDurationData(val sportType: Int, var duration: Int) : WmBaseSyncData(){
     override fun toString(): String {
-        return "WmDailyActivityDurationData(sportType=$sportType, duration=$duration)"
+        return "WmDailyActivityDurationData(dateStamp=$timestamp sportType=$sportType, duration=$duration)"
     }
 }
 

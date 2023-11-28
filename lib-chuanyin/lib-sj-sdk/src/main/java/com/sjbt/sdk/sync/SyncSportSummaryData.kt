@@ -175,7 +175,7 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
         val calendar = Calendar.getInstance()
         calendar.set(baseYear, baseMon, baseDay, 0, 0, 0)
 
-        val realTimeStamp = calendar.timeInMillis + timestamp
+        val realTimeStamp = (calendar.timeInMillis + timestamp) / 1000 * 1000
 
         val activitySportSummaryList = mutableListOf<WmSportSummaryData>()
 
@@ -188,7 +188,7 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
             val calendar = Calendar.getInstance()
             calendar.set(year, mon, day, 0, 0, 0)
 
-            val dateTime = calendar.timeInMillis
+            val dateTime = calendar.timeInMillis / 1000 * 1000
 
             val startTime = dateTime + byteBufferSummarySyncData.int.toLong()
             val endTime = dateTime + byteBufferSummarySyncData.int.toLong()
@@ -252,6 +252,8 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
 
             wmSportSummaryData.timestamp = dateTime
 
+            sjUniWatch.wmLog.logD(TAG, "activity detail info：${wmSportSummaryData}")
+
             activitySportSummaryList.add(wmSportSummaryData)
         }
 
@@ -266,7 +268,6 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
         lastSyncTime = System.currentTimeMillis()
 
         wmSyncData?.let {
-            sjUniWatch.wmLog.logD(TAG, "activity detail info size：${it.value}")
 
             sportIndex = 0
             sportSize = it.value.size
