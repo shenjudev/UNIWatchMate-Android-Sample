@@ -124,18 +124,13 @@ class SyncDailyActivityDurationData(val sjUniWatch: SJUniWatch) :
 
                         dailyActivityList.add(dailyActivityDurationData)
 
-                        if (it.timestamp % 10000 < 1000) {//一天开始时间戳判断
+                        var actTime = dailyActivitySummaryMap.get(it.timestamp)
 
-                            val timeStamp = it.timestamp / 1000 * 1000
-
-                            var actTime = dailyActivitySummaryMap.get(timeStamp)
-
-                            if (actTime != null) {
-                                actTime += it.actTime
-                                dailyActivitySummaryMap.put(timeStamp, actTime)
-                            } else {
-                                dailyActivitySummaryMap.put(timeStamp, it.actTime.toInt())
-                            }
+                        if (actTime != null) {
+                            actTime += it.actTime
+                            dailyActivitySummaryMap.put(it.timestamp, actTime)
+                        } else {
+                            dailyActivitySummaryMap.put(it.timestamp, it.actTime.toInt())
                         }
                     }
 
