@@ -104,10 +104,10 @@ class SyncStepData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmStepDat
 
                                 msgList.forEachIndexed { index, it ->
 
-                                    sjUniWatch.wmLog.logE(
-                                        TAG,
-                                        "step data:" + BtUtils.bytesToHexString(it.originData)
-                                    )
+//                                    sjUniWatch.wmLog.logE(
+//                                        TAG,
+//                                        "step data:" + BtUtils.bytesToHexString(it.originData)
+//                                    )
 
                                     if (it.divideType == DIVIDE_N_2 || it.divideType == DIVIDE_Y_F_2) {
                                         byteBufferSyncData.put(

@@ -29,7 +29,7 @@ class AppDial(sjUniWatch: SJUniWatch) : AbAppDial() {
         return Observable.create(object : ObservableOnSubscribe<List<WmDial>> {
             override fun subscribe(emitter: ObservableEmitter<List<WmDial>>) {
                 syncDialListEmitter = emitter
-                sjUniWatch.sendNormalMsg(CmdHelper.getDialListCmd(0))
+                sjUniWatch.sendThreadTimeOutMsg(CmdHelper.getDialListCmd(0))
             }
         })
     }
@@ -39,7 +39,7 @@ class AppDial(sjUniWatch: SJUniWatch) : AbAppDial() {
         return Single.create(object : SingleOnSubscribe<WmDial> {
             override fun subscribe(emitter: SingleEmitter<WmDial>) {
                 deleteEmitter = emitter
-                sjUniWatch.sendNormalMsg(CmdHelper.getDialActionCmd(2, dialItem.id))
+                sjUniWatch.sendThreadTimeOutMsg(CmdHelper.getDialActionCmd(2, dialItem.id))
             }
         })
     }

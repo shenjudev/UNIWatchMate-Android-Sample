@@ -177,10 +177,10 @@ class SyncDistanceData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmDis
                     realTimeStamp + dataIndex * SYNC_DATA_INTERVAL_HOUR
             }
 
-            sjUniWatch.wmLog.logD(
-                TAG,
-                "distance data: ${byteBufferSyncData.position()} -> ${wmDistanceData}"
-            )
+//            sjUniWatch.wmLog.logD(
+//                TAG,
+//                "distance data: ${byteBufferSyncData.position()} -> ${wmDistanceData}"
+//            )
 
             distanceList.add(wmDistanceData)
 

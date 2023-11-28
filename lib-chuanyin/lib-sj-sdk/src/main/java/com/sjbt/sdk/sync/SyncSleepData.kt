@@ -67,7 +67,7 @@ class SyncSleepData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmSleepD
                 }
 
                 override fun onNext(t: MsgBean) {
-                    sjUniWatch.wmLog.logE(TAG, "sleep record back msg:$t")
+//                    sjUniWatch.wmLog.logE(TAG, "sleep record back msg:$t")
                     msgList.add(t)
                 }
 

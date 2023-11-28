@@ -50,7 +50,7 @@ class SJTransferFile(val sjUniWatch: SJUniWatch) : AbWmTransferFile() {
         return Single.create { emitter ->
             cancelTransferEmitter = emitter
             sjUniWatch.wmLog.logE(TAG, "cancel Transfer")
-            sjUniWatch.sendNormalMsg(CmdHelper.transferCancelCmd)
+            sjUniWatch.sendThreadTimeOutMsg(CmdHelper.transferCancelCmd)
         }
     }
 
@@ -88,7 +88,7 @@ class SJTransferFile(val sjUniWatch: SJUniWatch) : AbWmTransferFile() {
                 fileLen += it.length()
             }
 
-            sjUniWatch.sendNormalMsg(
+            sjUniWatch.sendThreadTimeOutMsg(
                 CmdHelper.getTransferFile01Cmd(
                     fileType.type.toByte(),
                     fileLen.toInt(),
@@ -119,7 +119,7 @@ class SJTransferFile(val sjUniWatch: SJUniWatch) : AbWmTransferFile() {
                     }
 
                     mSendingFile?.let { file ->
-                        sjUniWatch.sendNormalMsg(
+                        sjUniWatch.sendNoTimeOutMsg(
                             CmdHelper.getTransferFile02Cmd(
                                 file.length().toInt(),
                                 file.name
@@ -265,7 +265,7 @@ class SJTransferFile(val sjUniWatch: SJUniWatch) : AbWmTransferFile() {
 
                         mSendingFile = mTransferFiles!![mSendFileCount]
 
-                        sjUniWatch.sendNormalMsg(
+                        sjUniWatch.sendNoTimeOutMsg(
                             CmdHelper.getTransferFile02Cmd(
                                 FileUtils.readFileBytes(mSendingFile).size,
                                 mSendingFile!!.name
@@ -340,7 +340,7 @@ class SJTransferFile(val sjUniWatch: SJUniWatch) : AbWmTransferFile() {
             try {
                 mTransferring = true
                 val info = getOtaDataInfoNew(dataArray, i)
-                sjUniWatch.sendNormalMsg(CmdHelper.getTransfer03Cmd(i, info, mDivide))
+                sjUniWatch.sendNoTimeOutMsg(CmdHelper.getTransfer03Cmd(i, info, mDivide))
 
                 val processPercent = 100f * (mOtaProcess + 1) / mPackageCount
 
@@ -374,7 +374,7 @@ class SJTransferFile(val sjUniWatch: SJUniWatch) : AbWmTransferFile() {
             getOtaDataInfoNew(mFileDataArray!!, errorProcess),
             mDivide
         )
-        sjUniWatch.sendNormalMsg(bytes)
+        sjUniWatch.sendNoTimeOutMsg(bytes)
     }
 
     private fun getOtaDataInfoNew(dataArray: ByteArray, otaProcess: Int): OtaCmdInfo {
@@ -441,7 +441,7 @@ class SJTransferFile(val sjUniWatch: SJUniWatch) : AbWmTransferFile() {
                     CMD_ID_8002 -> if (mTransferRetryCount < MAX_RETRY_COUNT) {
                         mTransferRetryCount++
                         mSendingFile = mTransferFiles!![mSendFileCount]
-                        sjUniWatch.sendNormalMsg(
+                        sjUniWatch.sendThreadTimeOutMsg(
                             CmdHelper.getTransferFile02Cmd(
                                 FileUtils.readFileBytes(
                                     mSendingFile
@@ -454,7 +454,7 @@ class SJTransferFile(val sjUniWatch: SJUniWatch) : AbWmTransferFile() {
                     CMD_ID_8003 ->
                         if (mTransferRetryCount < MAX_RETRY_COUNT) {
                             mTransferRetryCount++
-                            sjUniWatch.sendNormalMsg(
+                            sjUniWatch.sendNoTimeOutMsg(
                                 CmdHelper.getTransfer03Cmd(
                                     mOtaProcess,
                                     getOtaDataInfoNew(mFileDataArray!!, mOtaProcess),
@@ -470,7 +470,7 @@ class SJTransferFile(val sjUniWatch: SJUniWatch) : AbWmTransferFile() {
                     CMD_ID_8004 -> if (mTransferRetryCount < MAX_RETRY_COUNT) {
                         mTransferRetryCount++
                         val ota_data = CmdHelper.transfer04Cmd
-                        sjUniWatch.sendNormalMsg(ota_data)
+                        sjUniWatch.sendThreadTimeOutMsg(ota_data)
                     } else {
 //                        if (mTransferFileListener != null) {
 //                            mTransferFileListener.transferFail(FAIL_TYPE_TIMEOUT, "8004 time out")

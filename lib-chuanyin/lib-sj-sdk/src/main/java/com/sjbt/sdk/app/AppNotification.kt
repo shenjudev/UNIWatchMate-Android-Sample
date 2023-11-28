@@ -7,7 +7,6 @@ import com.sjbt.sdk.entity.NodeData
 import com.sjbt.sdk.spp.cmd.CmdHelper
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.core.SingleEmitter
-import io.reactivex.rxjava3.core.SingleOnSubscribe
 
 class AppNotification(sjUniWatch: SJUniWatch) : AbAppNotification() {
     val sjUniWatch = sjUniWatch
@@ -69,7 +68,7 @@ class AppNotification(sjUniWatch: SJUniWatch) : AbAppNotification() {
 
             sjUniWatch.wmLog.logD(TAG, "sendNotification: $notification")
 
-            sjUniWatch.sendNormalMsg(CmdHelper.getNotificationCmd(notification))
+            sjUniWatch.sendThreadTimeOutMsg(CmdHelper.getNotificationCmd(notification))
         }
     }
 }

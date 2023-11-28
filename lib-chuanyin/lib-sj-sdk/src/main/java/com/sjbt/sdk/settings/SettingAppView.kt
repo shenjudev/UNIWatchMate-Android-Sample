@@ -4,7 +4,6 @@ import com.base.sdk.entity.settings.WmAppView
 import com.base.sdk.exception.WmTimeOutException
 import com.base.sdk.port.setting.AbWmSetting
 import com.sjbt.sdk.SJUniWatch
-import com.sjbt.sdk.exception.SJException
 import com.sjbt.sdk.spp.cmd.CmdHelper
 import io.reactivex.rxjava3.core.*
 
@@ -25,7 +24,7 @@ class SettingAppView(val sjUniWatch: SJUniWatch) : AbWmSetting<WmAppView>() {
             setEmitter = emitter
             appView.appViewList.forEach {
                 if (it.status == 1) {
-                    sjUniWatch.sendNormalMsg(CmdHelper.setAppViewCmd(it.id.toByte()))
+                    sjUniWatch.sendThreadTimeOutMsg(CmdHelper.setAppViewCmd(it.id.toByte()))
                 }
             }
         }
@@ -35,7 +34,7 @@ class SettingAppView(val sjUniWatch: SJUniWatch) : AbWmSetting<WmAppView>() {
         return Single.create { emitter ->
             isGet = true
             getEmitter = emitter
-            sjUniWatch.sendNormalMsg(CmdHelper.appViewList)
+            sjUniWatch.sendThreadTimeOutMsg(CmdHelper.appViewList)
         }
     }
 

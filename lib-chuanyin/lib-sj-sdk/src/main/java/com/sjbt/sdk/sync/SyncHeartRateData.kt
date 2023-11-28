@@ -64,7 +64,7 @@ class SyncHeartRateData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmHe
                 }
 
                 override fun onNext(t: MsgBean) {
-                    sjUniWatch.wmLog.logE(TAG, "heart rate back msg:$t")
+//                    sjUniWatch.wmLog.logE(TAG, "heart rate back msg:$t")
                     msgList.add(t)
                 }
 
@@ -95,10 +95,10 @@ class SyncHeartRateData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmHe
                                 ByteBuffer.allocate(bufferSize).order(ByteOrder.LITTLE_ENDIAN)
 
                             msgList.forEachIndexed { index, it ->
-                                sjUniWatch.wmLog.logE(
-                                    TAG,
-                                    "heart rate data:" + BtUtils.bytesToHexString(it.originData)
-                                )
+//                                sjUniWatch.wmLog.logE(
+//                                    TAG,
+//                                    "heart rate data:" + BtUtils.bytesToHexString(it.originData)
+//                                )
 
                                 if (index == 0) {
                                     byteBufferSyncData.put(
@@ -170,19 +170,19 @@ class SyncHeartRateData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmHe
             val wmHeartRateData = WmHeartRateData(high, low, average)
 
             if (timestampType == 0) {//只有一个时间戳
-                sjUniWatch.wmLog.logD(
-                    TAG,
-                    "start base date:" + TimeUtils.date2String(Date(realTimeStamp + dataIndex * SYNC_DATA_INTERVAL_HOUR))
-                )
+//                sjUniWatch.wmLog.logD(
+//                    TAG,
+//                    "start base date:" + TimeUtils.date2String(Date(realTimeStamp + dataIndex * SYNC_DATA_INTERVAL_HOUR))
+//                )
 
                 wmHeartRateData.timestamp =
                     realTimeStamp + dataIndex * SYNC_DATA_INTERVAL_HOUR
             }
 
-            sjUniWatch.wmLog.logD(
-                TAG,
-                "heart rate data: $dataIndex -> $wmHeartRateData"
-            )
+//            sjUniWatch.wmLog.logD(
+//                TAG,
+//                "heart rate data: $dataIndex -> $wmHeartRateData"
+//            )
 
             realTimeRateList.add(wmHeartRateData)
             dataIndex++

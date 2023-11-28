@@ -41,7 +41,7 @@ class SettingSleepSet(val sjUniWatch: SJUniWatch) : AbWmSetting<WmSleepSettings>
                 0
             }
 
-            sjUniWatch.sendNormalMsg(
+            sjUniWatch.sendThreadTimeOutMsg(
                 CmdHelper.setSleepSetCmd(
                     status.toByte(),
                     obj.startHour.toByte(),
@@ -57,7 +57,7 @@ class SettingSleepSet(val sjUniWatch: SJUniWatch) : AbWmSetting<WmSleepSettings>
         return Single.create { emitter ->
             isGet = true
             getSleepSettingEmitter = emitter
-            sjUniWatch.sendNormalMsg(CmdHelper.getSleepSetCmd)
+            sjUniWatch.sendThreadTimeOutMsg(CmdHelper.getSleepSetCmd)
         }
     }
 
@@ -95,7 +95,7 @@ class SettingSleepSet(val sjUniWatch: SJUniWatch) : AbWmSetting<WmSleepSettings>
             }
 
             CMD_ID_800D -> {
-                sjUniWatch.sendNormalMsg(CmdHelper.getRespondSuccessCmd(CMD_ID_800D))
+                sjUniWatch.sendThreadTimeOutMsg(CmdHelper.getRespondSuccessCmd(CMD_ID_800D))
             }
 
             CMD_ID_800E -> {

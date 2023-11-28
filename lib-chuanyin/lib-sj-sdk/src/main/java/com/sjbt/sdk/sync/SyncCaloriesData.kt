@@ -64,7 +64,7 @@ class SyncCaloriesData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmCal
                 }
 
                 override fun onNext(t: MsgBean) {
-                    sjUniWatch.wmLog.logE(TAG, "step back msg:$t")
+//                    sjUniWatch.wmLog.logE(TAG, "step back msg:$t")
                     msgList.add(t)
                 }
 
@@ -94,10 +94,10 @@ class SyncCaloriesData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmCal
                                 ByteBuffer.allocate(bufferSize).order(ByteOrder.LITTLE_ENDIAN)
 
                             msgList.forEachIndexed { index, it ->
-                                sjUniWatch.wmLog.logE(
-                                    TAG,
-                                    "step data:" + BtUtils.bytesToHexString(it.originData)
-                                )
+//                                sjUniWatch.wmLog.logE(
+//                                    TAG,
+//                                    "step data:" + BtUtils.bytesToHexString(it.originData)
+//                                )
 
                                 if (index == 0) {
                                     byteBufferSyncData.put(
@@ -174,10 +174,10 @@ class SyncCaloriesData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmCal
                     realTimeStamp + dataIndex * SYNC_DATA_INTERVAL_HOUR
             }
 
-            sjUniWatch.wmLog.logD(
-                TAG,
-                "step data: ${byteBufferSyncData.position()} -> ${wmCaloriesData}"
-            )
+//            sjUniWatch.wmLog.logD(
+//                TAG,
+//                "step data: ${byteBufferSyncData.position()} -> ${wmCaloriesData}"
+//            )
 
             caloriesList.add(wmCaloriesData)
             dataIndex++

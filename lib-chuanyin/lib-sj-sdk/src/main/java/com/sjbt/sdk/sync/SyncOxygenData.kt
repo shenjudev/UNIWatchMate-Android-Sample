@@ -171,10 +171,10 @@ class SyncOxygenData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmOxyge
                     realTimeStamp + dataIndex * SYNC_DATA_INTERVAL_FIVE_MINUTES
             }
 
-            sjUniWatch.wmLog.logD(
-                TAG,
-                "oxygen data: $dataIndex -> ${wmOxygenData}"
-            )
+//            sjUniWatch.wmLog.logD(
+//                TAG,
+//                "oxygen data: $dataIndex -> ${wmOxygenData}"
+//            )
 
             oxygenDataList.add(wmOxygenData)
 

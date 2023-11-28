@@ -3,7 +3,6 @@ package com.sjbt.sdk.app
 import android.os.Handler
 import android.os.HandlerThread
 import com.base.sdk.entity.apps.WmCameraFrameInfo
-import com.base.sdk.exception.WmTimeOutException
 import com.base.sdk.port.app.AbAppCamera
 import com.base.sdk.port.app.WMCameraFlashMode
 import com.base.sdk.port.app.WMCameraPosition
@@ -11,10 +10,8 @@ import com.sjbt.sdk.MSG_INTERVAL_FRAME
 import com.sjbt.sdk.SJUniWatch
 import com.sjbt.sdk.entity.H264FrameMap
 import com.sjbt.sdk.entity.MsgBean
-import com.sjbt.sdk.entity.NodeData
 import com.sjbt.sdk.entity.OtaCmdInfo
 import com.sjbt.sdk.spp.cmd.*
-import com.sjbt.sdk.utils.BtUtils
 import io.reactivex.rxjava3.core.*
 import io.reactivex.rxjava3.subjects.PublishSubject
 import java.nio.ByteBuffer
@@ -105,7 +102,7 @@ class AppCamera(val sjUniWatch: SJUniWatch) : AbAppCamera() {
 
         return Single.create { emitter ->
             cameraSingleOpenEmitter = emitter
-            sjUniWatch.sendNormalMsg(
+            sjUniWatch.sendThreadTimeOutMsg(
                 CmdHelper.getAppCallDeviceCmd(
                     if (open) {
                         1.toByte()
@@ -134,7 +131,7 @@ class AppCamera(val sjUniWatch: SJUniWatch) : AbAppCamera() {
 
             sjUniWatch.wmLog.logE(TAG, "WMCameraFlashMode:$wmCameraFlashMode")
 
-            sjUniWatch.sendNormalMsg(
+            sjUniWatch.sendThreadTimeOutMsg(
                 CmdHelper.getCameraStateActionCmd(
                     1,
                     wmCameraFlashMode.ordinal.toByte()
@@ -146,7 +143,7 @@ class AppCamera(val sjUniWatch: SJUniWatch) : AbAppCamera() {
     override fun cameraBackSwitch(wmCameraPosition: WMCameraPosition): Single<WMCameraPosition> {
         return Single.create { emitter ->
             cameraBackSwitchEmitter = emitter
-            sjUniWatch.sendNormalMsg(
+            sjUniWatch.sendThreadTimeOutMsg(
                 CmdHelper.getCameraStateActionCmd(
                     0,
                     wmCameraPosition.ordinal.toByte()
@@ -159,7 +156,7 @@ class AppCamera(val sjUniWatch: SJUniWatch) : AbAppCamera() {
         return Single.create { emitter ->
             cameraPreviewReadyEmitter = emitter
 
-            sjUniWatch.sendNormalMsg(
+            sjUniWatch.sendThreadTimeOutMsg(
                 CmdHelper.getCameraPreviewCmd01()
             )
         }
@@ -224,7 +221,7 @@ class AppCamera(val sjUniWatch: SJUniWatch) : AbAppCamera() {
                             i
                         )
                         //                    sjUniWatch.logD(TAG,"执行发送：" + info + " 分包类型：" + mDivide);
-                        sjUniWatch.sendNormalMsg(
+                        sjUniWatch.sendThreadTimeOutMsg(
                             CmdHelper.getCameraPreviewDataCmd02(
                                 info.payload,
                                 mDivide
@@ -239,7 +236,7 @@ class AppCamera(val sjUniWatch: SJUniWatch) : AbAppCamera() {
                 }
             } else {
                 mDivide = DIVIDE_N_2
-                sjUniWatch.sendNormalMsg(CmdHelper.getCameraPreviewDataCmd02(it, mDivide))
+                sjUniWatch.sendThreadTimeOutMsg(CmdHelper.getCameraPreviewDataCmd02(it, mDivide))
             }
         }
 

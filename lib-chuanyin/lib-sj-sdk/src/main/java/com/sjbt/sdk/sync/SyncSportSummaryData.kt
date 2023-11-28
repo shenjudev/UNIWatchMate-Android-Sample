@@ -82,7 +82,7 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
                 }
 
                 override fun onNext(t: MsgBean) {
-                    sjUniWatch.wmLog.logE(TAG, "sport summary back msg:$t")
+//                    sjUniWatch.wmLog.logE(TAG, "sport summary back msg:$t")
                     msgListSummary.add(t)
                 }
 
@@ -114,10 +114,10 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
                                 ByteBuffer.allocate(bufferSize).order(ByteOrder.LITTLE_ENDIAN)
 
                             msgListSummary.forEachIndexed { index, it ->
-                                sjUniWatch.wmLog.logE(
-                                    TAG,
-                                    "sport summary data:" + BtUtils.bytesToHexString(it.originData)
-                                )
+//                                sjUniWatch.wmLog.logE(
+//                                    TAG,
+//                                    "sport summary data:" + BtUtils.bytesToHexString(it.originData)
+//                                )
 
                                 if (index == 0) {
                                     byteBufferSummarySyncData.put(

@@ -69,7 +69,7 @@ class SyncActivityDurationData(val sjUniWatch: SJUniWatch) :
                 }
 
                 override fun onNext(t: MsgBean) {
-                    sjUniWatch.wmLog.logE(TAG, "activity duration back msg:$t")
+//                    sjUniWatch.wmLog.logE(TAG, "activity duration back msg:$t")
                     msgList.add(t)
                 }
 
@@ -99,10 +99,10 @@ class SyncActivityDurationData(val sjUniWatch: SJUniWatch) :
                                 ByteBuffer.allocate(bufferSize).order(ByteOrder.LITTLE_ENDIAN)
 
                             msgList.forEachIndexed { index, it ->
-                                sjUniWatch.wmLog.logE(
-                                    TAG,
-                                    "activity duration data:" + BtUtils.bytesToHexString(it.originData)
-                                )
+//                                sjUniWatch.wmLog.logE(
+//                                    TAG,
+//                                    "activity duration data:" + BtUtils.bytesToHexString(it.originData)
+//                                )
 
                                 if (index == 0) {
                                     byteBufferSyncData.put(
@@ -177,10 +177,10 @@ class SyncActivityDurationData(val sjUniWatch: SJUniWatch) :
                     realTimeStamp + dataIndex * SYNC_DATA_INTERVAL_HOUR
             }
 
-            sjUniWatch.wmLog.logD(
-                TAG,
-                "activity duration data: $dataIndex -> ${wmActivityDurationData}"
-            )
+//            sjUniWatch.wmLog.logD(
+//                TAG,
+//                "activity duration data: $dataIndex -> ${wmActivityDurationData}"
+//            )
 
             activityDurationDataList.add(wmActivityDurationData)
 

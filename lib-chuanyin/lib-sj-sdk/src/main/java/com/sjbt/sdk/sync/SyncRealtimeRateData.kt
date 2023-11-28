@@ -96,10 +96,10 @@ class SyncRealtimeRateData(val sjUniWatch: SJUniWatch) :
                                 ByteBuffer.allocate(bufferSize).order(ByteOrder.LITTLE_ENDIAN)
 
                             msgList.forEachIndexed { index, it ->
-                                sjUniWatch.wmLog.logE(
-                                    TAG,
-                                    "real time rate data:" + BtUtils.bytesToHexString(it.originData)
-                                )
+//                                sjUniWatch.wmLog.logE(
+//                                    TAG,
+//                                    "real time rate data:" + BtUtils.bytesToHexString(it.originData)
+//                                )
 
                                 if (index == 0) {
                                     byteBufferSyncData.put(
@@ -174,10 +174,10 @@ class SyncRealtimeRateData(val sjUniWatch: SJUniWatch) :
                     realTimeStamp + dataIndex * SYNC_DATA_INTERVAL_FIVE_MINUTES
             }
 
-            sjUniWatch.wmLog.logD(
-                TAG,
-                "real time rate data: $dataIndex -> ${wmHeartRateData}"
-            )
+//            sjUniWatch.wmLog.logD(
+//                TAG,
+//                "real time rate data: $dataIndex -> ${wmHeartRateData}"
+//            )
 
             realTimeRateList.add(wmHeartRateData)
 

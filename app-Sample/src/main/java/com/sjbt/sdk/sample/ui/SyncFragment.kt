@@ -53,11 +53,11 @@ class SyncFragment : BaseFragment(R.layout.fragment_sync) {
                 }
             }
 
-            launch {
-                UNIWatchMate.wmApps.appSport.getSupportSportList.toFlowable().asFlow().collect {
-                    LogUtils.d("getSupportSportList = ${GsonUtils.toJson(it)}")
-                }
-            }
+//            launch {
+//                UNIWatchMate.wmApps.appSport.getSupportSportList.toFlowable().asFlow().collect {
+//                    LogUtils.d("getSupportSportList = ${GsonUtils.toJson(it)}")
+//                }
+//            }
 //            launch {
 //                deviceManager.flowSyncState.collect { state ->
 //                    if (state == null || state == FcSyncState.SUCCESS) {//refresh none or success
