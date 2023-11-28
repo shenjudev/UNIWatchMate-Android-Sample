@@ -17,5 +17,5 @@ class SJSyncData(val sjUniWatch: SJUniWatch) : AbWmSyncs() {
     override var syncActivityDurationData: AbSyncData<WmSyncData<WmActivityDurationData>> = SyncActivityDurationData(sjUniWatch)
     override var syncSportSummaryData: AbSyncData<WmSyncData<WmSportSummaryData>> = SyncSportSummaryData(sjUniWatch)
     override var syncAllData: AbSyncData<WmSyncData<out WmBaseSyncData>> = SyncAllData(sjUniWatch)
-
+    override val syncDailyActivityDuration: AbSyncData<WmSyncData<WmDailyActivityDurationData>> = SyncDailyActivityDurationData(sjUniWatch)
 }

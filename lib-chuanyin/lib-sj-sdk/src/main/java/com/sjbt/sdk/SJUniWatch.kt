@@ -64,9 +64,9 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(),
 
     private lateinit var discoveryObservableEmitter: ObservableEmitter<WmDiscoverDevice>
 
-    var deviceInfoEmitter: SingleEmitter<WmDeviceInfo>? = null
-    var batteryEmitter: SingleEmitter<WmBatteryInfo>? = null
-    var observeBatteryEmitter: ObservableEmitter<WmBatteryInfo>? = null
+    private var deviceInfoEmitter: SingleEmitter<WmDeviceInfo>? = null
+    private var batteryEmitter: SingleEmitter<WmBatteryInfo>? = null
+    private var observeBatteryEmitter: ObservableEmitter<WmBatteryInfo>? = null
 
     private var mBindInfo: WmBindInfo? = null
     private var mCurrDevice: BluetoothDevice? = null
@@ -85,42 +85,43 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(),
     private val mBindStateMap = HashMap<String, Boolean>()
 
     //同步数据
-    private val syncActivityDuration = wmSync.syncActivityDurationData as SyncActivityDurationData
-    private val syncCaloriesData = wmSync.syncCaloriesData as SyncCaloriesData
-    private val syncDistanceData = wmSync.syncDistanceData as SyncDistanceData
-    private val syncHeartRateData = wmSync.syncHeartRateData as SyncHeartRateData
-    private val syncOxygenData = wmSync.syncOxygenData as SyncOxygenData
-    private val syncRealtimeRateData = wmSync.syncRealtimeRateData as SyncRealtimeRateData
-    private val syncSleepData = wmSync.syncSleepData as SyncSleepData
-    private val syncSportSummaryData = wmSync.syncSportSummaryData as SyncSportSummaryData
-    private val syncStepData = wmSync.syncStepData as SyncStepData
-    private val syncAllData = wmSync.syncAllData as SyncAllData
+    val syncActivityDuration = wmSync.syncActivityDurationData as SyncActivityDurationData
+    val syncCaloriesData = wmSync.syncCaloriesData as SyncCaloriesData
+    val syncDistanceData = wmSync.syncDistanceData as SyncDistanceData
+    val syncHeartRateData = wmSync.syncHeartRateData as SyncHeartRateData
+    val syncOxygenData = wmSync.syncOxygenData as SyncOxygenData
+    val syncRealtimeRateData = wmSync.syncRealtimeRateData as SyncRealtimeRateData
+    val syncSleepData = wmSync.syncSleepData as SyncSleepData
+    val syncSportSummaryData = wmSync.syncSportSummaryData as SyncSportSummaryData
+    val syncStepData = wmSync.syncStepData as SyncStepData
+
+//    private val syncAllData = wmSync.syncAllData as SyncAllData
 
     //应用
-    private val appDateTime = wmApps.appDateTime as AppDateTime
-    private val appCamera = wmApps.appCamera as AppCamera
-    private val appAlarm = wmApps.appAlarm as AppAlarm
-    private val appContact = wmApps.appContact as AppContact
-    private val appDial = wmApps.appDial as AppDial
-    private val appFind = wmApps.appFind as AppFind
-    private val appLanguage = wmApps.appLanguage as AppLanguage
-    private val appNotification = wmApps.appNotification as AppNotification
-    private val appSport = wmApps.appSport as AppSport
-    private val appWeather = wmApps.appWeather as AppWeather
-    private val appMusicControl = wmApps.appMusicControl as AppMusicControl
+    val appDateTime = wmApps.appDateTime as AppDateTime
+    val appCamera = wmApps.appCamera as AppCamera
+    val appAlarm = wmApps.appAlarm as AppAlarm
+    val appContact = wmApps.appContact as AppContact
+    val appDial = wmApps.appDial as AppDial
+    val appFind = wmApps.appFind as AppFind
+    val appLanguage = wmApps.appLanguage as AppLanguage
+    val appNotification = wmApps.appNotification as AppNotification
+    val appSport = wmApps.appSport as AppSport
+    val appWeather = wmApps.appWeather as AppWeather
+    val appMusicControl = wmApps.appMusicControl as AppMusicControl
 
     //设置
-    private val settingAppView = wmSettings.settingAppView as SettingAppView
-    private val settingHeartRateAlerts = wmSettings.settingHeartRate as SettingHeartRateAlerts
-    private val settingPersonalInfo = wmSettings.settingPersonalInfo as SettingPersonalInfo
-    private val settingSedentaryReminder =
+    val settingAppView = wmSettings.settingAppView as SettingAppView
+    val settingHeartRateAlerts = wmSettings.settingHeartRate as SettingHeartRateAlerts
+    val settingPersonalInfo = wmSettings.settingPersonalInfo as SettingPersonalInfo
+    val settingSedentaryReminder =
         wmSettings.settingSedentaryReminder as SettingSedentaryReminder
-    private val settingSoundAndHaptic = wmSettings.settingSoundAndHaptic as SettingSoundAndHaptic
-    private val settingSportGoal = wmSettings.settingSportGoal as SettingSportGoal
-    private val settingUnitInfo = wmSettings.settingUnitInfo as SettingUnitInfo
-    private val settingWistRaise = wmSettings.settingWistRaise as SettingWistRaise
-    private val settingSleepSet = wmSettings.settingSleepSettings as SettingSleepSet
-    private val settingDrinkWaterReminder =
+    val settingSoundAndHaptic = wmSettings.settingSoundAndHaptic as SettingSoundAndHaptic
+    val settingSportGoal = wmSettings.settingSportGoal as SettingSportGoal
+    val settingUnitInfo = wmSettings.settingUnitInfo as SettingUnitInfo
+    val settingWistRaise = wmSettings.settingWistRaise as SettingWistRaise
+    val settingSleepSet = wmSettings.settingSleepSettings as SettingSleepSet
+    val settingDrinkWaterReminder =
         wmSettings.settingDrinkWater as SettingDrinkWaterReminder
 
     private val gson = Gson()

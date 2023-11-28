@@ -1,0 +1,524 @@
+{
+    "sports": [
+        {
+            "id": 1,
+            "sport_type": 0,
+            "type": 1
+        },
+        {
+            "id": 2,
+            "sport_type": 1,
+            "type": 1
+        },
+        {
+            "id": 4,
+            "sport_type": 5,
+            "type": 1
+        },
+        {
+            "id": 5,
+            "sport_type": 5,
+            "type": 1
+        },
+        {
+            "id": 3,
+            "sport_type": 0,
+            "type": 4
+        },
+        {
+            "id": 13,
+            "sport_type": 5,
+            "type": 1
+        },
+        {
+            "id": 66,
+            "sport_type": 0,
+            "type": 2
+        },
+        {
+            "id": 6,
+            "sport_type": 2,
+            "type": 3
+        },
+        {
+            "id": 15,
+            "sport_type": 11,
+            "type": 3
+        },
+        {
+            "id": 17,
+            "sport_type": 5,
+            "type": 3
+        },
+        {
+            "id": 18,
+            "sport_type": 5,
+            "type": 3
+        },
+        {
+            "id": 19,
+            "sport_type": 5,
+            "type": 3
+        },
+        {
+            "id": 20,
+            "sport_type": 12,
+            "type": 3
+        },
+        {
+            "id": 7,
+            "sport_type": 2,
+            "type": 4
+        },
+        {
+            "id": 8,
+            "sport_type": 4,
+            "type": 4
+        },
+        {
+            "id": 9,
+            "sport_type": 6,
+            "type": 4
+        },
+        {
+            "id": 10,
+            "sport_type": 6,
+            "type": 4
+        },
+        {
+            "id": 11,
+            "sport_type": 6,
+            "type": 4
+        },
+        {
+            "id": 12,
+            "sport_type": 6,
+            "type": 4
+        },
+        {
+            "id": 23,
+            "sport_type": 4,
+            "type": 4
+        },
+        {
+            "id": 24,
+            "sport_type": 4,
+            "type": 4
+        },
+        {
+            "id": 25,
+            "sport_type": 4,
+            "type": 4
+        },
+        {
+            "id": 26,
+            "sport_type": 4,
+            "type": 4
+        },
+        {
+            "id": 28,
+            "sport_type": 7,
+            "type": 4
+        },
+        {
+            "id": 31,
+            "sport_type": 4,
+            "type": 4
+        },
+        {
+            "id": 33,
+            "sport_type": 4,
+            "type": 4
+        },
+        {
+            "id": 34,
+            "sport_type": 4,
+            "type": 4
+        },
+        {
+            "id": 35,
+            "sport_type": 7,
+            "type": 4
+        },
+        {
+            "id": 36,
+            "sport_type": 11,
+            "type": 4
+        },
+        {
+            "id": 37,
+            "sport_type": 8,
+            "type": 4
+        },
+        {
+            "id": 38,
+            "sport_type": 8,
+            "type": 4
+        },
+        {
+            "id": 39,
+            "sport_type": 6,
+            "type": 4
+        },
+        {
+            "id": 40,
+            "sport_type": 6,
+            "type": 4
+        },
+        {
+            "id": 41,
+            "sport_type": 6,
+            "type": 4
+        },
+        {
+            "id": 42,
+            "sport_type": 6,
+            "type": 4
+        },
+        {
+            "id": 43,
+            "sport_type": 6,
+            "type": 4
+        },
+        {
+            "id": 45,
+            "sport_type": 6,
+            "type": 4
+        },
+        {
+            "id": 46,
+            "sport_type": 6,
+            "type": 4
+        },
+        {
+            "id": 47,
+            "sport_type": 9,
+            "type": 4
+        },
+        {
+            "id": 50,
+            "sport_type": 9,
+            "type": 4
+        },
+        {
+            "id": 52,
+            "sport_type": 9,
+            "type": 4
+        },
+        {
+            "id": 55,
+            "sport_type": 12,
+            "type": 4
+        },
+        {
+            "id": 56,
+            "sport_type": 12,
+            "type": 4
+        },
+        {
+            "id": 57,
+            "sport_type": 12,
+            "type": 4
+        },
+        {
+            "id": 58,
+            "sport_type": 12,
+            "type": 4
+        },
+        {
+            "id": 59,
+            "sport_type": 12,
+            "type": 4
+        },
+        {
+            "id": 61,
+            "sport_type": 12,
+            "type": 4
+        },
+        {
+            "id": 62,
+            "sport_type": 12,
+            "type": 4
+        },
+        {
+            "id": 63,
+            "sport_type": 12,
+            "type": 4
+        },
+        {
+            "id": 64,
+            "sport_type": 4,
+            "type": 4
+        },
+        {
+            "id": 65,
+            "sport_type": 11,
+            "type": 4
+        },
+        {
+            "id": 79,
+            "sport_type": 5,
+            "type": 4
+        },
+        {
+            "id": 80,
+            "sport_type": 5,
+            "type": 4
+        },
+        {
+            "id": 83,
+            "sport_type": 4,
+            "type": 4
+        },
+        {
+            "id": 84,
+            "sport_type": 4,
+            "type": 4
+        },
+        {
+            "id": 85,
+            "sport_type": 4,
+            "type": 4
+        },
+        {
+            "id": 86,
+            "sport_type": 4,
+            "type": 4
+        },
+        {
+            "id": 93,
+            "sport_type": 4,
+            "type": 4
+        },
+        {
+            "id": 94,
+            "sport_type": 4,
+            "type": 4
+        },
+        {
+            "id": 97,
+            "sport_type": 4,
+            "type": 4
+        },
+        {
+            "id": 99,
+            "sport_type": 9,
+            "type": 4
+        },
+        {
+            "id": 101,
+            "sport_type": 9,
+            "type": 4
+        },
+        {
+            "id": 102,
+            "sport_type": 12,
+            "type": 4
+        },
+        {
+            "id": 103,
+            "sport_type": 6,
+            "type": 4
+        },
+        {
+            "id": 104,
+            "sport_type": 6,
+            "type": 4
+        },
+        {
+            "id": 105,
+            "sport_type": 6,
+            "type": 4
+        },
+        {
+            "id": 109,
+            "sport_type": 8,
+            "type": 4
+        },
+        {
+            "id": 111,
+            "sport_type": 8,
+            "type": 4
+        },
+        {
+            "id": 114,
+            "sport_type": 11,
+            "type": 4
+        },
+        {
+            "id": 116,
+            "sport_type": 11,
+            "type": 4
+        },
+        {
+            "id": 118,
+            "sport_type": 11,
+            "type": 4
+        },
+        {
+            "id": 119,
+            "sport_type": 12,
+            "type": 4
+        },
+        {
+            "id": 121,
+            "sport_type": 4,
+            "type": 4
+        },
+        {
+            "id": 122,
+            "sport_type": 4,
+            "type": 4
+        },
+        {
+            "id": 126,
+            "sport_type": 8,
+            "type": 4
+        },
+        {
+            "id": 129,
+            "sport_type": 8,
+            "type": 4
+        },
+        {
+            "id": 400,
+            "sport_type": 0,
+            "type": 4
+        },
+        {
+            "id": 135,
+            "sport_type": 1,
+            "type": 4
+        },
+        {
+            "id": 401,
+            "sport_type": 4,
+            "type": 4
+        },
+        {
+            "id": 403,
+            "sport_type": 4,
+            "type": 4
+        },
+        {
+            "id": 404,
+            "sport_type": 4,
+            "type": 4
+        },
+        {
+            "id": 405,
+            "sport_type": 4,
+            "type": 4
+        },
+        {
+            "id": 406,
+            "sport_type": 4,
+            "type": 4
+        },
+        {
+            "id": 407,
+            "sport_type": 4,
+            "type": 4
+        },
+        {
+            "id": 408,
+            "sport_type": 4,
+            "type": 4
+        },
+        {
+            "id": 409,
+            "sport_type": 4,
+            "type": 4
+        },
+        {
+            "id": 410,
+            "sport_type": 4,
+            "type": 4
+        },
+        {
+            "id": 411,
+            "sport_type": 4,
+            "type": 4
+        },
+        {
+            "id": 412,
+            "sport_type": 4,
+            "type": 4
+        },
+        {
+            "id": 413,
+            "sport_type": 4,
+            "type": 4
+        },
+        {
+            "id": 414,
+            "sport_type": 6,
+            "type": 4
+        },
+        {
+            "id": 415,
+            "sport_type": 6,
+            "type": 4
+        },
+        {
+            "id": 416,
+            "sport_type": 6,
+            "type": 4
+        },
+        {
+            "id": 134,
+            "sport_type": 6,
+            "type": 4
+        },
+        {
+            "id": 417,
+            "sport_type": 6,
+            "type": 4
+        },
+        {
+            "id": 426,
+            "sport_type": 8,
+            "type": 4
+        },
+        {
+            "id": 418,
+            "sport_type": 9,
+            "type": 4
+        },
+        {
+            "id": 419,
+            "sport_type": 9,
+            "type": 4
+        },
+        {
+            "id": 420,
+            "sport_type": 11,
+            "type": 4
+        },
+        {
+            "id": 421,
+            "sport_type": 11,
+            "type": 4
+        },
+        {
+            "id": 422,
+            "sport_type": 11,
+            "type": 4
+        },
+        {
+            "id": 423,
+            "sport_type": 11,
+            "type": 4
+        },
+        {
+            "id": 424,
+            "sport_type": 12,
+            "type": 4
+        },
+        {
+            "id": 425,
+            "sport_type": 12,
+            "type": 4
+        }
+    ]
+}

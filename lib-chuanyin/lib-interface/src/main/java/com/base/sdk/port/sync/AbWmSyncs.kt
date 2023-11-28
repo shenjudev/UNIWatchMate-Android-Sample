@@ -54,6 +54,11 @@ abstract class AbWmSyncs {
     /**
      * syncTodayInfo(同步所有数据)
      */
+    abstract val syncDailyActivityDuration: AbSyncData<WmSyncData<WmDailyActivityDurationData>>
+
+    /**
+     * syncTodayInfo(同步所有数据)
+     */
     abstract val syncAllData: AbSyncData<WmSyncData<out WmBaseSyncData>>
 
 }

@@ -43,34 +43,34 @@ class CombineFragment : BaseFragment(R.layout.fragment_combine) {
 
         viewBind.itemTest.setOnClickListener {
 
-            UNIWatchMate.getDeviceInfo().subscribe { it ->
-                UNIWatchMate.wmLog.logE("测试消息1", "基本信息：" + it)
-            }
-
-            val wmUnitInfo = WmUnitInfo(
-                WmUnitInfo.WeightUnit.LB,
-                WmUnitInfo.TemperatureUnit.FAHRENHEIT,
-
-                WmUnitInfo.TimeFormat.TWENTY_FOUR_HOUR,
-                WmUnitInfo.DistanceUnit.MILE,
-
-                )
-
-            UNIWatchMate.wmSettings.settingUnitInfo.set(wmUnitInfo).subscribe { it ->
-                UNIWatchMate.wmLog.logE("测试消息6", "单位设置成功:" + it)
-            }
-
-            UNIWatchMate.wmSettings.settingAppView.get().subscribe { it ->
-                UNIWatchMate.wmLog.logE("测试消息7", "应用视图获取成功:" + it)
-            }
-
-            UNIWatchMate.wmSync.syncStepData.syncData(0).subscribe {
-                UNIWatchMate.wmLog.logE("测试消息2", "步数数据同步成功:" + it.value.size)
-            }
-
-            UNIWatchMate.wmSync.syncActivityDurationData.syncData(0).subscribe {
-                UNIWatchMate.wmLog.logE("测试消息3", "活动时长数据同步成功:" + it.value.size)
-            }
+//            UNIWatchMate.getDeviceInfo().subscribe { it ->
+//                UNIWatchMate.wmLog.logE("测试消息1", "基本信息：" + it)
+//            }
+//
+//            val wmUnitInfo = WmUnitInfo(
+//                WmUnitInfo.WeightUnit.LB,
+//                WmUnitInfo.TemperatureUnit.FAHRENHEIT,
+//
+//                WmUnitInfo.TimeFormat.TWENTY_FOUR_HOUR,
+//                WmUnitInfo.DistanceUnit.MILE,
+//
+//                )
+//
+//            UNIWatchMate.wmSettings.settingUnitInfo.set(wmUnitInfo).subscribe { it ->
+//                UNIWatchMate.wmLog.logE("测试消息6", "单位设置成功:" + it)
+//            }
+//
+//            UNIWatchMate.wmSettings.settingAppView.get().subscribe { it ->
+//                UNIWatchMate.wmLog.logE("测试消息7", "应用视图获取成功:" + it)
+//            }
+//
+//            UNIWatchMate.wmSync.syncStepData.syncData(0).subscribe {
+//                UNIWatchMate.wmLog.logE("测试消息2", "步数数据同步成功:" + it.value.size)
+//            }
+//
+//            UNIWatchMate.wmSync.syncActivityDurationData.syncData(0).subscribe {
+//                UNIWatchMate.wmLog.logE("测试消息3", "活动时长数据同步成功:" + it.value.size)
+//            }
 //
 //            UNIWatchMate.wmSync.syncCaloriesData.syncData(0).subscribe {
 //                UNIWatchMate.wmLog.logE("测试消息4", "卡路里同步成功:" + it.value.size)
@@ -80,6 +80,9 @@ class CombineFragment : BaseFragment(R.layout.fragment_combine) {
 //                UNIWatchMate.wmLog.logE("测试消息5", "血氧同步成功:" + it.value.size)
 //            }
 
+            UNIWatchMate.wmSync.syncDailyActivityDuration.syncData(0).subscribe {
+                UNIWatchMate.wmLog.logE("测试消息8", "每日活动时长同步成功:" + it.value.size)
+            }
 
         }
 

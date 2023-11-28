@@ -6,7 +6,7 @@ import java.io.Serializable
 import java.util.*
 
 abstract class WmBaseSyncData(
-){
+) {
     var timestamp: Long = 0
 }
 
@@ -138,6 +138,15 @@ class WmSportSummaryData(
 }
 
 /**
+ * 日常活动时长
+ */
+class WmDailyActivityDurationData(val sportType: Short, val duration: Short) : WmBaseSyncData(){
+    override fun toString(): String {
+        return "WmDailyActivityDurationData(sportType=$sportType, duration=$duration)"
+    }
+}
+
+/**
  * 平均 value 血氧数据
  */
 class WmHeartRateData(
@@ -193,11 +202,11 @@ class WmStepData(
 }
 
 /**
- * distance value 距离数据
+ * distance value 距离数据 米
  */
 class WmDistanceData(
     /**
-     * distance value
+     * distance value 米
      */
     val distance: Int,
 ) : WmBaseSyncData() {
@@ -587,5 +596,6 @@ enum class WmSyncDataType {
     TEMPERATURE,
     GAME,
     ACTIVITY_DURATION,
+    DAILY_ACTIVITY_DURATION,
 }
 

@@ -27,7 +27,6 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
     private val TAG = "SyncSportSummaryData"
     private val msgListSummary = mutableListOf<MsgBean>()
 
-    //    private val msgListTenSeconds = mutableSetOf<MsgBean>()
     private var hasNext: Boolean = false
     private lateinit var byteBufferSummarySyncData: ByteBuffer
 
@@ -45,6 +44,8 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
 
     private var sportIndex = 0
     private var sportSize = 0
+
+    var withTenSeconds = true
 
     override fun latestSyncTime(): Long {
         return lastSyncTime
@@ -275,16 +276,35 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
             tenSecondsDistanceMap.clearMap()
             tenSecondsCaloriesMap.clearMap()
 
-            if (sportSize > 0) {
+            if (withTenSeconds) {
+                if (sportSize > 0) {
 
-                val syncTimes = mutableListOf<SyncTime>()
+                    val syncTimes = mutableListOf<SyncTime>()
 
-                it.value.forEach { summary ->
-                    val syncTime = SyncTime(summary.startTime, summary.endTime)
-                    syncTimes.add(syncTime)
+                    it.value.forEach { summary ->
+                        val syncTime = SyncTime(summary.startTime, summary.endTime)
+                        syncTimes.add(syncTime)
+                    }
+
+                    syncTenSecondsData(URN_SPORT_10S_RATE, syncTimes)
+                }
+            } else {
+                wmSyncData?.value?.forEach { summary ->
+                    val heartRateList = mutableListOf<WmRealtimeRateData>()
+                    val distanceList = mutableListOf<WmDistanceData>()
+                    val caloriesList = mutableListOf<WmCaloriesData>()
+                    val stepFrequencyList = mutableListOf<WmStepFrequencyData>()
+
+                    summary.tenSecondsHeartRate = heartRateList
+                    summary.tenSecondsCaloriesData = caloriesList
+                    summary.tenSecondsDistanceData = distanceList
+                    summary.tenSecondsStepFrequencyData = stepFrequencyList
                 }
 
-                syncTenSecondsData(URN_SPORT_10S_RATE, syncTimes)
+                syncSportSummaryObserveEmitter?.onNext(wmSyncData)
+                syncSportSummaryObserveEmitter?.onComplete()
+
+                sjUniWatch.wmLog.logD(TAG, "All data wmSyncData：$wmSyncData")
             }
         }
     }

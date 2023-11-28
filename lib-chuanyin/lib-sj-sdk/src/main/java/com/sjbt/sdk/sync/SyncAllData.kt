@@ -18,6 +18,17 @@ class SyncAllData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<out WmBase
     private var hasNext = false
     private val TAG = "SyncAllData"
     private var progress = 0
+    private val words = arrayOf(
+        WmSyncDataType.STEP,
+        WmSyncDataType.DISTANCE,
+        WmSyncDataType.CALORIE,
+        WmSyncDataType.HEART_RATE_ONE_HOUR,
+        WmSyncDataType.HEART_RATE_FIVE_MINUTES,
+        WmSyncDataType.OXYGEN,
+        WmSyncDataType.ACTIVITY_DURATION,
+        WmSyncDataType.SPORT_SUMMARY,
+        WmSyncDataType.SLEEP
+    )
 
     override fun latestSyncTime(): Long {
         return lastSyncTime
@@ -38,18 +49,6 @@ class SyncAllData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<out WmBase
 
         return Observable.create { emitter ->
             syncDataEmitter = emitter
-
-            val words = arrayOf(
-                WmSyncDataType.STEP,
-                WmSyncDataType.DISTANCE,
-                WmSyncDataType.CALORIE,
-                WmSyncDataType.HEART_RATE_ONE_HOUR,
-                WmSyncDataType.HEART_RATE_FIVE_MINUTES,
-                WmSyncDataType.OXYGEN,
-                WmSyncDataType.ACTIVITY_DURATION,
-                WmSyncDataType.SPORT_SUMMARY,
-                WmSyncDataType.SLEEP
-            )
 
             val characters: Observable<WmSyncData<out WmBaseSyncData>> = Observable
                 .fromIterable(words.toList()) // create an observable from the input list
