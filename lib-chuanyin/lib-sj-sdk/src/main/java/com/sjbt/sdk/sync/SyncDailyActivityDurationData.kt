@@ -87,21 +87,19 @@ class SyncDailyActivityDurationData(val sjUniWatch: SJUniWatch) :
                 sjUniWatch.wmLog.logE(TAG, "activity duration:$activityDuration")
 
                 activityDuration.value.forEach { durationData ->
-                    if (durationData.timestamp % 10000 < 1000) {
 
-                        val timeStamp = durationData.timestamp / 1000 * 1000
+                    val timeStamp = durationData.timestamp
 
-                        var duration = dailyActivityDurationMap.get(timeStamp)
+                    var duration = dailyActivityDurationMap.get(timeStamp)
 
-                        if (duration != null) {
-                            duration += durationData.duration
-                            dailyActivityDurationMap.put(timeStamp, duration)
-                        } else {
-                            dailyActivityDurationMap.put(
-                                timeStamp,
-                                durationData.duration
-                            )
-                        }
+                    if (duration != null) {
+                        duration += durationData.duration
+                        dailyActivityDurationMap.put(timeStamp, duration)
+                    } else {
+                        dailyActivityDurationMap.put(
+                            timeStamp,
+                            durationData.duration
+                        )
                     }
                 }
 
@@ -147,7 +145,7 @@ class SyncDailyActivityDurationData(val sjUniWatch: SJUniWatch) :
                     for ((timeStamp, duration) in dailyActivitySummaryMap) {
 
                         var notSportDuration = dailyActivityDurationMap.get(timeStamp)?.let {
-                            it.minus(duration)
+                            it - duration
                         }
 
                         notSportDuration?.let {
