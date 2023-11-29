@@ -21,4 +21,5 @@ data class WmBindInfo(
 enum class BindType {
     SCAN_QR,
     DISCOVERY,
+    CONNECT_BACK
 }
