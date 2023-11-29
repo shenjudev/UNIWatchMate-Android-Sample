@@ -151,7 +151,7 @@ class SyncSleepData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmSleepD
         val calendar = Calendar.getInstance()
         calendar.set(baseYear, baseMon, baseDay, 0, 0, 0)
 
-        val realTimeStamp = calendar.timeInMillis / 1000 + timestamp
+        val realTimeStamp = calendar.timeInMillis + timestamp
 
         val sleepDataList = mutableListOf<WmSleepData>()
 
@@ -180,7 +180,7 @@ class SyncSleepData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmSleepD
             val calendar = Calendar.getInstance()
             calendar.set(sleepYear, sleepMon, sleepDay, 0, 0, 0)
 
-            var dateStamp = (calendar.timeInMillis / 1000).toInt()
+            var dateStamp = calendar.timeInMillis.toInt()
             var bedTime = byteBufferSyncData.int + dateStamp
             var getUpTime = byteBufferSyncData.int + dateStamp
 

@@ -139,6 +139,7 @@ class DeviceBindFragment : BaseFragment(R.layout.fragment_device_bind),
                     scanResult.projectName,
                     scanResult.modelType
                 )
+                bindInfo.randomCode = scanResult.randomCode
 //                  deviceManager.delDevice()
                 val wmDevice = UNIWatchMate.connectScanQr(
                     bindInfo

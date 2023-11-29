@@ -837,8 +837,6 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(),
                         mBtEngine.clearMsgQueue()
 
                         removeDevice()
-//                        disconnect()
-//                        btStateChange(WmConnectState.DISCONNECTED)
                     }
                 }
             }
@@ -1640,11 +1638,11 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(),
                     try {
                         btStateChange(WmConnectState.CONNECTING)
                         mCurrDevice = mBtAdapter.getRemoteDevice(address)
-                        mCurrDevice?.let {
-                            mDeviceName = it.name
-                            wmDevice.name = it.name
-                            mBtEngine.connect(it)
+                        mCurrDevice!!.name?.let {
+                            mDeviceName = it
+                            wmDevice.name = it
                         }
+                        mBtEngine.connect(mCurrDevice)
                     } catch (e: Exception) {
                         e.printStackTrace()
                         btStateChange(WmConnectState.DISCONNECTED)
@@ -1682,8 +1680,11 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(),
                 mCurrAddress = bluetoothDevice.address
                 wmDevice.address = bluetoothDevice.address
                 wmDevice.isRecognized = bindInfo.model == WmDeviceModel.SJ_WATCH
-                mDeviceName = bluetoothDevice.name
-                wmDevice.name = bluetoothDevice.name
+
+                bluetoothDevice.name?.let {
+                    mDeviceName = it
+                    wmDevice.name = it
+                }
 
                 mCurrAddress?.let {
                     if (mBtEngine.getSocketState(it) == SOCKET_STATE_NONE) {
@@ -1692,7 +1693,6 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(),
                         }
 
                         if (wmDevice.isRecognized) {
-
                             wmLog.logE(TAG, "sdk pre connect:${wmDevice}")
                             btStateChange(WmConnectState.CONNECTING)
                             mBtEngine.connect(bluetoothDevice)

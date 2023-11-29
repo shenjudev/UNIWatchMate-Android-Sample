@@ -217,13 +217,24 @@ object CmdHelper {
      */
     fun getBindCmd(bindInfo: WmBindInfo): ByteArray {
         Log.e(TAG_SJ, "bind device cmd")
-        val byteBuffer = ByteBuffer.allocate(17)
+        val byteBuffer = ByteBuffer.allocate(17 + 2 + bindInfo.userId.toByteArray().size)
+            .order(ByteOrder.LITTLE_ENDIAN)
+
         byteBuffer.put(bindInfo.bindType.ordinal.toByte())
 
         bindInfo.randomCode?.let {
             Log.d(TAG_SJ, "random code:$it")
-            byteBuffer.put(it.toByteArray())
+            val randomCodeArr = ByteArray(16)
+
+            val size = if(it.toByteArray().size>16){16}else{it.toByteArray().size}
+            System.arraycopy(it.toByteArray(), 0, randomCodeArr, 0, size)
+            byteBuffer.put(randomCodeArr)
+        } ?: run {
+            byteBuffer.put(ByteArray(16))
         }
+
+        byteBuffer.put(bindInfo.userId.toByteArray().size.toByte())
+        byteBuffer.put(bindInfo.userId.toByteArray())
 
         val payload = byteBuffer.array()
         val crc = BtUtils.getCrc(HEX_FFFF, payload, payload.size)

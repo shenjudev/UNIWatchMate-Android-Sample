@@ -11,24 +11,26 @@ import com.sjbt.sdk.entity.NodeData
 import com.sjbt.sdk.spp.cmd.*
 import com.sjbt.sdk.utils.BtUtils
 import com.sjbt.sdk.utils.TimeUtils
+import io.reactivex.rxjava3.core.*
 import io.reactivex.rxjava3.core.Observable
-import io.reactivex.rxjava3.core.ObservableEmitter
 import io.reactivex.rxjava3.core.Observer
-import io.reactivex.rxjava3.core.Single
-import io.reactivex.rxjava3.core.SingleEmitter
 import io.reactivex.rxjava3.disposables.Disposable
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import java.util.*
 
-class SyncDistanceData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmDistanceData>>(),
-    ReadSubPkMsg {
+/**
+ * 每日活动时长
+ */
+class SyncDailyActivityDurationData2(val sjUniWatch: SJUniWatch) :
+    AbSyncData<WmSyncData<WmDailyActivityDurationData>>(), ReadSubPkMsg {
 
     var lastSyncTime: Long = 0
-    private var activityObserveEmitter: ObservableEmitter<WmSyncData<WmDistanceData>>? = null
-    private var observeChangeEmitter: ObservableEmitter<WmSyncData<WmDistanceData>>? = null
+    private var activityDurationObserveEmitter: ObservableEmitter<WmSyncData<WmDailyActivityDurationData>>? =
+        null
+    private var observeChangeEmitter: ObservableEmitter<WmSyncData<WmDailyActivityDurationData>>? = null
 
-    private val TAG = "SyncDistanceData"
+    private val TAG = "SyncDailyActivityDurationData"
     private val msgList = mutableListOf<MsgBean>()
     private var hasNext: Boolean = false
     private lateinit var byteBufferSyncData: ByteBuffer
@@ -45,20 +47,21 @@ class SyncDistanceData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmDis
         return hasNext
     }
 
-    fun onTimeOut(msg: MsgBean, nodeData: NodeData) {
-        activityObserveEmitter?.onError(WmTimeOutException("$TAG time out exception"))
-        sjUniWatch.wmLog.logE(TAG, "onTimeOut:$msg")
+    fun onTimeOut(msgBean: MsgBean, nodeData: NodeData) {
+        activityDurationObserveEmitter?.onError(WmTimeOutException("$TAG time out exception"))
+        sjUniWatch.wmLog.logE(TAG, "onTimeOut:$msgBean")
+
     }
 
-    override fun syncData(startTime: Long): Observable<WmSyncData<WmDistanceData>> {
+    override fun syncData(startTime: Long): Observable<WmSyncData<WmDailyActivityDurationData>> {
         msgList.clear()
         return Observable.create { emitter ->
-            activityObserveEmitter = emitter
+            activityDurationObserveEmitter = emitter
             sjUniWatch.sendReadSubPkObserveNode(
                 this,
                 CmdHelper.getReadSportSyncData(
                     startTime, 0,
-                    childUrn = URN_SPORT_DISTANCE
+                    childUrn = URN_SPORT_ACTIVITY_LEN
                 )
             ).subscribe(object :
                 Observer<MsgBean> {
@@ -66,7 +69,7 @@ class SyncDistanceData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmDis
                 }
 
                 override fun onNext(t: MsgBean) {
-                    sjUniWatch.wmLog.logE(TAG, "distance back msg:$t")
+//                    sjUniWatch.wmLog.logE(TAG, "activity duration back msg:$t")
                     msgList.add(t)
                 }
 
@@ -80,9 +83,8 @@ class SyncDistanceData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmDis
 
                         if (msgList.size == 1) {
                             msgList[0].payloadPackage?.itemList?.forEach {
-                                syncDistanceBusiness(it)
+                                syncActivityDurationDataBusiness(it)
                             }
-
                         } else {
                             var bufferSize = 0
                             msgList.forEach {
@@ -97,10 +99,10 @@ class SyncDistanceData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmDis
                                 ByteBuffer.allocate(bufferSize).order(ByteOrder.LITTLE_ENDIAN)
 
                             msgList.forEachIndexed { index, it ->
-                                sjUniWatch.wmLog.logE(
-                                    TAG,
-                                    "distance data:" + BtUtils.bytesToHexString(it.originData)
-                                )
+//                                sjUniWatch.wmLog.logE(
+//                                    TAG,
+//                                    "activity duration data:" + BtUtils.bytesToHexString(it.originData)
+//                                )
 
                                 if (index == 0) {
                                     byteBufferSyncData.put(
@@ -116,7 +118,6 @@ class SyncDistanceData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmDis
 
                             parseStepData()
                         }
-
                     } else {
                         defaultBack()
                     }
@@ -125,7 +126,7 @@ class SyncDistanceData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmDis
         }
     }
 
-    override var observeSyncData: Observable<WmSyncData<WmDistanceData>> =
+    override var observeSyncData: Observable<WmSyncData<WmDailyActivityDurationData>> =
         Observable.create { emitter -> observeChangeEmitter = emitter }
 
     private fun parseStepData() {
@@ -157,15 +158,14 @@ class SyncDistanceData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmDis
         val calendar = Calendar.getInstance()
         calendar.set(baseYear, baseMon, baseDay, 0, 0, 0)
 
-        val realTimeStamp = calendar.timeInMillis + timestamp
+        val realTimeStamp = (calendar.timeInMillis + timestamp) / 1000 * 1000
 
-        val distanceList = mutableListOf<WmDistanceData>()
+        val activityDurationDataList = mutableListOf<WmDailyActivityDurationData>()
 
         var dataIndex = 0
-
         while (byteBufferSyncData.hasRemaining()) {
 
-            val wmDistanceData = WmDistanceData(byteBufferSyncData.int)
+            val wmActivityDurationData = WmDailyActivityDurationData(1,byteBufferSyncData.int)
 
             if (timestampType == 0) {//只有一个时间戳
                 sjUniWatch.wmLog.logD(
@@ -173,30 +173,31 @@ class SyncDistanceData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmDis
                     "start base date:" + TimeUtils.date2String(Date(realTimeStamp + dataIndex * SYNC_DATA_INTERVAL_HOUR))
                 )
 
-                wmDistanceData.timestamp =
+                wmActivityDurationData.timestamp =
                     realTimeStamp + dataIndex * SYNC_DATA_INTERVAL_HOUR
             }
 
 //            sjUniWatch.wmLog.logD(
 //                TAG,
-//                "distance data: ${byteBufferSyncData.position()} -> ${wmDistanceData}"
+//                "activity duration data: $dataIndex -> ${wmActivityDurationData}"
 //            )
 
-            distanceList.add(wmDistanceData)
+            activityDurationDataList.add(wmActivityDurationData)
 
             dataIndex++
         }
 
         val wmSyncData =
             WmSyncData(
-                WmSyncDataType.DISTANCE,
+                WmSyncDataType.ACTIVITY_DURATION,
                 realTimeStamp,
                 WmIntervalType.ONE_HOUR,
-                distanceList
+                activityDurationDataList
             )
 
-        activityObserveEmitter?.onNext(wmSyncData)
-        activityObserveEmitter?.onComplete()
+        activityDurationObserveEmitter?.onNext(wmSyncData)
+        activityDurationObserveEmitter?.onComplete()
+
         lastSyncTime = System.currentTimeMillis()
 
         sjUniWatch.wmLog.logE(
@@ -205,7 +206,7 @@ class SyncDistanceData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmDis
         )
     }
 
-    fun syncDistanceBusiness(nodeData: NodeData) {
+    fun syncActivityDurationDataBusiness(nodeData: NodeData) {
         if (nodeData.dataFmt == DataFormat.FMT_BIN) {
             byteBufferSyncData = ByteBuffer.wrap(nodeData.data).order(ByteOrder.LITTLE_ENDIAN)
             parseStepData()
@@ -217,13 +218,14 @@ class SyncDistanceData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmDis
     private fun defaultBack() {
         val wmSyncData =
             WmSyncData(
-                WmSyncDataType.DISTANCE,
+                WmSyncDataType.ACTIVITY_DURATION,
                 0,
                 WmIntervalType.ONE_HOUR,
-                mutableListOf<WmDistanceData>()
+                mutableListOf<WmDailyActivityDurationData>()
             )
 
-        activityObserveEmitter?.onNext(wmSyncData)
-        activityObserveEmitter?.onComplete()
+        activityDurationObserveEmitter?.onNext(wmSyncData)
+        activityDurationObserveEmitter?.onComplete()
     }
+
 }

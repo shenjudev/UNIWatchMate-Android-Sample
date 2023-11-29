@@ -140,11 +140,11 @@ class AppSport(val sjUniWatch: SJUniWatch) : AbAppSport() {
 
                 if (nodeData.data.size == 1) {
 
-                    if (nodeData.dataFmt == DataFormat.FMT_ERRCODE) {
-                        getFixedSportListEmitter?.onSuccess(mFixedSportList)
-                    }else{
+//                    if (nodeData.dataFmt == DataFormat.FMT_ERRCODE) {
+//                        getFixedSportListEmitter?.onSuccess(mFixedSportList)
+//                    }else{
                         updateFixedSportListEmitter?.onSuccess(nodeData.data[0].toInt() == ErrorCode.ERR_CODE_OK.ordinal)
-                    }
+//                    }
 
                 } else {
 
@@ -166,11 +166,11 @@ class AppSport(val sjUniWatch: SJUniWatch) : AbAppSport() {
             URN_APP_DYNAMIC_SPORT_LIST -> {
                 if (nodeData.data.size == 1) {
 
-                    if (nodeData.dataFmt == DataFormat.FMT_ERRCODE) {
-                        getDynamicSportListEmitter?.onSuccess(mDynamicSportList)
-                    }else{
+//                    if (nodeData.dataFmt == DataFormat.FMT_ERRCODE) {
+//                        getDynamicSportListEmitter?.onSuccess(mDynamicSportList)
+//                    }else{
                         updateDynamicSportListEmitter?.onSuccess(nodeData.data[0].toInt() == ErrorCode.ERR_CODE_OK.ordinal)
-                    }
+//                    }
 
                 } else {
 
