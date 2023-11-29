@@ -657,6 +657,7 @@
     <string name="awake_sleep">清醒：</string>
     <string name="hourly_data">每小时数据</string>
     <string name="data_every_5_minutes">每5分钟数据</string>
+    <string name="data_daily_duration">运动活动时长分布</string>
 
     <string name="version_app">版本号 %s</string>
     <string name="scan_device">扫描设备</string>

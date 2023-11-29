@@ -102,14 +102,16 @@ class SportInstalledListFragment : BaseFragment(R.layout.fragment_sport_installe
                             if (sportsMap == null || sportsMap.size()==0) {
                                 viewBind.loadingView.showError(R.string.ds_no_data)
                             } else {
-                                installDatas.clear()
-                                installDatas.addAll(sportsMap[0])
-                                adapter.sources = installDatas
-                                adapter.notifyDataSetChanged()
+
+                                buildInDatas.clear()
+                                buildInDatas.addAll(sportsMap[0])
+                                dragAdapter.notifyDataSetChanged()
+
                                 if (sportsMap.size() > 1) {
-                                    buildInDatas.clear()
-                                    buildInDatas.addAll(sportsMap[1])
-                                    dragAdapter.notifyDataSetChanged()
+                                    installDatas.clear()
+                                    installDatas.addAll(sportsMap[1])
+                                    adapter.sources = installDatas
+                                    adapter.notifyDataSetChanged()
                                 }
                                 viewBind.loadingView.visibility = View.GONE
                             }

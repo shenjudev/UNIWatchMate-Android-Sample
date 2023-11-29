@@ -76,6 +76,9 @@
         <action
             android:id="@+id/toAllData"
             app:destination="@id/AllData" />
+        <action
+            android:id="@+id/toDailyActivityDurationData"
+            app:destination="@id/DailyActivityDurationData" />
     </fragment>
 
     <fragment
@@ -182,9 +185,14 @@
         android:id="@+id/AllData"
         android:name="com.sjbt.sdk.sample.ui.sync.AllDataFragment"
         android:label="@string/data_all"
-        tools:layout="@layout/fragment_data_list">
+        tools:layout="@layout/fragment_data_list"/>
 
-    </fragment>
+    <fragment
+        android:id="@+id/DailyActivityDurationData"
+        android:name="com.sjbt.sdk.sample.ui.sync.DailyActivityDurationDataFragment"
+        android:label="@string/data_daily_duration"
+        tools:layout="@layout/fragment_data_list"/>
+
     <fragment
         android:id="@+id/sportDetailFragment"
         android:name="com.sjbt.sdk.sample.ui.sync.SportDetailFragment"

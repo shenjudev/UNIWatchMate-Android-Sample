@@ -45,6 +45,7 @@ class SyncFragment : BaseFragment(R.layout.fragment_sync) {
         viewBind.itemActivityDistance.clickTrigger(block = blockClick)
         viewBind.itemSport.clickTrigger(block = blockClick)
         viewBind.itemAll.clickTrigger(block = blockClick)
+        viewBind.itemDailyActivityDuration.clickTrigger(block = blockClick)
 
         viewLifecycle.launchRepeatOnStarted {
             launch {
@@ -131,6 +132,10 @@ class SyncFragment : BaseFragment(R.layout.fragment_sync) {
             viewBind.itemAll -> {
                 findNavController().navigate(SyncFragmentDirections.toAllData())
             }
+            viewBind.itemDailyActivityDuration -> {
+                findNavController().navigate(SyncFragmentDirections.toDailyActivityDurationData())
+            }
+
         }
     }
 }

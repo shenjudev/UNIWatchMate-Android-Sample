@@ -549,6 +549,7 @@
     <string name="data_ecg">ECG</string>
     <string name="data_sport">Sport</string>
     <string name="data_all">All Data</string>
+    <string name="data_daily_duration">Sport Activity Duration Distribution</string>
     <string name="data_sport_detail">Sport Detail</string>
     <string name="data_game">Game</string>
     <string name="total_step">Total Steps：</string>

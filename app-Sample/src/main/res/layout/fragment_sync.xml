@@ -64,6 +64,10 @@
                 android:id="@+id/item_all"
                 style="@style/Widget.Sample.PreferenceView.Item.Text"
                 app:preferenceTitle="@string/data_all" />
+            <com.github.kilnn.tool.widget.item.PreferenceItem
+                android:id="@+id/item_daily_activity_duration"
+                style="@style/Widget.Sample.PreferenceView.Item.Text"
+                app:preferenceTitle="@string/data_daily_duration" />
         </LinearLayout>
 
     </ScrollView>
