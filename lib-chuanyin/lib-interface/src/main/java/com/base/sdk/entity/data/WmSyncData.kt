@@ -532,7 +532,7 @@ interface ICalculateSleepItem {
 
 class WmSleepItem(
     val status: Int,//状态
-    val duration: Int//持续时间
+    val duration: Int//持续时间（分钟）
 ) : ICalculateSleepItem {
     companion object {
         /**
