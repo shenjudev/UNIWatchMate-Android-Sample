@@ -3,14 +3,17 @@ package com.sjbt.sdk.sync
 import com.base.sdk.entity.data.*
 import com.base.sdk.exception.WmTimeOutException
 import com.base.sdk.port.sync.AbSyncData
+import com.google.gson.Gson
 import com.sjbt.sdk.ReadSubPkMsg
 import com.sjbt.sdk.SJUniWatch
 import com.sjbt.sdk.entity.DataFormat
 import com.sjbt.sdk.entity.MsgBean
 import com.sjbt.sdk.entity.NodeData
+import com.sjbt.sdk.entity.SportTypeData
 import com.sjbt.sdk.spp.cmd.*
 import com.sjbt.sdk.utils.BtUtils
 import com.sjbt.sdk.utils.TimeUtils
+import com.sjbt.sdk.utils.readSportTypeJsonFromAssets
 import io.reactivex.rxjava3.core.*
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.core.Observer
@@ -28,12 +31,23 @@ class SyncDailyActivityDurationData2(val sjUniWatch: SJUniWatch) :
     var lastSyncTime: Long = 0
     private var activityDurationObserveEmitter: ObservableEmitter<WmSyncData<WmDailyActivityDurationData>>? =
         null
-    private var observeChangeEmitter: ObservableEmitter<WmSyncData<WmDailyActivityDurationData>>? = null
+    private var observeChangeEmitter: ObservableEmitter<WmSyncData<WmDailyActivityDurationData>>? =
+        null
 
     private val TAG = "SyncDailyActivityDurationData"
     private val msgList = mutableListOf<MsgBean>()
     private var hasNext: Boolean = false
     private lateinit var byteBufferSyncData: ByteBuffer
+
+    private val sportTypeMap = mutableMapOf<Int, Int>()
+
+    private fun getSportTypeById(sportId: Int): Int {
+        sportTypeMap.get(sportId)?.let {
+            return it
+        } ?: kotlin.run {
+            return -1
+        }
+    }
 
     override fun latestSyncTime(): Long {
         return lastSyncTime
@@ -57,11 +71,20 @@ class SyncDailyActivityDurationData2(val sjUniWatch: SJUniWatch) :
         msgList.clear()
         return Observable.create { emitter ->
             activityDurationObserveEmitter = emitter
+
+            readSportTypeJsonFromAssets(sjUniWatch.mContext)?.let {
+                sjUniWatch.wmLog.logE(TAG, "readJsonFromAssets:$it")
+                val sportTypeData = Gson().fromJson(it, SportTypeData::class.java)
+                sportTypeData.sports.forEach { sportType ->
+                    sportTypeMap[sportType.id] = sportType.sport_type
+                }
+            }
+
             sjUniWatch.sendReadSubPkObserveNode(
                 this,
                 CmdHelper.getReadSportSyncData(
                     startTime, 0,
-                    childUrn = URN_SPORT_ACTIVITY_LEN
+                    childUrn = URN_SPORT_DAILY_ACTIVITY_LEN
                 )
             ).subscribe(object :
                 Observer<MsgBean> {
@@ -146,7 +169,7 @@ class SyncDailyActivityDurationData2(val sjUniWatch: SJUniWatch) :
         val baseMon = byteBufferSyncData.get().toInt() - 1
         val baseDay = byteBufferSyncData.get().toInt()
 
-        //时间戳
+        //相对时间戳
         val timestamp = byteBufferSyncData.int
         val dataLen = byteBufferSyncData.short
 
@@ -165,7 +188,10 @@ class SyncDailyActivityDurationData2(val sjUniWatch: SJUniWatch) :
         var dataIndex = 0
         while (byteBufferSyncData.hasRemaining()) {
 
-            val wmActivityDurationData = WmDailyActivityDurationData(1,byteBufferSyncData.int)
+            val sportId = byteBufferSyncData.short.toInt()
+
+            val wmDailyActivityDurationData =
+                WmDailyActivityDurationData(getSportTypeById(sportId), byteBufferSyncData.int)
 
             if (timestampType == 0) {//只有一个时间戳
                 sjUniWatch.wmLog.logD(
@@ -173,16 +199,16 @@ class SyncDailyActivityDurationData2(val sjUniWatch: SJUniWatch) :
                     "start base date:" + TimeUtils.date2String(Date(realTimeStamp + dataIndex * SYNC_DATA_INTERVAL_HOUR))
                 )
 
-                wmActivityDurationData.timestamp =
+                wmDailyActivityDurationData.timestamp =
                     realTimeStamp + dataIndex * SYNC_DATA_INTERVAL_HOUR
             }
 
-//            sjUniWatch.wmLog.logD(
-//                TAG,
-//                "activity duration data: $dataIndex -> ${wmActivityDurationData}"
-//            )
+            sjUniWatch.wmLog.logD(
+                TAG,
+                "activity duration data: $dataIndex -> ${wmDailyActivityDurationData}"
+            )
 
-            activityDurationDataList.add(wmActivityDurationData)
+            activityDurationDataList.add(wmDailyActivityDurationData)
 
             dataIndex++
         }

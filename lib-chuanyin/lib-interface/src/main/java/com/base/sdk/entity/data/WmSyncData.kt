@@ -402,9 +402,9 @@ class WmSleepData(
  * SleepSummary 睡眠概览
  */
 data class WmSleepSummary(
-    var dateStamp: Int,// 日期时间 (年月日，4 bytes)
-    var bedTime: Int,// 相对于date 入睡时间（秒， 4 bytes）
-    var getUpTime: Int,// 相对于date 起床时间（秒， 4 bytes）
+    var dateStamp: Long,// 日期时间 (年月日，4 bytes)
+    var bedTime: Long,// 相对于date 入睡时间（秒， 4 bytes）
+    var getUpTime: Long,// 相对于date 起床时间（秒， 4 bytes）
     var totalSleepMinutes: Int,// 睡眠时长（分钟，4 bytes）
 
     var sleepType: Int,// 睡眠类型 0：白天睡眠， 1：夜晚睡眠(1 byte)
