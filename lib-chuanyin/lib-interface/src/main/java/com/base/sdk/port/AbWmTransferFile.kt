@@ -22,8 +22,8 @@ enum class FileType(val type: Int) {
     DIAL(3),//表盘
     DIAL_COVER(4),//表盘封面
     OTA_UPEX(5),//设备ota_upex
-    TXT(6),//设备ota_upex
-    AVI(7),//设备ota_upex
+    TXT(6),
+    AVI(7),
     SPORT(8),//运动文件（备用未定）
 }
 

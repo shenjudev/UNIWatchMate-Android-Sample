@@ -117,7 +117,6 @@ class DeviceBindFragment : BaseFragment(R.layout.fragment_device_bind),
             } ?: {
 
             }
-
         }
     }
 

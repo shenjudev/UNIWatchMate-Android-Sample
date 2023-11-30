@@ -68,7 +68,6 @@ class SportInstalledListFragment : BaseFragment(R.layout.fragment_sport_installe
             override fun onItemDelete(position: Int) {
                 if (adapter.sources?.get(position)?.buildIn != true) {
                     promptProgress.showProgress(getString(R.string.action_deling))
-                    installDatas.removeAt(position)
                     viewModel.deleteSport(position)
                 } else {
                     promptToast.showFailed(getString(R.string.tip_inner_sport_del_error))
@@ -124,11 +123,18 @@ class SportInstalledListFragment : BaseFragment(R.layout.fragment_sport_installe
                 viewModel.flowEvent.collect { event ->
                     when (event) {
                         is SportEvent.RequestFail -> {
-                            promptToast.showFailed(event.throwable)
+                            promptProgress.dismiss()
                         }
-
+                        is SportEvent.SportUpdateFail -> {
+                            promptProgress.dismiss()
+                            promptToast.showFailed(event.msg)
+                            adapter.notifyDataSetChanged()
+                        }
                         is SportEvent.SportRemoved -> {
                             promptProgress.dismiss()
+                            if (installDatas.size > event.position) {
+                                installDatas.removeAt(event.position)
+                            }
                             viewBind.loadingView.visibility = View.GONE
                             adapter.notifyDataSetChanged()
                         }

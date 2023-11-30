@@ -310,7 +310,7 @@ fun step2Km(step: Int, stepLength: Float): Float {
 private var localSportLibrary: LocalSportLibrary? = null
 fun getSportLibrary(): LocalSportLibrary {
     if (localSportLibrary == null) {
-        val sportsData = ResourceUtils.readAssets2String("sports_data.json")
+        val sportsData = ResourceUtils.readAssets2String("sport_type_names.json")
         localSportLibrary =
             GsonUtils.fromJson(sportsData, LocalSportLibrary::class.java)
     }

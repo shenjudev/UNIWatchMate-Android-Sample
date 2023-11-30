@@ -53,7 +53,7 @@ class SleepFragment : DataListFragment<WmSleepData>() {
             val calendar = Calendar.getInstance()
             start = DateTimeUtils.getDayStartTime(calendar, date)
             val end: Date = DateTimeUtils.getDayEndTime(calendar, date)
-            val data = UNIWatchMate.wmSync.syncSleepData.syncData(start!!.time).awaitFirst().value
+            val data = UNIWatchMate.wmSync.syncSleepData.syncData(0).awaitFirst().value
 
             val sleepItemDataList = mutableListOf<WmSleepData>()
 //            val sleepItemDatas = mutableListOf<WmSleepItem>()
