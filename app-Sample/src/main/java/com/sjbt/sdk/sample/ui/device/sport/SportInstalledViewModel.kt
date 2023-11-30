@@ -95,13 +95,19 @@ class SportInstalledViewModel : StateEventViewModel<SportState, SportEvent>(Spor
         viewModelScope.launch {
             val sportsMap = state.requestSports()
             if (sportsMap != null && sportsMap.size>1&&sportsMap[1]!=null&&sportsMap[1].size>position) {
-                sportsMap[1].removeAt(position )
+               val removedSport = sportsMap[1].removeAt(position )
                 runCatchingWithLog {
                     UNIWatchMate.wmApps.appSport.updateDynamicSportList(sportsMap[1]).await()
                 }.onSuccess {
-                    SportEvent.SportRemoved(position).newEvent()
+                    if (it) {
+                        SportEvent.SportRemoved(position).newEvent()
+                    }else{
+                        sportsMap[1].add(position,removedSport)
+                        SportEvent.SportUpdateFail("删除失败").newEvent()
+                    }
                 }.onFailure {
                     ToastUtil.showToast(it.message)
+                    sportsMap[1].add(position,removedSport)
                     SportEvent.SportUpdateFail(it.message).newEvent()
                 }
             }
