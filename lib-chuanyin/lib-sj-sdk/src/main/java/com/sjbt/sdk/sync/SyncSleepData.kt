@@ -136,7 +136,7 @@ class SyncSleepData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmSleepD
         val timestampType = byteBufferSyncData.get().toInt()
 
         val baseYear = byteBufferSyncData.short.toInt()
-        val baseMon = byteBufferSyncData.get().toInt()
+        val baseMon = byteBufferSyncData.get().toInt() - 1
         val baseDay = byteBufferSyncData.get().toInt()
 
         //时间戳
@@ -174,7 +174,7 @@ class SyncSleepData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmSleepD
             )
 
             val sleepYear = byteBufferSyncData.short.toInt()
-            val sleepMon = byteBufferSyncData.get().toInt()
+            val sleepMon = byteBufferSyncData.get().toInt() - 1
             val sleepDay = byteBufferSyncData.get().toInt()
 
             val calendar = Calendar.getInstance()
@@ -182,7 +182,7 @@ class SyncSleepData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmSleepD
 
             var dateStamp = calendar.timeInMillis
             var bedTime = (byteBufferSyncData.int and 0xFFFFFFFF.toInt()) + dateStamp
-            var getUpTime = (byteBufferSyncData.int  and 0xFFFFFFFF.toInt()) + dateStamp
+            var getUpTime = (byteBufferSyncData.int and 0xFFFFFFFF.toInt()) + dateStamp
 
             var totalSleepMinutes: Int = byteBufferSyncData.int
 
