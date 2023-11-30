@@ -7,6 +7,7 @@ import android.os.Handler
 import android.os.Looper
 import android.text.TextUtils
 import com.base.sdk.AbUniWatch
+import com.base.sdk.entity.BindType
 import com.base.sdk.entity.WmBindInfo
 import com.base.sdk.entity.WmDevice
 import com.base.sdk.entity.WmDeviceModel
@@ -1373,6 +1374,11 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(),
                 URN_FUN_LIST -> {
                     mBindInfo?.let {
                         wmLog.logD(TAG, "bindinfo:$it")
+
+                        if (mBindStateMap[it.macAddress] == true) {
+                            it.bindType = BindType.CONNECT_BACK
+                        }
+
                         sendThreadTimeOutMsg(CmdHelper.getBindCmd(it))
                     } ?: run {
                         btStateChange(WmConnectState.DISCONNECTED)

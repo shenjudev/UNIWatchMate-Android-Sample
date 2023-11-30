@@ -52,8 +52,8 @@ android {
         applicationId "com.sjbt.sdk.sample"
         minSdk min_sdk_version
         targetSdk target_sdk_version
-        versionCode 65
-        versionName "1.0.65"
+        versionCode 66
+        versionName "1.0.66"
         signingConfig signingConfigs.release
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"

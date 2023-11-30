@@ -7,7 +7,7 @@ data class WmBindInfo(
     val userId: String,
     val userName: String,
     val macAddress: String,
-    val bindType: BindType,
+    var bindType: BindType,
     val deviceType: String,
     var model: WmDeviceModel = WmDeviceModel.NOT_REG
 ) {
