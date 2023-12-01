@@ -8,7 +8,7 @@ import com.base.sdk.entity.apps.WmConnectState
 import com.base.sdk.entity.settings.WmUnitInfo
 import com.sjbt.sdk.sample.R
 import com.sjbt.sdk.sample.base.BaseFragment
-import com.sjbt.sdk.sample.databinding.FragmentFunctionConfigBinding
+import com.sjbt.sdk.sample.databinding.FragmentUnitConfigBinding
 import com.sjbt.sdk.sample.di.Injector
 import com.sjbt.sdk.sample.utils.launchRepeatOnStarted
 import com.sjbt.sdk.sample.utils.launchWithLog
@@ -17,15 +17,14 @@ import com.sjbt.sdk.sample.utils.viewLifecycle
 import com.sjbt.sdk.sample.utils.viewbinding.viewBinding
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.reactive.asFlow
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.rx3.asFlow
 import kotlinx.coroutines.rx3.await
 
 
-class FunctionConfigFragment : BaseFragment(R.layout.fragment_function_config),
+class UnitConfigFragment : BaseFragment(R.layout.fragment_unit_config),
     CompoundButton.OnCheckedChangeListener {
 
-    private val viewBind: FragmentFunctionConfigBinding by viewBinding()
+    private val viewBind: FragmentUnitConfigBinding by viewBinding()
 
 //  private val deviceManager = Injector.getDeviceManager()
     private val applicationScope = Injector.getApplicationScope()

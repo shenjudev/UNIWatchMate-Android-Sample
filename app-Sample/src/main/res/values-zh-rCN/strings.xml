@@ -318,6 +318,8 @@
     <string name="unit_mi_param"><xliff:g id="params1">%1$s</xliff:g>公里</string>
     <string name="unit_step_param"><xliff:g id="params1">%1$d</xliff:g> 步</string>
     <string name="unit_k_calories_param"><xliff:g id="params1">%1$s</xliff:g>千卡</string>
+    <string name="unit_calories_param"><xliff:g id="params1">%1$s</xliff:g>卡</string>
+
     <string name="unit_fahrenheit_param"><xliff:g id="params1">%1$s</xliff:g> ℉</string>
     <string name="unit_centigrade_param"><xliff:g id="params1">%1$s</xliff:g> ℃</string>
 

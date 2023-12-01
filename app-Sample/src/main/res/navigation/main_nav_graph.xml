@@ -326,9 +326,9 @@
 
     <fragment
         android:id="@+id/unitConfigFragment"
-        android:name="com.sjbt.sdk.sample.ui.setting.FunctionConfigFragment"
+        android:name="com.sjbt.sdk.sample.ui.setting.UnitConfigFragment"
         android:label="@string/ds_unit_config"
-        tools:layout="@layout/fragment_function_config" />
+        tools:layout="@layout/fragment_unit_config" />
     <fragment
         android:id="@+id/soundTouchConfigFragment"
         android:name="com.sjbt.sdk.sample.ui.setting.SoundTouchFeedbackConfigFragment"

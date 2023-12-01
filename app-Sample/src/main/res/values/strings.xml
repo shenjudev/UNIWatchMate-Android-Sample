@@ -38,6 +38,7 @@
     <string name="unit_mi_param"><xliff:g id="params1">%1$s</xliff:g> mi</string>
     <string name="unit_step_param"><xliff:g id="params1">%1$d</xliff:g> steps</string>
     <string name="unit_k_calories_param"><xliff:g id="params1">%1$s</xliff:g> kCal</string>
+    <string name="unit_calories_param"><xliff:g id="params1">%1$s</xliff:g> Cal</string>
     <string name="unit_fahrenheit_param"><xliff:g id="params1">%1$s</xliff:g> ℉</string>
     <string name="unit_centigrade_param"><xliff:g id="params1">%1$s</xliff:g> ℃</string>
 

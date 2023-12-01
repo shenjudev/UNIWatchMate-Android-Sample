@@ -44,7 +44,7 @@ class ExerciseGoalFragment : BaseFragment(R.layout.fragment_exercise_goal),
         lifecycleScope.launchWhenStarted {
             exerciseGoal = exerciseGoalRepository.flowCurrent.value
             UNIWatchMate.wmSettings.settingSportGoal.get().subscribe { it ->
-                UNIWatchMate.wmLog.logE("体育消息", "" + it)
+                Timber.i(it.toString())
                 exerciseGoal = it
             }
             updateUI()
@@ -81,7 +81,7 @@ class ExerciseGoalFragment : BaseFragment(R.layout.fragment_exercise_goal),
     private fun updateCalories() {
         exerciseGoal?.let {
             viewBind.itemCalories.getTextView().text = getString(
-                R.string.unit_k_calories_param, exerciseGoal!!.calories.toString()
+                R.string.unit_k_calories_param, (exerciseGoal!!.calories/1000).toString()
             )
         }
 
@@ -102,7 +102,7 @@ class ExerciseGoalFragment : BaseFragment(R.layout.fragment_exercise_goal),
             }
 
             viewBind.itemCalories -> {
-                exerciseGoal?.let { showExerciseCalorieDialog(it.calories) }
+                exerciseGoal?.let { showExerciseCalorieDialog(it.calories/1000) }
             }
 
             viewBind.itemActivityDuration -> {
@@ -120,7 +120,7 @@ class ExerciseGoalFragment : BaseFragment(R.layout.fragment_exercise_goal),
                 it.saveConfig()
             }
         } else if (DIALOG_EXERCISE_CALORIE == tag) {
-            exerciseGoal = exerciseGoal?.copy(calories = selectValue)
+            exerciseGoal = exerciseGoal?.copy(calories = selectValue*1000)
             updateCalories()
             exerciseGoal?.let {
                 exerciseGoalRepository.modify(authedUserId, it)
