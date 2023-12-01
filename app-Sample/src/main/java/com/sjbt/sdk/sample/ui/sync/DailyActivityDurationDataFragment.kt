@@ -37,8 +37,9 @@ class DailyActivityDurationDataFragment : DataListFragment<WmDailyActivityDurati
             val calendar = Calendar.getInstance()
             val start: Date = DateTimeUtils.getDayStartTime(calendar, date)
             val end: Date = DateTimeUtils.getDayEndTime(calendar, date)
-            UNIWatchMate.wmSync.syncDailyActivityDuration.syncData(start.time).awaitFirst().value
-//            result.value
+            val result =   UNIWatchMate.wmSync.syncDailyActivityDuration.syncData(start.time).awaitFirst()
+            Timber.i("queryData result=$result")
+            result.value
 //            dataList
         }
     }
