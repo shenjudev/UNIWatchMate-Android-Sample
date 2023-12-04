@@ -219,7 +219,7 @@ class SyncDailyActivityDurationData(val sjUniWatch: SJUniWatch) :
 
         val wmSyncData =
             WmSyncData(
-                WmSyncDataType.ACTIVITY_DURATION,
+                WmSyncDataType.DAILY_ACTIVITY_DURATION,
                 realTimeStamp,
                 WmIntervalType.ONE_HOUR,
                 result
@@ -248,7 +248,7 @@ class SyncDailyActivityDurationData(val sjUniWatch: SJUniWatch) :
     private fun defaultBack() {
         val wmSyncData =
             WmSyncData(
-                WmSyncDataType.ACTIVITY_DURATION,
+                WmSyncDataType.DAILY_ACTIVITY_DURATION,
                 0,
                 WmIntervalType.ONE_HOUR,
                 mutableListOf<WmDailyActivityDurationData>()
