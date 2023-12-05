@@ -29,7 +29,7 @@ class SettingHeartRateAlerts(val sjUniWatch: SJUniWatch) : AbWmSetting<WmHeartRa
         }
     }
 
-    override fun observeConnectState() {
+    override fun observeDisconnectState() {
         setEmitter?.let { emitter ->
             if (!emitter.isDisposed) {
                 emitter.onError(WmTimeOutException("time out exception"))

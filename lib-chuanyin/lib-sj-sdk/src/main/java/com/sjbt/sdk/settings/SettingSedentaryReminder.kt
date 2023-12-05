@@ -32,7 +32,7 @@ class SettingSedentaryReminder(val sjUniWatch: SJUniWatch) : AbWmSetting<WmSeden
         return Observable.create { emitter -> observeEmitter = emitter }
     }
 
-    override fun observeConnectState() {
+    override fun observeDisconnectState() {
         setEmitter?.let { emitter ->
             if (!emitter.isDisposed) {
                 emitter.onError(WmTimeOutException("time out exception"))

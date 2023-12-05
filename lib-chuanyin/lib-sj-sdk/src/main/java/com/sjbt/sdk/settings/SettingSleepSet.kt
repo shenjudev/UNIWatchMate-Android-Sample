@@ -27,7 +27,7 @@ class SettingSleepSet(val sjUniWatch: SJUniWatch) : AbWmSetting<WmSleepSettings>
         return Observable.create { emitter -> observeSleepSettingEmitter = emitter }
     }
 
-    override fun observeConnectState() {
+    override fun observeDisconnectState() {
         setEmitter?.let { emitter ->
             if (!emitter.isDisposed) {
                 emitter.onError(WmTimeOutException("time out exception"))

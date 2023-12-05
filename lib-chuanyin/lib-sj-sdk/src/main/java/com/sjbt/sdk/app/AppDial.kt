@@ -40,7 +40,7 @@ class AppDial(sjUniWatch: SJUniWatch) : AbAppDial() ,
         })
     }
 
-    override fun observeConnectState() {
+    override fun observeDisconnectState() {
 
         syncDialListEmitter?.let { emitter ->
             if (!emitter.isDisposed) {

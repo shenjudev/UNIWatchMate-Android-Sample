@@ -47,11 +47,11 @@ class SyncDistanceData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmDis
     }
 
     override fun onTimeOut(msgBean: MsgBean, nodeData: NodeData) {
-        observeConnectState()
+        observeDisconnectState()
         sjUniWatch.wmLog.logE(TAG, "onTimeOut:$msgBean")
     }
 
-    override fun observeConnectState() {
+    override fun observeDisconnectState() {
         syncDistanceObserveEmitter?.let { emitter ->
             if (!emitter.isDisposed) {
                 emitter.onError(WmTimeOutException("$TAG time out exception"))

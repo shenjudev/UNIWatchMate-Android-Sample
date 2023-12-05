@@ -35,7 +35,7 @@ class AppSport(val sjUniWatch: SJUniWatch) : AbAppSport() ,
         sjUniWatch.sendReadNodeCmdList(getReadSportListPayloadPackage(URN_APP_FIXED_SPORT_LIST))
     }
 
-    override fun observeConnectState() {
+    override fun observeDisconnectState() {
 
         getFixedSportListEmitter?.let { emitter ->
             if (!emitter.isDisposed) {

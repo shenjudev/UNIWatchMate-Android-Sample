@@ -53,11 +53,11 @@ class SyncStepData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmStepDat
     }
 
     override fun onTimeOut(msg: MsgBean, nodeData: NodeData) {
-        observeConnectState()
+        observeDisconnectState()
         sjUniWatch.wmLog.logE(TAG, "onTimeOut:$msg")
     }
 
-    override fun observeConnectState() {
+    override fun observeDisconnectState() {
         stepObserveEmitter?.let { emitter ->
             if (!emitter.isDisposed) {
                 emitter.onError(WmTimeOutException("$TAG time out exception"))

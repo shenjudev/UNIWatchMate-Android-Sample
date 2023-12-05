@@ -57,7 +57,7 @@ class AppCamera(val sjUniWatch: SJUniWatch) : AbAppCamera() ,
         }
     }
 
-    override fun observeConnectState() {
+    override fun observeDisconnectState() {
 
         cameraSingleOpenEmitter?.let { emitter ->
             if (!emitter.isDisposed) {

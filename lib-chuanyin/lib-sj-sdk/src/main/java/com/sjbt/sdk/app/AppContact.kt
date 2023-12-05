@@ -50,7 +50,7 @@ class AppContact(val sjUniWatch: SJUniWatch) : AbAppContact(), ReadSubPkMsg ,
         return hasNext
     }
 
-    override fun observeConnectState() {
+    override fun observeDisconnectState() {
 
         updateContactEmitter?.let { emitter ->
             if (!emitter.isDisposed) {

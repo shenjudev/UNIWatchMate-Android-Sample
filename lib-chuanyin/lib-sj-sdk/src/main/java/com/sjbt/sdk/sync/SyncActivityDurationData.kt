@@ -12,7 +12,6 @@ import com.sjbt.sdk.entity.MsgBean
 import com.sjbt.sdk.entity.NodeData
 import com.sjbt.sdk.spp.cmd.*
 import com.sjbt.sdk.utils.BtUtils
-import com.sjbt.sdk.utils.DevFinal
 import com.sjbt.sdk.utils.TimeUtils
 import io.reactivex.rxjava3.core.*
 import io.reactivex.rxjava3.core.Observable
@@ -52,11 +51,11 @@ class SyncActivityDurationData(val sjUniWatch: SJUniWatch) :
     }
 
     override fun onTimeOut(msgBean: MsgBean, nodeData: NodeData) {
-        observeConnectState()
+        observeDisconnectState()
         sjUniWatch.wmLog.logE(TAG, "onTimeOut:$msgBean")
     }
 
-    override fun observeConnectState() {
+    override fun observeDisconnectState() {
         syncActivityDurationObserveEmitter?.let { emitter ->
             if (!emitter.isDisposed) {
                 emitter.onError(WmTimeOutException("$TAG time out exception"))

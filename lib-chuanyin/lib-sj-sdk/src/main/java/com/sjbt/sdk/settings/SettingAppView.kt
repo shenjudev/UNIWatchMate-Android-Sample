@@ -34,7 +34,7 @@ class SettingAppView(val sjUniWatch: SJUniWatch) : AbWmSetting<WmAppView>() ,
         }
     }
 
-    override fun observeConnectState() {
+    override fun observeDisconnectState() {
         setEmitter?.let { emitter ->
             if (!emitter.isDisposed) {
                 emitter.onError(WmTimeOutException("time out exception"))

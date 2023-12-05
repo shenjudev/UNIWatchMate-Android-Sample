@@ -25,7 +25,7 @@ class AppWeather(val sjUniWatch: SJUniWatch) : AbAppWeather(),
     override val observeWeather: PublishSubject<WmWeatherRequest> = requestWeather
     private val TAG = "AppWeather"
 
-    override fun observeConnectState() {
+    override fun observeDisconnectState() {
         pushWeatherEmitter?.let { emitter ->
             if (!emitter.isDisposed) {
                 emitter.onSuccess(false)

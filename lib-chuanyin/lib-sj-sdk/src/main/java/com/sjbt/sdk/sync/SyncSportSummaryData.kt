@@ -1,6 +1,5 @@
 package com.sjbt.sdk.sync
 
-import com.base.sdk.entity.apps.WmConnectState
 import com.base.sdk.entity.data.*
 import com.base.sdk.exception.WmTimeOutException
 import com.base.sdk.port.sync.AbSyncData
@@ -54,7 +53,7 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
         return lastSyncTime
     }
 
-    override fun observeConnectState() {
+    override fun observeDisconnectState() {
         syncSportSummaryObserveEmitter?.let { emitter ->
             if (!emitter.isDisposed) {
                 emitter.onError(WmTimeOutException("time out exception"))
@@ -63,7 +62,7 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
     }
 
     override fun onTimeOut(msgBean: MsgBean, nodeData: NodeData) {
-        observeConnectState()
+        observeDisconnectState()
         sjUniWatch.wmLog.logE(TAG, "onTimeOut:$msgBean")
     }
 

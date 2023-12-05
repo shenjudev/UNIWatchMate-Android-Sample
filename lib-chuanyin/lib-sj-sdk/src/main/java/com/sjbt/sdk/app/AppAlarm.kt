@@ -38,7 +38,7 @@ class AppAlarm(val sjUniWatch: SJUniWatch) : AbAppAlarm(),
         observeAlarmListEmitter = it
     }
 
-    override fun observeConnectState() {
+    override fun observeDisconnectState() {
 
         updateAlarmEmitter?.let { emitter ->
             if (!emitter.isDisposed) {

@@ -39,7 +39,7 @@ class AppLanguage(val sjUniWatch: SJUniWatch) : AbAppLanguage(),
         }
     }
 
-    override fun observeConnectState() {
+    override fun observeDisconnectState() {
 
         languageListEmitter?.let { emitter ->
             if (!emitter.isDisposed) {

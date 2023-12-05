@@ -46,11 +46,11 @@ class SyncCaloriesData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmCal
     }
 
     override fun onTimeOut(msgBean: MsgBean, nodeData: NodeData) {
-        observeConnectState()
+        observeDisconnectState()
         sjUniWatch.wmLog.logE(TAG, "onTimeOut:$msgBean")
     }
 
-    override fun observeConnectState() {
+    override fun observeDisconnectState() {
         syncCaloriesObserveEmitter?.let { emitter ->
             if (!emitter.isDisposed) {
                 emitter.onError(WmTimeOutException("$TAG time out exception"))

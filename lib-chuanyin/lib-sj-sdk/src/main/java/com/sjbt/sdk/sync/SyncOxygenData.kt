@@ -45,11 +45,11 @@ class SyncOxygenData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmOxyge
     }
 
     override fun onTimeOut(msgBean: MsgBean, nodeData: NodeData) {
-        observeConnectState()
+        observeDisconnectState()
         sjUniWatch.wmLog.logE(TAG, "onTimeOut:$msgBean")
     }
 
-    override fun observeConnectState() {
+    override fun observeDisconnectState() {
         syncOxygenObserveEmitter?.let { emitter ->
             if (!emitter.isDisposed) {
                 emitter.onError(WmTimeOutException("$TAG time out exception"))

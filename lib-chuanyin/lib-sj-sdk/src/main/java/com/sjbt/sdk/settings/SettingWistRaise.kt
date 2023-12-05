@@ -27,7 +27,7 @@ class SettingWistRaise(val sjUniWatch: SJUniWatch) : AbWmSetting<WmWristRaise>()
         getEmitter?.onSuccess(wmWristRaise)
     }
 
-    override fun observeConnectState() {
+    override fun observeDisconnectState() {
         setEmitter?.let { emitter ->
             if (!emitter.isDisposed) {
                 emitter.onError(WmTimeOutException("time out exception"))

@@ -18,7 +18,7 @@ class AppDateTime(val sjUniWatch: SJUniWatch) : AbAppDateTime() ,
     ExceptionStateListener {
     var setEmitter: SingleEmitter<Boolean>? = null
 
-    override fun observeConnectState() {
+    override fun observeDisconnectState() {
 
         setEmitter?.let { emitter ->
             if (!emitter.isDisposed) {

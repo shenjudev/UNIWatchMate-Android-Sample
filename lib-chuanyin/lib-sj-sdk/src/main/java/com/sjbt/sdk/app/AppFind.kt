@@ -32,7 +32,7 @@ class AppFind(val sjUniWatch: SJUniWatch) : AbAppFind(),
     private val mObserveStopFindWatch = PublishSubject.create<Any>()
     override val observeFindMobile: PublishSubject<WmFind> = findMobile
 
-    override fun observeConnectState() {
+    override fun observeDisconnectState() {
 
         startFindWatchEmitter?.let { emitter ->
             if (!emitter.isDisposed) {
