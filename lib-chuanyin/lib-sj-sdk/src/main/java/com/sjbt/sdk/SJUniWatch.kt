@@ -125,6 +125,9 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(),
     val settingDrinkWaterReminder =
         wmSettings.settingDrinkWater as SettingDrinkWaterReminder
 
+    private var unbindEmitter: CompletableEmitter? = null
+    private var mWmFunctionSupport: WmFunctionSupport = WmFunctionSupport()
+
     private val gson = Gson()
     private var sharedPreferencesUtils: SharedPreferencesUtils
     var sdkLogEnable = false
@@ -167,9 +170,6 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(),
             sendNoTimeOutMsg(msg)
         }
     }
-
-    private var unbindEmitter: CompletableEmitter? = null
-    private var mWmFunctionSupport: WmFunctionSupport = WmFunctionSupport()
 
     override fun setLogEnable(logEnable: Boolean) {
         this.sdkLogEnable = logEnable
@@ -888,7 +888,7 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(),
                     }
 
                     CMD_ID_8010 -> {
-                        appDial.deleteEmitter?.onError(RuntimeException("delete dial timeout!"))
+                        appDial.deleteDialEmitter?.onError(RuntimeException("delete dial timeout!"))
                     }
 
                     CMD_ID_8011 -> {}

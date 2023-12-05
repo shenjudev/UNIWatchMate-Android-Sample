@@ -1,6 +1,8 @@
 package com.sjbt.sdk.app
 
+import com.base.sdk.entity.apps.WmConnectState
 import com.base.sdk.entity.apps.WmFind
+import com.base.sdk.exception.WmTimeOutException
 import com.base.sdk.port.app.AbAppFind
 import com.sjbt.sdk.SJUniWatch
 import com.sjbt.sdk.entity.ErrorCode
@@ -29,6 +31,16 @@ class AppFind(val sjUniWatch: SJUniWatch) : AbAppFind() {
     private val mObserveStopFindWatch = PublishSubject.create<Any>()
     override val observeFindMobile: PublishSubject<WmFind> = findMobile
 
+    fun observeConnectState() {
+        sjUniWatch.observeConnectState.subscribe {
+            if (it == WmConnectState.DISCONNECTED) {
+                startFindWatchEmitter?.onError(WmTimeOutException("time out exception"))
+                stopFindWatchEmitter?.onError(WmTimeOutException("time out exception"))
+                stopFindMobileEmitter?.onError(WmTimeOutException("time out exception"))
+            }
+        }
+    }
+
     override fun stopFindMobile(): Single<Boolean> {
 
         return Single.create {
@@ -43,6 +55,8 @@ class AppFind(val sjUniWatch: SJUniWatch) : AbAppFind() {
             sjUniWatch.sendExecuteNodeCmdList(getExecuteStartFindDevice(wmFind))
         }
     }
+
+
 
     override val observeStopFindMobile: Observable<Any>
         get() = mObserveStopFindMobile

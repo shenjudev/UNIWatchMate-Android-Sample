@@ -1,5 +1,6 @@
 package com.sjbt.sdk.sync
 
+import com.base.sdk.entity.apps.WmConnectState
 import com.base.sdk.entity.data.*
 import com.base.sdk.exception.WmTimeOutException
 import com.base.sdk.port.sync.AbSyncData
@@ -26,7 +27,7 @@ class SyncActivityDurationData(val sjUniWatch: SJUniWatch) :
     AbSyncData<WmSyncData<WmActivityDurationData>>(), ReadSubPkMsg {
 
     var lastSyncTime: Long = 0
-    private var activityDurationObserveEmitter: ObservableEmitter<WmSyncData<WmActivityDurationData>>? =
+    private var syncActivityDurationObserveEmitter: ObservableEmitter<WmSyncData<WmActivityDurationData>>? =
         null
     private var observeChangeEmitter: ObservableEmitter<WmSyncData<WmActivityDurationData>>? = null
 
@@ -48,15 +49,22 @@ class SyncActivityDurationData(val sjUniWatch: SJUniWatch) :
     }
 
     fun onTimeOut(msgBean: MsgBean, nodeData: NodeData) {
-        activityDurationObserveEmitter?.onError(WmTimeOutException("$TAG time out exception"))
+        syncActivityDurationObserveEmitter?.onError(WmTimeOutException("$TAG time out exception"))
         sjUniWatch.wmLog.logE(TAG, "onTimeOut:$msgBean")
 
     }
 
     override fun syncData(startTime: Long): Observable<WmSyncData<WmActivityDurationData>> {
         msgList.clear()
+
+        sjUniWatch.observeConnectState.subscribe {
+            if (it == WmConnectState.DISCONNECTED) {
+                syncActivityDurationObserveEmitter?.onError(WmTimeOutException("$TAG time out exception"))
+            }
+        }
+
         return Observable.create { emitter ->
-            activityDurationObserveEmitter = emitter
+            syncActivityDurationObserveEmitter = emitter
             sjUniWatch.sendReadSubPkObserveNode(
                 this,
                 CmdHelper.getReadSportSyncData(
@@ -195,8 +203,8 @@ class SyncActivityDurationData(val sjUniWatch: SJUniWatch) :
                 activityDurationDataList
             )
 
-        activityDurationObserveEmitter?.onNext(wmSyncData)
-        activityDurationObserveEmitter?.onComplete()
+        syncActivityDurationObserveEmitter?.onNext(wmSyncData)
+        syncActivityDurationObserveEmitter?.onComplete()
 
         lastSyncTime = System.currentTimeMillis()
 
@@ -224,8 +232,8 @@ class SyncActivityDurationData(val sjUniWatch: SJUniWatch) :
                 mutableListOf<WmActivityDurationData>()
             )
 
-        activityDurationObserveEmitter?.onNext(wmSyncData)
-        activityDurationObserveEmitter?.onComplete()
+        syncActivityDurationObserveEmitter?.onNext(wmSyncData)
+        syncActivityDurationObserveEmitter?.onComplete()
     }
 
 }

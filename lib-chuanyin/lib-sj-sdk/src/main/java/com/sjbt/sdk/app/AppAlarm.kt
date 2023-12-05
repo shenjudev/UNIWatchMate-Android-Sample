@@ -2,6 +2,7 @@ package com.sjbt.sdk.app
 
 import com.base.sdk.entity.apps.AlarmRepeatOption
 import com.base.sdk.entity.apps.WmAlarm
+import com.base.sdk.entity.apps.WmConnectState
 import com.base.sdk.exception.WmTimeOutException
 import com.base.sdk.port.app.AbAppAlarm
 import com.sjbt.sdk.ALARM_NAME_LEN
@@ -33,6 +34,15 @@ class AppAlarm(val sjUniWatch: SJUniWatch) : AbAppAlarm() {
 
     override var observeAlarmList: Observable<List<WmAlarm>> = Observable.create {
         observeAlarmListEmitter = it
+    }
+
+    fun observeConnectState() {
+        sjUniWatch.observeConnectState.subscribe {
+            if (it == WmConnectState.DISCONNECTED) {
+                updateAlarmEmitter?.onError(WmTimeOutException("time out exception"))
+                getAlarmEmitter?.onError(WmTimeOutException("time out exception"))
+            }
+        }
     }
 
     override var getAlarmList: Single<List<WmAlarm>> = Single.create {
@@ -154,72 +164,12 @@ class AppAlarm(val sjUniWatch: SJUniWatch) : AbAppAlarm() {
     }
 
     /**
-     * 添加闹钟
-     */
-    fun getWriteAddAlarmCmd(alarm: WmAlarm): PayloadPackage {
-        val payloadPackage = PayloadPackage()
-        val byteBuffer: ByteBuffer =
-            ByteBuffer.allocate(ALARM_NAME_LEN + 5).order(ByteOrder.LITTLE_ENDIAN)
-//        byteBuffer.put(alarm.alarmId.toByte())
-        val originNameArray = alarm.alarmName.toByteArray(StandardCharsets.UTF_8)
-        byteBuffer.put(originNameArray.copyOf(ALARM_NAME_LEN))
-        byteBuffer.put(alarm.hour.toByte())
-        byteBuffer.put(alarm.minute.toByte())
-        byteBuffer.put(AlarmRepeatOption.toValue(alarm.repeatOptions).toByte())
-        byteBuffer.put(
-            if (alarm.isOn) {
-                1.toByte()
-            } else {
-                0.toByte()
-            }
-        )
-        payloadPackage.putData(CmdHelper.getUrnId(URN_4, URN_1, URN_2), byteBuffer.array())
-        return payloadPackage
-    }
-
-    /**
      * 获取闹钟列表
      */
     private fun getReadAlarmListCmd(): PayloadPackage {
         val payloadPackage = PayloadPackage()
         val byteBuffer: ByteBuffer = ByteBuffer.allocate(0)
         payloadPackage.putData(CmdHelper.getUrnId(URN_4, URN_1, URN_1), byteBuffer.array())
-        return payloadPackage
-    }
-
-    /**
-     * 更新闹钟
-     */
-    fun getWriteModifyAlarmCmd(alarm: WmAlarm): PayloadPackage {
-        val payloadPackage = PayloadPackage()
-        val byteBuffer: ByteBuffer =
-            ByteBuffer.allocate(ALARM_NAME_LEN + 5).order(ByteOrder.LITTLE_ENDIAN)
-//        byteBuffer.put(alarm.alarmId.toByte())
-        val originNameArray = alarm.alarmName.toByteArray(StandardCharsets.UTF_8)
-
-//        Log.e(">>>>>>>>","alarm name："+String(originNameArray))
-
-        byteBuffer.put(originNameArray.copyOf(ALARM_NAME_LEN))
-        byteBuffer.put(alarm.hour.toByte())
-        byteBuffer.put(alarm.minute.toByte())
-        byteBuffer.put(AlarmRepeatOption.toValue(alarm.repeatOptions).toByte())
-        byteBuffer.put(
-            if (alarm.isOn) {
-                1.toByte()
-            } else {
-                0.toByte()
-            }
-        )
-        payloadPackage.putData(CmdHelper.getUrnId(URN_4, URN_1, URN_3), byteBuffer.array())
-        return payloadPackage
-    }
-
-    /**
-     * 删除闹钟
-     */
-    fun getExecuteDeleteAlarmCmd(alarmIds: List<Byte>): PayloadPackage {
-        val payloadPackage = PayloadPackage()
-        payloadPackage.putData(CmdHelper.getUrnId(URN_4, URN_1, URN_4), alarmIds.toByteArray())
         return payloadPackage
     }
 

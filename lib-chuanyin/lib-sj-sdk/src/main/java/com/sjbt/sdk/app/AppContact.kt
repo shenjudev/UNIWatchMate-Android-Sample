@@ -1,10 +1,12 @@
 package com.sjbt.sdk.app
 
 import android.text.TextUtils
+import com.base.sdk.entity.apps.WmConnectState
 import com.base.sdk.entity.apps.WmContact
 import com.base.sdk.entity.apps.WmContact.Companion.NAME_BYTES_LIMIT
 import com.base.sdk.entity.apps.WmContact.Companion.NUMBER_BYTES_LIMIT
 import com.base.sdk.entity.settings.WmEmergencyCall
+import com.base.sdk.exception.WmTimeOutException
 import com.base.sdk.port.app.AbAppContact
 import com.sjbt.sdk.ReadSubPkMsg
 import com.sjbt.sdk.SJUniWatch
@@ -25,7 +27,7 @@ class AppContact(val sjUniWatch: SJUniWatch) : AbAppContact(), ReadSubPkMsg {
     private var getContactListEmitter: SingleEmitter<List<WmContact>>? = null
     private var updateContactEmitter: SingleEmitter<Boolean>? = null
     private var updateEmergencyEmitter: SingleEmitter<WmEmergencyCall>? = null
-    private var emergencyNumberEmitter: ObservableEmitter<WmEmergencyCall>? = null
+    private var getAndObserveEmergencyNumberEmitter: ObservableEmitter<WmEmergencyCall>? = null
     private var mEmergencyCall: WmEmergencyCall = WmEmergencyCall(false, mutableListOf())
     private val mContacts = mutableListOf<WmContact>()
     private val msgList = mutableSetOf<MsgBean>()
@@ -44,6 +46,17 @@ class AppContact(val sjUniWatch: SJUniWatch) : AbAppContact(), ReadSubPkMsg {
 
     override fun getHasNext(): Boolean {
         return hasNext
+    }
+
+    fun observeConnectState() {
+        sjUniWatch.observeConnectState.subscribe {
+            if (it == WmConnectState.DISCONNECTED) {
+                updateContactEmitter?.onError(WmTimeOutException("time out exception"))
+                getContactListEmitter?.onError(WmTimeOutException("time out exception"))
+                updateEmergencyEmitter?.onError(WmTimeOutException("time out exception"))
+                getAndObserveEmergencyNumberEmitter?.onError(WmTimeOutException("time out exception"))
+            }
+        }
     }
 
     override val getContactList: Single<List<WmContact>> = Single.create {
@@ -144,7 +157,7 @@ class AppContact(val sjUniWatch: SJUniWatch) : AbAppContact(), ReadSubPkMsg {
     }
 
     override fun observableEmergencyContacts(): Observable<WmEmergencyCall> = Observable.create {
-        emergencyNumberEmitter = it
+        getAndObserveEmergencyNumberEmitter = it
         sjUniWatch.sendReadNodeCmdList(getReadEmergencyNumberCmd())
     }
 
@@ -340,7 +353,7 @@ class AppContact(val sjUniWatch: SJUniWatch) : AbAppContact(), ReadSubPkMsg {
                         }
                     }
 
-                    emergencyNumberEmitter?.onNext(mEmergencyCall)
+                    getAndObserveEmergencyNumberEmitter?.onNext(mEmergencyCall)
                 }
             }
         }

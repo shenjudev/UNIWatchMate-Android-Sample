@@ -1,5 +1,6 @@
 package com.sjbt.sdk.sync
 
+import com.base.sdk.entity.apps.WmConnectState
 import com.base.sdk.entity.data.WmIntervalType
 import com.base.sdk.entity.data.WmStepData
 import com.base.sdk.entity.data.WmSyncData
@@ -56,6 +57,12 @@ class SyncStepData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmStepDat
 
     override fun syncData(startTime: Long): Observable<WmSyncData<WmStepData>> {
         msgList.clear()
+
+        sjUniWatch.observeConnectState.subscribe {
+            if (it == WmConnectState.DISCONNECTED) {
+                stepObserveEmitter?.onError(WmTimeOutException("$TAG time out exception"))
+            }
+        }
 
         return Observable.create { emitter ->
             stepObserveEmitter = emitter

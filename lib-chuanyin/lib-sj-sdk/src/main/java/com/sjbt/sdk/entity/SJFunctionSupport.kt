@@ -339,12 +339,12 @@ class SJFunctionSupport : WmFunctionSupport() {
                             Log.d(TAG_SJ, "supportRebootDevice $bit")
                         }
                         FUNCTION_59 -> {
-                            wmFunctionSupport.supportDialMarket = bit.code - v.code
-                            Log.d(TAG_SJ, "supportDialMarket $bit")
+//                            wmFunctionSupport.supportDialMarket = bit.code - v.code
+//                            Log.d(TAG_SJ, "supportDialMarket $bit")
                         }
                         FUNCTION_60 -> {
-                            wmFunctionSupport.supportDialMarket = bit.code - v.code
-                            Log.d(TAG_SJ, "supportDialMarket $bit")
+//                            wmFunctionSupport.supportDialMarket = bit.code - v.code
+//                            Log.d(TAG_SJ, "supportDialMarket $bit")
                         }
                     }
                     actionPosition++

@@ -1,6 +1,8 @@
 package com.sjbt.sdk.app
 
+import com.base.sdk.entity.apps.WmConnectState
 import com.base.sdk.entity.apps.WmDial
+import com.base.sdk.exception.WmTimeOutException
 import com.base.sdk.port.app.AbAppDial
 import com.sjbt.sdk.SJUniWatch
 import com.sjbt.sdk.entity.MsgBean
@@ -19,7 +21,7 @@ import java.util.*
 class AppDial(sjUniWatch: SJUniWatch) : AbAppDial() {
     val sjUniWatch = sjUniWatch
     var syncDialListEmitter: ObservableEmitter<List<WmDial>>?=null
-    var deleteEmitter: SingleEmitter<WmDial>?=null
+    var deleteDialEmitter: SingleEmitter<WmDial>?=null
     private var wmDial: WmDial? = null
 
     //表盘列表
@@ -34,18 +36,27 @@ class AppDial(sjUniWatch: SJUniWatch) : AbAppDial() {
         })
     }
 
+    fun observeConnectState() {
+        sjUniWatch.observeConnectState.subscribe {
+            if (it == WmConnectState.DISCONNECTED) {
+                syncDialListEmitter?.onError(WmTimeOutException("time out exception"))
+                deleteDialEmitter?.onError(WmTimeOutException("time out exception"))
+            }
+        }
+    }
+
     override fun deleteDial(dialItem: WmDial): Single<WmDial> {
         wmDial = dialItem;
         return Single.create(object : SingleOnSubscribe<WmDial> {
             override fun subscribe(emitter: SingleEmitter<WmDial>) {
-                deleteEmitter = emitter
+                deleteDialEmitter = emitter
                 sjUniWatch.sendThreadTimeOutMsg(CmdHelper.getDialActionCmd(2, dialItem.id))
             }
         })
     }
 
     fun deleteDialResult(result: Boolean) {
-        deleteEmitter?.let {
+        deleteDialEmitter?.let {
             if (result) {
                 it.onSuccess(wmDial)
             } else {

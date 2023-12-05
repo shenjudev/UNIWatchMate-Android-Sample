@@ -1,6 +1,8 @@
 package com.sjbt.sdk.settings
 
+import com.base.sdk.entity.apps.WmConnectState
 import com.base.sdk.entity.settings.WmSleepSettings
+import com.base.sdk.exception.WmTimeOutException
 import com.base.sdk.port.setting.AbWmSetting
 import com.sjbt.sdk.SJUniWatch
 import com.sjbt.sdk.entity.MsgBean
@@ -14,8 +16,8 @@ import io.reactivex.rxjava3.core.*
 class SettingSleepSet(val sjUniWatch: SJUniWatch) : AbWmSetting<WmSleepSettings>() {
 
     private var observeSleepSettingEmitter: ObservableEmitter<WmSleepSettings>? = null
-    private var setSleepSettingEmitter: SingleEmitter<WmSleepSettings>? = null
-    private var getSleepSettingEmitter: SingleEmitter<WmSleepSettings>? = null
+    private var setEmitter: SingleEmitter<WmSleepSettings>? = null
+    private var getEmitter: SingleEmitter<WmSleepSettings>? = null
     private var wmSleepSettings: WmSleepSettings? = null
     private var isGet = false
 
@@ -23,17 +25,26 @@ class SettingSleepSet(val sjUniWatch: SJUniWatch) : AbWmSetting<WmSleepSettings>
         return Observable.create { emitter -> observeSleepSettingEmitter = emitter }
     }
 
+    fun observeConnectState() {
+        sjUniWatch.observeConnectState.subscribe {
+            if (it == WmConnectState.DISCONNECTED) {
+                setEmitter?.onError(WmTimeOutException("time out exception"))
+                getEmitter?.onError(WmTimeOutException("time out exception"))
+            }
+        }
+    }
+
     private fun setSleepConfigSuccess(result: Boolean) {
         if (result) {
-            setSleepSettingEmitter?.onSuccess(wmSleepSettings)
+            setEmitter?.onSuccess(wmSleepSettings)
         } else {
-            setSleepSettingEmitter?.onSuccess(null)
+            setEmitter?.onSuccess(null)
         }
     }
 
     override fun set(obj: WmSleepSettings): Single<WmSleepSettings> {
         return Single.create { emitter ->
-            setSleepSettingEmitter = emitter
+            setEmitter = emitter
 
             val status = if (obj.open) {
                 1
@@ -56,7 +67,7 @@ class SettingSleepSet(val sjUniWatch: SJUniWatch) : AbWmSetting<WmSleepSettings>
     override fun get(): Single<WmSleepSettings> {
         return Single.create { emitter ->
             isGet = true
-            getSleepSettingEmitter = emitter
+            getEmitter = emitter
             sjUniWatch.sendThreadTimeOutMsg(CmdHelper.getSleepSetCmd)
         }
     }
@@ -84,7 +95,7 @@ class SettingSleepSet(val sjUniWatch: SJUniWatch) : AbWmSetting<WmSleepSettings>
 
                 if (isGet) {
                     isGet = false
-                    getSleepSettingEmitter?.onSuccess(
+                    getEmitter?.onSuccess(
                         wmSleepSettings
                     )
                 } else {

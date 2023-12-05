@@ -3,6 +3,8 @@ package com.sjbt.sdk.app
 import android.os.Handler
 import android.os.HandlerThread
 import com.base.sdk.entity.apps.WmCameraFrameInfo
+import com.base.sdk.entity.apps.WmConnectState
+import com.base.sdk.exception.WmTimeOutException
 import com.base.sdk.port.app.AbAppCamera
 import com.base.sdk.port.app.WMCameraFlashMode
 import com.base.sdk.port.app.WMCameraPosition
@@ -49,6 +51,16 @@ class AppCamera(val sjUniWatch: SJUniWatch) : AbAppCamera() {
         if (!mCameraThread.isAlive) {
             mCameraThread.start()
             mCameraHandler = Handler(mCameraThread.looper)
+        }
+    }
+
+    fun observeConnectState() {
+        sjUniWatch.observeConnectState.subscribe {
+            if (it == WmConnectState.DISCONNECTED) {
+                cameraSingleOpenEmitter?.onError(WmTimeOutException("time out exception"))
+                cameraBackSwitchEmitter?.onError(WmTimeOutException("time out exception"))
+                cameraFlashSwitchEmitter?.onError(WmTimeOutException("time out exception"))
+            }
         }
     }
 

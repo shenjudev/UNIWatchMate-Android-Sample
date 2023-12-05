@@ -1,5 +1,6 @@
 package com.sjbt.sdk.sync
 
+import com.base.sdk.entity.apps.WmConnectState
 import com.base.sdk.entity.data.*
 import com.base.sdk.exception.WmTimeOutException
 import com.base.sdk.port.sync.AbSyncData
@@ -52,6 +53,13 @@ class SyncDistanceData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmDis
 
     override fun syncData(startTime: Long): Observable<WmSyncData<WmDistanceData>> {
         msgList.clear()
+
+        sjUniWatch.observeConnectState.subscribe {
+            if (it == WmConnectState.DISCONNECTED) {
+                activityObserveEmitter?.onError(WmTimeOutException("$TAG time out exception"))
+            }
+        }
+
         return Observable.create { emitter ->
             activityObserveEmitter = emitter
             sjUniWatch.sendReadSubPkObserveNode(

@@ -1,5 +1,6 @@
 package com.sjbt.sdk.sync
 
+import com.base.sdk.entity.apps.WmConnectState
 import com.base.sdk.entity.data.*
 import com.base.sdk.exception.WmTimeOutException
 import com.base.sdk.port.sync.AbSyncData
@@ -49,6 +50,12 @@ class SyncHeartRateData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmHe
 
     override fun syncData(startTime: Long): Observable<WmSyncData<WmHeartRateData>> {
         msgList.clear()
+        sjUniWatch.observeConnectState.subscribe {
+            if (it == WmConnectState.DISCONNECTED) {
+                heartRateObserveEmitter?.onError(WmTimeOutException("$TAG time out exception"))
+            }
+        }
+
         return Observable.create { emitter ->
             heartRateObserveEmitter = emitter
             sjUniWatch.sendReadSubPkObserveNode(

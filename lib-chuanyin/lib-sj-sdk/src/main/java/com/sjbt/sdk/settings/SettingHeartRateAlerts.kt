@@ -1,6 +1,8 @@
 package com.sjbt.sdk.settings
 
+import com.base.sdk.entity.apps.WmConnectState
 import com.base.sdk.entity.settings.WmHeartRateAlerts
+import com.base.sdk.exception.WmTimeOutException
 import com.base.sdk.port.setting.AbWmSetting
 import com.sjbt.sdk.SJUniWatch
 import com.sjbt.sdk.entity.ErrorCode
@@ -22,6 +24,15 @@ class SettingHeartRateAlerts(val sjUniWatch: SJUniWatch) : AbWmSetting<WmHeartRa
     override fun observeChange(): Observable<WmHeartRateAlerts> {
         return Observable.create { emitter ->
             observeEmitter = emitter
+        }
+    }
+
+    fun observeConnectState() {
+        sjUniWatch.observeConnectState.subscribe {
+            if (it == WmConnectState.DISCONNECTED) {
+                setEmitter?.onError(WmTimeOutException("time out exception"))
+                getEmitter?.onError(WmTimeOutException("time out exception"))
+            }
         }
     }
 

@@ -1,9 +1,11 @@
 package com.sjbt.sdk.settings
 
+import com.base.sdk.entity.apps.WmConnectState
 import com.base.sdk.entity.common.WmNoDisturb
 import com.base.sdk.entity.common.WmTimeFrequency
 import com.base.sdk.entity.data.WmTimeRange
 import com.base.sdk.entity.settings.WmSedentaryReminder
+import com.base.sdk.exception.WmTimeOutException
 import com.base.sdk.port.setting.AbWmSetting
 import com.sjbt.sdk.SJUniWatch
 import com.sjbt.sdk.entity.MsgBean
@@ -26,6 +28,15 @@ class SettingSedentaryReminder(val sjUniWatch: SJUniWatch) : AbWmSetting<WmSeden
 
     override fun observeChange(): Observable<WmSedentaryReminder> {
         return Observable.create { emitter -> observeEmitter = emitter }
+    }
+
+    fun observeConnectState() {
+        sjUniWatch.observeConnectState.subscribe {
+            if (it == WmConnectState.DISCONNECTED) {
+                setEmitter?.onError(WmTimeOutException("time out exception"))
+                getEmitter?.onError(WmTimeOutException("time out exception"))
+            }
+        }
     }
 
     override fun set(obj: WmSedentaryReminder): Single<WmSedentaryReminder> {

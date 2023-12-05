@@ -1,5 +1,6 @@
 package com.sjbt.sdk.sync
 
+import com.base.sdk.entity.apps.WmConnectState
 import com.base.sdk.entity.data.*
 import com.base.sdk.exception.WmTimeOutException
 import com.base.sdk.port.sync.AbSyncData
@@ -29,7 +30,7 @@ class SyncDailyActivityDurationData(val sjUniWatch: SJUniWatch) :
     AbSyncData<WmSyncData<WmDailyActivityDurationData>>(), ReadSubPkMsg {
 
     var lastSyncTime: Long = 0
-    private var activityDurationObserveEmitter: ObservableEmitter<WmSyncData<WmDailyActivityDurationData>>? =
+    private var syncDailyActivityDurationObserveEmitter: ObservableEmitter<WmSyncData<WmDailyActivityDurationData>>? =
         null
     private var observeChangeEmitter: ObservableEmitter<WmSyncData<WmDailyActivityDurationData>>? =
         null
@@ -62,18 +63,24 @@ class SyncDailyActivityDurationData(val sjUniWatch: SJUniWatch) :
     }
 
     fun onTimeOut(msgBean: MsgBean, nodeData: NodeData) {
-        activityDurationObserveEmitter?.onError(WmTimeOutException("$TAG time out exception"))
+        syncDailyActivityDurationObserveEmitter?.onError(WmTimeOutException("$TAG time out exception"))
         sjUniWatch.wmLog.logE(TAG, "onTimeOut:$msgBean")
-
     }
 
     override fun syncData(startTime: Long): Observable<WmSyncData<WmDailyActivityDurationData>> {
         msgList.clear()
+
+        sjUniWatch.observeConnectState.subscribe {
+            if (it == WmConnectState.DISCONNECTED) {
+                syncDailyActivityDurationObserveEmitter?.onError(WmTimeOutException("$TAG time out exception"))
+            }
+        }
+
         return Observable.create { emitter ->
-            activityDurationObserveEmitter = emitter
+            syncDailyActivityDurationObserveEmitter = emitter
 
             readSportTypeJsonFromAssets(sjUniWatch.mContext)?.let {
-                sjUniWatch.wmLog.logE(TAG, "readJsonFromAssets:$it")
+//                sjUniWatch.wmLog.logE(TAG, "readJsonFromAssets:$it")
                 val sportTypeData = Gson().fromJson(it, SportTypeData::class.java)
                 sportTypeData.sports.forEach { sportType ->
                     sportTypeMap[sportType.id] = sportType.sport_type
@@ -225,8 +232,8 @@ class SyncDailyActivityDurationData(val sjUniWatch: SJUniWatch) :
                 result
             )
 
-        activityDurationObserveEmitter?.onNext(wmSyncData)
-        activityDurationObserveEmitter?.onComplete()
+        syncDailyActivityDurationObserveEmitter?.onNext(wmSyncData)
+        syncDailyActivityDurationObserveEmitter?.onComplete()
 
         lastSyncTime = System.currentTimeMillis()
 
@@ -254,8 +261,9 @@ class SyncDailyActivityDurationData(val sjUniWatch: SJUniWatch) :
                 mutableListOf<WmDailyActivityDurationData>()
             )
 
-        activityDurationObserveEmitter?.onNext(wmSyncData)
-        activityDurationObserveEmitter?.onComplete()
+        syncDailyActivityDurationObserveEmitter?.onNext(wmSyncData)
+        syncDailyActivityDurationObserveEmitter?.onComplete()
     }
+
 
 }

@@ -4,7 +4,9 @@ import com.base.sdk.entity.common.WmNoDisturb
 import com.base.sdk.entity.common.WmTimeFrequency
 import com.base.sdk.entity.data.WmTimeRange
 import com.base.sdk.entity.settings.WmSedentaryReminder
+import com.base.sdk.exception.WmTimeOutException
 import com.base.sdk.port.setting.AbWmSetting
+import com.sjbt.sdk.ExceptionStateListener
 import com.sjbt.sdk.SJUniWatch
 import com.sjbt.sdk.entity.MsgBean
 import com.sjbt.sdk.entity.NodeData
@@ -17,7 +19,8 @@ import io.reactivex.rxjava3.core.*
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 
-class SettingDrinkWaterReminder(val sjUniWatch: SJUniWatch) : AbWmSetting<WmSedentaryReminder>() {
+class SettingDrinkWaterReminder(val sjUniWatch: SJUniWatch) : AbWmSetting<WmSedentaryReminder>(),
+    ExceptionStateListener {
     private var observeEmitter: ObservableEmitter<WmSedentaryReminder>? = null
     private var setEmitter: SingleEmitter<WmSedentaryReminder>? = null
     private var getEmitter: SingleEmitter<WmSedentaryReminder>? = null
@@ -26,6 +29,24 @@ class SettingDrinkWaterReminder(val sjUniWatch: SJUniWatch) : AbWmSetting<WmSede
 
     override fun observeChange(): Observable<WmSedentaryReminder> {
         return Observable.create { emitter -> observeEmitter = emitter }
+    }
+
+    override fun observeConnectState() {
+        setEmitter?.let { emitter ->
+            if (!emitter.isDisposed) {
+                emitter.onError(WmTimeOutException("time out exception"))
+            }
+        }
+
+        getEmitter?.let { emitter ->
+            if (!emitter.isDisposed) {
+                emitter.onError(WmTimeOutException("time out exception"))
+            }
+        }
+    }
+
+    override fun onTimeOut(msgBean: MsgBean, nodeData: NodeData) {
+
     }
 
     override fun set(obj: WmSedentaryReminder): Single<WmSedentaryReminder> {
@@ -42,10 +63,6 @@ class SettingDrinkWaterReminder(val sjUniWatch: SJUniWatch) : AbWmSetting<WmSede
             getEmitter = emitter
             sjUniWatch.sendReadNodeCmdList(getReadDrinkReminderCmd())
         }
-    }
-
-    fun onTimeOut(msgBean: MsgBean, nodeData: NodeData) {
-
     }
 
     fun drinkWaterBusiness(it: NodeData) {

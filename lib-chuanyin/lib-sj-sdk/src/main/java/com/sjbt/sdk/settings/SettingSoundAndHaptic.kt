@@ -1,6 +1,8 @@
 package com.sjbt.sdk.settings
 
+import com.base.sdk.entity.apps.WmConnectState
 import com.base.sdk.entity.settings.WmSoundAndHaptic
+import com.base.sdk.exception.WmTimeOutException
 import com.base.sdk.port.setting.AbWmSetting
 import com.sjbt.sdk.SJUniWatch
 import com.sjbt.sdk.spp.cmd.CmdHelper
@@ -22,6 +24,15 @@ class SettingSoundAndHaptic(sjUniWatch: SJUniWatch) : AbWmSetting<WmSoundAndHapt
             getWmWistRaise(wmWistRaise)
         } else {
             observeWmWistRaiseChange(wmWistRaise)
+        }
+    }
+
+    fun observeConnectState() {
+        sjUniWatch.observeConnectState.subscribe {
+            if (it == WmConnectState.DISCONNECTED) {
+                setEmitter?.onError(WmTimeOutException("time out exception"))
+                getEmitter?.onError(WmTimeOutException("time out exception"))
+            }
         }
     }
 

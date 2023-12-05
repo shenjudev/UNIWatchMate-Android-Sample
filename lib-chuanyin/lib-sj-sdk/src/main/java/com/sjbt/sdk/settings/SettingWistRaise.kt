@@ -1,6 +1,8 @@
 package com.sjbt.sdk.settings
 
+import com.base.sdk.entity.apps.WmConnectState
 import com.base.sdk.entity.settings.WmWristRaise
+import com.base.sdk.exception.WmTimeOutException
 import com.base.sdk.port.setting.AbWmSetting
 import com.sjbt.sdk.SJUniWatch
 import com.sjbt.sdk.entity.NodeData
@@ -20,6 +22,15 @@ class SettingWistRaise(val sjUniWatch: SJUniWatch) : AbWmSetting<WmWristRaise>()
         backWmWristRaise = wmWristRaise
         mWmWristRaise = WmWristRaise(wmWristRaise.isScreenWakeEnabled)
         getEmitter?.onSuccess(wmWristRaise)
+    }
+
+    fun observeConnectState() {
+        sjUniWatch.observeConnectState.subscribe {
+            if (it == WmConnectState.DISCONNECTED) {
+                setEmitter?.onError(WmTimeOutException("time out exception"))
+                getEmitter?.onError(WmTimeOutException("time out exception"))
+            }
+        }
     }
 
     private fun observeWmWistRaiseChange(wmWristRaise: WmWristRaise) {
