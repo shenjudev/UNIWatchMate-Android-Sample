@@ -199,8 +199,9 @@ class SyncSleepData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmSleepD
             calendar.set(sleepYear, sleepMon, sleepDay, 0, 0, 0)
 
             var dateStamp = calendar.timeInMillis
-            var bedTime = (byteBufferSyncData.int and 0xFFFFFFFF.toInt()) + dateStamp
-            var getUpTime = (byteBufferSyncData.int and 0xFFFFFFFF.toInt()) + dateStamp
+
+            var bedTime = byteBufferSyncData.int * 1000 + dateStamp
+            var getUpTime = byteBufferSyncData.int * 1000 + dateStamp
 
             var totalSleepMinutes: Int = byteBufferSyncData.int
 

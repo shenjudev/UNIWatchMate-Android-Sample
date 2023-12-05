@@ -183,22 +183,22 @@ class SyncDailyActivityDurationData(val sjUniWatch: SJUniWatch) :
         val timestampType = byteBufferSyncData.get().toInt()
 
         val baseYear = byteBufferSyncData.short.toInt()
-        val baseMon = byteBufferSyncData.get().toInt()
+        val baseMon = byteBufferSyncData.get().toInt() - 1
         val baseDay = byteBufferSyncData.get().toInt()
 
         //相对时间戳
         val timestamp = byteBufferSyncData.int
         val dataLen = byteBufferSyncData.short
 
-        sjUniWatch.wmLog.logD(
-            TAG,
-            "timestampType:$timestampType --> baseDate:$baseYear$baseMon$baseDay  timestamp:$timestamp  dataLen:$dataLen"
-        )
-
         val calendar = Calendar.getInstance()
         calendar.set(baseYear, baseMon, baseDay, 0, 0, 0)
 
         val realTimeStamp = (calendar.timeInMillis + timestamp) / 1000 * 1000
+
+        sjUniWatch.wmLog.logD(
+            TAG,
+            "timestampType:$timestampType --> realTimeStamp:$realTimeStamp  dataLen:$dataLen"
+        )
 
         val activityDurationDataList = mutableListOf<WmDailyActivityDurationData>()
 
@@ -232,7 +232,11 @@ class SyncDailyActivityDurationData(val sjUniWatch: SJUniWatch) :
 
         val result = activityDurationDataList.groupBy { it.sportType }
             .mapValues { it.value.sumOf { data -> data.duration } }
-            .map { WmDailyActivityDurationData(it.key, it.value) }
+            .map {
+                val dailyActivityDurationData = WmDailyActivityDurationData(it.key, it.value)
+                dailyActivityDurationData.timestamp = realTimeStamp
+                dailyActivityDurationData
+            }
 
         val wmSyncData =
             WmSyncData(
