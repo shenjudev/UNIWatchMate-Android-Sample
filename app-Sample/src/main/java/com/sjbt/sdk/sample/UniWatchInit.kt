@@ -5,6 +5,7 @@ import android.util.Log
 import com.base.api.BuildConfig
 import com.base.api.UNIWatchMate
 import com.sjbt.sdk.SJUniWatch
+import io.reactivex.rxjava3.plugins.RxJavaPlugins
 import timber.log.Timber
 
 fun uniWatchInit(application: Application) {
@@ -21,6 +22,9 @@ fun uniWatchInit(application: Application) {
             }
         })
     }
+    RxJavaPlugins.setErrorHandler { throwable: Throwable ->
+        Timber.e("RxJavaPlugins throwable=" + throwable.message)
+    }
 
     //2.配置支持不同厂商的手表(Configurations Support watches from different manufacturers)
     UNIWatchMate.init(
@@ -31,8 +35,9 @@ fun uniWatchInit(application: Application) {
     )
 }
 
-class SJUniWatchImpl(mContext: Application,
-                     mMsgTimeOut: Int
+class SJUniWatchImpl(
+    mContext: Application,
+    mMsgTimeOut: Int,
 ) : SJUniWatch(mContext,mMsgTimeOut) {
 
 }

@@ -15,7 +15,9 @@ import com.base.sdk.entity.settings.WmHeartRateAlerts
 import com.sjbt.sdk.sample.R
 import com.sjbt.sdk.sample.entity.HeartRateItemEntity
 import com.sjbt.sdk.sample.utils.DateTimeUtils
+import com.sjbt.sdk.sample.utils.ToastUtil
 import com.sjbt.sdk.sample.utils.launchRepeatOnStarted
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.reactive.asFlow
 import kotlinx.coroutines.runBlocking
@@ -27,33 +29,39 @@ import java.util.*
 
 class AllDataFragment : DataListFragment<WmSyncData<*>>() {
 
-    override val valueFormat: DataListAdapter.ValueFormat<WmSyncData<*>> = object : DataListAdapter.ValueFormat<WmSyncData<*>> {
-        override fun format(context: Context, obj: WmSyncData<*>): String {
-            return timeFormat.format(obj.timestamp) + "    ${obj}"
+    override val valueFormat: DataListAdapter.ValueFormat<WmSyncData<*>> =
+        object : DataListAdapter.ValueFormat<WmSyncData<*>> {
+            override fun format(context: Context, obj: WmSyncData<*>): String {
+                return timeFormat.format(obj.timestamp) + "    ${obj}"
 
+            }
         }
-    }
     val dataList = mutableListOf<WmSyncData<*>>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-       lifecycle.launchRepeatOnStarted {
-           launch {
+        lifecycle.launchRepeatOnStarted {
+            launch {
 //               UNIWatchMate.wmSync.syncAllData.observeSyncData.asFlow().collect{
 //                   Timber.i("observeSyncData result=${it}")
 //               }
-           }
-       }
+            }
+        }
     }
+
     override fun queryData(date: Date): List<WmSyncData<*>>? {
         Timber.i("queryData runBlocking")
         return runBlocking {
             val calendar = Calendar.getInstance()
             val start: Date = DateTimeUtils.getDayStartTime(calendar, date)
             val end: Date = DateTimeUtils.getDayEndTime(calendar, date)
-            UNIWatchMate.wmSync.syncAllData.syncData(0).collect {
-               dataList.add(it)
+            UNIWatchMate.wmSync.syncAllData.syncData(0).asFlow().catch {
+                Timber.e("queryData error=${it.message}")
+                ToastUtil.showToast(it.message)
             }
+                .collect {
+                    dataList.add(it)
+                }
             Timber.i("queryData result=${dataList}")
 //            result.value
             dataList
