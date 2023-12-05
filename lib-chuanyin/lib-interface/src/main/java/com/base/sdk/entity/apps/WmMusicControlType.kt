@@ -1,7 +1,7 @@
 package com.base.sdk.entity.apps
 
 /**
- * 英语控制
+ * 音乐控制
  */
 enum class WmMusicControlType(val type:Byte) {
     PREV_SONG(0),

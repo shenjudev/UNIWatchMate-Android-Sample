@@ -212,7 +212,7 @@ class DeviceFragment : BaseFragment(R.layout.fragment_device),
 
             viewBind.itemPushDateTime -> {
                 applicationScope.launchWithLog {
-                    val result = UNIWatchMate?.wmApps?.appDateTime?.setDateTime(null).await()
+                    val result = UNIWatchMate.wmApps.appDateTime.setDateTime(null).await()
                     Timber.tag(TAG).i("settingDateTime result=${result}")
                     ToastUtil.showToast("push date time result = $result")
                 }
