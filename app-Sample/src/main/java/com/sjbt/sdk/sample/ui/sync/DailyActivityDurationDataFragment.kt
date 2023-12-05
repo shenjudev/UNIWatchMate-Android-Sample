@@ -15,30 +15,34 @@ import java.util.*
 
 class DailyActivityDurationDataFragment : DataListFragment<WmDailyActivityDurationData>() {
 
-    override val valueFormat: DataListAdapter.ValueFormat<WmDailyActivityDurationData> = object : DataListAdapter.ValueFormat<WmDailyActivityDurationData> {
-        override fun format(context: Context, obj: WmDailyActivityDurationData): String {
-            return timeFormat.format(obj.timestamp) + "    $obj"
+    override val valueFormat: DataListAdapter.ValueFormat<WmDailyActivityDurationData> =
+        object : DataListAdapter.ValueFormat<WmDailyActivityDurationData> {
+            override fun format(context: Context, obj: WmDailyActivityDurationData): String {
+                return timeFormat.format(obj.timestamp) + "    $obj"
+            }
         }
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-       lifecycle.launchRepeatOnStarted {
-           launch {
+        lifecycle.launchRepeatOnStarted {
+            launch {
 //               UNIWatchMate.wmSync.syncAllData.observeSyncData.asFlow().collect{
 //                   Timber.i("observeSyncData result=${it}")
 //               }
-           }
-       }
+            }
+        }
     }
+
     override fun queryData(date: Date): List<WmDailyActivityDurationData>? {
         Timber.i("queryData runBlocking")
         return runBlocking {
             val calendar = Calendar.getInstance()
             val start: Date = DateTimeUtils.getDayStartTime(calendar, date)
             val end: Date = DateTimeUtils.getDayEndTime(calendar, date)
-            UNIWatchMate.wmSync.syncDailyActivityDuration.syncData(start.time).awaitFirst().value
-//            result.value
+            val result =
+                UNIWatchMate.wmSync.syncDailyActivityDuration.syncData(start.time).awaitFirst()
+            Timber.i("queryData result=$result")
+            result.value
 //            dataList
         }
     }
