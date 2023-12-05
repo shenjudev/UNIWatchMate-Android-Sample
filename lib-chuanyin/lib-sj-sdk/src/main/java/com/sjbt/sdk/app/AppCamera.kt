@@ -8,10 +8,12 @@ import com.base.sdk.exception.WmTimeOutException
 import com.base.sdk.port.app.AbAppCamera
 import com.base.sdk.port.app.WMCameraFlashMode
 import com.base.sdk.port.app.WMCameraPosition
+import com.sjbt.sdk.ExceptionStateListener
 import com.sjbt.sdk.MSG_INTERVAL_FRAME
 import com.sjbt.sdk.SJUniWatch
 import com.sjbt.sdk.entity.H264FrameMap
 import com.sjbt.sdk.entity.MsgBean
+import com.sjbt.sdk.entity.NodeData
 import com.sjbt.sdk.entity.OtaCmdInfo
 import com.sjbt.sdk.spp.cmd.*
 import io.reactivex.rxjava3.core.*
@@ -19,7 +21,8 @@ import io.reactivex.rxjava3.subjects.PublishSubject
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 
-class AppCamera(val sjUniWatch: SJUniWatch) : AbAppCamera() {
+class AppCamera(val sjUniWatch: SJUniWatch) : AbAppCamera() ,
+    ExceptionStateListener {
 
     var cameraSingleOpenEmitter: SingleEmitter<Boolean>? = null
     var cameraObserveTakePhotoEmitter: ObservableEmitter<Any>? = null
@@ -54,14 +57,29 @@ class AppCamera(val sjUniWatch: SJUniWatch) : AbAppCamera() {
         }
     }
 
-    fun observeConnectState() {
-        sjUniWatch.observeConnectState.subscribe {
-            if (it == WmConnectState.DISCONNECTED) {
-                cameraSingleOpenEmitter?.onError(WmTimeOutException("time out exception"))
-                cameraBackSwitchEmitter?.onError(WmTimeOutException("time out exception"))
-                cameraFlashSwitchEmitter?.onError(WmTimeOutException("time out exception"))
+    override fun observeConnectState() {
+
+        cameraSingleOpenEmitter?.let { emitter ->
+            if (!emitter.isDisposed) {
+                emitter.onError(WmTimeOutException("time out exception"))
             }
         }
+
+        cameraBackSwitchEmitter?.let { emitter ->
+            if (!emitter.isDisposed) {
+                emitter.onError(WmTimeOutException("time out exception"))
+            }
+        }
+
+        cameraFlashSwitchEmitter?.let { emitter ->
+            if (!emitter.isDisposed) {
+                emitter.onError(WmTimeOutException("time out exception"))
+            }
+        }
+    }
+
+    override fun onTimeOut(msgBean: MsgBean, nodeData: NodeData) {
+        sjUniWatch.wmLog.logE(TAG, "onTimeOut:$msgBean")
     }
 
     open fun stopCameraThread() {
@@ -105,10 +123,6 @@ class AppCamera(val sjUniWatch: SJUniWatch) : AbAppCamera() {
         }
     }
 
-    fun onTimeOut(msgBean: MsgBean) {
-//        updateAlarmEmitter?.onError(WmTimeOutException())
-        sjUniWatch.wmLog.logE(TAG, "onTimeOut:$msgBean")
-    }
 
     override fun openCloseCamera(open: Boolean): Single<Boolean> {
 

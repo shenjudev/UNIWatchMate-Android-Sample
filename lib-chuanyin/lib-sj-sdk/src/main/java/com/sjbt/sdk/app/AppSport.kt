@@ -3,6 +3,7 @@ package com.sjbt.sdk.app
 import com.base.sdk.entity.apps.WmSport
 import com.base.sdk.exception.WmTimeOutException
 import com.base.sdk.port.app.AbAppSport
+import com.sjbt.sdk.ExceptionStateListener
 import com.sjbt.sdk.SJUniWatch
 import com.sjbt.sdk.entity.*
 import com.sjbt.sdk.spp.cmd.*
@@ -15,7 +16,8 @@ import java.nio.ByteOrder
 /**
  * 应用 - 运动 列表获取和更新
  */
-class AppSport(val sjUniWatch: SJUniWatch) : AbAppSport() {
+class AppSport(val sjUniWatch: SJUniWatch) : AbAppSport() ,
+    ExceptionStateListener {
     private var getFixedSportListEmitter: SingleEmitter<List<WmSport>>? = null
     private var getDynamicSportListEmitter: SingleEmitter<List<WmSport>>? = null
     private var getSupportSportListEmitter: SingleEmitter<List<WmSport>>? = null
@@ -32,6 +34,48 @@ class AppSport(val sjUniWatch: SJUniWatch) : AbAppSport() {
         getFixedSportListEmitter = it
         sjUniWatch.sendReadNodeCmdList(getReadSportListPayloadPackage(URN_APP_FIXED_SPORT_LIST))
     }
+
+    override fun observeConnectState() {
+
+        getFixedSportListEmitter?.let { emitter ->
+            if (!emitter.isDisposed) {
+                emitter.onError(WmTimeOutException("time out exception"))
+            }
+        }
+
+        getDynamicSportListEmitter?.let { emitter ->
+            if (!emitter.isDisposed) {
+                emitter.onError(WmTimeOutException("time out exception"))
+            }
+        }
+
+        getSupportSportListEmitter?.let { emitter ->
+            if (!emitter.isDisposed) {
+                emitter.onError(WmTimeOutException("time out exception"))
+            }
+        }
+
+        updateFixedSportListEmitter?.let { emitter ->
+            if (!emitter.isDisposed) {
+                emitter.onError(WmTimeOutException("time out exception"))
+            }
+        }
+
+        updateDynamicSportListEmitter?.let { emitter ->
+            if (!emitter.isDisposed) {
+                emitter.onError(WmTimeOutException("time out exception"))
+            }
+        }
+    }
+
+    override fun onTimeOut(msgBean: MsgBean, nodeData: NodeData) {
+        sjUniWatch.wmLog.logE(DevFinal.STR.TAG, "onTimeOut:$msgBean")
+        when (nodeData.urn[2]) {
+            URN_APP_FIXED_SPORT_LIST -> getFixedSportListEmitter?.onError(WmTimeOutException("$TAG get sport list time out"))
+            URN_APP_SUPPORT_SPORT_LIST -> getSupportSportListEmitter?.onError(WmTimeOutException("$TAG get support sport list time out"))
+        }
+    }
+
 
     override fun updateFixedSportList(list: List<WmSport>): Single<Boolean> {
 
@@ -123,14 +167,6 @@ class AppSport(val sjUniWatch: SJUniWatch) : AbAppSport() {
         )
 
         return payloadPackage
-    }
-
-    fun onTimeOut(msgBean: MsgBean, nodeData: NodeData) {
-        sjUniWatch.wmLog.logE(DevFinal.STR.TAG, "onTimeOut:$msgBean")
-        when (nodeData.urn[2]) {
-            URN_APP_FIXED_SPORT_LIST -> getFixedSportListEmitter?.onError(WmTimeOutException("$TAG get sport list time out"))
-            URN_APP_SUPPORT_SPORT_LIST -> getSupportSportListEmitter?.onError(WmTimeOutException("$TAG get support sport list time out"))
-        }
     }
 
     fun appSportBusiness(payloadPackage: PayloadPackage, nodeData: NodeData) {

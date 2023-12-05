@@ -4,12 +4,12 @@ import com.base.sdk.entity.apps.WmConnectState
 import com.base.sdk.entity.data.*
 import com.base.sdk.exception.WmTimeOutException
 import com.base.sdk.port.sync.AbSyncData
+import com.sjbt.sdk.ExceptionStateListener
 import com.sjbt.sdk.ReadSubPkMsg
 import com.sjbt.sdk.SJUniWatch
 import com.sjbt.sdk.entity.DataFormat
 import com.sjbt.sdk.entity.MsgBean
 import com.sjbt.sdk.entity.NodeData
-import com.sjbt.sdk.exception.SJException
 import com.sjbt.sdk.spp.cmd.*
 import com.sjbt.sdk.utils.BtUtils
 import com.sjbt.sdk.utils.TimeUtils
@@ -22,9 +22,10 @@ import java.nio.ByteOrder
 import java.util.*
 
 class SyncCaloriesData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmCaloriesData>>(),
+    ExceptionStateListener,
     ReadSubPkMsg {
     var lastSyncTime: Long = 0
-    private var caloriesObserveEmitter: ObservableEmitter<WmSyncData<WmCaloriesData>>? = null
+    private var syncCaloriesObserveEmitter: ObservableEmitter<WmSyncData<WmCaloriesData>>? = null
     private var observeChangeEmitter: ObservableEmitter<WmSyncData<WmCaloriesData>>? = null
 
     private val TAG = "SyncCaloriesData"
@@ -44,21 +45,29 @@ class SyncCaloriesData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmCal
         return lastSyncTime
     }
 
-    fun onTimeOut(msg: MsgBean, nodeData: NodeData) {
-        caloriesObserveEmitter?.onError(WmTimeOutException("$TAG time out exception"))
-        sjUniWatch.wmLog.logE(TAG, "onTimeOut:$msg")
+    override fun onTimeOut(msgBean: MsgBean, nodeData: NodeData) {
+        observeConnectState()
+        sjUniWatch.wmLog.logE(TAG, "onTimeOut:$msgBean")
+    }
+
+    override fun observeConnectState() {
+        syncCaloriesObserveEmitter?.let { emitter ->
+            if (!emitter.isDisposed) {
+                emitter.onError(WmTimeOutException("$TAG time out exception"))
+            }
+        }
     }
 
     override fun syncData(startTime: Long): Observable<WmSyncData<WmCaloriesData>> {
         msgList.clear()
         sjUniWatch.observeConnectState.subscribe {
             if (it == WmConnectState.DISCONNECTED) {
-                caloriesObserveEmitter?.onError(WmTimeOutException("$TAG time out exception"))
+                syncCaloriesObserveEmitter?.onError(WmTimeOutException("$TAG time out exception"))
             }
         }
 
         return Observable.create { emitter ->
-            caloriesObserveEmitter = emitter
+            syncCaloriesObserveEmitter = emitter
             sjUniWatch.sendReadSubPkObserveNode(
                 this,
                 CmdHelper.getReadSportSyncData(
@@ -193,8 +202,8 @@ class SyncCaloriesData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmCal
         val wmSyncData =
             WmSyncData(WmSyncDataType.CALORIE, realTimeStamp, WmIntervalType.ONE_HOUR, caloriesList)
 
-        caloriesObserveEmitter?.onNext(wmSyncData)
-        caloriesObserveEmitter?.onComplete()
+        syncCaloriesObserveEmitter?.onNext(wmSyncData)
+        syncCaloriesObserveEmitter?.onComplete()
 
         lastSyncTime = System.currentTimeMillis()
 
@@ -223,8 +232,8 @@ class SyncCaloriesData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmCal
                 mutableListOf<WmCaloriesData>()
             )
 
-        caloriesObserveEmitter?.onNext(wmSyncData)
-        caloriesObserveEmitter?.onComplete()
+        syncCaloriesObserveEmitter?.onNext(wmSyncData)
+        syncCaloriesObserveEmitter?.onComplete()
     }
 
 }

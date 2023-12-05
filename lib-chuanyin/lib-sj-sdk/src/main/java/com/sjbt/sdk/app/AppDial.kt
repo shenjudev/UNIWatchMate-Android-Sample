@@ -4,11 +4,14 @@ import com.base.sdk.entity.apps.WmConnectState
 import com.base.sdk.entity.apps.WmDial
 import com.base.sdk.exception.WmTimeOutException
 import com.base.sdk.port.app.AbAppDial
+import com.sjbt.sdk.ExceptionStateListener
 import com.sjbt.sdk.SJUniWatch
 import com.sjbt.sdk.entity.MsgBean
 import com.sjbt.sdk.entity.NodeData
 import com.sjbt.sdk.spp.cmd.CmdHelper
 import com.sjbt.sdk.spp.cmd.DIAL_MSG_LEN
+import com.sjbt.sdk.spp.cmd.URN_APP_CONTACT_EMERGENCY
+import com.sjbt.sdk.spp.cmd.URN_APP_CONTACT_LIST
 import com.sjbt.sdk.uparser.model.JpgInfo
 import com.sjbt.sdk.utils.BtUtils
 import com.sjbt.sdk.utils.DevFinal
@@ -18,7 +21,8 @@ import io.reactivex.rxjava3.core.Observable
 import java.nio.ByteBuffer
 import java.util.*
 
-class AppDial(sjUniWatch: SJUniWatch) : AbAppDial() {
+class AppDial(sjUniWatch: SJUniWatch) : AbAppDial() ,
+    ExceptionStateListener {
     val sjUniWatch = sjUniWatch
     var syncDialListEmitter: ObservableEmitter<List<WmDial>>?=null
     var deleteDialEmitter: SingleEmitter<WmDial>?=null
@@ -36,13 +40,23 @@ class AppDial(sjUniWatch: SJUniWatch) : AbAppDial() {
         })
     }
 
-    fun observeConnectState() {
-        sjUniWatch.observeConnectState.subscribe {
-            if (it == WmConnectState.DISCONNECTED) {
-                syncDialListEmitter?.onError(WmTimeOutException("time out exception"))
-                deleteDialEmitter?.onError(WmTimeOutException("time out exception"))
+    override fun observeConnectState() {
+
+        syncDialListEmitter?.let { emitter ->
+            if (!emitter.isDisposed) {
+                emitter.onError(WmTimeOutException("time out exception"))
             }
         }
+
+        deleteDialEmitter?.let { emitter ->
+            if (!emitter.isDisposed) {
+                emitter.onError(WmTimeOutException("time out exception"))
+            }
+        }
+    }
+
+    override fun onTimeOut(msgBean: MsgBean, nodeData: NodeData) {
+
     }
 
     override fun deleteDial(dialItem: WmDial): Single<WmDial> {
@@ -63,10 +77,6 @@ class AppDial(sjUniWatch: SJUniWatch) : AbAppDial() {
                 it.onError(java.lang.RuntimeException("delete fail"))
             }
         }
-    }
-
-    fun onTimeOut(nodeData: NodeData) {
-        sjUniWatch.wmLog.logE(DevFinal.STR.TAG, "onTimeOut")
     }
 
     fun addDialList(msgBean: MsgBean) {

@@ -5,6 +5,7 @@ import com.base.sdk.entity.data.*
 import com.base.sdk.exception.WmTimeOutException
 import com.base.sdk.port.sync.AbSyncData
 import com.google.gson.Gson
+import com.sjbt.sdk.ExceptionStateListener
 import com.sjbt.sdk.ReadSubPkMsg
 import com.sjbt.sdk.SJUniWatch
 import com.sjbt.sdk.entity.DataFormat
@@ -27,7 +28,8 @@ import java.util.*
  * 每日活动时长
  */
 class SyncDailyActivityDurationData(val sjUniWatch: SJUniWatch) :
-    AbSyncData<WmSyncData<WmDailyActivityDurationData>>(), ReadSubPkMsg {
+    AbSyncData<WmSyncData<WmDailyActivityDurationData>>(),
+    ExceptionStateListener, ReadSubPkMsg {
 
     var lastSyncTime: Long = 0
     private var syncDailyActivityDurationObserveEmitter: ObservableEmitter<WmSyncData<WmDailyActivityDurationData>>? =
@@ -62,9 +64,17 @@ class SyncDailyActivityDurationData(val sjUniWatch: SJUniWatch) :
         return hasNext
     }
 
-    fun onTimeOut(msgBean: MsgBean, nodeData: NodeData) {
-        syncDailyActivityDurationObserveEmitter?.onError(WmTimeOutException("$TAG time out exception"))
+    override fun onTimeOut(msgBean: MsgBean, nodeData: NodeData) {
+        observeConnectState()
         sjUniWatch.wmLog.logE(TAG, "onTimeOut:$msgBean")
+    }
+
+    override fun observeConnectState() {
+        syncDailyActivityDurationObserveEmitter?.let { emitter ->
+            if (!emitter.isDisposed) {
+                emitter.onError(WmTimeOutException("$TAG time out exception"))
+            }
+        }
     }
 
     override fun syncData(startTime: Long): Observable<WmSyncData<WmDailyActivityDurationData>> {
@@ -113,7 +123,7 @@ class SyncDailyActivityDurationData(val sjUniWatch: SJUniWatch) :
 
                         if (msgList.size == 1) {
                             msgList[0].payloadPackage?.itemList?.forEach {
-                                syncActivityDurationDataBusiness(it)
+                                syncDailyActivityDurationDataBusiness(it)
                             }
                         } else {
                             var bufferSize = 0
@@ -243,7 +253,7 @@ class SyncDailyActivityDurationData(val sjUniWatch: SJUniWatch) :
         )
     }
 
-    fun syncActivityDurationDataBusiness(nodeData: NodeData) {
+    fun syncDailyActivityDurationDataBusiness(nodeData: NodeData) {
         if (nodeData.dataFmt == DataFormat.FMT_BIN) {
             byteBufferSyncData = ByteBuffer.wrap(nodeData.data).order(ByteOrder.LITTLE_ENDIAN)
             parseStepData()

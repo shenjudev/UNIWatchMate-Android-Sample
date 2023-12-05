@@ -6,6 +6,7 @@ import com.base.sdk.entity.apps.WmConnectState
 import com.base.sdk.exception.WmTimeOutException
 import com.base.sdk.port.app.AbAppAlarm
 import com.sjbt.sdk.ALARM_NAME_LEN
+import com.sjbt.sdk.ExceptionStateListener
 import com.sjbt.sdk.SJUniWatch
 import com.sjbt.sdk.entity.*
 import com.sjbt.sdk.spp.cmd.*
@@ -17,7 +18,8 @@ import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import java.nio.charset.StandardCharsets
 
-class AppAlarm(val sjUniWatch: SJUniWatch) : AbAppAlarm() {
+class AppAlarm(val sjUniWatch: SJUniWatch) : AbAppAlarm(),
+    ExceptionStateListener {
 
     private var observeAlarmListEmitter: ObservableEmitter<List<WmAlarm>>? = null
     private var updateAlarmEmitter: SingleEmitter<Boolean>? = null
@@ -36,11 +38,26 @@ class AppAlarm(val sjUniWatch: SJUniWatch) : AbAppAlarm() {
         observeAlarmListEmitter = it
     }
 
-    fun observeConnectState() {
-        sjUniWatch.observeConnectState.subscribe {
-            if (it == WmConnectState.DISCONNECTED) {
-                updateAlarmEmitter?.onError(WmTimeOutException("time out exception"))
-                getAlarmEmitter?.onError(WmTimeOutException("time out exception"))
+    override fun observeConnectState() {
+
+        updateAlarmEmitter?.let { emitter ->
+            if (!emitter.isDisposed) {
+                emitter.onError(WmTimeOutException("time out exception"))
+            }
+        }
+
+        getAlarmEmitter?.let { emitter ->
+            if (!emitter.isDisposed) {
+                emitter.onError(WmTimeOutException("time out exception"))
+            }
+        }
+    }
+
+    override fun onTimeOut(msgBean: MsgBean, nodeData: NodeData) {
+        sjUniWatch.wmLog.logE(TAG, "onTimeOut:$msgBean")
+        when (nodeData.urn[2]) {
+            URN_APP_ALARM_LIST -> {
+                updateAlarmEmitter?.onError(WmTimeOutException("$TAG URN_APP_ALARM_LIST TIMEOUT"))
             }
         }
     }
@@ -58,15 +75,6 @@ class AppAlarm(val sjUniWatch: SJUniWatch) : AbAppAlarm() {
                 getData = false
             } else {
                 observeAlarmListEmitter?.onNext(it)
-            }
-        }
-    }
-
-    fun onTimeOut(msgBean: MsgBean, nodeData: NodeData) {
-        sjUniWatch.wmLog.logE(TAG, "onTimeOut:$msgBean")
-        when (nodeData.urn[2]) {
-            URN_APP_ALARM_LIST -> {
-                updateAlarmEmitter?.onError(WmTimeOutException("$TAG URN_APP_ALARM_LIST TIMEOUT"))
             }
         }
     }

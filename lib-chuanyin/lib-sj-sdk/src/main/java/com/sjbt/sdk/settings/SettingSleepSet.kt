@@ -4,6 +4,7 @@ import com.base.sdk.entity.apps.WmConnectState
 import com.base.sdk.entity.settings.WmSleepSettings
 import com.base.sdk.exception.WmTimeOutException
 import com.base.sdk.port.setting.AbWmSetting
+import com.sjbt.sdk.ExceptionStateListener
 import com.sjbt.sdk.SJUniWatch
 import com.sjbt.sdk.entity.MsgBean
 import com.sjbt.sdk.entity.NodeData
@@ -13,7 +14,8 @@ import com.sjbt.sdk.spp.cmd.CMD_ID_800E
 import com.sjbt.sdk.spp.cmd.CmdHelper
 import io.reactivex.rxjava3.core.*
 
-class SettingSleepSet(val sjUniWatch: SJUniWatch) : AbWmSetting<WmSleepSettings>() {
+class SettingSleepSet(val sjUniWatch: SJUniWatch) : AbWmSetting<WmSleepSettings>(),
+    ExceptionStateListener {
 
     private var observeSleepSettingEmitter: ObservableEmitter<WmSleepSettings>? = null
     private var setEmitter: SingleEmitter<WmSleepSettings>? = null
@@ -25,13 +27,22 @@ class SettingSleepSet(val sjUniWatch: SJUniWatch) : AbWmSetting<WmSleepSettings>
         return Observable.create { emitter -> observeSleepSettingEmitter = emitter }
     }
 
-    fun observeConnectState() {
-        sjUniWatch.observeConnectState.subscribe {
-            if (it == WmConnectState.DISCONNECTED) {
-                setEmitter?.onError(WmTimeOutException("time out exception"))
-                getEmitter?.onError(WmTimeOutException("time out exception"))
+    override fun observeConnectState() {
+        setEmitter?.let { emitter ->
+            if (!emitter.isDisposed) {
+                emitter.onError(WmTimeOutException("time out exception"))
             }
         }
+
+        getEmitter?.let { emitter ->
+            if (!emitter.isDisposed) {
+                emitter.onError(WmTimeOutException("time out exception"))
+            }
+        }
+    }
+
+    override fun onTimeOut(msgBean: MsgBean, nodeData: NodeData) {
+
     }
 
     private fun setSleepConfigSuccess(result: Boolean) {
@@ -70,10 +81,6 @@ class SettingSleepSet(val sjUniWatch: SJUniWatch) : AbWmSetting<WmSleepSettings>
             getEmitter = emitter
             sjUniWatch.sendSyncSafeMsg(CmdHelper.getSleepSetCmd)
         }
-    }
-
-    fun onTimeOut(nodeData: NodeData) {
-
     }
 
     fun sleepSetBusiness(msgBean: MsgBean) {

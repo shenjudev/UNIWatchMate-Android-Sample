@@ -4,6 +4,7 @@ import com.base.sdk.entity.apps.WmConnectState
 import com.base.sdk.entity.settings.WmSportGoal
 import com.base.sdk.exception.WmTimeOutException
 import com.base.sdk.port.setting.AbWmSetting
+import com.sjbt.sdk.ExceptionStateListener
 import com.sjbt.sdk.SJUniWatch
 import com.sjbt.sdk.entity.ErrorCode
 import com.sjbt.sdk.entity.MsgBean
@@ -15,7 +16,8 @@ import io.reactivex.rxjava3.core.*
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 
-class SettingSportGoal(val sjUniWatch: SJUniWatch) : AbWmSetting<WmSportGoal>() {
+class SettingSportGoal(val sjUniWatch: SJUniWatch) : AbWmSetting<WmSportGoal>(),
+    ExceptionStateListener {
     private var observeEmitter: ObservableEmitter<WmSportGoal>? = null
     private var setEmitter: SingleEmitter<WmSportGoal>? = null
     private var getEmitter: SingleEmitter<WmSportGoal>? = null
@@ -29,14 +31,24 @@ class SettingSportGoal(val sjUniWatch: SJUniWatch) : AbWmSetting<WmSportGoal>() 
         return Observable.create { emitter -> observeEmitter = emitter }
     }
 
-    fun observeConnectState() {
-        sjUniWatch.observeConnectState.subscribe {
-            if (it == WmConnectState.DISCONNECTED) {
-                setEmitter?.onError(WmTimeOutException("time out exception"))
-                getEmitter?.onError(WmTimeOutException("time out exception"))
+    override fun observeConnectState() {
+        setEmitter?.let { emitter ->
+            if (!emitter.isDisposed) {
+                emitter.onError(WmTimeOutException("time out exception"))
+            }
+        }
+
+        getEmitter?.let { emitter ->
+            if (!emitter.isDisposed) {
+                emitter.onError(WmTimeOutException("time out exception"))
             }
         }
     }
+
+    override fun onTimeOut(msgBean: MsgBean, nodeData: NodeData) {
+        sjUniWatch.wmLog.logE(TAG, "onTimeOut:$msgBean")
+    }
+
     override fun set(obj: WmSportGoal): Single<WmSportGoal> {
         wmSportGoal = obj
         return Single.create { emitter ->
@@ -56,9 +68,6 @@ class SettingSportGoal(val sjUniWatch: SJUniWatch) : AbWmSetting<WmSportGoal>() 
         }
     }
 
-    fun onTimeOut(msgBean: MsgBean, nodeData: NodeData) {
-        sjUniWatch.wmLog.logE(TAG, "onTimeOut:$msgBean")
-    }
 
     fun sportInfoBusiness(it: NodeData) {
         when (it.urn[2]) {

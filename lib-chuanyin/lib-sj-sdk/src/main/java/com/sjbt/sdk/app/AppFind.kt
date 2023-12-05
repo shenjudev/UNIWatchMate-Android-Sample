@@ -1,9 +1,9 @@
 package com.sjbt.sdk.app
 
-import com.base.sdk.entity.apps.WmConnectState
 import com.base.sdk.entity.apps.WmFind
 import com.base.sdk.exception.WmTimeOutException
 import com.base.sdk.port.app.AbAppFind
+import com.sjbt.sdk.ExceptionStateListener
 import com.sjbt.sdk.SJUniWatch
 import com.sjbt.sdk.entity.ErrorCode
 import com.sjbt.sdk.entity.MsgBean
@@ -18,7 +18,8 @@ import io.reactivex.rxjava3.subjects.PublishSubject
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 
-class AppFind(val sjUniWatch: SJUniWatch) : AbAppFind() {
+class AppFind(val sjUniWatch: SJUniWatch) : AbAppFind(),
+    ExceptionStateListener {
 
     private var startFindWatchEmitter: SingleEmitter<Boolean>? = null
     private var stopFindWatchEmitter: SingleEmitter<Boolean>? = null
@@ -31,47 +32,28 @@ class AppFind(val sjUniWatch: SJUniWatch) : AbAppFind() {
     private val mObserveStopFindWatch = PublishSubject.create<Any>()
     override val observeFindMobile: PublishSubject<WmFind> = findMobile
 
-    fun observeConnectState() {
-        sjUniWatch.observeConnectState.subscribe {
-            if (it == WmConnectState.DISCONNECTED) {
-                startFindWatchEmitter?.onError(WmTimeOutException("time out exception"))
-                stopFindWatchEmitter?.onError(WmTimeOutException("time out exception"))
-                stopFindMobileEmitter?.onError(WmTimeOutException("time out exception"))
+    override fun observeConnectState() {
+
+        startFindWatchEmitter?.let { emitter ->
+            if (!emitter.isDisposed) {
+                emitter.onError(WmTimeOutException("time out exception"))
+            }
+        }
+
+        stopFindWatchEmitter?.let { emitter ->
+            if (!emitter.isDisposed) {
+                emitter.onError(WmTimeOutException("time out exception"))
+            }
+        }
+
+        stopFindMobileEmitter?.let { emitter ->
+            if (!emitter.isDisposed) {
+                emitter.onError(WmTimeOutException("time out exception"))
             }
         }
     }
 
-    override fun stopFindMobile(): Single<Boolean> {
-
-        return Single.create {
-            sjUniWatch.sendWriteNodeCmdList(getExecuteStopFindMobile())
-            stopFindMobileEmitter = it
-        }
-    }
-
-    override fun findWatch(wmFind: WmFind): Single<Boolean> {
-        return Single.create {
-            startFindWatchEmitter = it
-            sjUniWatch.sendExecuteNodeCmdList(getExecuteStartFindDevice(wmFind))
-        }
-    }
-
-
-
-    override val observeStopFindMobile: Observable<Any>
-        get() = mObserveStopFindMobile
-
-    override val observeStopFindWatch: Observable<Any>
-        get() = mObserveStopFindWatch
-
-    override fun stopFindWatch(): Single<Boolean> {
-        return Single.create {
-            stopFindWatchEmitter = it
-            sjUniWatch.sendExecuteNodeCmdList(getExecuteStopFindDevice())
-        }
-    }
-
-    fun onTimeOut(msgBean: MsgBean, nodeData: NodeData) {
+    override fun onTimeOut(msgBean: MsgBean, nodeData: NodeData) {
         when (nodeData.urn[1]) {
             URN_APP_FIND_DEVICE -> {
                 when (nodeData.urn[2]) {
@@ -99,6 +81,37 @@ class AppFind(val sjUniWatch: SJUniWatch) : AbAppFind() {
             }
         }
     }
+
+    override fun stopFindMobile(): Single<Boolean> {
+
+        return Single.create {
+            sjUniWatch.sendWriteNodeCmdList(getExecuteStopFindMobile())
+            stopFindMobileEmitter = it
+        }
+    }
+
+    override fun findWatch(wmFind: WmFind): Single<Boolean> {
+        return Single.create {
+            startFindWatchEmitter = it
+            sjUniWatch.sendExecuteNodeCmdList(getExecuteStartFindDevice(wmFind))
+        }
+    }
+
+
+    override val observeStopFindMobile: Observable<Any>
+        get() = mObserveStopFindMobile
+
+    override val observeStopFindWatch: Observable<Any>
+        get() = mObserveStopFindWatch
+
+    override fun stopFindWatch(): Single<Boolean> {
+        return Single.create {
+            stopFindWatchEmitter = it
+            sjUniWatch.sendExecuteNodeCmdList(getExecuteStopFindDevice())
+        }
+    }
+
+
 
     fun appFindBusiness(nodeData: NodeData) {
 

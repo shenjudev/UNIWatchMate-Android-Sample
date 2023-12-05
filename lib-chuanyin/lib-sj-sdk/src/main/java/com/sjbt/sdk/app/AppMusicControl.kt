@@ -1,22 +1,20 @@
 package com.sjbt.sdk.app
 
 import com.base.sdk.entity.apps.WmMusicControlType
+import com.base.sdk.exception.WmTimeOutException
 import com.base.sdk.port.app.AbAppMusicControl
+import com.sjbt.sdk.ExceptionStateListener
 import com.sjbt.sdk.SJUniWatch
 import com.sjbt.sdk.entity.MsgBean
 import com.sjbt.sdk.entity.NodeData
 import com.sjbt.sdk.utils.DevFinal
 import io.reactivex.rxjava3.subjects.PublishSubject
 
-class AppMusicControl(val sjUniWatch: SJUniWatch) : AbAppMusicControl() {
+class AppMusicControl(val sjUniWatch: SJUniWatch) : AbAppMusicControl()  {
 
     private val musicControlSub: PublishSubject<WmMusicControlType> = PublishSubject.create()
 
     override var observableMusicControl: PublishSubject<WmMusicControlType> = musicControlSub
-
-    fun onTimeOut(msgBean: MsgBean, nodeData: NodeData) {
-        sjUniWatch.wmLog.logE(DevFinal.STR.TAG, "onTimeOut:$msgBean")
-    }
 
     fun musicControlBusiness(it: NodeData) {
         when (it.data[0]) {

@@ -4,6 +4,7 @@ import com.base.sdk.entity.apps.WmConnectState
 import com.base.sdk.entity.settings.WmHeartRateAlerts
 import com.base.sdk.exception.WmTimeOutException
 import com.base.sdk.port.setting.AbWmSetting
+import com.sjbt.sdk.ExceptionStateListener
 import com.sjbt.sdk.SJUniWatch
 import com.sjbt.sdk.entity.ErrorCode
 import com.sjbt.sdk.entity.MsgBean
@@ -13,7 +14,8 @@ import com.sjbt.sdk.spp.cmd.*
 import io.reactivex.rxjava3.core.*
 import java.nio.ByteBuffer
 
-class SettingHeartRateAlerts(val sjUniWatch: SJUniWatch) : AbWmSetting<WmHeartRateAlerts>() {
+class SettingHeartRateAlerts(val sjUniWatch: SJUniWatch) : AbWmSetting<WmHeartRateAlerts>(),
+    ExceptionStateListener {
     var observeEmitter: ObservableEmitter<WmHeartRateAlerts>? = null
     var setEmitter: SingleEmitter<WmHeartRateAlerts>? = null
     var getEmitter: SingleEmitter<WmHeartRateAlerts>? = null
@@ -27,13 +29,22 @@ class SettingHeartRateAlerts(val sjUniWatch: SJUniWatch) : AbWmSetting<WmHeartRa
         }
     }
 
-    fun observeConnectState() {
-        sjUniWatch.observeConnectState.subscribe {
-            if (it == WmConnectState.DISCONNECTED) {
-                setEmitter?.onError(WmTimeOutException("time out exception"))
-                getEmitter?.onError(WmTimeOutException("time out exception"))
+    override fun observeConnectState() {
+        setEmitter?.let { emitter ->
+            if (!emitter.isDisposed) {
+                emitter.onError(WmTimeOutException("time out exception"))
             }
         }
+
+        getEmitter?.let { emitter ->
+            if (!emitter.isDisposed) {
+                emitter.onError(WmTimeOutException("time out exception"))
+            }
+        }
+    }
+
+    override fun onTimeOut(msgBean: MsgBean, nodeData: NodeData) {
+
     }
 
     override fun set(obj: WmHeartRateAlerts): Single<WmHeartRateAlerts> {
@@ -108,9 +119,6 @@ class SettingHeartRateAlerts(val sjUniWatch: SJUniWatch) : AbWmSetting<WmHeartRa
         return payloadPackage
     }
 
-    fun onTimeOut(msgBean: MsgBean, nodeData: NodeData) {
-
-    }
 
     fun settingHeartRateBusiness(nodeData: NodeData) {
 

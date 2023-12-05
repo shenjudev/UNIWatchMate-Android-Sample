@@ -4,6 +4,7 @@ import com.base.sdk.entity.apps.WmConnectState
 import com.base.sdk.entity.settings.WmPersonalInfo
 import com.base.sdk.exception.WmTimeOutException
 import com.base.sdk.port.setting.AbWmSetting
+import com.sjbt.sdk.ExceptionStateListener
 import com.sjbt.sdk.SJUniWatch
 import com.sjbt.sdk.entity.MsgBean
 import com.sjbt.sdk.entity.NodeData
@@ -15,7 +16,8 @@ import io.reactivex.rxjava3.core.*
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 
-class SettingPersonalInfo(val sjUniWatch: SJUniWatch) : AbWmSetting<WmPersonalInfo>() {
+class SettingPersonalInfo(val sjUniWatch: SJUniWatch) : AbWmSetting<WmPersonalInfo>(),
+    ExceptionStateListener {
     private var observeEmitter: ObservableEmitter<WmPersonalInfo>? = null
     private var setEmitter: SingleEmitter<WmPersonalInfo>? = null
     private var getEmitter: SingleEmitter<WmPersonalInfo>? = null
@@ -26,13 +28,22 @@ class SettingPersonalInfo(val sjUniWatch: SJUniWatch) : AbWmSetting<WmPersonalIn
         return Observable.create { emitter -> observeEmitter = emitter }
     }
 
-    fun observeConnectState() {
-        sjUniWatch.observeConnectState.subscribe {
-            if (it == WmConnectState.DISCONNECTED) {
-                setEmitter?.onError(WmTimeOutException("time out exception"))
-                getEmitter?.onError(WmTimeOutException("time out exception"))
+    override fun observeConnectState() {
+        setEmitter?.let { emitter ->
+            if (!emitter.isDisposed) {
+                emitter.onError(WmTimeOutException("time out exception"))
             }
         }
+
+        getEmitter?.let { emitter ->
+            if (!emitter.isDisposed) {
+                emitter.onError(WmTimeOutException("time out exception"))
+            }
+        }
+    }
+
+    override fun onTimeOut(msgBean: MsgBean, nodeData: NodeData) {
+
     }
 
     override fun set(obj: WmPersonalInfo): Single<WmPersonalInfo> {
@@ -48,10 +59,6 @@ class SettingPersonalInfo(val sjUniWatch: SJUniWatch) : AbWmSetting<WmPersonalIn
             getEmitter = emitter
             sjUniWatch.sendReadNodeCmdList(getDevicePersonalInfoCmd())
         }
-    }
-
-    fun onTimeOut(msgBean: MsgBean, nodeData: NodeData) {
-
     }
 
     fun personalInfoBusiness(it: NodeData) {

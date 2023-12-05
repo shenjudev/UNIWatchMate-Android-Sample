@@ -4,6 +4,7 @@ import com.base.sdk.entity.apps.WmConnectState
 import com.base.sdk.entity.data.*
 import com.base.sdk.exception.WmTimeOutException
 import com.base.sdk.port.sync.AbSyncData
+import com.sjbt.sdk.ExceptionStateListener
 import com.sjbt.sdk.ReadSubPkMsg
 import com.sjbt.sdk.SJUniWatch
 import com.sjbt.sdk.entity.MsgBean
@@ -12,6 +13,7 @@ import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.core.ObservableEmitter
 
 class SyncAllData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<out WmBaseSyncData>>(),
+    ExceptionStateListener,
     ReadSubPkMsg {
 
     var lastSyncTime: Long = 0
@@ -36,7 +38,17 @@ class SyncAllData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<out WmBase
         return lastSyncTime
     }
 
-    fun onTimeOut(msg: MsgBean, nodeData: NodeData) {
+    override fun onTimeOut(msgBean: MsgBean, nodeData: NodeData) {
+        observeConnectState()
+        sjUniWatch.wmLog.logE(TAG, "onTimeOut:$msgBean")
+    }
+
+    override fun observeConnectState() {
+        syncDataEmitter?.let { emitter ->
+            if (!emitter.isDisposed) {
+                emitter.onError(WmTimeOutException("$TAG time out exception"))
+            }
+        }
     }
 
     override fun setHasNext(hasNext: Boolean) {

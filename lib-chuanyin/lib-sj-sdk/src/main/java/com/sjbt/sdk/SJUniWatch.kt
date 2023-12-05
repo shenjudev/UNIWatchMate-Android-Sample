@@ -86,43 +86,43 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(),
     private val mBindStateMap = HashMap<String, Boolean>()
 
     //同步数据
-    val syncActivityDuration = wmSync.syncActivityDurationData as SyncActivityDurationData
-    val syncCaloriesData = wmSync.syncCaloriesData as SyncCaloriesData
-    val syncDistanceData = wmSync.syncDistanceData as SyncDistanceData
-    val syncHeartRateData = wmSync.syncHeartRateData as SyncHeartRateData
-    val syncOxygenData = wmSync.syncOxygenData as SyncOxygenData
-    val syncRealtimeRateData = wmSync.syncRealtimeRateData as SyncRealtimeRateData
-    val syncSleepData = wmSync.syncSleepData as SyncSleepData
-    val syncSportSummaryData = wmSync.syncSportSummaryData as SyncSportSummaryData
-    val syncStepData = wmSync.syncStepData as SyncStepData
-
-//    private val syncAllData = wmSync.syncAllData as SyncAllData
+    private val syncActivityDuration = wmSync.syncActivityDurationData as SyncActivityDurationData
+    private val syncCaloriesData = wmSync.syncCaloriesData as SyncCaloriesData
+    private val syncDistanceData = wmSync.syncDistanceData as SyncDistanceData
+    private val syncHeartRateData = wmSync.syncHeartRateData as SyncHeartRateData
+    private val syncOxygenData = wmSync.syncOxygenData as SyncOxygenData
+    private val syncRealtimeRateData = wmSync.syncRealtimeRateData as SyncRealtimeRateData
+    private val syncSleepData = wmSync.syncSleepData as SyncSleepData
+    private val syncSportSummaryData = wmSync.syncSportSummaryData as SyncSportSummaryData
+    private val syncStepData = wmSync.syncStepData as SyncStepData
+    private val syncDailyActivityDurationData = wmSync.syncDailyActivityDuration as SyncDailyActivityDurationData
+    private val syncAllData = wmSync.syncAllData as SyncAllData
 
     //应用
-    val appDateTime = wmApps.appDateTime as AppDateTime
-    val appCamera = wmApps.appCamera as AppCamera
-    val appAlarm = wmApps.appAlarm as AppAlarm
-    val appContact = wmApps.appContact as AppContact
-    val appDial = wmApps.appDial as AppDial
-    val appFind = wmApps.appFind as AppFind
-    val appLanguage = wmApps.appLanguage as AppLanguage
-    val appNotification = wmApps.appNotification as AppNotification
-    val appSport = wmApps.appSport as AppSport
-    val appWeather = wmApps.appWeather as AppWeather
-    val appMusicControl = wmApps.appMusicControl as AppMusicControl
+    private val appDateTime = wmApps.appDateTime as AppDateTime
+    private val appCamera = wmApps.appCamera as AppCamera
+    private val appAlarm = wmApps.appAlarm as AppAlarm
+    private val appContact = wmApps.appContact as AppContact
+    private val appDial = wmApps.appDial as AppDial
+    private val appFind = wmApps.appFind as AppFind
+    private val appLanguage = wmApps.appLanguage as AppLanguage
+    private val appNotification = wmApps.appNotification as AppNotification
+    private val appSport = wmApps.appSport as AppSport
+    private val appWeather = wmApps.appWeather as AppWeather
+    private val appMusicControl = wmApps.appMusicControl as AppMusicControl
 
     //设置
-    val settingAppView = wmSettings.settingAppView as SettingAppView
-    val settingHeartRateAlerts = wmSettings.settingHeartRate as SettingHeartRateAlerts
-    val settingPersonalInfo = wmSettings.settingPersonalInfo as SettingPersonalInfo
-    val settingSedentaryReminder =
+    private val settingAppView = wmSettings.settingAppView as SettingAppView
+    private val settingHeartRateAlerts = wmSettings.settingHeartRate as SettingHeartRateAlerts
+    private val settingPersonalInfo = wmSettings.settingPersonalInfo as SettingPersonalInfo
+    private val settingSedentaryReminder =
         wmSettings.settingSedentaryReminder as SettingSedentaryReminder
-    val settingSoundAndHaptic = wmSettings.settingSoundAndHaptic as SettingSoundAndHaptic
-    val settingSportGoal = wmSettings.settingSportGoal as SettingSportGoal
-    val settingUnitInfo = wmSettings.settingUnitInfo as SettingUnitInfo
-    val settingWistRaise = wmSettings.settingWistRaise as SettingWistRaise
-    val settingSleepSet = wmSettings.settingSleepSettings as SettingSleepSet
-    val settingDrinkWaterReminder =
+    private val settingSoundAndHaptic = wmSettings.settingSoundAndHaptic as SettingSoundAndHaptic
+    private val settingSportGoal = wmSettings.settingSportGoal as SettingSportGoal
+    private val settingUnitInfo = wmSettings.settingUnitInfo as SettingUnitInfo
+    private val settingWistRaise = wmSettings.settingWistRaise as SettingWistRaise
+    private val settingSleepSet = wmSettings.settingSleepSettings as SettingSleepSet
+    private val settingDrinkWaterReminder =
         wmSettings.settingDrinkWater as SettingDrinkWaterReminder
 
     private var unbindEmitter: CompletableEmitter? = null
@@ -272,6 +272,38 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(),
         mBtEngine.clearMsgQueue()
         mBtEngine.clearStateMap()
         appCamera.stopCameraPreview()
+
+        syncActivityDuration.observeConnectState()
+        syncCaloriesData.observeConnectState()
+        syncDistanceData.observeConnectState()
+        syncHeartRateData.observeConnectState()
+        syncOxygenData.observeConnectState()
+        syncRealtimeRateData.observeConnectState()
+        syncSleepData.observeConnectState()
+        syncSportSummaryData.observeConnectState()
+        syncStepData.observeConnectState()
+        syncDailyActivityDurationData.observeConnectState()
+        syncAllData.observeConnectState()
+
+        appDateTime.observeConnectState()
+        appCamera.observeConnectState()
+        appAlarm.observeConnectState()
+        appContact.observeConnectState()
+        appDial.observeConnectState()
+        appFind.observeConnectState()
+        appLanguage.observeConnectState()
+        appSport.observeConnectState()
+
+        settingAppView.observeConnectState()
+        settingHeartRateAlerts.observeConnectState()
+        settingPersonalInfo.observeConnectState()
+        settingSedentaryReminder.observeConnectState()
+        settingSoundAndHaptic.observeConnectState()
+        settingSportGoal.observeConnectState()
+        settingUnitInfo.observeConnectState()
+        settingWistRaise.observeConnectState()
+        settingSleepSet.observeConnectState()
+        settingDrinkWaterReminder.observeConnectState()
 
         disconnect()
     }
@@ -1291,9 +1323,6 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(),
                             appFind.onTimeOut(msgBean, it)
                         }
 
-                        URN_APP_MUSIC_CONTROL -> {
-                            appMusicControl.onTimeOut(msgBean, it)
-                        }
                     }
                 }
 

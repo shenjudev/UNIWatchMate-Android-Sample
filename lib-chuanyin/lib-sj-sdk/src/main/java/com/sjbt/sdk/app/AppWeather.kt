@@ -4,10 +4,13 @@ import com.base.sdk.entity.apps.WmWeather
 import com.base.sdk.entity.apps.WmWeatherRequest
 import com.base.sdk.entity.apps.WmWeatherTime
 import com.base.sdk.entity.settings.WmUnitInfo
+import com.base.sdk.exception.WmTimeOutException
 import com.base.sdk.port.app.AbAppWeather
+import com.sjbt.sdk.ExceptionStateListener
 import com.sjbt.sdk.SJUniWatch
 import com.sjbt.sdk.entity.*
 import com.sjbt.sdk.spp.cmd.*
+import com.sjbt.sdk.utils.DevFinal
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.core.SingleEmitter
 import io.reactivex.rxjava3.subjects.PublishSubject
@@ -15,11 +18,24 @@ import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import java.util.*
 
-class AppWeather(val sjUniWatch: SJUniWatch) : AbAppWeather() {
+class AppWeather(val sjUniWatch: SJUniWatch) : AbAppWeather(),
+    ExceptionStateListener {
     private var pushWeatherEmitter: SingleEmitter<Boolean>? = null
     private val requestWeather: PublishSubject<WmWeatherRequest> = PublishSubject.create()
     override val observeWeather: PublishSubject<WmWeatherRequest> = requestWeather
     private val TAG = "AppWeather"
+
+    override fun observeConnectState() {
+        pushWeatherEmitter?.let { emitter ->
+            if (!emitter.isDisposed) {
+                emitter.onSuccess(false)
+            }
+        }
+    }
+
+    override fun onTimeOut(msgBean: MsgBean, nodeData: NodeData) {
+        sjUniWatch.wmLog.logE(DevFinal.STR.TAG, "onTimeOut:$msgBean")
+    }
 
     override fun pushTodayWeather(
         weather: WmWeather,
@@ -97,11 +113,6 @@ class AppWeather(val sjUniWatch: SJUniWatch) : AbAppWeather() {
             }
         }
     }
-
-    fun onTimeOut(msgBean: MsgBean, nodeData: NodeData) {
-        sjUniWatch.wmLog.logE(TAG, "msg time out:$msgBean")
-    }
-
 
     fun weatherBusiness(payloadPackage: PayloadPackage, nodeData: NodeData) {
         when (nodeData.urn[2]) {

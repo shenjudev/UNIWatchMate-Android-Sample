@@ -8,6 +8,7 @@ import com.base.sdk.entity.apps.WmContact.Companion.NUMBER_BYTES_LIMIT
 import com.base.sdk.entity.settings.WmEmergencyCall
 import com.base.sdk.exception.WmTimeOutException
 import com.base.sdk.port.app.AbAppContact
+import com.sjbt.sdk.ExceptionStateListener
 import com.sjbt.sdk.ReadSubPkMsg
 import com.sjbt.sdk.SJUniWatch
 import com.sjbt.sdk.entity.*
@@ -23,7 +24,8 @@ import io.reactivex.rxjava3.disposables.Disposable
 import java.nio.ByteBuffer
 import java.nio.charset.StandardCharsets
 
-class AppContact(val sjUniWatch: SJUniWatch) : AbAppContact(), ReadSubPkMsg {
+class AppContact(val sjUniWatch: SJUniWatch) : AbAppContact(), ReadSubPkMsg ,
+    ExceptionStateListener {
     private var getContactListEmitter: SingleEmitter<List<WmContact>>? = null
     private var updateContactEmitter: SingleEmitter<Boolean>? = null
     private var updateEmergencyEmitter: SingleEmitter<WmEmergencyCall>? = null
@@ -48,13 +50,44 @@ class AppContact(val sjUniWatch: SJUniWatch) : AbAppContact(), ReadSubPkMsg {
         return hasNext
     }
 
-    fun observeConnectState() {
-        sjUniWatch.observeConnectState.subscribe {
-            if (it == WmConnectState.DISCONNECTED) {
-                updateContactEmitter?.onError(WmTimeOutException("time out exception"))
-                getContactListEmitter?.onError(WmTimeOutException("time out exception"))
-                updateEmergencyEmitter?.onError(WmTimeOutException("time out exception"))
-                getAndObserveEmergencyNumberEmitter?.onError(WmTimeOutException("time out exception"))
+    override fun observeConnectState() {
+
+        updateContactEmitter?.let { emitter ->
+            if (!emitter.isDisposed) {
+                emitter.onError(WmTimeOutException("time out exception"))
+            }
+        }
+
+        getContactListEmitter?.let { emitter ->
+            if (!emitter.isDisposed) {
+                emitter.onError(WmTimeOutException("time out exception"))
+            }
+        }
+
+        updateEmergencyEmitter?.let { emitter ->
+            if (!emitter.isDisposed) {
+                emitter.onError(WmTimeOutException("time out exception"))
+            }
+        }
+
+        getAndObserveEmergencyNumberEmitter?.let { emitter ->
+            if (!emitter.isDisposed) {
+                emitter.onError(WmTimeOutException("time out exception"))
+            }
+        }
+    }
+
+    override fun onTimeOut(msgBean: MsgBean, nodeData: NodeData) {
+        sjUniWatch.wmLog.logE(TAG, "onTimeOut:$msgBean")
+
+        when (nodeData.urn[2]) {
+
+            URN_APP_CONTACT_LIST -> {
+
+            }
+
+            URN_APP_CONTACT_EMERGENCY -> {
+
             }
         }
     }
@@ -138,19 +171,6 @@ class AppContact(val sjUniWatch: SJUniWatch) : AbAppContact(), ReadSubPkMsg {
         }
     }
 
-    fun onTimeOut(msgBean: MsgBean, nodeData: NodeData) {
-        sjUniWatch.wmLog.logE(TAG, "onTimeOut:$msgBean")
-        when (nodeData.urn[2]) {
-
-            URN_APP_CONTACT_LIST -> {
-
-            }
-
-            URN_APP_CONTACT_EMERGENCY -> {
-
-            }
-        }
-    }
 
     private fun updateContactListBack(success: Boolean) {
         updateContactEmitter?.onSuccess(success)

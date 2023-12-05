@@ -4,6 +4,7 @@ import com.base.sdk.entity.apps.WmConnectState
 import com.base.sdk.entity.data.*
 import com.base.sdk.exception.WmTimeOutException
 import com.base.sdk.port.sync.AbSyncData
+import com.sjbt.sdk.ExceptionStateListener
 import com.sjbt.sdk.ReadSubPkMsg
 import com.sjbt.sdk.SJUniWatch
 import com.sjbt.sdk.entity.*
@@ -18,7 +19,8 @@ import java.nio.ByteOrder
 import java.util.*
 
 class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
-    AbSyncData<WmSyncData<WmSportSummaryData>>(), ReadSubPkMsg {
+    AbSyncData<WmSyncData<WmSportSummaryData>>(), ReadSubPkMsg ,
+    ExceptionStateListener {
     var lastSyncTime: Long = 0
     private var syncSportSummaryObserveEmitter: ObservableEmitter<WmSyncData<WmSportSummaryData>>? =
         null
@@ -52,9 +54,17 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
         return lastSyncTime
     }
 
-    fun onTimeOut(msg: MsgBean, nodeData: NodeData) {
-        syncSportSummaryObserveEmitter?.onError(WmTimeOutException("$TAG time out exception"))
-        sjUniWatch.wmLog.logE(TAG, "onTimeOut:$msg")
+    override fun observeConnectState() {
+        syncSportSummaryObserveEmitter?.let { emitter ->
+            if (!emitter.isDisposed) {
+                emitter.onError(WmTimeOutException("time out exception"))
+            }
+        }
+    }
+
+    override fun onTimeOut(msgBean: MsgBean, nodeData: NodeData) {
+        observeConnectState()
+        sjUniWatch.wmLog.logE(TAG, "onTimeOut:$msgBean")
     }
 
     override fun setHasNext(hasNext: Boolean) {
@@ -68,12 +78,6 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
     override fun syncData(startTime: Long): Observable<WmSyncData<WmSportSummaryData>> {
         mStartTime = startTime
         wmSyncData = null
-
-        sjUniWatch.observeConnectState.subscribe {
-            if (it == WmConnectState.DISCONNECTED) {
-                syncSportSummaryObserveEmitter?.onError(WmTimeOutException("$TAG time out exception"))
-            }
-        }
 
         return Observable.create { emitter ->
             syncSportSummaryObserveEmitter = emitter

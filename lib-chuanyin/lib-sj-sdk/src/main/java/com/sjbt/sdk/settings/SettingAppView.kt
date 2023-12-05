@@ -3,11 +3,15 @@ package com.sjbt.sdk.settings
 import com.base.sdk.entity.settings.WmAppView
 import com.base.sdk.exception.WmTimeOutException
 import com.base.sdk.port.setting.AbWmSetting
+import com.sjbt.sdk.ExceptionStateListener
 import com.sjbt.sdk.SJUniWatch
+import com.sjbt.sdk.entity.MsgBean
+import com.sjbt.sdk.entity.NodeData
 import com.sjbt.sdk.spp.cmd.CmdHelper
 import io.reactivex.rxjava3.core.*
 
-class SettingAppView(val sjUniWatch: SJUniWatch) : AbWmSetting<WmAppView>() {
+class SettingAppView(val sjUniWatch: SJUniWatch) : AbWmSetting<WmAppView>() ,
+    ExceptionStateListener {
     private var observeEmitter: ObservableEmitter<WmAppView>? = null
     var setEmitter: SingleEmitter<WmAppView>? = null
     private var getEmitter: SingleEmitter<WmAppView>? = null
@@ -30,7 +34,7 @@ class SettingAppView(val sjUniWatch: SJUniWatch) : AbWmSetting<WmAppView>() {
         }
     }
 
-    fun observeConnectState() {
+    override fun observeConnectState() {
         setEmitter?.let { emitter ->
             if (!emitter.isDisposed) {
                 emitter.onError(WmTimeOutException("time out exception"))
@@ -42,6 +46,10 @@ class SettingAppView(val sjUniWatch: SJUniWatch) : AbWmSetting<WmAppView>() {
                 emitter.onError(WmTimeOutException("time out exception"))
             }
         }
+    }
+
+    override fun onTimeOut(msgBean: MsgBean, nodeData: NodeData) {
+
     }
 
     override fun get(): Single<WmAppView> {

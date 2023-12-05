@@ -4,12 +4,15 @@ import com.base.sdk.entity.apps.WmConnectState
 import com.base.sdk.entity.settings.WmWristRaise
 import com.base.sdk.exception.WmTimeOutException
 import com.base.sdk.port.setting.AbWmSetting
+import com.sjbt.sdk.ExceptionStateListener
 import com.sjbt.sdk.SJUniWatch
+import com.sjbt.sdk.entity.MsgBean
 import com.sjbt.sdk.entity.NodeData
 import com.sjbt.sdk.spp.cmd.CmdHelper
 import io.reactivex.rxjava3.core.*
 
-class SettingWistRaise(val sjUniWatch: SJUniWatch) : AbWmSetting<WmWristRaise>() {
+class SettingWistRaise(val sjUniWatch: SJUniWatch) : AbWmSetting<WmWristRaise>() ,
+    ExceptionStateListener {
     private var observeEmitter: ObservableEmitter<WmWristRaise>? = null
     private var setEmitter: SingleEmitter<WmWristRaise>? = null
     private var getEmitter: SingleEmitter<WmWristRaise>? = null
@@ -24,13 +27,21 @@ class SettingWistRaise(val sjUniWatch: SJUniWatch) : AbWmSetting<WmWristRaise>()
         getEmitter?.onSuccess(wmWristRaise)
     }
 
-    fun observeConnectState() {
-        sjUniWatch.observeConnectState.subscribe {
-            if (it == WmConnectState.DISCONNECTED) {
-                setEmitter?.onError(WmTimeOutException("time out exception"))
-                getEmitter?.onError(WmTimeOutException("time out exception"))
+    override fun observeConnectState() {
+        setEmitter?.let { emitter ->
+            if (!emitter.isDisposed) {
+                emitter.onError(WmTimeOutException("time out exception"))
             }
         }
+
+        getEmitter?.let { emitter ->
+            if (!emitter.isDisposed) {
+                emitter.onError(WmTimeOutException("time out exception"))
+            }
+        }
+    }
+
+    override fun onTimeOut(msgBean: MsgBean, nodeData: NodeData) {
     }
 
     private fun observeWmWistRaiseChange(wmWristRaise: WmWristRaise) {

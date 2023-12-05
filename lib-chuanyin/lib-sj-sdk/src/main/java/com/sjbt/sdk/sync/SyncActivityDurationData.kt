@@ -4,6 +4,7 @@ import com.base.sdk.entity.apps.WmConnectState
 import com.base.sdk.entity.data.*
 import com.base.sdk.exception.WmTimeOutException
 import com.base.sdk.port.sync.AbSyncData
+import com.sjbt.sdk.ExceptionStateListener
 import com.sjbt.sdk.ReadSubPkMsg
 import com.sjbt.sdk.SJUniWatch
 import com.sjbt.sdk.entity.DataFormat
@@ -11,6 +12,7 @@ import com.sjbt.sdk.entity.MsgBean
 import com.sjbt.sdk.entity.NodeData
 import com.sjbt.sdk.spp.cmd.*
 import com.sjbt.sdk.utils.BtUtils
+import com.sjbt.sdk.utils.DevFinal
 import com.sjbt.sdk.utils.TimeUtils
 import io.reactivex.rxjava3.core.*
 import io.reactivex.rxjava3.core.Observable
@@ -24,7 +26,8 @@ import java.util.*
  * 每小时持续活动的时长
  */
 class SyncActivityDurationData(val sjUniWatch: SJUniWatch) :
-    AbSyncData<WmSyncData<WmActivityDurationData>>(), ReadSubPkMsg {
+    AbSyncData<WmSyncData<WmActivityDurationData>>(),
+    ExceptionStateListener, ReadSubPkMsg {
 
     var lastSyncTime: Long = 0
     private var syncActivityDurationObserveEmitter: ObservableEmitter<WmSyncData<WmActivityDurationData>>? =
@@ -48,10 +51,17 @@ class SyncActivityDurationData(val sjUniWatch: SJUniWatch) :
         return hasNext
     }
 
-    fun onTimeOut(msgBean: MsgBean, nodeData: NodeData) {
-        syncActivityDurationObserveEmitter?.onError(WmTimeOutException("$TAG time out exception"))
+    override fun onTimeOut(msgBean: MsgBean, nodeData: NodeData) {
+        observeConnectState()
         sjUniWatch.wmLog.logE(TAG, "onTimeOut:$msgBean")
+    }
 
+    override fun observeConnectState() {
+        syncActivityDurationObserveEmitter?.let { emitter ->
+            if (!emitter.isDisposed) {
+                emitter.onError(WmTimeOutException("$TAG time out exception"))
+            }
+        }
     }
 
     override fun syncData(startTime: Long): Observable<WmSyncData<WmActivityDurationData>> {

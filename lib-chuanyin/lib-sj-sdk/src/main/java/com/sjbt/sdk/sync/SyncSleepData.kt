@@ -5,6 +5,7 @@ import com.base.sdk.entity.data.*
 import com.base.sdk.entity.settings.WmSleepSettings
 import com.base.sdk.exception.WmTimeOutException
 import com.base.sdk.port.sync.AbSyncData
+import com.sjbt.sdk.ExceptionStateListener
 import com.sjbt.sdk.ReadSubPkMsg
 import com.sjbt.sdk.SJUniWatch
 import com.sjbt.sdk.entity.DataFormat
@@ -22,9 +23,10 @@ import java.nio.ByteOrder
 import java.util.*
 
 class SyncSleepData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmSleepData>>(),
+    ExceptionStateListener,
     ReadSubPkMsg {
     var lastSyncTime: Long = 0
-    private var activityObserveEmitter: ObservableEmitter<WmSyncData<WmSleepData>>? = null
+    private var syncActivityObserveEmitter: ObservableEmitter<WmSyncData<WmSleepData>>? = null
     private var observeChangeEmitter: ObservableEmitter<WmSyncData<WmSleepData>>? = null
 
     private val TAG = "SyncSleepData"
@@ -46,9 +48,17 @@ class SyncSleepData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmSleepD
         return hasNext
     }
 
-    fun onTimeOut(msg: MsgBean, nodeData: NodeData) {
-        activityObserveEmitter?.onError(WmTimeOutException("$TAG time out exception"))
-        sjUniWatch.wmLog.logE(TAG, "onTimeOut:$msg")
+    override fun onTimeOut(msgBean: MsgBean, nodeData: NodeData) {
+        observeConnectState()
+        sjUniWatch.wmLog.logE(TAG, "onTimeOut:$msgBean")
+    }
+
+    override fun observeConnectState() {
+        syncActivityObserveEmitter?.let { emitter ->
+            if (!emitter.isDisposed) {
+                emitter.onError(WmTimeOutException("$TAG time out exception"))
+            }
+        }
     }
 
     override fun syncData(startTime: Long): Observable<WmSyncData<WmSleepData>> {
@@ -56,12 +66,12 @@ class SyncSleepData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmSleepD
 
         sjUniWatch.observeConnectState.subscribe {
             if (it == WmConnectState.DISCONNECTED) {
-                activityObserveEmitter?.onError(WmTimeOutException("$TAG time out exception"))
+                syncActivityObserveEmitter?.onError(WmTimeOutException("$TAG time out exception"))
             }
         }
 
         return Observable.create { emitter ->
-            activityObserveEmitter = emitter
+            syncActivityObserveEmitter = emitter
             sjUniWatch.sendReadSubPkObserveNode(
                 this,
                 CmdHelper.getReadSportSyncData(
@@ -275,8 +285,8 @@ class SyncSleepData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmSleepD
                 sleepDataList
             )
 
-        activityObserveEmitter?.onNext(wmSyncData)
-        activityObserveEmitter?.onComplete()
+        syncActivityObserveEmitter?.onNext(wmSyncData)
+        syncActivityObserveEmitter?.onComplete()
         lastSyncTime = System.currentTimeMillis()
     }
 
@@ -299,8 +309,8 @@ class SyncSleepData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmSleepD
                 mutableListOf<WmSleepData>()
             )
 
-        activityObserveEmitter?.onNext(wmSyncData)
-        activityObserveEmitter?.onComplete()
+        syncActivityObserveEmitter?.onNext(wmSyncData)
+        syncActivityObserveEmitter?.onComplete()
     }
 
 }

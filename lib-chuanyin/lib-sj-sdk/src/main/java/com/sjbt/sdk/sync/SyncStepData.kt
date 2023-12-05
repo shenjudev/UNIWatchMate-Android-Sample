@@ -7,6 +7,7 @@ import com.base.sdk.entity.data.WmSyncData
 import com.base.sdk.entity.data.WmSyncDataType
 import com.base.sdk.exception.WmTimeOutException
 import com.base.sdk.port.sync.AbSyncData
+import com.sjbt.sdk.ExceptionStateListener
 import com.sjbt.sdk.ReadSubPkMsg
 import com.sjbt.sdk.SJUniWatch
 import com.sjbt.sdk.entity.DataFormat
@@ -27,6 +28,7 @@ import java.nio.ByteOrder
 import java.util.*
 
 class SyncStepData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmStepData>>(),
+    ExceptionStateListener,
     ReadSubPkMsg {
 
     var lastSyncTime: Long = 0
@@ -50,9 +52,17 @@ class SyncStepData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmStepDat
         return hasNext
     }
 
-    fun onTimeOut(msg: MsgBean, nodeData: NodeData) {
-        stepObserveEmitter?.onError(WmTimeOutException("$TAG time out exception"))
+    override fun onTimeOut(msg: MsgBean, nodeData: NodeData) {
+        observeConnectState()
         sjUniWatch.wmLog.logE(TAG, "onTimeOut:$msg")
+    }
+
+    override fun observeConnectState() {
+        stepObserveEmitter?.let { emitter ->
+            if (!emitter.isDisposed) {
+                emitter.onError(WmTimeOutException("$TAG time out exception"))
+            }
+        }
     }
 
     override fun syncData(startTime: Long): Observable<WmSyncData<WmStepData>> {

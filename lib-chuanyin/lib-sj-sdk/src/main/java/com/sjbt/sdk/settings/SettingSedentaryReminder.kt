@@ -7,6 +7,7 @@ import com.base.sdk.entity.data.WmTimeRange
 import com.base.sdk.entity.settings.WmSedentaryReminder
 import com.base.sdk.exception.WmTimeOutException
 import com.base.sdk.port.setting.AbWmSetting
+import com.sjbt.sdk.ExceptionStateListener
 import com.sjbt.sdk.SJUniWatch
 import com.sjbt.sdk.entity.MsgBean
 import com.sjbt.sdk.entity.NodeData
@@ -19,7 +20,8 @@ import io.reactivex.rxjava3.core.*
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 
-class SettingSedentaryReminder(val sjUniWatch: SJUniWatch) : AbWmSetting<WmSedentaryReminder>() {
+class SettingSedentaryReminder(val sjUniWatch: SJUniWatch) : AbWmSetting<WmSedentaryReminder>(),
+    ExceptionStateListener {
     private var observeEmitter: ObservableEmitter<WmSedentaryReminder>? = null
     private var setEmitter: SingleEmitter<WmSedentaryReminder>? = null
     private var getEmitter: SingleEmitter<WmSedentaryReminder>? = null
@@ -30,13 +32,22 @@ class SettingSedentaryReminder(val sjUniWatch: SJUniWatch) : AbWmSetting<WmSeden
         return Observable.create { emitter -> observeEmitter = emitter }
     }
 
-    fun observeConnectState() {
-        sjUniWatch.observeConnectState.subscribe {
-            if (it == WmConnectState.DISCONNECTED) {
-                setEmitter?.onError(WmTimeOutException("time out exception"))
-                getEmitter?.onError(WmTimeOutException("time out exception"))
+    override fun observeConnectState() {
+        setEmitter?.let { emitter ->
+            if (!emitter.isDisposed) {
+                emitter.onError(WmTimeOutException("time out exception"))
             }
         }
+
+        getEmitter?.let { emitter ->
+            if (!emitter.isDisposed) {
+                emitter.onError(WmTimeOutException("time out exception"))
+            }
+        }
+    }
+
+    override fun onTimeOut(msgBean: MsgBean, nodeData: NodeData) {
+
     }
 
     override fun set(obj: WmSedentaryReminder): Single<WmSedentaryReminder> {
@@ -53,10 +64,6 @@ class SettingSedentaryReminder(val sjUniWatch: SJUniWatch) : AbWmSetting<WmSeden
             getEmitter = emitter
             sjUniWatch.sendReadNodeCmdList(getReadSedentaryReminderCmd())
         }
-    }
-
-    fun onTimeOut(msgBean: MsgBean, nodeData: NodeData) {
-
     }
 
     fun sedentaryReminderBusiness(it: NodeData) {

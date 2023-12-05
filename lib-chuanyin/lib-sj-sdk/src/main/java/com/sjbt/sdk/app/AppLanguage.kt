@@ -1,7 +1,9 @@
 package com.sjbt.sdk.app
 
 import com.base.sdk.entity.apps.WmLanguage
+import com.base.sdk.exception.WmTimeOutException
 import com.base.sdk.port.app.AbAppLanguage
+import com.sjbt.sdk.ExceptionStateListener
 import com.sjbt.sdk.SJUniWatch
 import com.sjbt.sdk.entity.ErrorCode
 import com.sjbt.sdk.entity.MsgBean
@@ -14,7 +16,8 @@ import io.reactivex.rxjava3.core.SingleEmitter
 import java.nio.ByteBuffer
 import java.nio.charset.StandardCharsets
 
-class AppLanguage(val sjUniWatch: SJUniWatch) : AbAppLanguage() {
+class AppLanguage(val sjUniWatch: SJUniWatch) : AbAppLanguage(),
+    ExceptionStateListener {
     private var languageListEmitter: SingleEmitter<List<WmLanguage>>? = null
     private var languageSetEmitter: SingleEmitter<WmLanguage>? = null
     private val languageList = mutableListOf<WmLanguage>()
@@ -36,7 +39,22 @@ class AppLanguage(val sjUniWatch: SJUniWatch) : AbAppLanguage() {
         }
     }
 
-    fun onTimeOut(msgBean: MsgBean,nodeData: NodeData) {
+    override fun observeConnectState() {
+
+        languageListEmitter?.let { emitter ->
+            if (!emitter.isDisposed) {
+                emitter.onError(WmTimeOutException("time out exception"))
+            }
+        }
+
+        languageSetEmitter?.let { emitter ->
+            if (!emitter.isDisposed) {
+                emitter.onError(WmTimeOutException("time out exception"))
+            }
+        }
+    }
+
+    override fun onTimeOut(msgBean: MsgBean,nodeData: NodeData) {
         sjUniWatch.wmLog.logE(DevFinal.STR.TAG, "onTimeOut:$msgBean")
     }
 
