@@ -1,6 +1,5 @@
 package com.sjbt.sdk.settings
 
-import com.base.sdk.entity.apps.WmConnectState
 import com.base.sdk.entity.settings.WmAppView
 import com.base.sdk.exception.WmTimeOutException
 import com.base.sdk.port.setting.AbWmSetting
@@ -25,7 +24,7 @@ class SettingAppView(val sjUniWatch: SJUniWatch) : AbWmSetting<WmAppView>() {
             setEmitter = emitter
             appView.appViewList.forEach {
                 if (it.status == 1) {
-                    sjUniWatch.sendThreadTimeOutMsg(CmdHelper.setAppViewCmd(it.id.toByte()))
+                    sjUniWatch.sendSyncSafeMsg(CmdHelper.setAppViewCmd(it.id.toByte()))
                 }
             }
         }
@@ -49,7 +48,7 @@ class SettingAppView(val sjUniWatch: SJUniWatch) : AbWmSetting<WmAppView>() {
         return Single.create { emitter ->
             isGet = true
             getEmitter = emitter
-            sjUniWatch.sendThreadTimeOutMsg(CmdHelper.appViewList)
+            sjUniWatch.sendSyncSafeMsg(CmdHelper.appViewList)
         }
     }
 

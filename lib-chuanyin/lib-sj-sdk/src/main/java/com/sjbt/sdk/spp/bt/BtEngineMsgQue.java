@@ -24,7 +24,6 @@ import com.sjbt.sdk.utils.BtUtils;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Arrays;
 import java.util.Formatter;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -33,8 +32,6 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * 客户端和服务端的基类，用于管理socket长连接
@@ -213,7 +210,7 @@ public class BtEngineMsgQue {
                     // 在这里处理消息
                     switch (msg.what) {
                         case TYPE_MSG:
-                            sendMsg((byte[]) msg.obj);
+                            sendSyncSafeMsg((byte[]) msg.obj);
                             break;
 
                         case TYPE_CONNECT:
@@ -281,7 +278,7 @@ public class BtEngineMsgQue {
     /**
      * 发送短消息
      */
-    public void sendMsgOnWorkThread(byte[] bytes) {
+    public void sendSyncSafeMsgOnWorkThread(byte[] bytes) {
         if (deviceBusing) {
             MsgBean msgBean = MsgBean.Companion.fromByteArrayToMsgBean(bytes);
             notifyUI(BtStateListener.BUSY, msgBean);
@@ -291,7 +288,7 @@ public class BtEngineMsgQue {
         sendHandleMessage(TYPE_MSG, bytes);
     }
 
-    public void sendCommunicateMsg(byte[] bytes) {
+    public void sendNoTimeOutMsg(byte[] bytes) {
         try {
             mOut.write(bytes);
             mOut.flush();
@@ -301,7 +298,7 @@ public class BtEngineMsgQue {
         }
     }
 
-    private synchronized static void sendMsg(byte[] bytes) {
+    private synchronized static void sendSyncSafeMsg(byte[] bytes) {
         MsgBean msgBean = MsgBean.Companion.fromByteArrayToMsgBean(bytes);
         String msgTimeCode = msgBean.getTimeOutCode();
 
@@ -322,7 +319,7 @@ public class BtEngineMsgQue {
 
         try {
             if (msgBean.isNeedTimeOut()) {
-                logD("send message timeout code：" + msgTimeCode);
+                logD("sync safe timeout code：" + msgTimeCode);
                 mHandler.postDelayed(sendingMsgQueueMap.get(msgTimeCode), DEFAULT_MSG_TIMEOUT);
             } else {
                 removeMsgQue(msgTimeCode);
@@ -517,7 +514,7 @@ public class BtEngineMsgQue {
             if (!cachedMsgLinkedMap.isEmpty()) {
                 Object[] msgKeySet = cachedMsgLinkedMap.keySet().toArray();
                 logD("send cached msg");
-                sendMsg(cachedMsgLinkedMap.get(msgKeySet[0].toString()).originData);
+                sendSyncSafeMsg(cachedMsgLinkedMap.get(msgKeySet[0].toString()).originData);
             }
         }
     }

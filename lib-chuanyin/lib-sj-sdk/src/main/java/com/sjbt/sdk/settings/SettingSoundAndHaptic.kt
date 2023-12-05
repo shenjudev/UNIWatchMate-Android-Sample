@@ -115,14 +115,14 @@ class SettingSoundAndHaptic(sjUniWatch: SJUniWatch) : AbWmSetting<WmSoundAndHapt
 
             wmSoundAndHaptic?.let {
                 if (it.isRingtoneEnabled != obj.isRingtoneEnabled) {
-                    sjUniWatch.sendThreadTimeOutMsg(
+                    sjUniWatch.sendSyncSafeMsg(
                         CmdHelper.getSetDeviceRingStateCmd(
                             0.toByte(),
                             if (obj.isRingtoneEnabled) 1 else 0
                         )
                     )
                 } else if (it.isNotificationHaptic != obj.isNotificationHaptic) {
-                    sjUniWatch.sendThreadTimeOutMsg(
+                    sjUniWatch.sendSyncSafeMsg(
                         CmdHelper.getSetDeviceRingStateCmd(
                             1.toByte(),
                             if (obj.isNotificationHaptic) 1 else 0
@@ -130,7 +130,7 @@ class SettingSoundAndHaptic(sjUniWatch: SJUniWatch) : AbWmSetting<WmSoundAndHapt
                     )
                 } else if (it.isCrownHapticFeedback != obj.isCrownHapticFeedback) {
 
-                    sjUniWatch.sendThreadTimeOutMsg(
+                    sjUniWatch.sendSyncSafeMsg(
                         CmdHelper.getSetDeviceRingStateCmd(
                             2.toByte(),
                             if (obj.isCrownHapticFeedback) 1 else 0
@@ -138,14 +138,14 @@ class SettingSoundAndHaptic(sjUniWatch: SJUniWatch) : AbWmSetting<WmSoundAndHapt
                     )
                 } else if (it.isSystemHapticFeedback != obj.isSystemHapticFeedback) {
 
-                    sjUniWatch.sendThreadTimeOutMsg(
+                    sjUniWatch.sendSyncSafeMsg(
                         CmdHelper.getSetDeviceRingStateCmd(
                             3.toByte(),
                             if (obj.isSystemHapticFeedback) 1 else 0
                         )
                     )
                 } else if (it.isMuted != obj.isMuted) {
-                    sjUniWatch.sendThreadTimeOutMsg(
+                    sjUniWatch.sendSyncSafeMsg(
                         CmdHelper.getSetDeviceRingStateCmd(
                             5.toByte(),
                             if (obj.isMuted) 1 else 0
@@ -162,7 +162,7 @@ class SettingSoundAndHaptic(sjUniWatch: SJUniWatch) : AbWmSetting<WmSoundAndHapt
         return Single.create { emitter ->
             isGet = true
             getEmitter = emitter
-            sjUniWatch.sendThreadTimeOutMsg(CmdHelper.deviceRingStateCmd)
+            sjUniWatch.sendSyncSafeMsg(CmdHelper.deviceRingStateCmd)
         }
     }
 

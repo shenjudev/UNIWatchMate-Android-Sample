@@ -64,7 +64,7 @@ class SettingWistRaise(val sjUniWatch: SJUniWatch) : AbWmSetting<WmWristRaise>()
             override fun subscribe(emitter: SingleEmitter<WmWristRaise>) {
                 setEmitter = emitter
                 backWmWristRaise.isScreenWakeEnabled = obj.isScreenWakeEnabled
-                sjUniWatch.sendThreadTimeOutMsg(
+                sjUniWatch.sendSyncSafeMsg(
                     CmdHelper.getSetDeviceRingStateCmd(
                         4,
                         if (obj.isScreenWakeEnabled) 1 else 0
@@ -78,7 +78,7 @@ class SettingWistRaise(val sjUniWatch: SJUniWatch) : AbWmSetting<WmWristRaise>()
         return Single.create { emitter ->
             isGet = true
             getEmitter = emitter
-            sjUniWatch.sendThreadTimeOutMsg(CmdHelper.deviceRingStateCmd)
+            sjUniWatch.sendSyncSafeMsg(CmdHelper.deviceRingStateCmd)
         }
     }
 

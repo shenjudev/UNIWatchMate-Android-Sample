@@ -19,7 +19,7 @@ class AppDateTime(val sjUniWatch: SJUniWatch) : AbAppDateTime() {
     override fun setDateTime(dateTime: WmDateTime?): Single<Boolean> {
         return Single.create { emitter ->
             setEmitter = emitter
-            sjUniWatch.sendThreadTimeOutMsg(CmdHelper.syncTimeCmd)
+            sjUniWatch.sendSyncSafeMsg(CmdHelper.syncTimeCmd)
         }
     }
 }

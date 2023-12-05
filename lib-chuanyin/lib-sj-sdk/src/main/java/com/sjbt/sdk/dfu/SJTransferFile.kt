@@ -50,7 +50,7 @@ class SJTransferFile(val sjUniWatch: SJUniWatch) : AbWmTransferFile() {
         return Single.create { emitter ->
             cancelTransferEmitter = emitter
             sjUniWatch.wmLog.logE(TAG, "cancel Transfer")
-            sjUniWatch.sendThreadTimeOutMsg(CmdHelper.transferCancelCmd)
+            sjUniWatch.sendSyncSafeMsg(CmdHelper.transferCancelCmd)
         }
     }
 
@@ -88,7 +88,7 @@ class SJTransferFile(val sjUniWatch: SJUniWatch) : AbWmTransferFile() {
                 fileLen += it.length()
             }
 
-            sjUniWatch.sendThreadTimeOutMsg(
+            sjUniWatch.sendSyncSafeMsg(
                 CmdHelper.getTransferFile01Cmd(
                     fileType.type.toByte(),
                     fileLen.toInt(),
@@ -441,7 +441,7 @@ class SJTransferFile(val sjUniWatch: SJUniWatch) : AbWmTransferFile() {
                     CMD_ID_8002 -> if (mTransferRetryCount < MAX_RETRY_COUNT) {
                         mTransferRetryCount++
                         mSendingFile = mTransferFiles!![mSendFileCount]
-                        sjUniWatch.sendThreadTimeOutMsg(
+                        sjUniWatch.sendSyncSafeMsg(
                             CmdHelper.getTransferFile02Cmd(
                                 FileUtils.readFileBytes(
                                     mSendingFile
@@ -470,7 +470,7 @@ class SJTransferFile(val sjUniWatch: SJUniWatch) : AbWmTransferFile() {
                     CMD_ID_8004 -> if (mTransferRetryCount < MAX_RETRY_COUNT) {
                         mTransferRetryCount++
                         val ota_data = CmdHelper.transfer04Cmd
-                        sjUniWatch.sendThreadTimeOutMsg(ota_data)
+                        sjUniWatch.sendSyncSafeMsg(ota_data)
                     } else {
 //                        if (mTransferFileListener != null) {
 //                            mTransferFileListener.transferFail(FAIL_TYPE_TIMEOUT, "8004 time out")

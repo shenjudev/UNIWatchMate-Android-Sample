@@ -114,7 +114,7 @@ class AppCamera(val sjUniWatch: SJUniWatch) : AbAppCamera() {
 
         return Single.create { emitter ->
             cameraSingleOpenEmitter = emitter
-            sjUniWatch.sendThreadTimeOutMsg(
+            sjUniWatch.sendSyncSafeMsg(
                 CmdHelper.getAppCallDeviceCmd(
                     if (open) {
                         1.toByte()
@@ -143,7 +143,7 @@ class AppCamera(val sjUniWatch: SJUniWatch) : AbAppCamera() {
 
             sjUniWatch.wmLog.logE(TAG, "WMCameraFlashMode:$wmCameraFlashMode")
 
-            sjUniWatch.sendThreadTimeOutMsg(
+            sjUniWatch.sendSyncSafeMsg(
                 CmdHelper.getCameraStateActionCmd(
                     1,
                     wmCameraFlashMode.ordinal.toByte()
@@ -155,7 +155,7 @@ class AppCamera(val sjUniWatch: SJUniWatch) : AbAppCamera() {
     override fun cameraBackSwitch(wmCameraPosition: WMCameraPosition): Single<WMCameraPosition> {
         return Single.create { emitter ->
             cameraBackSwitchEmitter = emitter
-            sjUniWatch.sendThreadTimeOutMsg(
+            sjUniWatch.sendSyncSafeMsg(
                 CmdHelper.getCameraStateActionCmd(
                     0,
                     wmCameraPosition.ordinal.toByte()
@@ -168,7 +168,7 @@ class AppCamera(val sjUniWatch: SJUniWatch) : AbAppCamera() {
         return Single.create { emitter ->
             cameraPreviewReadyEmitter = emitter
 
-            sjUniWatch.sendThreadTimeOutMsg(
+            sjUniWatch.sendNoTimeOutMsg(
                 CmdHelper.getCameraPreviewCmd01()
             )
         }
@@ -190,13 +190,13 @@ class AppCamera(val sjUniWatch: SJUniWatch) : AbAppCamera() {
 //            sjUniWatch.logD(TAG, "来新数据了:" + needNewH264Frame);
             if (needNewH264Frame) {
                 mCameraFrameInfo = it
-                sendFrameDataAsync(it)
+                sendFrameDataPrepare(it)
                 needNewH264Frame = false
             }
         }
     }
 
-    fun sendFrameDataAsync(frameInfo: WmCameraFrameInfo?) {
+   private fun sendFrameDataPrepare(frameInfo: WmCameraFrameInfo?) {
         if (frameInfo == null) {
             needNewH264Frame = true
 //            sjUniWatch.logD(TAG, "没数据了-》2")
@@ -216,7 +216,7 @@ class AppCamera(val sjUniWatch: SJUniWatch) : AbAppCamera() {
             mFramePackageCount = it.size / mCellLength
             mFrameLastLen = it.size % mCellLength
             if (mFrameLastLen != 0) {
-                mFramePackageCount = mFramePackageCount + 1
+                mFramePackageCount += 1
             }
             if (mFramePackageCount > 0) {
                 for (i in 0 until mFramePackageCount) {
@@ -233,7 +233,7 @@ class AppCamera(val sjUniWatch: SJUniWatch) : AbAppCamera() {
                             i
                         )
                         //                    sjUniWatch.logD(TAG,"执行发送：" + info + " 分包类型：" + mDivide);
-                        sjUniWatch.sendThreadTimeOutMsg(
+                        sjUniWatch.sendNoTimeOutMsg(
                             CmdHelper.getCameraPreviewDataCmd02(
                                 info.payload,
                                 mDivide
@@ -248,7 +248,7 @@ class AppCamera(val sjUniWatch: SJUniWatch) : AbAppCamera() {
                 }
             } else {
                 mDivide = DIVIDE_N_2
-                sjUniWatch.sendThreadTimeOutMsg(CmdHelper.getCameraPreviewDataCmd02(it, mDivide))
+                sjUniWatch.sendSyncSafeMsg(CmdHelper.getCameraPreviewDataCmd02(it, mDivide))
             }
         }
 
@@ -256,7 +256,7 @@ class AppCamera(val sjUniWatch: SJUniWatch) : AbAppCamera() {
 
     fun cameraPreviewBuz(msgBean: MsgBean) {
 
-        val camera_pre_allow = msgBean.payload[0] //是否容许同步画面 0允许 1不允许
+        val cameraPreEnable = msgBean.payload[0] //是否容许同步画面 0允许 1不允许
 
         val reason = msgBean.payload[1]
         val lenArray = ByteArray(4)
@@ -270,20 +270,20 @@ class AppCamera(val sjUniWatch: SJUniWatch) : AbAppCamera() {
         mCellLength = mCellLength - 5
 //        sjUniWatch.logD(TAG, "相机预览传输包大小：${mCellLength}")
 
-        continueUpdateFrame = camera_pre_allow.toInt() == 1
+        continueUpdateFrame = cameraPreEnable.toInt() == 1
 
         cameraPreviewReadyEmitter?.onSuccess(continueUpdateFrame)
 
 //        sjUniWatch.logD(TAG, "是否支持相机预览 continueUpdateFrame：$continueUpdateFrame")
 
-        if (camera_pre_allow.toInt() == 1) {
+        if (cameraPreEnable.toInt() == 1) {
 //            sjUniWatch.logD(TAG, "预发送数据：" + mH264FrameMap.frameCount)
             if (!mH264FrameMap.isEmpty()) {
 //                sjUniWatch.logD(TAG, "发送的帧ID：${mLatestIframeId}")
                 mCameraFrameInfo =
                     mH264FrameMap.getFrame(mLatestIframeId)
 //                sjUniWatch.logD(TAG, "发送的帧信息：${mCameraFrameInfo}")
-                sendFrameDataAsync(mCameraFrameInfo)
+                sendFrameDataPrepare(mCameraFrameInfo)
             } else {
                 needNewH264Frame = true
             }
@@ -336,7 +336,7 @@ class AppCamera(val sjUniWatch: SJUniWatch) : AbAppCamera() {
                     }
                 }
 
-                sendFrameDataAsync(mCameraFrameInfo)
+                sendFrameDataPrepare(mCameraFrameInfo)
             } else {
                 sjUniWatch.logD(TAG, "camera close stop preview")
                 mH264FrameMap.clear()

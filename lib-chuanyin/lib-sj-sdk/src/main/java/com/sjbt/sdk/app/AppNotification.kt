@@ -68,7 +68,7 @@ class AppNotification(sjUniWatch: SJUniWatch) : AbAppNotification() {
 
             sjUniWatch.wmLog.logD(TAG, "sendNotification: $notification")
 
-            sjUniWatch.sendThreadTimeOutMsg(CmdHelper.getNotificationCmd(notification))
+            sjUniWatch.sendSyncSafeMsg(CmdHelper.getNotificationCmd(notification))
         }
     }
 }

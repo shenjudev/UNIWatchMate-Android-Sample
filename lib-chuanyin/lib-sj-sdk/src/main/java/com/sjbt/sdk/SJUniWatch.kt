@@ -140,7 +140,7 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(),
     private var discoveryTag: String = ""
     val observableMtu: Single<Int> = Single.create { emitter ->
         mtuEmitter = emitter
-        sendThreadTimeOutMsg(CmdHelper.getMTUCmd)
+        sendSyncSafeMsg(CmdHelper.getMTUCmd)
     }
 
     private var readSubPkMsg: ReadSubPkMsg? = null
@@ -287,7 +287,7 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(),
     override fun getBatteryInfo(): Single<WmBatteryInfo> {
         return Single.create {
             batteryEmitter = it
-            sendThreadTimeOutMsg(CmdHelper.batteryInfo)
+            sendSyncSafeMsg(CmdHelper.batteryInfo)
         }
     }
 
@@ -299,7 +299,7 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(),
      * @param
      */
     private fun getBasicInfo() {
-        sendThreadTimeOutMsg(CmdHelper.baseInfoCmd)
+        sendSyncSafeMsg(CmdHelper.baseInfoCmd)
     }
 
     /**
@@ -322,7 +322,7 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(),
 
                             when (msgBean.cmdId.toShort()) {
                                 CMD_ID_8001 -> {
-                                    sendThreadTimeOutMsg(CmdHelper.biuVerifyCmd)
+                                    sendSyncSafeMsg(CmdHelper.biuVerifyCmd)
                                 }
 
                                 CMD_ID_8002 -> {
@@ -518,7 +518,7 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(),
                                 }
 
                                 CMD_ID_8019 -> {//监听触感
-                                    sendThreadTimeOutMsg(CmdHelper.deviceRingStateRespondCmd)
+                                    sendSyncSafeMsg(CmdHelper.deviceRingStateRespondCmd)
                                     val ctype = msgBean.payload[0].toInt()
                                     val vValue = msgBean.payload[1].toInt()
 
@@ -538,26 +538,25 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(),
                                     }
                                 }
 
-                                CMD_ID_8028 -> {//收到dev拍照命令
+                                CMD_ID_8028 -> {//监听 设备拍照命令
                                     appCamera.cameraObserveTakePhotoEmitter?.onNext(true)
-
-                                    sendThreadTimeOutMsg(
+                                    sendNoTimeOutMsg(
                                         CmdHelper.getCameraRespondCmd(
                                             CMD_ID_8028, 1.toByte()
                                         )
                                     )
                                 }
 
-                                CMD_ID_8029 -> {//设备拉起或者关闭相机监听
+                                CMD_ID_8029 -> {//监听 设备拉起或者关闭相机
                                     appCamera.observeDeviceCamera(msgBean.payload[0].toInt() == 1)
-                                    sendThreadTimeOutMsg(
+                                    sendNoTimeOutMsg(
                                         CmdHelper.getCameraRespondCmd(
                                             CMD_ID_8029, 1.toByte()
                                         )
                                     )
                                 }
 
-                                CMD_ID_802A -> {//监听打开相机
+                                CMD_ID_802A -> {//监听App打开设备相机
                                     appCamera.openCameraResult(msgBean.payload[0].toInt() == 1)
                                 }
 
@@ -567,7 +566,7 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(),
 
                                     appCamera.observeCameraAction(action, stateOn)
 
-                                    sendThreadTimeOutMsg(
+                                    sendNoTimeOutMsg(
                                         CmdHelper.getCameraRespondCmd(
                                             CMD_ID_802B, 1.toByte()
                                         )
@@ -647,9 +646,6 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(),
                                     val frameSuccess = msgBean.payload[0]
 
                                     wmLog.logD(TAG, "send success：$frameSuccess")
-                                    wmLog.logD(
-                                        TAG, "next frame：" + appCamera.mH264FrameMap.frameCount
-                                    )
 
                                     wmLog.logD(
                                         TAG,
@@ -807,7 +803,7 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(),
                     }
 
                     btStateChange(WmConnectState.CONNECTED)
-                    sendThreadTimeOutMsg(CmdHelper.biuShakeHandsCmd)
+                    sendSyncSafeMsg(CmdHelper.biuShakeHandsCmd)
                     mBtStateReceiver?.let {
                         it.setmSocket(mBtEngine.getmSocket())
                         it.setmCurrDevice(mCurrAddress)
@@ -1084,10 +1080,10 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(),
     }
 
     fun sendNoTimeOutMsg(bytes: ByteArray) {
-        mBtEngine.sendCommunicateMsg(bytes)
+        mBtEngine.sendNoTimeOutMsg(bytes)
     }
 
-    fun sendThreadTimeOutMsg(msg: ByteArray) {
+    fun sendSyncSafeMsg(msg: ByteArray) {
         if (wmTransferFile.mTransferring) {
             val byteBuffer = ByteBuffer.wrap(msg)
             val head = byteBuffer.get()
@@ -1099,7 +1095,7 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(),
             }
         }
 
-        mBtEngine.sendMsgOnWorkThread(msg)
+        mBtEngine.sendSyncSafeMsgOnWorkThread(msg)
     }
 
     /**
@@ -1121,7 +1117,7 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(),
                 payload
             )
 
-            sendThreadTimeOutMsg(cmdArray)
+            sendSyncSafeMsg(cmdArray)
         }
 
         mPayloadPackage = payloadPackage
@@ -1145,7 +1141,7 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(),
                 it
             )
 
-            sendThreadTimeOutMsg(cmdArray)
+            sendSyncSafeMsg(cmdArray)
         }
 
         mPayloadPackage = payloadPackage
@@ -1167,7 +1163,7 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(),
                 it
             )
 
-            sendThreadTimeOutMsg(cmdArray)
+            sendSyncSafeMsg(cmdArray)
         }
 
         mPayloadPackage = payloadPackage
@@ -1379,7 +1375,7 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(),
                             it.bindType = BindType.CONNECT_BACK
                         }
 
-                        sendThreadTimeOutMsg(CmdHelper.getBindCmd(it))
+                        sendSyncSafeMsg(CmdHelper.getBindCmd(it))
                     } ?: run {
                         btStateChange(WmConnectState.DISCONNECTED)
                     }
@@ -1737,6 +1733,7 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(),
     }
 
     override fun disconnect() {
+        mBtEngine.clearMsgQueue()
         mBtEngine.closeSocket("app", true)
     }
 
@@ -1745,7 +1742,7 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(),
             unbindEmitter = emitter
 
             if (mConnectState == WmConnectState.VERIFIED) {
-                sendThreadTimeOutMsg(CmdHelper.getUnBindCmd())
+                sendSyncSafeMsg(CmdHelper.getUnBindCmd())
             } else {
                 emitter.onError(RuntimeException("NOT VERIFIED"))
             }
@@ -1757,7 +1754,7 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(),
             unbindEmitter = emitter
 
             if (mConnectState == WmConnectState.VERIFIED) {
-                sendThreadTimeOutMsg(CmdHelper.getRebootCmd())
+                sendSyncSafeMsg(CmdHelper.getRebootCmd())
 
                 mHandler.postDelayed({
 
