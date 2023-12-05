@@ -28,23 +28,20 @@ class SJTransferFile(val sjUniWatch: SJUniWatch) : AbWmTransferFile() {
     private var mSendFileCount = 0
     private var mCellLength = 0
     private var mOtaProcess = 0
-    private var mCanceledSend = false
+    private var mCommonFileTransferCancel = false
+    private var mDialFileTransferCancel = false
     private var mErrorSend: Boolean = false
     private var mDivide: Byte = 0
     private var mPackageCount = 0
     private var mLastDataLength: Int = 0
     private var mTransferRetryCount = 0
+    private var mFileType: FileType? = null
     var mTransferring = false
 
-    val mSportMap = HashMap<FileType, Boolean>()
-    var cancelTransferEmitter: SingleEmitter<Boolean>? = null
-    var observableTransferEmitter: ObservableEmitter<WmTransferState>? = null
+    private var cancelTransferEmitter: SingleEmitter<Boolean>? = null
+    private var observableTransferEmitter: ObservableEmitter<WmTransferState>? = null
 
-    var transferState: WmTransferState? = null
-
-    override fun isSupport(fileType: FileType): Boolean {
-        return mSportMap[fileType] == true
-    }
+    private var transferState: WmTransferState? = null
 
     override fun cancelTransfer(): Single<Boolean> {
         return Single.create { emitter ->
@@ -54,11 +51,12 @@ class SJTransferFile(val sjUniWatch: SJUniWatch) : AbWmTransferFile() {
         }
     }
 
-    fun transferEnd() {
+    private fun transferEnd() {
         try {
             sjUniWatch.clearMsg()
             mOtaProcess = 0
             mTransferRetryCount = 0
+
             mTransferring = false
             mSendFileCount = 0
 //            removeCallBackRunner(mTransferTimeoutRunner)
@@ -68,6 +66,7 @@ class SJTransferFile(val sjUniWatch: SJUniWatch) : AbWmTransferFile() {
     }
 
     override fun startTransfer(fileType: FileType, files: List<File>): Observable<WmTransferState> {
+        mFileType = fileType
         mTransferFiles = files
         mSelectFileCount = files.size
 
@@ -77,6 +76,10 @@ class SJTransferFile(val sjUniWatch: SJUniWatch) : AbWmTransferFile() {
             it.state = State.PRE_TRANSFER
             it.index = 0
             it.progress = 0
+        }
+
+        if (mFileType != FileType.DIAL) {
+            mDialFileTransferCancel = false
         }
 
         return Observable.create { emitter ->
@@ -103,12 +106,12 @@ class SJTransferFile(val sjUniWatch: SJUniWatch) : AbWmTransferFile() {
             CMD_ID_8001 -> {
                 mSendFileCount = 0
                 mErrorSend = false
-                mCanceledSend = false
+                mCommonFileTransferCancel = false//如果是传输图片期间取消传输，取消传输状态不改变
 
-                val ota_allow = msgBean.payload[0] //是否容许升级 0允许 1不允许
-                val reason = msgBean.payload[1].toInt() //是否容许升级 0允许 1不允许
-                sjUniWatch.wmLog.logD(TAG, "1.Allow transfer:$ota_allow")
-                if (ota_allow.toInt() == 1) {
+                val transferEnable = msgBean.payload[0] //是否容许升级 0允许 1不允许
+                val reason = msgBean.payload[1].toInt()
+                sjUniWatch.wmLog.logD(TAG, "1.Allow transfer:$transferEnable")
+                if (transferEnable.toInt() == 1) {
                     mSendingFile = mTransferFiles!![0]
 
                     transferState?.let {
@@ -119,7 +122,7 @@ class SJTransferFile(val sjUniWatch: SJUniWatch) : AbWmTransferFile() {
                     }
 
                     mSendingFile?.let { file ->
-                        sjUniWatch.sendNoTimeOutMsg(
+                        sjUniWatch.sendSyncSafeMsg(
                             CmdHelper.getTransferFile02Cmd(
                                 file.length().toInt(),
                                 file.name
@@ -163,7 +166,7 @@ class SJTransferFile(val sjUniWatch: SJUniWatch) : AbWmTransferFile() {
                 mCellLength = ByteBuffer.wrap(lenArray)
                     .order(ByteOrder.LITTLE_ENDIAN).int - 4
                 sjUniWatch.wmLog.logD(TAG, "cell_length:$mCellLength")
-                if (mCellLength > 0) {
+                if (mCellLength > 0 && !mDialFileTransferCancel) {
 
                     Thread {
                         mFileDataArray =
@@ -177,7 +180,7 @@ class SJTransferFile(val sjUniWatch: SJUniWatch) : AbWmTransferFile() {
                     }.start()
 
                 } else {
-                    mCanceledSend = true
+                    mCommonFileTransferCancel = true
                     transferEnd()
                     transferError(
                         WmTransferError.ERROR_FILE_EXCEPTION,
@@ -265,7 +268,7 @@ class SJTransferFile(val sjUniWatch: SJUniWatch) : AbWmTransferFile() {
 
                         mSendingFile = mTransferFiles!![mSendFileCount]
 
-                        sjUniWatch.sendNoTimeOutMsg(
+                        sjUniWatch.sendSyncSafeMsg(
                             CmdHelper.getTransferFile02Cmd(
                                 FileUtils.readFileBytes(mSendingFile).size,
                                 mSendingFile!!.name
@@ -291,19 +294,62 @@ class SJTransferFile(val sjUniWatch: SJUniWatch) : AbWmTransferFile() {
 
             CMD_ID_8005 -> {
                 mTransferring = false
-                mCanceledSend = true
-                sjUniWatch.wmLog.logE(TAG, "user cancel transfer：$mCanceledSend")
+                mCommonFileTransferCancel = true
+                mDialFileTransferCancel =
+                    (mFileType == FileType.DIAL || mFileType == FileType.DIAL_COVER)
+
+                sjUniWatch.wmLog.logE(TAG, "user cancel transfer：$mCommonFileTransferCancel")
                 cancelTransferEmitter?.onSuccess(true)
+
+                observableTransferEmitter?.let {
+                    if (!it.isDisposed) {
+                        it.onComplete()
+                    }
+                }
+
                 transferEnd()
             }
 
             CMD_ID_8006 -> {
                 mTransferring = false
-                mCanceledSend = true
-                val reasonCancel = msgBean.payload[0]
+                mCommonFileTransferCancel = true
+                mDialFileTransferCancel =
+                    (mFileType == FileType.DIAL || mFileType == FileType.DIAL_COVER)
+
+                val reasonCancel = msgBean.payload[0].toInt()
                 sjUniWatch.wmLog.logE(TAG, "device cancel reason：$reasonCancel")
                 transferEnd()
-                transferError(WmTransferError.ERROR_BUSY, "file transfer error reason:06 Error")
+                val err = when (reasonCancel) {
+                    WmTransferError.ERROR_OTHER.code -> {
+                        WmTransferError.ERROR_OTHER
+                    }
+
+                    WmTransferError.ERROR_BUSY.code -> {
+                        WmTransferError.ERROR_BUSY
+                    }
+
+                    WmTransferError.ERROR_CRC.code -> {
+                        WmTransferError.ERROR_CRC
+                    }
+
+                    WmTransferError.ERROR_LOW_MEMORY.code -> {
+                        WmTransferError.ERROR_LOW_MEMORY
+                    }
+
+                    WmTransferError.ERROR_LOW_POWER.code -> {
+                        WmTransferError.ERROR_LOW_POWER
+                    }
+
+                    WmTransferError.ERROR_TIME_OUT.code -> {
+                        WmTransferError.ERROR_TIME_OUT
+                    }
+
+                    else -> {
+                        WmTransferError.ERROR_OTHER
+                    }
+                }
+
+                transferError(err, "file transfer error reason:06 Error $err")
             }
         }
     }
@@ -327,7 +373,7 @@ class SJTransferFile(val sjUniWatch: SJUniWatch) : AbWmTransferFile() {
 
         for (i in startProcess.toInt() until mPackageCount) {
             mOtaProcess = i
-            if (mCanceledSend || mErrorSend) { //取消或者中途出错
+            if (mDialFileTransferCancel || mCommonFileTransferCancel || mErrorSend) { //取消或者中途出错
                 sjUniWatch.wmLog.logE(TAG, "cancel or error：$mOtaProcess")
                 mTransferring = false
                 break
@@ -352,9 +398,6 @@ class SJTransferFile(val sjUniWatch: SJUniWatch) : AbWmTransferFile() {
                 }
 
                 Thread.sleep(MSG_INTERVAL.toLong())
-//                if (mOtaProcess == mPackageCount - 1) {
-//                    mHandler.postDelayed(mTransferTimeoutRunner, TRANSFER_TIMEOUT)
-//                }
 
             } catch (e: java.lang.Exception) {
                 e.printStackTrace()
@@ -428,7 +471,7 @@ class SJTransferFile(val sjUniWatch: SJUniWatch) : AbWmTransferFile() {
     }
 
     fun timeOut(msgBean: MsgBean) {
-        if (mCanceledSend) {
+        if (mCommonFileTransferCancel) {
             sjUniWatch.clearMsg()
             return
         }

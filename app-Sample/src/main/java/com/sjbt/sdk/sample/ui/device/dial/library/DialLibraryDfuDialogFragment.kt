@@ -90,6 +90,11 @@ class DialLibraryDfuDialogFragment : AppCompatDialogFragment() {
                 }
             }
         }
+
+        viewBind.tvCancel.clickTrigger {
+            dfuViewModel.cancelInstall()
+        }
+
         if (dialPacket.dialCoverRes == -2) {
             if (!dfuViewModel.isDfuIng()) {
                 PermissionHelper.requestBle(this) { granted ->

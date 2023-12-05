@@ -8,7 +8,6 @@ import java.io.File
  * 传输文件功能抽象类
  */
 abstract class AbWmTransferFile {
-    abstract fun isSupport(fileType: FileType): Boolean
     abstract fun startTransfer(fileType: FileType, files: List<File>): Observable<WmTransferState>
     abstract fun cancelTransfer(): Single<Boolean>
 }

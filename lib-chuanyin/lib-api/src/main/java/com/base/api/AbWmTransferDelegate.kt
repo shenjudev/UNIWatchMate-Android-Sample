@@ -23,7 +23,4 @@ internal class AbWmTransferDelegate(
         return watchObservable.value!!.wmTransferFile.cancelTransfer()
     }
 
-    override fun isSupport(fileType: FileType):Boolean {
-       return watchObservable.value!!.wmTransferFile.isSupport(fileType)
-    }
 }

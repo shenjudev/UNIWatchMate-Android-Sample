@@ -5,6 +5,7 @@ import com.base.sdk.entity.apps.WmAlarm
 import com.base.sdk.entity.apps.WmConnectState
 import com.base.sdk.exception.WmTimeOutException
 import com.base.sdk.port.app.AbAppAlarm
+import com.sjbt.sdk.ALARM_LEN
 import com.sjbt.sdk.ALARM_NAME_LEN
 import com.sjbt.sdk.ExceptionStateListener
 import com.sjbt.sdk.SJUniWatch
@@ -95,24 +96,22 @@ class AppAlarm(val sjUniWatch: SJUniWatch) : AbAppAlarm(),
                     }
                 } else {
                     val alarmList = mutableListOf<WmAlarm>()
-                    val count = nodeData.dataLen / 25
+                    val count = nodeData.dataLen / ALARM_LEN
                     sjUniWatch.wmLog.logD(TAG, "Alarm Count：$count")
+                    val byteBuffer = ByteBuffer.wrap(nodeData.data).order(ByteOrder.LITTLE_ENDIAN)
 
                     if (count > 0) {
-                        for (i in 0 until count) {
-
-                            val alarmArray = nodeData.data.copyOfRange(i * 25, i * 25 + 25)
-                            val id = alarmArray[0].toInt()
-                            val nameArray =
-                                alarmArray.copyOfRange(1, 21).takeWhile { it.toInt() != 0 }
-                                    .toByteArray()
+                        while(byteBuffer.hasRemaining()){
+                            val id = byteBuffer.get().toInt()
+                            val nameArray = ByteArray(ALARM_NAME_LEN)
+                            byteBuffer.get(nameArray)
                             val name = String(nameArray, StandardCharsets.UTF_8)
                             sjUniWatch.wmLog.logD(TAG, "id$id name:$name")
 
-                            val hour = alarmArray[21].toInt()
-                            val minute = alarmArray[22].toInt()
-                            val repeatOptions = alarmArray[23].toInt()
-                            val isEnable = alarmArray[24].toInt()
+                            val hour = byteBuffer.get().toInt()
+                            val minute = byteBuffer.get().toInt()
+                            val repeatOptions = byteBuffer.get().toInt()
+                            val isEnable = byteBuffer.get().toInt()
 
                             val wmAlarm =
                                 WmAlarm(
@@ -149,7 +148,8 @@ class AppAlarm(val sjUniWatch: SJUniWatch) : AbAppAlarm(),
         totalAlarms.addAll(alarms)
 
         val byteBuffer: ByteBuffer =
-            ByteBuffer.allocate(25 * totalAlarms.size).order(ByteOrder.LITTLE_ENDIAN)
+            ByteBuffer.allocate(ALARM_LEN * totalAlarms.size)
+                .order(ByteOrder.LITTLE_ENDIAN)
 
         totalAlarms.forEach { alarm ->
             byteBuffer.put(0)
