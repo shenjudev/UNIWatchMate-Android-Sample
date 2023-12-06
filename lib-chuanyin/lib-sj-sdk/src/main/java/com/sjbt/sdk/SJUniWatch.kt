@@ -75,6 +75,7 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(),
     private var mDeviceName: String = ""
     private var mConnectTryCount = 0
     private var mConnectState: WmConnectState = WmConnectState.CONNECTING
+    private var mCancelPair = false
 
     override val wmSettings = SJSettings(this)
     override val wmApps = SJApps(this)
@@ -210,6 +211,11 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(),
                     mCurrAddress = sharedPreferencesUtils.getString(BT_ADDRESS, "")
                 }
 
+                if (mCancelPair) {
+                    mConnectTryCount = MAX_RETRY_COUNT
+                    return
+                }
+
                 if (device.address == mCurrAddress) {
                     mBindInfo?.let {
                         if (mCurrAddress?.let { it1 -> mBtEngine.getSocketState(it1) } == SOCKET_STATE_NONE) {
@@ -232,10 +238,12 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(),
 
             override fun onBindState(device: BluetoothDevice, bondState: Int) {
                 if (bondState == BluetoothDevice.BOND_NONE) {
+
                     if (device == mCurrDevice) {
-                        mConnectTryCount = MAX_RETRY_COUNT
+                        mCancelPair = true
+//                        mConnectTryCount = MAX_RETRY_COUNT
                         mBtEngine.clearStateMap()
-                        btStateChange(WmConnectState.DISCONNECTED)
+//                        btStateChange(WmConnectState.DISCONNECTED)
 //                        removeCallBackRunner(mConnectTimeoutRunner)
                         wmLog.logD(TAG, "cancel pair：" + device.address)
                     }
@@ -1634,7 +1642,7 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(),
 
     override fun connectScanQr(bindInfo: WmBindInfo): WmDevice? {
         mBindInfo = bindInfo
-
+        mCancelPair = false
         mBindInfo?.let {
             bindInfo.model = if (bindInfo.deviceType == mDeviceType) {
                 WmDeviceModel.SJ_WATCH
@@ -1660,10 +1668,10 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(),
     ): WmDevice {
         synchronized(this) {
             mBindInfo = bindInfo
-
             mBindInfo?.let {
-
                 val wmDevice = WmDevice(bindInfo.model)
+
+                mCancelPair = false
                 mCurrAddress = address
                 mBtStateReceiver?.let {
                     it.setmCurrDevice(mCurrAddress)
@@ -1715,6 +1723,7 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(),
         synchronized(this) {
             mBindInfo = bindInfo
             mBindInfo?.let {
+                mCancelPair = false
                 mCurrDevice = bluetoothDevice
                 val wmDevice = WmDevice(bindInfo.model)
 
@@ -1762,7 +1771,7 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(),
      */
     private fun reConnect(device: BluetoothDevice) {
         mBindInfo?.let {
-            connect(device, it)
+            mBtEngine.connect(device)
         }
     }
 
@@ -1794,7 +1803,9 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(),
             if (mConnectState == WmConnectState.VERIFIED) {
                 sendSyncSafeMsg(CmdHelper.getUnBindCmd())
             } else {
+                removeDevice()
                 unbindEmitter?.onComplete()
+
 //                if (mConnectState == WmConnectState.DISCONNECTED) {
 //                    unbindEmitter?.onComplete()
 //                } else {
