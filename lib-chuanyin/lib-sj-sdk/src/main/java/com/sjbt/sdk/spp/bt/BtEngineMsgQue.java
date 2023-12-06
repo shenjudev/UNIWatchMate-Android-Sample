@@ -112,13 +112,13 @@ public class BtEngineMsgQue {
      */
     private static void socketConnectRead() throws IOException {
 
-        if (!mSocket.isConnected()) {
-            logD("start to connect -->:" + mDevice.getAddress());
+//        if (!mSocket.isConnected()) {
+            logD("start to connect -->:" + mSocketStateMap);
 
             mSocketStateMap.put(mDevice.getAddress(), SOCKET_STATE_CONNECTING);
             mSocket.connect();
             deviceBusing = false;
-        }
+//        }
 
         if (mSocket.isConnected()) {
             mSocketStateMap.put(mDevice.getAddress(), SOCKET_STATE_CONNECTED);
