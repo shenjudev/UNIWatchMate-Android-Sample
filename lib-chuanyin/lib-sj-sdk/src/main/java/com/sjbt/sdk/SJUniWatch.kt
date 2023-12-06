@@ -1501,8 +1501,8 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(),
                     }
                 }
 
-//                URN_SPORT_DATA -> {//运动同步
-//                    when (it.urn[1]) {
+                URN_SPORT_DATA -> {//运动同步
+                    when (it.urn[1]) {
 //
 //                        URN_SPORT_STEP -> {
 //                            syncStepData.syncStepBusiness(it)
@@ -1552,6 +1552,10 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(),
 //                        URN_SPORT_SUMMARY -> {
 //                            syncSportSummaryData.syncSportSummaryDataBusiness(it)
 //                        }
+
+                        URN_SPORT_DAILY_ACTIVITY_LEN -> {
+                            syncDailyActivityDurationData.syncDailyActivityDurationDataBusiness(it)
+                        }
 //
 //                        URN_SPORT_10S_RATE -> {
 //                            syncSportSummaryData.syncTenSecondsRateBusiness(it)
@@ -1569,8 +1573,8 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(),
 //                            syncSportSummaryData.syncTenSecondsCaloriesBusiness(it)
 //                        }
 //
-//                    }
-//                }
+                    }
+                }
             }
         }
     }

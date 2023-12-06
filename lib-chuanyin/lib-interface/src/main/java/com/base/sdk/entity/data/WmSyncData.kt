@@ -142,7 +142,7 @@ class WmSportSummaryData(
  * sportType 运动类型 跑步类....
  * duration 秒
  */
-class WmDailyActivityDurationData(val sportType: Int, var duration: Int) : WmBaseSyncData(){
+class WmDailyActivityDurationData(val sportType: Int, var duration: Int) : WmBaseSyncData() {
     override fun toString(): String {
         return "WmDailyActivityDurationData(dateStamp=$timestamp sportType=$sportType, duration=$duration)"
     }
@@ -469,62 +469,6 @@ class WmGpsItem(
     }
 }
 
-/**
- * Today total data(今日总数据)
- */
-class WmTodayTotalData(
-
-    /**
-     * Total steps
-     */
-    val step: Int, //总步数
-
-    /**
-     * Total distance. (unit m)
-     */
-    val distance: Int,//总数据，单位米
-
-    /**
-     *Total calorie. (unit calorie, not kCal)
-     */
-    val calorie: Int, //总卡路里数，单位卡，不是千卡
-
-    /**
-     * Total deep sleep time. (unit minutes)
-     */
-    val deepSleep: Int,//深睡总时长，单位分钟
-
-    /**
-     * Total light sleep time. (unit minutes)
-     */
-    val lightSleep: Int, //浅睡总时长，单位分钟
-
-    /**
-     * Average heart rate. (beats per minute)
-     */
-    val heartRate: Int, //平均心率
-
-    /**
-     * Step not save in item.
-     */
-    val deltaStep: Int, //未保存在item中的步数
-
-    /**
-     * Distance not save in item. (unit m)
-     */
-    val deltaDistance: Int,//未保存在item中的距离，单位米
-
-    /**
-     * Calorie not save in item. (unit calorie, not kCal)
-     */
-    val deltaCalorie: Int,//未保存在item中的卡路里数，单位卡，不是千卡
-
-) : WmBaseSyncData() {
-    override fun toString(): String {
-        return "WmTodayTotalData(step=$step, distance=$distance, calorie=$calorie, deepSleep=$deepSleep, lightSleep=$lightSleep, heartRate=$heartRate, deltaStep=$deltaStep, deltaDistance=$deltaDistance, deltaCalorie=$deltaCalorie)"
-    }
-}
-
 interface ICalculateSleepItem {
     fun getCalculateStatus(): Int
     fun getCalculateStartTime(): Int
@@ -601,3 +545,9 @@ enum class WmSyncDataType {
     DAILY_ACTIVITY_DURATION,
 }
 
+/**
+ * 请求数据的时间类
+ * startTime 请求开始时间 如果为0，则默认请求7天前的开始时间
+ * endTime  结束时间，如果传0，表示截止当前时间
+ */
+data class WmSyncTime(val startTime: Long, val endTime: Long)

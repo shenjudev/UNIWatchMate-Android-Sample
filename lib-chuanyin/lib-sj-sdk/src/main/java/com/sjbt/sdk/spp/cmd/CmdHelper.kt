@@ -3,17 +3,13 @@ package com.sjbt.sdk.spp.cmd
 import android.util.Log
 import com.base.sdk.entity.WmBindInfo
 import com.base.sdk.entity.apps.*
-import com.base.sdk.entity.apps.WmContact.Companion.NAME_BYTES_LIMIT
-import com.base.sdk.entity.apps.WmContact.Companion.NUMBER_BYTES_LIMIT
 import com.base.sdk.entity.settings.*
 import com.base.sdk.port.FileType
 import com.google.gson.Gson
-import com.sjbt.sdk.ALARM_NAME_LEN
 import com.sjbt.sdk.TAG_SJ
 import com.sjbt.sdk.entity.*
 import com.sjbt.sdk.entity.old.TimeSyncBean
 import com.sjbt.sdk.utils.BtUtils
-import com.sjbt.sdk.utils.ByteUtil
 import com.sjbt.sdk.utils.TimeUtils
 import org.json.JSONException
 import org.json.JSONObject
@@ -21,7 +17,6 @@ import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import java.nio.charset.Charset
 import java.nio.charset.StandardCharsets
-import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.experimental.and
 import kotlin.experimental.or
@@ -1204,7 +1199,7 @@ object CmdHelper {
     /**
      * 获取运动数据
      */
-    fun getReadSportTenSecondsSyncData(
+    fun getReadSportMultiTimesSyncData(
         syncTimes: List<SyncTime>,
         childUrn: Byte,
         grandSon: Byte = URN_0

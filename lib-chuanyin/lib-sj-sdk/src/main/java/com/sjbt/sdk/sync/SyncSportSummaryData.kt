@@ -330,7 +330,7 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
 
         sjUniWatch.sendReadSubPkObserveNode(
             this,
-            CmdHelper.getReadSportTenSecondsSyncData(
+            CmdHelper.getReadSportMultiTimesSyncData(
                 syncTimes,
                 childUrn = urn
             )
