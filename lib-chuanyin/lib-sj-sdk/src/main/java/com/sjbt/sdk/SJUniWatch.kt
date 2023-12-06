@@ -1782,6 +1782,12 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(),
     }
 
     override fun reset(): Completable {
+
+        mCurrAddress?.let {
+            mBindStateMap.put(it, false)
+        }
+        sharedPreferencesUtils.putString(BT_ADDRESS, "")
+
         return Completable.create { emitter ->
             unbindEmitter = emitter
 
