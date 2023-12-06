@@ -1,8 +1,10 @@
 package com.sjbt.sdk.sample
 
+import android.app.Activity
 import android.app.Application
 import android.content.res.Configuration
 import android.content.res.Resources
+import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.view.KeyEvent
@@ -31,6 +33,7 @@ import timber.log.Timber
 class MyApplication : Application() {
     val TAG: String = "MyApplication"
     private lateinit var applicationScope: CoroutineScope
+    private var isForeground = false
 
     companion object {
         lateinit var instance: MyApplication
@@ -55,7 +58,37 @@ class MyApplication : Application() {
         UNIWatchMate.wmLog.logI(TAG, "APP onCreate")
 
         initAllProcess()
+
+        registerActivityLifecycleCallbacks(object : ActivityLifecycleCallbacks {
+            override fun onActivityCreated(p0: Activity, p1: Bundle?) {
+            }
+
+            override fun onActivityStarted(p0: Activity) {
+                isForeground = true
+                UNIWatchMate.setAppFront(true)
+            }
+
+            override fun onActivityResumed(p0: Activity) {
+            }
+
+            override fun onActivityPaused(p0: Activity) {
+                isForeground = false
+                UNIWatchMate.setAppFront(false)
+            }
+
+            override fun onActivityStopped(p0: Activity) {
+                isForeground = false
+                UNIWatchMate.setAppFront(false)
+            }
+
+            override fun onActivitySaveInstanceState(p0: Activity, p1: Bundle) {
+            }
+
+            override fun onActivityDestroyed(p0: Activity) {
+            }
+        })
     }
+
 
     private fun initAllProcess() {
         FormatterUtil.init(Resources.getSystem().configuration.locale)
@@ -127,9 +160,13 @@ class MyApplication : Application() {
                 UNIWatchMate.wmApps.appCamera.observeCameraOpenState.asFlow().collect {
                     if (it) {//
                         if (ActivityUtils.getTopActivity() != null) {
-                            Timber.e("Device camera status：$it")
-                            CacheDataHelper.cameraLaunchedByDevice = true
-                            CameraActivity.launchActivity(ActivityUtils.getTopActivity())
+
+                            Timber.e("Device camera status：$isForeground")
+
+                            if (isForeground) {
+                                CacheDataHelper.cameraLaunchedByDevice = true
+                                CameraActivity.launchActivity(ActivityUtils.getTopActivity())
+                            }
                         }
                     } else if (ActivityUtils.getTopActivity() is CameraActivity) {
                         ActivityUtils.getTopActivity().finish()

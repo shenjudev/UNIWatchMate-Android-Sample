@@ -95,7 +95,8 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(),
     private val syncSleepData = wmSync.syncSleepData as SyncSleepData
     private val syncSportSummaryData = wmSync.syncSportSummaryData as SyncSportSummaryData
     private val syncStepData = wmSync.syncStepData as SyncStepData
-    private val syncDailyActivityDurationData = wmSync.syncDailyActivityDuration as SyncDailyActivityDurationData
+    private val syncDailyActivityDurationData =
+        wmSync.syncDailyActivityDuration as SyncDailyActivityDurationData
     private val syncAllData = wmSync.syncAllData as SyncAllData
 
     //应用
@@ -131,6 +132,7 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(),
     private val gson = Gson()
     private var sharedPreferencesUtils: SharedPreferencesUtils
     var sdkLogEnable = false
+    private var isAppFront = true
     private val mHandler = Handler(Looper.getMainLooper())
     var MTU: Int = 600
     private var mtuEmitter: SingleEmitter<Int>? = null
@@ -169,6 +171,10 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(),
             node04Emitter = emitter
             sendNoTimeOutMsg(msg)
         }
+    }
+
+    override fun setAppFront(front: Boolean) {
+        isAppFront = front
     }
 
     override fun setLogEnable(logEnable: Boolean) {
@@ -581,9 +587,14 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(),
 
                                 CMD_ID_8029 -> {//监听 设备拉起或者关闭相机
                                     appCamera.observeDeviceCamera(msgBean.payload[0].toInt() == 1)
+
                                     sendNoTimeOutMsg(
                                         CmdHelper.getCameraRespondCmd(
-                                            CMD_ID_8029, 1.toByte()
+                                            CMD_ID_8029, if (isAppFront) {
+                                                1.toByte()
+                                            } else {
+                                                0.toByte()
+                                            }
                                         )
                                     )
                                 }

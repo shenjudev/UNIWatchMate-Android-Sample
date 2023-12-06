@@ -3,7 +3,6 @@ package com.base.api
 import android.app.Application
 import android.bluetooth.BluetoothDevice
 import com.base.sdk.AbUniWatch
-import com.base.sdk.FunctionType
 import com.base.sdk.entity.WmBindInfo
 import com.base.sdk.entity.WmDevice
 import com.base.sdk.port.setting.AbWmSettings
@@ -167,5 +166,11 @@ object UNIWatchMate : AbUniWatch() {
         }
 
         return WmFunctionSupport()
+    }
+
+    override fun setAppFront(front: Boolean) {
+        uniWatchSubject.value?.let {
+            return it.setAppFront(front)
+        }
     }
 }
