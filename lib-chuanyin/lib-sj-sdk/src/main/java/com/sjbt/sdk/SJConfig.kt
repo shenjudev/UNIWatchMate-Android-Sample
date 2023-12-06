@@ -9,7 +9,7 @@ const val MSG_INTERVAL = 15
 const val MSG_INTERVAL_FRAME: Long = 15
 const val MSG_INTERVAL_SLOW = 40
 
-const val ALARM_NAME_LEN = 60
+const val ALARM_NAME_LEN = 20
 const val ALARM_LEN = ALARM_NAME_LEN + 5 //name len + id hour minute second enable
 const val BT_ADDRESS: String = "bt_mac"
 const val DEVICE_MANUFACTURER_CODE = 0xA1
