@@ -1,18 +1,14 @@
 package com.sjbt.sdk.sync
 
 import com.base.sdk.entity.data.*
-import com.base.sdk.exception.WmException
-import com.base.sdk.exception.WmInvalidParamsException
 import com.base.sdk.exception.WmTimeOutException
 import com.base.sdk.port.sync.AbSyncData
 import com.google.gson.Gson
 import com.sjbt.sdk.ExceptionStateListener
+import com.sjbt.sdk.MAX_SYNC_DAYS
 import com.sjbt.sdk.ReadSubPkMsg
 import com.sjbt.sdk.SJUniWatch
-import com.sjbt.sdk.entity.DataFormat
-import com.sjbt.sdk.entity.MsgBean
-import com.sjbt.sdk.entity.NodeData
-import com.sjbt.sdk.entity.SportTypeData
+import com.sjbt.sdk.entity.*
 import com.sjbt.sdk.spp.cmd.*
 import com.sjbt.sdk.utils.BtUtils
 import com.sjbt.sdk.utils.TimeUtils
@@ -81,34 +77,40 @@ class SyncDailyActivityDurationData(val sjUniWatch: SJUniWatch) :
 
     override fun syncData(startTime: Long): Observable<WmSyncData<WmDailyActivityDurationData>> {
         mActivityDurationDataList.clear()
-        val times = generateTimeList(startTime)
+        val times = mutableListOf<SyncTime>()
 
-        dayCount = times.size
-        dayIndex = 0
+        if (startTime != 0L) {
+
+            val generateTimes = generateTimeList(startTime)
+
+            if (generateTimes.size > MAX_SYNC_DAYS) {
+                times.addAll(generateTimes.subList(generateTimes.size - MAX_SYNC_DAYS, generateTimes.size))
+            } else {
+                times.addAll(generateTimes)
+            }
+
+            dayCount = times.size
+            dayIndex = 0
+        }
 
         return Observable.create { emitter ->
             syncDailyActivityDurationObserveEmitter = emitter
 
-            if (dayCount > 7) {
-                syncDailyActivityDurationObserveEmitter?.onError(
-                    WmInvalidParamsException("sync max 7 days")
-                )
-            } else {
-                readSportTypeJsonFromAssets(sjUniWatch.mContext)?.let {
-                    val sportTypeData = Gson().fromJson(it, SportTypeData::class.java)
-                    sportTypeData.sports.forEach { sportType ->
-                        sportTypeMap[sportType.id] = sportType.sport_type
-                    }
+            readSportTypeJsonFromAssets(sjUniWatch.mContext)?.let {
+                val sportTypeData = Gson().fromJson(it, SportTypeData::class.java)
+                sportTypeData.sports.forEach { sportType ->
+                    sportTypeMap[sportType.id] = sportType.sport_type
                 }
-
-                sjUniWatch.sendReadNodeCmdList(
-                    CmdHelper.getReadSportMultiTimesSyncData(
-                        times,
-                        childUrn = URN_SPORT_DAILY_ACTIVITY_LEN
-                    )
-                )
             }
+
+            sjUniWatch.sendReadNodeCmdList(
+                CmdHelper.getReadSportMultiTimesSyncData(
+                    times,
+                    childUrn = URN_SPORT_DAILY_ACTIVITY_LEN
+                )
+            )
         }
+
     }
 
     override var observeSyncData: Observable<WmSyncData<WmDailyActivityDurationData>> =
