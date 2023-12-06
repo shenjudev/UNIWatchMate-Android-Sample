@@ -10,10 +10,7 @@ import com.sjbt.sdk.ReadSubPkMsg
 import com.sjbt.sdk.SJUniWatch
 import com.sjbt.sdk.entity.*
 import com.sjbt.sdk.spp.cmd.*
-import com.sjbt.sdk.utils.BtUtils
-import com.sjbt.sdk.utils.TimeUtils
-import com.sjbt.sdk.utils.generateTimeList
-import com.sjbt.sdk.utils.readSportTypeJsonFromAssets
+import com.sjbt.sdk.utils.*
 import io.reactivex.rxjava3.core.*
 import io.reactivex.rxjava3.core.Observable
 import java.nio.ByteBuffer
@@ -80,18 +77,24 @@ class SyncDailyActivityDurationData(val sjUniWatch: SJUniWatch) :
         val times = mutableListOf<SyncTime>()
 
         if (startTime != 0L) {
-
             val generateTimes = generateTimeList(startTime)
 
             if (generateTimes.size > MAX_SYNC_DAYS) {
-                times.addAll(generateTimes.subList(generateTimes.size - MAX_SYNC_DAYS, generateTimes.size))
+                times.addAll(
+                    generateTimes.subList(
+                        generateTimes.size - MAX_SYNC_DAYS,
+                        generateTimes.size
+                    )
+                )
             } else {
                 times.addAll(generateTimes)
             }
-
-            dayCount = times.size
-            dayIndex = 0
+        } else {
+            times.addAll(generateTimeList(getTimestampOfDaysAgo(MAX_SYNC_DAYS)))
         }
+
+        dayCount = times.size
+        dayIndex = 0
 
         return Observable.create { emitter ->
             syncDailyActivityDurationObserveEmitter = emitter

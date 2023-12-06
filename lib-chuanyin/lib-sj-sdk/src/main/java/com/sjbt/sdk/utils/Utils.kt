@@ -35,6 +35,16 @@ fun generateTimeList(startTime: Long): List<SyncTime> {
     return resultList
 }
 
+fun getTimestampOfDaysAgo(days: Int): Long {
+    val calendar = Calendar.getInstance()
+    calendar.add(Calendar.DAY_OF_YEAR, -days + 1)
+    calendar.set(Calendar.HOUR_OF_DAY, 0)
+    calendar.set(Calendar.MINUTE, 0)
+    calendar.set(Calendar.SECOND, 0)
+    calendar.set(Calendar.MILLISECOND, 0)
+    return calendar.timeInMillis
+}
+
 fun main() {
     val startTime = 1701828000000
     val timeList = generateTimeList(startTime)

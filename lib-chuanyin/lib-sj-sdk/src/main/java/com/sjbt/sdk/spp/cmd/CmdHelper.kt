@@ -221,7 +221,11 @@ object CmdHelper {
             Log.d(TAG_SJ, "random code:$it")
             val randomCodeArr = ByteArray(16)
 
-            val size = if(it.toByteArray().size>16){16}else{it.toByteArray().size}
+            val size = if (it.toByteArray().size > 16) {
+                16
+            } else {
+                it.toByteArray().size
+            }
             System.arraycopy(it.toByteArray(), 0, randomCodeArr, 0, size)
             byteBuffer.put(randomCodeArr)
         } ?: run {
@@ -1207,7 +1211,11 @@ object CmdHelper {
         val payloadPackage = PayloadPackage()
         val calendar = Calendar.getInstance()
 
-        val byteBuffer = ByteBuffer.allocate(14 * syncTimes.size).order(ByteOrder.LITTLE_ENDIAN)
+        var byteBuffer = if (syncTimes.isEmpty()) {
+            ByteBuffer.allocate(14).order(ByteOrder.LITTLE_ENDIAN)
+        } else {
+            ByteBuffer.allocate(14 * syncTimes.size).order(ByteOrder.LITTLE_ENDIAN)
+        }
 
         syncTimes.forEach {
             calendar.timeInMillis = it.startTime
