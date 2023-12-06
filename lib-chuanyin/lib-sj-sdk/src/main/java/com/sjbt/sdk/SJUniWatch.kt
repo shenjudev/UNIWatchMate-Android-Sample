@@ -1,8 +1,11 @@
 package com.sjbt.sdk
 
+import android.app.Activity
 import android.app.Application
+import android.app.Application.ActivityLifecycleCallbacks
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
+import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.text.TextUtils
@@ -189,6 +192,33 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(),
     init {
         mContext = context
         mMsgTimeOut = timeout
+
+//        mContext.registerActivityLifecycleCallbacks(object :ActivityLifecycleCallbacks{
+//            override fun onActivityCreated(p0: Activity, p1: Bundle?) {
+//            }
+//
+//            override fun onActivityStarted(p0: Activity) {
+//                isAppFront = true
+//            }
+//
+//            override fun onActivityResumed(p0: Activity) {
+//                isAppFront = true
+//            }
+//
+//            override fun onActivityPaused(p0: Activity) {
+//                isAppFront = false
+//            }
+//
+//            override fun onActivityStopped(p0: Activity) {
+//                isAppFront = false
+//            }
+//
+//            override fun onActivitySaveInstanceState(p0: Activity, p1: Bundle) {
+//            }
+//
+//            override fun onActivityDestroyed(p0: Activity) {
+//            }
+//        })
 
         mBtEngine.setListener(this)
         sharedPreferencesUtils = SharedPreferencesUtils.getInstance(mContext)
@@ -594,17 +624,23 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(),
                                 }
 
                                 CMD_ID_8029 -> {//监听 设备拉起或者关闭相机
-                                    appCamera.observeDeviceCamera(msgBean.payload[0].toInt() == 1)
+                                    if (isAppFront) {
+                                        appCamera.observeDeviceCamera(msgBean.payload[0].toInt() == 1)
 
-                                    sendNoTimeOutMsg(
-                                        CmdHelper.getCameraRespondCmd(
-                                            CMD_ID_8029, if (isAppFront) {
+                                        sendNoTimeOutMsg(
+                                            CmdHelper.getCameraRespondCmd(
+                                                CMD_ID_8029,
                                                 1.toByte()
-                                            } else {
-                                                0.toByte()
-                                            }
+                                            )
                                         )
-                                    )
+                                    } else {
+                                        sendNoTimeOutMsg(
+                                            CmdHelper.getCameraRespondCmd(
+                                                CMD_ID_8029,
+                                                0.toByte()
+                                            )
+                                        )
+                                    }
                                 }
 
                                 CMD_ID_802A -> {//监听App打开设备相机
