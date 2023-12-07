@@ -105,8 +105,7 @@ class AppAlarm(val sjUniWatch: SJUniWatch) : AbAppAlarm(),
                             val id = byteBuffer.get().toInt()
                             val nameArray = ByteArray(ALARM_NAME_LEN)
                             byteBuffer.get(nameArray)
-                            val name = String(nameArray, StandardCharsets.UTF_8)
-                            sjUniWatch.wmLog.logD(TAG, "id$id name:$name")
+                            val name = String(nameArray.takeWhile { it.toInt() != 0 }.toByteArray(), StandardCharsets.UTF_8)
 
                             val hour = byteBuffer.get().toInt()
                             val minute = byteBuffer.get().toInt()
@@ -144,6 +143,7 @@ class AppAlarm(val sjUniWatch: SJUniWatch) : AbAppAlarm(),
     private fun getWriteUpdateAlarmCmd(alarms: List<WmAlarm>): PayloadPackage {
         val payloadPackage = PayloadPackage()
 
+        sjUniWatch.wmLog.logD(TAG, "alarms:$alarms")
         val totalAlarms = mutableListOf<WmAlarm>()
         totalAlarms.addAll(alarms)
 
@@ -155,6 +155,7 @@ class AppAlarm(val sjUniWatch: SJUniWatch) : AbAppAlarm(),
             byteBuffer.put(0)
             val originNameArray = alarm.alarmName.toByteArray(StandardCharsets.UTF_8)
             byteBuffer.put(originNameArray.copyOf(ALARM_NAME_LEN))
+
             byteBuffer.put(alarm.hour.toByte())
             byteBuffer.put(alarm.minute.toByte())
             byteBuffer.put(AlarmRepeatOption.toValue(alarm.repeatOptions).toByte())
