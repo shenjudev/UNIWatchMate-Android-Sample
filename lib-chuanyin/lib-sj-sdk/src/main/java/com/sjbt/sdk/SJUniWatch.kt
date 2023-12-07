@@ -1933,7 +1933,7 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(),
             unbindEmitter = emitter
 
             if (mConnectState == WmConnectState.VERIFIED) {
-                sendSyncSafeMsg(CmdHelper.getUnBindCmd())
+                sendNoTimeOutMsg(CmdHelper.getUnBindCmd())
             } else {
                 removeDevice()
                 unbindEmitter?.onComplete()
