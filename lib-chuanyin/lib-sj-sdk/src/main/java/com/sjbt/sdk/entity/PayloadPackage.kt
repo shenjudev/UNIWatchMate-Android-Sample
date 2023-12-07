@@ -104,7 +104,7 @@ class PayloadPackage {
     }
 
     /**
-     * 将payload转换为byte数组
+     * 将payload转换为byte数组，返回业务单元字节流，如果是多业务分包，就会返回多个
      * @param mtu MTU
      * @return
      */

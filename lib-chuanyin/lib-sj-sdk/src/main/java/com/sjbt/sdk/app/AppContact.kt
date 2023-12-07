@@ -1,7 +1,6 @@
 package com.sjbt.sdk.app
 
 import android.text.TextUtils
-import com.base.sdk.entity.apps.WmConnectState
 import com.base.sdk.entity.apps.WmContact
 import com.base.sdk.entity.apps.WmContact.Companion.NAME_BYTES_LIMIT
 import com.base.sdk.entity.apps.WmContact.Companion.NUMBER_BYTES_LIMIT
@@ -34,13 +33,7 @@ class AppContact(val sjUniWatch: SJUniWatch) : AbAppContact(), ReadSubPkMsg,
     private var mEmergencyCall: WmEmergencyCall = WmEmergencyCall(false, mutableListOf())
     private val mContacts = mutableListOf<WmContact>()
     private val msgList = mutableSetOf<MsgBean>()
-    private val msgSubPkMap = LinkedHashMap<Int, MsgBean>()
     private var getData = false
-
-    /**
-     * 分包发送写入类型Node节点消息
-     */
-    private var firstPkOrder = 0
     private var hasNext = false
     private val TAG = "AppContact"
 
@@ -175,23 +168,14 @@ class AppContact(val sjUniWatch: SJUniWatch) : AbAppContact(), ReadSubPkMsg,
         updateContactEmitter = it
 
         sjUniWatch.observableMtu.subscribe { mtu ->
-//            val realContactList = mutableListOf<WmContact>()
-//
-//            if (contactList.isEmpty()) {
-//                realContactList.add(WmContact.create("0", "0")!!)
-//            } else {
-//                realContactList.addAll(contactList)
-//            }
-
             val payloadPackage = getWriteContactListCmd(contactList)
 
-            sendWriteSubpackageNodeCmdList(
+            sjUniWatch.sendWriteSubpackageNodeCmdList(
                 mtu,
                 payloadPackage
             )
         }
     }
-
 
     private fun updateContactListBack(success: Boolean) {
         updateContactEmitter?.onSuccess(success)
@@ -211,94 +195,6 @@ class AppContact(val sjUniWatch: SJUniWatch) : AbAppContact(), ReadSubPkMsg,
 
     private fun updateEmergencyContactBack(success: Boolean) {
         updateEmergencyEmitter?.onSuccess(mEmergencyCall)
-    }
-
-    private fun sendWriteSubpackageNodeCmdList(
-        mtu: Int, payloadPackage: PayloadPackage
-    ) {
-        /**
-         * 返回业务单元list
-         */
-        val businessList = payloadPackage.toByteArray(requestType = RequestType.REQ_TYPE_WRITE)
-        var divideType = DIVIDE_N_2
-//        businessMap.clear()
-        msgSubPkMap.clear()
-
-        for (k in businessList.indices) {
-
-            val businessArray = businessList[k]
-
-            //每一个单元再做数据分包
-            var count = businessArray.size / mtu
-            var lastCount = businessArray.size % mtu
-            if (lastCount != 0) {
-                count += 1
-            }
-
-            for (i in 0 until count) {
-                //传输层分包
-                var payload: ByteArray? = null
-
-                if (count == 1) {
-                    payload = businessArray.copyOfRange(i * mtu, i * mtu + lastCount)
-                    divideType = DIVIDE_N_2
-                } else if (i == count - 1) {
-                    payload = businessArray.copyOfRange(i * mtu, i * mtu + lastCount)
-                    divideType = DIVIDE_Y_E_2
-                } else {
-                    payload = businessArray.copyOfRange(i * mtu, i * mtu + mtu)
-                    if (i == 0) {
-                        divideType = DIVIDE_Y_F_2
-                    } else {
-                        divideType = DIVIDE_Y_M_2
-                    }
-                }
-
-                val cmdArray = CmdHelper.constructCmd(
-                    HEAD_NODE_TYPE,
-                    CMD_ID_8001,
-                    divideType,
-                    businessArray.size.toShort(),
-                    0,
-                    BtUtils.getCrc(HEX_FFFF, payload, payload.size),
-                    payload
-                )
-
-                val msgBean = MsgBean.fromByteArrayToMsgBean(cmdArray)
-
-                val order = msgBean.cmdOrder
-                msgSubPkMap[order] = msgBean
-
-                if (k == 0 && i == 0) {
-                    firstPkOrder = order
-                    sjUniWatch.wmLog.logE(TAG, "first Order Id：$firstPkOrder")
-                }
-            }
-        }
-
-        sendObserveNode(firstPkOrder)
-    }
-
-    private fun sendObserveNode(order: Int) {
-        sjUniWatch.wmLog.logE(TAG, "total left ${msgSubPkMap.keys} send next order:$order")
-        msgSubPkMap[order]?.let { msgBean ->
-            sjUniWatch.wmLog.logE(TAG, "divideType： ${msgBean.divideType}  order:$order")
-            sjUniWatch.sendAndObserveNode04(msgBean.originData).subscribe { order ->
-                sjUniWatch.wmLog.logE(TAG, "success order id：$order")
-                msgSubPkMap.remove(order)
-
-                if (order != 0) {
-                    if (order == MAX_ORDER_ID - 1) {
-                        sendObserveNode(0)
-                    } else {
-                        sendObserveNode(order % MAX_ORDER_ID + 1)
-                    }
-                } else {
-                    sendObserveNode(order % MAX_ORDER_ID + 1)
-                }
-
-            }
-        }
     }
 
     fun contactBusiness(

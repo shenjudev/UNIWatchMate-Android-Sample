@@ -7,6 +7,7 @@ import com.base.sdk.port.app.AbAppAlarm
 import com.sjbt.sdk.*
 import com.sjbt.sdk.entity.*
 import com.sjbt.sdk.spp.cmd.*
+import com.sjbt.sdk.utils.BtUtils
 import io.reactivex.rxjava3.core.*
 import io.reactivex.rxjava3.disposables.Disposable
 import java.nio.ByteBuffer
@@ -38,7 +39,14 @@ class AppAlarm(val sjUniWatch: SJUniWatch) : AbAppAlarm(), ReadSubPkMsg,
             if (alarms.size < 8) {
                 sjUniWatch.sendWriteNodeCmdList(getWriteUpdateAlarmCmd(alarms))
             } else {
+                sjUniWatch.observableMtu.subscribe { mtu ->
+                    val payloadPackage = getWriteUpdateAlarmCmd(alarms)
 
+                   sjUniWatch.sendWriteSubpackageNodeCmdList(
+                        mtu,
+                        payloadPackage
+                    )
+                }
             }
         }
     }
