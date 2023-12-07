@@ -233,6 +233,7 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(),
 
         sendObserveNode(firstPkOrder)
     }
+
     /**
      * App给设备分包传输的时候要监听04回复
      */
@@ -1932,17 +1933,11 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(),
         return Completable.create { emitter ->
             unbindEmitter = emitter
 
-            if (mConnectState == WmConnectState.VERIFIED) {
-                sendNoTimeOutMsg(CmdHelper.getUnBindCmd())
-            } else {
+            sendNoTimeOutMsg(CmdHelper.getUnBindCmd())
+
+            if (mConnectState != WmConnectState.VERIFIED) {
                 removeDevice()
                 unbindEmitter?.onComplete()
-
-//                if (mConnectState == WmConnectState.DISCONNECTED) {
-//                    unbindEmitter?.onComplete()
-//                } else {
-//                    emitter.onError(RuntimeException("NOT VERIFIED"))
-//                }
             }
         }
     }
