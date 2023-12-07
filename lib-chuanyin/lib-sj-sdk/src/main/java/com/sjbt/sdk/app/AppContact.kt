@@ -2,18 +2,14 @@ package com.sjbt.sdk.app
 
 import android.text.TextUtils
 import com.base.sdk.entity.apps.WmContact
-import com.base.sdk.entity.apps.WmContact.Companion.NAME_BYTES_LIMIT
-import com.base.sdk.entity.apps.WmContact.Companion.NUMBER_BYTES_LIMIT
+import com.base.sdk.entity.apps.WmContact.Companion.MAX_NAME_LEN_LIMIT
+import com.base.sdk.entity.apps.WmContact.Companion.MAX_NUMBER_LEN_LIMIT
 import com.base.sdk.entity.settings.WmEmergencyCall
 import com.base.sdk.exception.WmTimeOutException
 import com.base.sdk.port.app.AbAppContact
-import com.sjbt.sdk.ExceptionStateListener
-import com.sjbt.sdk.ReadSubPkMsg
-import com.sjbt.sdk.SJUniWatch
+import com.sjbt.sdk.*
 import com.sjbt.sdk.entity.*
 import com.sjbt.sdk.spp.cmd.*
-import com.sjbt.sdk.spp.cmd.CmdHelper.MAX_ORDER_ID
-import com.sjbt.sdk.utils.BtUtils
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.core.ObservableEmitter
 import io.reactivex.rxjava3.core.Observer
@@ -21,6 +17,7 @@ import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.core.SingleEmitter
 import io.reactivex.rxjava3.disposables.Disposable
 import java.nio.ByteBuffer
+import java.nio.ByteOrder
 import java.nio.charset.StandardCharsets
 
 class AppContact(val sjUniWatch: SJUniWatch) : AbAppContact(), ReadSubPkMsg,
@@ -121,37 +118,53 @@ class AppContact(val sjUniWatch: SJUniWatch) : AbAppContact(), ReadSubPkMsg,
 
                 override fun onComplete() {
                     if (msgList.isNotEmpty()) {
-                        var byteBuffer = ByteBuffer.allocate(MAX_BUSINESS_BUFFER_SIZE * 10)
+                        var byteBuffer = ByteBuffer.allocate(MAX_BUSINESS_BUFFER_SIZE * 10).order(
+                            ByteOrder.LITTLE_ENDIAN
+                        )
 
                         msgList.forEachIndexed { index, msgBean ->
-                            byteBuffer.put(msgBean.payload)
-                        }
-
-                        val chunkSize = NAME_BYTES_LIMIT + NUMBER_BYTES_LIMIT
-
-                        var i = 17
-                        while ((i + chunkSize) < byteBuffer.array().size) {
-                            val nameBytes = byteBuffer.array().copyOfRange(i, i + NAME_BYTES_LIMIT)
-                                .takeWhile { it.toInt() != 0 }.toByteArray()
-                            val numBytes =
-                                byteBuffer.array()
-                                    .copyOfRange(i + NUMBER_BYTES_LIMIT, i + chunkSize)
-
-                            val name = String(nameBytes, StandardCharsets.UTF_8)
-                            val num = String(numBytes, StandardCharsets.UTF_8)
-
-                            //                            sjUniWatch.wmLog.logE(TAG, "name:" + name + " num:" + num)
-
-                            if (!TextUtils.isEmpty(name)) {
-                                val contact = WmContact.create(name, num)
-                                contact?.let {
-                                    mContacts.add(it)
+                            if (msgBean.divideType == DIVIDE_Y_F_2 || msgBean.divideType == DIVIDE_N_2) {
+                                msgBean.payloadPackage?.let {
+                                    it.itemList.forEach {
+                                        byteBuffer.put(it.data)
+                                    }
                                 }
-                                i += chunkSize
                             } else {
-                                break
+                                msgBean.payloadPackage?.let {
+                                    it.itemList.forEach {
+                                        byteBuffer.put(it.data)
+                                    }
+                                }
                             }
                         }
+
+//                        val chunkSize = MAX_NAME_LEN_LIMIT + MAX_NUMBER_LEN_LIMIT
+//                        var i = 17
+//                        while ((i + chunkSize) < byteBuffer.array().size) {
+//                            val nameBytes = byteBuffer.array().copyOfRange(i, i + MAX_NAME_LEN_LIMIT)
+//                                .takeWhile { it.toInt() != 0 }.toByteArray()
+//
+//                            val numBytes =
+//                                byteBuffer.array()
+//                                    .copyOfRange(i + MAX_NUMBER_LEN_LIMIT, i + chunkSize)
+//
+//                            val name = String(nameBytes, StandardCharsets.UTF_8)
+//                            val num = String(numBytes, StandardCharsets.UTF_8)
+//
+//                            sjUniWatch.wmLog.logE(TAG, "name:" + name + " num:" + num)
+//
+//                            if (!TextUtils.isEmpty(name)) {
+//                                val contact = WmContact.create(name, num)
+//                                contact?.let {
+//                                    mContacts.add(it)
+//                                }
+//                                i += chunkSize
+//                            } else {
+//                                break
+//                            }
+//                        }
+
+                        mContacts.addAll(parseContactList(byteBuffer))
 
                         if (getData) {
                             getData = false
@@ -162,6 +175,45 @@ class AppContact(val sjUniWatch: SJUniWatch) : AbAppContact(), ReadSubPkMsg,
                     }
                 }
             })
+    }
+
+    private fun parseContactList(byteBuffer: ByteBuffer): MutableList<WmContact> {
+        val contactList = mutableListOf<WmContact>()
+        val count = byteBuffer.limit() / (MAX_NAME_LEN_LIMIT + MAX_NUMBER_LEN_LIMIT)
+        byteBuffer.rewind()
+        sjUniWatch.wmLog.logD(TAG, "Contact Count：$count")
+
+        if (count > 0) {
+            while (byteBuffer.hasRemaining()) {
+                val nameArray = ByteArray(MAX_NAME_LEN_LIMIT)
+                val numArray = ByteArray(MAX_NUMBER_LEN_LIMIT)
+                byteBuffer.get(nameArray)
+                byteBuffer.get(numArray)
+
+                val name = String(
+                    nameArray.filter { it != 0.toByte() }.toByteArray(),
+                    StandardCharsets.UTF_8
+                ).replace("\\s".toRegex(), "")
+
+                val num = String(
+                    numArray.filter { it != 0.toByte() }.toByteArray(),
+                    StandardCharsets.UTF_8
+                ).replace("\\s".toRegex(), "")
+
+                sjUniWatch.wmLog.logE(TAG, "name:${name.length} num:${num.length}")
+
+                if (!TextUtils.isEmpty(name)) {
+                    val contact = WmContact.create(name, num)
+                    contact?.let {
+                        mContacts.add(it)
+                    }
+                } else {
+                    byteBuffer.flip()
+                    break
+                }
+            }
+        }
+        return contactList
     }
 
     override fun updateContactList(contactList: List<WmContact>): Single<Boolean> = Single.create {
@@ -223,33 +275,11 @@ class AppContact(val sjUniWatch: SJUniWatch) : AbAppContact(), ReadSubPkMsg,
                     }
 
                     if (msgBean.divideType == DIVIDE_N_2) {
-                        val byteArray =
-                            ByteBuffer.wrap(it.data).array()
-
-                        val chunkSize = NAME_BYTES_LIMIT + NUMBER_BYTES_LIMIT
-
-                        if (it.dataLen.toInt() >= chunkSize) {
-                            var i = 0
-                            while (i < byteArray.size) {
-
-                                val nameBytes = byteArray.copyOfRange(i, i + NAME_BYTES_LIMIT)
-                                    .takeWhile { it.toInt() != 0 }.toByteArray()
-                                val numBytes =
-                                    byteArray.copyOfRange(i + NUMBER_BYTES_LIMIT, i + chunkSize)
-                                        .takeWhile { it.toInt() != 0 }.toByteArray()
-
-                                val name = String(nameBytes, StandardCharsets.UTF_8)
-                                val num = String(numBytes, StandardCharsets.UTF_8)
-
-                                if (!TextUtils.isEmpty(name)) {
-                                    val contact = WmContact.create(name, num)
-                                    mContacts.add(contact!!)
-                                }
-
-                                i += chunkSize
-                            }
-                        }
-
+                        mContacts.addAll(
+                            parseContactList(
+                                ByteBuffer.wrap(it.data).order(ByteOrder.LITTLE_ENDIAN)
+                            )
+                        )
                         getContactListEmitter?.onSuccess(mContacts)
                     }
                 }
@@ -262,21 +292,21 @@ class AppContact(val sjUniWatch: SJUniWatch) : AbAppContact(), ReadSubPkMsg,
                 if (it.data.size == 1) {
                     updateEmergencyContactBack(it.data[0].toInt() == ErrorCode.ERR_CODE_OK.ordinal)
                 } else {
-                    if (it.dataLen >= NAME_BYTES_LIMIT + NUMBER_BYTES_LIMIT + 1) {
+                    if (it.dataLen >= MAX_NAME_LEN_LIMIT + MAX_NUMBER_LEN_LIMIT + 1) {
                         val emergencyByteArray = it.data
                         val enable = it.data[0].toInt() == 1
                         mEmergencyCall.isEnabled = enable
                         mEmergencyCall.emergencyContacts.clear()
                         val name = String(
-                            emergencyByteArray.copyOfRange(1, NAME_BYTES_LIMIT + 1)
-                                .takeWhile { it.toInt() != 0 }.toByteArray(),
+                            emergencyByteArray.copyOfRange(1, MAX_NAME_LEN_LIMIT + 1)
+                                .filter { it != 0.toByte() }.toByteArray(),
                             StandardCharsets.UTF_8
                         )
 
                         val num = String(
                             emergencyByteArray.copyOfRange(
-                                NAME_BYTES_LIMIT,
-                                NAME_BYTES_LIMIT + NUMBER_BYTES_LIMIT + 1
+                                MAX_NAME_LEN_LIMIT,
+                                MAX_NAME_LEN_LIMIT + MAX_NUMBER_LEN_LIMIT + 1
                             ),
                             StandardCharsets.UTF_8
                         )
@@ -315,22 +345,22 @@ class AppContact(val sjUniWatch: SJUniWatch) : AbAppContact(), ReadSubPkMsg,
         val payloadPackage = PayloadPackage()
 
         if (contacts.isNotEmpty()) {
-            val count = MAX_BUSINESS_BUFFER_SIZE / (NAME_BYTES_LIMIT + NUMBER_BYTES_LIMIT)
+            val count = MAX_BUSINESS_BUFFER_SIZE / (MAX_NAME_LEN_LIMIT + MAX_NUMBER_LEN_LIMIT)
 
             val contactGroup = contacts.chunked(count)
 
             for (i in contactGroup.indices) {
 
                 val byteBuffer: ByteBuffer =
-                    ByteBuffer.allocate(contactGroup[i].size * (NAME_BYTES_LIMIT + NUMBER_BYTES_LIMIT))
+                    ByteBuffer.allocate(contactGroup[i].size * (MAX_NAME_LEN_LIMIT + MAX_NUMBER_LEN_LIMIT))
 
                 contactGroup[i].forEach {
                     byteBuffer.put(
-                        it.name.toByteArray().copyOf(NAME_BYTES_LIMIT)
+                        it.name.toByteArray().copyOf(MAX_NAME_LEN_LIMIT)
                     )
 
                     byteBuffer.put(
-                        it.number.toByteArray().copyOf(NUMBER_BYTES_LIMIT)
+                        it.number.toByteArray().copyOf(MAX_NUMBER_LEN_LIMIT)
                     )
                 }
 
@@ -351,7 +381,7 @@ class AppContact(val sjUniWatch: SJUniWatch) : AbAppContact(), ReadSubPkMsg,
 
         val byteBuffer: ByteBuffer =
             ByteBuffer.allocate(
-                1 + (NAME_BYTES_LIMIT + NUMBER_BYTES_LIMIT) * if (number.emergencyContacts.size == 0) {
+                1 + (MAX_NAME_LEN_LIMIT + MAX_NUMBER_LEN_LIMIT) * if (number.emergencyContacts.size == 0) {
                     1
                 } else {
                     number.emergencyContacts.size
@@ -367,8 +397,8 @@ class AppContact(val sjUniWatch: SJUniWatch) : AbAppContact(), ReadSubPkMsg,
         )
 
         number.emergencyContacts.forEach {
-            byteBuffer.put(it.name.toByteArray().copyOf(NAME_BYTES_LIMIT))
-            byteBuffer.put(it.number.toByteArray().copyOf(NUMBER_BYTES_LIMIT))
+            byteBuffer.put(it.name.toByteArray().copyOf(MAX_NAME_LEN_LIMIT))
+            byteBuffer.put(it.number.toByteArray().copyOf(MAX_NUMBER_LEN_LIMIT))
         }
 
         payloadPackage.putData(CmdHelper.getUrnId(URN_4, URN_3, URN_3), byteBuffer.array())

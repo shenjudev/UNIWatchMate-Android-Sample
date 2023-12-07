@@ -205,6 +205,7 @@ class ContactsFragment : BaseFragment(R.layout.fragment_contacts) {
                     }
                 }
             }
+
         }
         setFragmentResultListener(PHONE_CONTACTS_SELECT_KEY) { requestKey, bundle ->
             if (requestKey == PHONE_CONTACTS_SELECT_KEY) {

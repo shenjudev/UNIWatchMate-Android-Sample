@@ -76,8 +76,7 @@ class AppLanguage(val sjUniWatch: SJUniWatch) : AbAppLanguage(),
 
                 for (i in 0 until languageCount) {
                     val bcpArray =
-                        nodeData.data.copyOfRange(6 * i, 6 * i + 6).takeWhile { it > 0 }
-                            .toByteArray()
+                        nodeData.data.copyOfRange(6 * i, 6 * i + 6).filter { it != 0.toByte() }.toByteArray()
 
 //                    sjUniWatch.wmLog.logE(TAG, "language bcpArray:" + bcpArray.size)
 

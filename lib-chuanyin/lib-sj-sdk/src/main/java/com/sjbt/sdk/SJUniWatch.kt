@@ -85,6 +85,8 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(),
 
     private val mBtEngine: BtEngineMsgQue = BtEngineMsgQue(this)
     private val mBindStateMap = HashMap<String, Boolean>()
+    private var mBindTryCount = 0
+    private val MAX_BIND_TRY_COUNT = 2
 
     //同步数据
     private val syncActivityDuration = wmSync.syncActivityDurationData as SyncActivityDurationData
@@ -783,7 +785,18 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(),
                                             mBindStateMap.put(it, false)
                                         }
 
-                                        disconnect()
+                                        if (mBindTryCount < MAX_BIND_TRY_COUNT) {
+                                            //绑定失败重试
+                                            mBindInfo?.let {
+                                                it.bindType = BindType.DISCOVERY
+                                                wmLog.logD(TAG, "bindinfo:$it")
+                                                sendSyncSafeMsg(CmdHelper.getBindCmd(it))
+                                            } ?: run {
+                                                btStateChange(WmConnectState.DISCONNECTED)
+                                            }
+                                        } else {
+                                            disconnect()
+                                        }
                                     }
                                 }
 
@@ -1530,12 +1543,15 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(),
                             appAlarm.appUpdateAlarm()
                         }
 
-                        URN_APP_CONTACT_LIST -> {
-                            appContact.appUpdateContacts()
+                        URN_APP_CONTACT -> {
+                            when (it.urn[2]) {
+                                URN_APP_CONTACT_LIST -> {
+                                    appContact.appUpdateContacts()
+                                }
+                            }
                         }
                     }
                 }
-
             }
         }
     }
@@ -1550,12 +1566,14 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(),
 
                 URN_FUN_LIST -> {
                     mBindInfo?.let {
-                        wmLog.logD(TAG, "bindinfo:$it")
 
                         if (mBindStateMap[it.macAddress] == true) {
                             it.bindType = BindType.CONNECT_BACK
                         }
 
+                        wmLog.logD(TAG, "bindinfo:$it")
+
+                        mBindTryCount = 0
                         sendSyncSafeMsg(CmdHelper.getBindCmd(it))
                     } ?: run {
                         btStateChange(WmConnectState.DISCONNECTED)

@@ -8,8 +8,8 @@ class WmContact internal constructor(
     val number: String,
 ) {
     companion object {
-         const val NAME_BYTES_LIMIT = 32
-         const val NUMBER_BYTES_LIMIT = 20
+         const val MAX_NAME_LEN_LIMIT = 32
+         const val MAX_NUMBER_LEN_LIMIT = 20
 
         /**
          * Create a contact that the device can recognize. If the incoming parameter is invalid, it will return null.
@@ -22,8 +22,8 @@ class WmContact internal constructor(
             if (name == null || number == null) return null
             //去掉number中的空格
 
-            val resultName = subString(name.trim(), NAME_BYTES_LIMIT)
-            val resultNumber = subString(number.trim(), NUMBER_BYTES_LIMIT)
+            val resultName = subString(name.trim(), MAX_NAME_LEN_LIMIT)
+            val resultNumber = subString(number.trim(), MAX_NUMBER_LEN_LIMIT)
             return if (resultName.isNullOrEmpty() || resultNumber.isNullOrEmpty()) {
                 null
             } else {

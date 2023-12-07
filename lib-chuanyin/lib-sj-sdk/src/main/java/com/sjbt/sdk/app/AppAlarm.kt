@@ -138,7 +138,7 @@ class AppAlarm(val sjUniWatch: SJUniWatch) : AbAppAlarm(), ReadSubPkMsg,
                 val nameArray = ByteArray(ALARM_NAME_LEN)
                 byteBuffer.get(nameArray)
                 val name = String(
-                    nameArray.takeWhile { it.toInt() != 0 }.toByteArray(),
+                    nameArray.filter { it != 0.toByte() }.toByteArray(),
                     StandardCharsets.UTF_8
                 )
 
