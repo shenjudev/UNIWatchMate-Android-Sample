@@ -140,7 +140,7 @@ class AppContact(val sjUniWatch: SJUniWatch) : AbAppContact(), ReadSubPkMsg,
                             val name = String(nameBytes, StandardCharsets.UTF_8)
                             val num = String(numBytes, StandardCharsets.UTF_8)
 
-    //                            sjUniWatch.wmLog.logE(TAG, "name:" + name + " num:" + num)
+                            //                            sjUniWatch.wmLog.logE(TAG, "name:" + name + " num:" + num)
 
                             if (!TextUtils.isEmpty(name)) {
                                 val contact = WmContact.create(name, num)
@@ -345,8 +345,16 @@ class AppContact(val sjUniWatch: SJUniWatch) : AbAppContact(), ReadSubPkMsg,
      */
     private fun getWriteEmergencyNumberCmd(number: WmEmergencyCall): PayloadPackage {
         val payloadPackage = PayloadPackage()
+
         val byteBuffer: ByteBuffer =
-            ByteBuffer.allocate(1 + (NAME_BYTES_LIMIT + NUMBER_BYTES_LIMIT) * number.emergencyContacts.size)
+            ByteBuffer.allocate(
+                1 + (NAME_BYTES_LIMIT + NUMBER_BYTES_LIMIT) * if (number.emergencyContacts.size == 0) {
+                    1
+                } else {
+                    number.emergencyContacts.size
+                }
+            )
+
         byteBuffer.put(
             if (number.isEnabled) {
                 1

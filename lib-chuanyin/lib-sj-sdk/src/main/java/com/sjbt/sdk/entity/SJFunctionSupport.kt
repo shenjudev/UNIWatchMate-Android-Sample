@@ -103,248 +103,248 @@ class SJFunctionSupport : WmFunctionSupport() {
                     when (actionPosition) {
                         FUNCTION_0 -> {
                             wmFunctionSupport.supportWeatherState = bit.code - v.code
-                            Log.d(TAG_SJ, "weatherSupportState$bit")
+                            //Log.d(TAG_SJ, "weatherSupportState $bit")
                         }
                         FUNCTION_1 -> {
                             wmFunctionSupport.sportSupportState = bit.code - v.code
-                            Log.d(TAG_SJ, "sportSupportState$bit")
+                            //Log.d(TAG_SJ, "sportSupportState $bit")
                         }
                         FUNCTION_2 -> {
                             wmFunctionSupport.supportRateState = bit.code - v.code
-                            Log.d(TAG_SJ, "rateSupportState$bit")
+                            //Log.d(TAG_SJ, "rateSupportState $bit")
                         }
                         FUNCTION_3 -> {
                             wmFunctionSupport.supportCameraControlState = bit.code - v.code
-                            Log.d(TAG_SJ, "cameraSupportState$bit")
+                            //Log.d(TAG_SJ, "cameraSupportState $bit")
                         }
                         FUNCTION_4 -> {
                             wmFunctionSupport.supportNotifyMsgState = bit.code - v.code
-                            Log.d(TAG_SJ, "notifyMsgSupportState$bit")
+                            //Log.d(TAG_SJ, "notifyMsgSupportState $bit")
                         }
                         FUNCTION_5 -> {
                             wmFunctionSupport.supportAlarmState = bit.code - v.code
-                            Log.d(TAG_SJ, "alarmSupportState$bit")
+                            //Log.d(TAG_SJ, "alarmSupportState $bit")
                         }
                         FUNCTION_6 -> {
                             wmFunctionSupport.supportTransferMusicState = bit.code - v.code
-                            Log.d(TAG_SJ, "musicSupportState$bit")
+                            //Log.d(TAG_SJ, "musicSupportState $bit")
                         }
                         FUNCTION_7 -> {
                             wmFunctionSupport.supportContactState = bit.code - v.code
-                            Log.d(TAG_SJ, "contactSupportState$bit")
+                            //Log.d(TAG_SJ, "contactSupportState $bit")
                         }
                         FUNCTION_8 -> {
                             wmFunctionSupport.supportFindDeviceState = bit.code - v.code
-                            Log.d(TAG_SJ, "searchDeviceSupportState$bit")
+                            //Log.d(TAG_SJ, "searchDeviceSupportState $bit")
                         }
                         FUNCTION_9 -> {
                             wmFunctionSupport.supportFindPhoneState = bit.code - v.code
-                            Log.d(TAG_SJ, "searchPhoneSupportState$bit")
+                            //Log.d(TAG_SJ, "searchPhoneSupportState $bit")
                         }
                         FUNCTION_10 -> {
                             wmFunctionSupport.supportAppViewState = bit.code - v.code
-                            Log.d(TAG_SJ, "appViewSupportState$bit")
+                            //Log.d(TAG_SJ, "appViewSupportState $bit")
                         }
                         FUNCTION_11 -> {
                             wmFunctionSupport.supportSetRingState = bit.code - v.code
-                            Log.d(TAG_SJ, "setRingSupportState$bit")
+                            //Log.d(TAG_SJ, "setRingSupportState $bit")
                         }
                         FUNCTION_12 -> {
                             wmFunctionSupport.supportSetNotifyTouchState = bit.code - v.code
-                            Log.d(TAG_SJ, "setNotifyTouchSupportState$bit")
+                            //Log.d(TAG_SJ, "setNotifyTouchSupportState $bit")
                         }
                         FUNCTION_13 -> {
                             wmFunctionSupport.supportSetCrownTouchState = bit.code - v.code
-                            Log.d(TAG_SJ, "setWatchTouchSupportState$bit")
+                            //Log.d(TAG_SJ, "setWatchTouchSupportState $bit")
                         }
                         FUNCTION_14 -> {
                             wmFunctionSupport.supportSetSystemTouchState = bit.code - v.code
-                            Log.d(TAG_SJ, "setSystemTouchSupportState $bit")
+                            //Log.d(TAG_SJ, "setSystemTouchSupportState $bit")
                         }
                         FUNCTION_15 -> {
                             wmFunctionSupport.supportWristScreenState = bit.code - v.code
-                            Log.d(TAG_SJ, "armSupportState$bit")
+                            //Log.d(TAG_SJ, "armSupportState $bit")
                         }
                         FUNCTION_16 -> {
                             wmFunctionSupport.supportBloodOxygenState = bit.code - v.code
-                            Log.d(TAG_SJ, "bloodOxSupportState$bit")
+                            //Log.d(TAG_SJ, "bloodOxSupportState $bit")
                         }
                         FUNCTION_17 -> {
                             wmFunctionSupport.supportBloodPressState = bit.code - v.code
-                            Log.d(TAG_SJ, "bloodPressSupportState$bit")
+                            //Log.d(TAG_SJ, "bloodPressSupportState $bit")
                         }
                         FUNCTION_18 -> {
                             wmFunctionSupport.supportBloodSugarState = bit.code - v.code
-                            Log.d(TAG_SJ, "bloodSugarSupportState$bit")
+                            //Log.d(TAG_SJ, "bloodSugarSupportState $bit")
                         }
                         FUNCTION_19 -> {
                             wmFunctionSupport.supportSleepState = bit.code - v.code
-                            Log.d(TAG_SJ, "sleepSupportState$bit")
+                            //Log.d(TAG_SJ, "sleepSupportState $bit")
                         }
                         FUNCTION_20 -> {
                             wmFunctionSupport.supportTransferEbookState = bit.code - v.code
-                            Log.d(TAG_SJ, "ebookSupportState$bit")
+                            //Log.d(TAG_SJ, "ebookSupportState $bit")
                         }
                         FUNCTION_21 -> {
                             wmFunctionSupport.supportSlowModel = bit.code - v.code
-                            Log.d(TAG_SJ, "supportSlowModel$bit")
+                            //Log.d(TAG_SJ, "supportSlowModel $bit")
                         }
                         FUNCTION_22 -> {
                             wmFunctionSupport.supportCameraPreview = bit.code - v.code
-                            Log.d(TAG_SJ, "supportCameraPreview$bit")
+                            //Log.d(TAG_SJ, "supportCameraPreview $bit")
                         }
                         FUNCTION_23 -> {
                             wmFunctionSupport.supportVideoTransfer = bit.code - v.code
-                            Log.d(TAG_SJ, "supportVideoTransfer$bit")
+                            //Log.d(TAG_SJ, "supportVideoTransfer $bit")
                         }
 
                         FUNCTION_24 -> {
                             wmFunctionSupport.supportPayeeCode = bit.code - v.code
-                            Log.d(TAG_SJ, "supportPayeeCode $bit")
+                            //Log.d(TAG_SJ, "supportPayeeCode $bit")
                         }
                         FUNCTION_25 -> {
                             wmFunctionSupport.supportDialMarket = bit.code - v.code
-                            Log.d(TAG_SJ, "supportDialMarket $bit")
+                            //Log.d(TAG_SJ, "supportDialMarket $bit")
                         }
                         FUNCTION_26 -> {
                             wmFunctionSupport.supportUnfoldNotification = bit.code - v.code
-                            Log.d(TAG_SJ, "supportExpandNotification $bit")
+                            //Log.d(TAG_SJ, "supportExpandNotification $bit")
                         }
                         FUNCTION_27 -> {
                             wmFunctionSupport.supportBleDell = bit.code - v.code
-                            Log.d(TAG_SJ, "supportBluetoothDell $bit")
+                            //Log.d(TAG_SJ, "supportBluetoothDell $bit")
                         }
                         FUNCTION_28 -> {
                             wmFunctionSupport.supportShowBleDellSwitch = bit.code - v.code
-                            Log.d(TAG_SJ, "supportShowBluetoothDellSwitch $bit")
+                            //Log.d(TAG_SJ, "supportShowBluetoothDellSwitch $bit")
                         }
                         FUNCTION_29 -> {
                             wmFunctionSupport.supportEmergencyContact = bit.code - v.code
-                            Log.d(TAG_SJ, "supportEmergencyContact $bit")
+                            //Log.d(TAG_SJ, "supportEmergencyContact $bit")
                         }
                         FUNCTION_30 -> {
                             wmFunctionSupport.supportSyncCollectContact = bit.code - v.code
-                            Log.d(TAG_SJ, "supportSyncCollectContact $bit")
+                            //Log.d(TAG_SJ, "supportSyncCollectContact $bit")
                         }
                         FUNCTION_31 -> {
                             wmFunctionSupport.supportQuickRespond = bit.code - v.code
-                            Log.d(TAG_SJ, "supportQuickRespond $bit")
+                            //Log.d(TAG_SJ, "supportQuickRespond $bit")
                         }
                         FUNCTION_32 -> {
                             wmFunctionSupport.supportStepGoal = bit.code - v.code
-                            Log.d(TAG_SJ, "supportStepGoal $bit")
+                            //Log.d(TAG_SJ, "supportStepGoal $bit")
                         }
                         FUNCTION_33 -> {
                             wmFunctionSupport.supportCalorieGoal = bit.code - v.code
-                            Log.d(TAG_SJ, "supportCalorieGoal $bit")
+                            //Log.d(TAG_SJ, "supportCalorieGoal $bit")
                         }
                         FUNCTION_34 -> {
                             wmFunctionSupport.supportActDurationGoal = bit.code - v.code
-                            Log.d(TAG_SJ, "supportActDurationGoal $bit")
+                            //Log.d(TAG_SJ, "supportActDurationGoal $bit")
                         }
                         FUNCTION_35 -> {
                             wmFunctionSupport.supportSedentaryReminder = bit.code - v.code
-                            Log.d(TAG_SJ, "supportSedentaryReminder $bit")
+                            //Log.d(TAG_SJ, "supportSedentaryReminder $bit")
                         }
                         FUNCTION_36 -> {
                             wmFunctionSupport.supportDrinkWaterReminder = bit.code - v.code
-                            Log.d(TAG_SJ, "supportDrinkWaterReminder $bit")
+                            //Log.d(TAG_SJ, "supportDrinkWaterReminder $bit")
                         }
                         FUNCTION_37 -> {
                             wmFunctionSupport.supportWashHandsReminder = bit.code - v.code
-                            Log.d(TAG_SJ, "supportWashHandsReminder $bit")
+                            //Log.d(TAG_SJ, "supportWashHandsReminder $bit")
                         }
                         FUNCTION_38 -> {
                             wmFunctionSupport.supportAutoRate = bit.code - v.code
-                            Log.d(TAG_SJ, "supportAutoRate $bit")
+                            //Log.d(TAG_SJ, "supportAutoRate $bit")
                         }
                         FUNCTION_39 -> {
                             wmFunctionSupport.supportREM = bit.code - v.code
-                            Log.d(TAG_SJ, "supportREM $bit")
+                            //Log.d(TAG_SJ, "supportREM $bit")
                         }
                         FUNCTION_40 -> {
                             wmFunctionSupport.supportMultiSport = bit.code - v.code
-                            Log.d(TAG_SJ, "supportMultiSport $bit")
+                            //Log.d(TAG_SJ, "supportMultiSport $bit")
                         }
                         FUNCTION_41 -> {
                             wmFunctionSupport.supportShowFixMotionType = bit.code - v.code
-                            Log.d(TAG_SJ, "supportShowFixMotionType $bit")
+                            //Log.d(TAG_SJ, "supportShowFixMotionType $bit")
                         }
                         FUNCTION_42 -> {
                             wmFunctionSupport.supportSportAutoRecogniseStart = bit.code - v.code
-                            Log.d(TAG_SJ, "supportSportAutoRecogniseStart $bit")
+                            //Log.d(TAG_SJ, "supportSportAutoRecogniseStart $bit")
                         }
                         FUNCTION_43 -> {
                             wmFunctionSupport.supportSportAutoRecogniseEnd = bit.code - v.code
-                            Log.d(TAG_SJ, "supportSportAutoRecogniseEnd $bit")
+                            //Log.d(TAG_SJ, "supportSportAutoRecogniseEnd $bit")
                         }
                         FUNCTION_44 -> {
                             wmFunctionSupport.supportAlarmLabel = bit.code - v.code
-                            Log.d(TAG_SJ, "supportAlarmLabel $bit")
+                            //Log.d(TAG_SJ, "supportAlarmLabel $bit")
                         }
                         FUNCTION_45 -> {
                             wmFunctionSupport.supportAlarmRemark = bit.code - v.code
-                            Log.d(TAG_SJ, "supportAlarmRemark $bit")
+                            //Log.d(TAG_SJ, "supportAlarmRemark $bit")
                         }
                         FUNCTION_46 -> {
                             wmFunctionSupport.supportWorldClock = bit.code - v.code
-                            Log.d(TAG_SJ, "supportWorldClock $bit")
+                            //Log.d(TAG_SJ, "supportWorldClock $bit")
                         }
                         FUNCTION_47 -> {
                             wmFunctionSupport.supportAppChangeLanguage = bit.code - v.code
-                            Log.d(TAG_SJ, "supportAppChangeLanguage $bit")
+                            //Log.d(TAG_SJ, "supportAppChangeLanguage $bit")
                         }
                         FUNCTION_48 -> {
                             wmFunctionSupport.supportWidgets = bit.code - v.code
-                            Log.d(TAG_SJ, "supportWidgets $bit")
+                            //Log.d(TAG_SJ, "supportWidgets $bit")
                         }
                         FUNCTION_49 -> {
                             wmFunctionSupport.supportAppControlVolume = bit.code - v.code
-                            Log.d(TAG_SJ, "supportAppControlVolume $bit")
+                            //Log.d(TAG_SJ, "supportAppControlVolume $bit")
                         }
                         FUNCTION_50 -> {
                             wmFunctionSupport.supportQuietHeartRateAlert = bit.code - v.code
-                            Log.d(TAG_SJ, "supportQuietHeartRateAlert $bit")
+                            //Log.d(TAG_SJ, "supportQuietHeartRateAlert $bit")
                         }
                         FUNCTION_51 -> {
                             wmFunctionSupport.supportSportHeartRateAlert = bit.code - v.code
-                            Log.d(TAG_SJ, "supportSportHeartRateAlert $bit")
+                            //Log.d(TAG_SJ, "supportSportHeartRateAlert $bit")
                         }
                         FUNCTION_52 -> {
                             wmFunctionSupport.supportDailyHeartRateAlert = bit.code - v.code
-                            Log.d(TAG_SJ, "supportDailyHeartRateAlert $bit")
+                            //Log.d(TAG_SJ, "supportDailyHeartRateAlert $bit")
                         }
                         FUNCTION_53 -> {
                             wmFunctionSupport.supportContinuousOxygen = bit.code - v.code
-                            Log.d(TAG_SJ, "supportContinuousOxygen $bit")
+                            //Log.d(TAG_SJ, "supportContinuousOxygen $bit")
                         }
                         FUNCTION_54 -> {
                             wmFunctionSupport.supportBTDisconnectReminder = bit.code - v.code
-                            Log.d(TAG_SJ, "supportBTDisconnectReminder $bit")
+                            //Log.d(TAG_SJ, "supportBTDisconnectReminder $bit")
                         }
                         FUNCTION_55 -> {
                             wmFunctionSupport.supportBtBleSameName = bit.code - v.code
-                            Log.d(TAG_SJ, "supportBtBleSameName $bit")
+                            //Log.d(TAG_SJ, "supportBtBleSameName $bit")
                         }
                         FUNCTION_56 -> {
                             wmFunctionSupport.supportEventReminder = bit.code - v.code
-                            Log.d(TAG_SJ, "supportEventReminder $bit")
+                            //Log.d(TAG_SJ, "supportEventReminder $bit")
                         }
                         FUNCTION_57 -> {
                             wmFunctionSupport.supportScreenReminder = bit.code - v.code
-                            Log.d(TAG_SJ, "supportScreenReminder $bit")
+                            //Log.d(TAG_SJ, "supportScreenReminder $bit")
                         }
                         FUNCTION_58 -> {
                             wmFunctionSupport.supportRebootDevice = bit.code - v.code
-                            Log.d(TAG_SJ, "supportRebootDevice $bit")
+                            //Log.d(TAG_SJ, "supportRebootDevice $bit")
                         }
                         FUNCTION_59 -> {
 //                            wmFunctionSupport.supportDialMarket = bit.code - v.code
-//                            Log.d(TAG_SJ, "supportDialMarket $bit")
+//                            //Log.d(TAG_SJ, "supportDialMarket $bit")
                         }
                         FUNCTION_60 -> {
 //                            wmFunctionSupport.supportDialMarket = bit.code - v.code
-//                            Log.d(TAG_SJ, "supportDialMarket $bit")
+//                            //Log.d(TAG_SJ, "supportDialMarket $bit")
                         }
                     }
                     actionPosition++
