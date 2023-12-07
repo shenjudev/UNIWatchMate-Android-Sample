@@ -24,9 +24,10 @@ import io.reactivex.rxjava3.disposables.Disposable
 import java.nio.ByteBuffer
 import java.nio.charset.StandardCharsets
 
-class AppContact(val sjUniWatch: SJUniWatch) : AbAppContact(), ReadSubPkMsg ,
+class AppContact(val sjUniWatch: SJUniWatch) : AbAppContact(), ReadSubPkMsg,
     ExceptionStateListener {
     private var getContactListEmitter: SingleEmitter<List<WmContact>>? = null
+    private var observableContactListEmitter: ObservableEmitter<List<WmContact>>? = null
     private var updateContactEmitter: SingleEmitter<Boolean>? = null
     private var updateEmergencyEmitter: SingleEmitter<WmEmergencyCall>? = null
     private var getAndObserveEmergencyNumberEmitter: ObservableEmitter<WmEmergencyCall>? = null
@@ -34,6 +35,7 @@ class AppContact(val sjUniWatch: SJUniWatch) : AbAppContact(), ReadSubPkMsg ,
     private val mContacts = mutableListOf<WmContact>()
     private val msgList = mutableSetOf<MsgBean>()
     private val msgSubPkMap = LinkedHashMap<Int, MsgBean>()
+    private var getData = false
 
     /**
      * 分包发送写入类型Node节点消息
@@ -92,11 +94,25 @@ class AppContact(val sjUniWatch: SJUniWatch) : AbAppContact(), ReadSubPkMsg ,
         }
     }
 
+    fun appUpdateContacts() {
+        getData = false
+        startGetContacts()
+    }
+
+    override val observableContactList: Observable<List<WmContact>> = Observable.create {
+        observableContactListEmitter = it
+    }
+
     override val getContactList: Single<List<WmContact>> = Single.create {
         mContacts.clear()
         getContactListEmitter = it
         msgList.clear()
+        getData = true
 
+        startGetContacts()
+    }
+
+    private fun startGetContacts() {
         sjUniWatch.sendReadSubPkObserveNode(this, getReadContactListCmd())
             .subscribe(object : Observer<MsgBean> {
                 override fun onSubscribe(d: Disposable) {
@@ -131,7 +147,7 @@ class AppContact(val sjUniWatch: SJUniWatch) : AbAppContact(), ReadSubPkMsg ,
                             val name = String(nameBytes, StandardCharsets.UTF_8)
                             val num = String(numBytes, StandardCharsets.UTF_8)
 
-//                            sjUniWatch.wmLog.logE(TAG, "name:" + name + " num:" + num)
+    //                            sjUniWatch.wmLog.logE(TAG, "name:" + name + " num:" + num)
 
                             if (!TextUtils.isEmpty(name)) {
                                 val contact = WmContact.create(name, num)
@@ -144,7 +160,12 @@ class AppContact(val sjUniWatch: SJUniWatch) : AbAppContact(), ReadSubPkMsg ,
                             }
                         }
 
-                        getContactListEmitter?.onSuccess(mContacts)
+                        if (getData) {
+                            getData = false
+                            getContactListEmitter?.onSuccess(mContacts)
+                        } else {
+                            observableContactListEmitter?.onNext(mContacts)
+                        }
                     }
                 }
             })

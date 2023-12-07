@@ -16,6 +16,11 @@ abstract class AbAppContact {
     abstract val getContactList: Single<List<WmContact>>
 
     /**
+     * 设备端修改通讯录，App被动监听
+     */
+    abstract val observableContactList:Observable<List<WmContact>>
+
+    /**
      * 设置联系人个数
      */
 //    abstract fun setContactCount(count: Int): Single<Boolean>

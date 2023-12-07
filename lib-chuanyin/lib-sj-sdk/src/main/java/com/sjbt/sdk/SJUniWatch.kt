@@ -1,11 +1,8 @@
 package com.sjbt.sdk
 
-import android.app.Activity
 import android.app.Application
-import android.app.Application.ActivityLifecycleCallbacks
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
-import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.text.TextUtils
@@ -1435,10 +1432,15 @@ abstract class SJUniWatch(context: Application, timeout: Int) : AbUniWatch(),
                 URN_APP_SETTING -> {
                     when (it.urn[1]) {
                         URN_APP_ALARM -> {
-                            appAlarm.alarmUpdate()
+                            appAlarm.appUpdateAlarm()
+                        }
+
+                        URN_APP_CONTACT_LIST -> {
+                            appContact.appUpdateContacts()
                         }
                     }
                 }
+
             }
         }
     }

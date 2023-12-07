@@ -2,7 +2,6 @@ package com.sjbt.sdk.app
 
 import com.base.sdk.entity.apps.AlarmRepeatOption
 import com.base.sdk.entity.apps.WmAlarm
-import com.base.sdk.entity.apps.WmConnectState
 import com.base.sdk.exception.WmTimeOutException
 import com.base.sdk.port.app.AbAppAlarm
 import com.sjbt.sdk.ALARM_LEN
@@ -80,7 +79,7 @@ class AppAlarm(val sjUniWatch: SJUniWatch) : AbAppAlarm(),
         }
     }
 
-    fun alarmUpdate() {
+    fun appUpdateAlarm() {
         getData = false
         sjUniWatch.sendReadNodeCmdList(getReadAlarmListCmd())
     }
