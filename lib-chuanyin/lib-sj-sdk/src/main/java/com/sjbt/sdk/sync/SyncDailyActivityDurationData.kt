@@ -162,10 +162,10 @@ class SyncDailyActivityDurationData(val sjUniWatch: SJUniWatch) :
                 WmDailyActivityDurationData(getSportTypeById(sportId), byteBufferSyncData.int)
 
             if (timestampType == 0) {//只有一个时间戳
-                sjUniWatch.wmLog.logD(
-                    TAG,
-                    "date time:" + TimeUtils.date2String(Date(realTimeStamp + dataIndex * SYNC_DATA_INTERVAL_HOUR))
-                )
+//                sjUniWatch.wmLog.logD(
+//                    TAG,
+//                    "date time:" + TimeUtils.date2String(Date(realTimeStamp + dataIndex * SYNC_DATA_INTERVAL_HOUR))
+//                )
 
                 wmDailyActivityDurationData.timestamp =
                     realTimeStamp + dataIndex * SYNC_DATA_INTERVAL_HOUR

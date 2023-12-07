@@ -184,10 +184,10 @@ class SyncDistanceData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmDis
             val wmDistanceData = WmDistanceData(byteBufferSyncData.int)
 
             if (timestampType == 0) {//只有一个时间戳
-                sjUniWatch.wmLog.logD(
-                    TAG,
-                    "date time:" + TimeUtils.date2String(Date(realTimeStamp + dataIndex * SYNC_DATA_INTERVAL_HOUR))
-                )
+//                sjUniWatch.wmLog.logD(
+//                    TAG,
+//                    "date time:" + TimeUtils.date2String(Date(realTimeStamp + dataIndex * SYNC_DATA_INTERVAL_HOUR))
+//                )
 
                 wmDistanceData.timestamp =
                     realTimeStamp + dataIndex * SYNC_DATA_INTERVAL_HOUR

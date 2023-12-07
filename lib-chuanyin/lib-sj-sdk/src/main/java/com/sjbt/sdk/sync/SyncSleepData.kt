@@ -260,10 +260,10 @@ class SyncSleepData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmSleepD
             val wmSleepData = WmSleepData(wmSleepSettings, wmSleepSummary, sleepItems)
 
             if (timestampType == 0) {//只有一个时间戳
-                sjUniWatch.wmLog.logD(
-                    TAG,
-                    "date time:" + TimeUtils.date2String(Date(realTimeStamp + dataIndex * SYNC_DATA_INTERVAL_HOUR))
-                )
+//                sjUniWatch.wmLog.logD(
+//                    TAG,
+//                    "date time:" + TimeUtils.date2String(Date(realTimeStamp + dataIndex * SYNC_DATA_INTERVAL_HOUR))
+//                )
 
                 wmSleepData.timestamp =
                     realTimeStamp + dataIndex * SYNC_DATA_INTERVAL_HOUR

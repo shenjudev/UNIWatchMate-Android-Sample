@@ -181,10 +181,10 @@ class SyncCaloriesData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmCal
             val wmCaloriesData = WmCaloriesData(byteBufferSyncData.int)
 
             if (timestampType == 0) {//只有一个时间戳
-                sjUniWatch.wmLog.logD(
-                    TAG,
-                    "date time:" + TimeUtils.date2String(Date(realTimeStamp + dataIndex * SYNC_DATA_INTERVAL_HOUR))
-                )
+//                sjUniWatch.wmLog.logD(
+//                    TAG,
+//                    "date time:" + TimeUtils.date2String(Date(realTimeStamp + dataIndex * SYNC_DATA_INTERVAL_HOUR))
+//                )
 
                 wmCaloriesData.timestamp =
                     realTimeStamp + dataIndex * SYNC_DATA_INTERVAL_HOUR

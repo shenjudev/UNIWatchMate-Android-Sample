@@ -183,10 +183,10 @@ class SyncRealtimeRateData(val sjUniWatch: SJUniWatch) :
             val wmHeartRateData = WmRealtimeRateData(byteBufferSyncData.get().toInt() and 0XFF)
 
             if (timestampType == 0) {//只有一个时间戳
-                sjUniWatch.wmLog.logD(
-                    TAG,
-                    "date time:" + TimeUtils.date2String(Date(realTimeStamp + dataIndex * SYNC_DATA_INTERVAL_FIVE_MINUTES))
-                )
+//                sjUniWatch.wmLog.logD(
+//                    TAG,
+//                    "date time:" + TimeUtils.date2String(Date(realTimeStamp + dataIndex * SYNC_DATA_INTERVAL_FIVE_MINUTES))
+//                )
 
                 wmHeartRateData.timestamp =
                     realTimeStamp + dataIndex * SYNC_DATA_INTERVAL_FIVE_MINUTES

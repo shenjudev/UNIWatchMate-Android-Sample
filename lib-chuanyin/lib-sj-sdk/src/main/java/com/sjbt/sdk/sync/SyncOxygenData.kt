@@ -179,10 +179,10 @@ class SyncOxygenData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmOxyge
             val wmOxygenData = WmOxygenData(byteBufferSyncData.get().toInt() and 0XFF)
 
             if (timestampType == 0) {//只有一个时间戳
-                sjUniWatch.wmLog.logD(
-                    TAG,
-                    "date time:" + TimeUtils.date2String(Date(realTimeStamp + dataIndex * SYNC_DATA_INTERVAL_HOUR))
-                )
+//                sjUniWatch.wmLog.logD(
+//                    TAG,
+//                    "date time:" + TimeUtils.date2String(Date(realTimeStamp + dataIndex * SYNC_DATA_INTERVAL_HOUR))
+//                )
 
                 wmOxygenData.timestamp =
                     realTimeStamp + dataIndex * SYNC_DATA_INTERVAL_FIVE_MINUTES

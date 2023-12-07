@@ -185,10 +185,10 @@ class SyncActivityDurationData(val sjUniWatch: SJUniWatch) :
             val wmActivityDurationData = WmActivityDurationData(byteBufferSyncData.int)
 
             if (timestampType == 0) {//只有一个时间戳
-                sjUniWatch.wmLog.logD(
-                    TAG,
-                    "date time:${TimeUtils.date2String(Date(realTimeStamp + dataIndex * SYNC_DATA_INTERVAL_HOUR))} duration-> ${wmActivityDurationData.duration}"
-                )
+//                sjUniWatch.wmLog.logD(
+//                    TAG,
+//                    "date time:${TimeUtils.date2String(Date(realTimeStamp + dataIndex * SYNC_DATA_INTERVAL_HOUR))} duration-> ${wmActivityDurationData.duration}"
+//                )
 
                 wmActivityDurationData.timestamp =
                     realTimeStamp + dataIndex * SYNC_DATA_INTERVAL_HOUR
