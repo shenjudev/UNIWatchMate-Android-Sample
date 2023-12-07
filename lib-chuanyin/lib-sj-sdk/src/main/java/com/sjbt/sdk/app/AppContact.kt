@@ -236,6 +236,7 @@ class AppContact(val sjUniWatch: SJUniWatch) : AbAppContact(), ReadSubPkMsg,
                                     .takeWhile { it.toInt() != 0 }.toByteArray()
                                 val numBytes =
                                     byteArray.copyOfRange(i + NUMBER_BYTES_LIMIT, i + chunkSize)
+                                        .takeWhile { it.toInt() != 0 }.toByteArray()
 
                                 val name = String(nameBytes, StandardCharsets.UTF_8)
                                 val num = String(numBytes, StandardCharsets.UTF_8)
@@ -276,7 +277,7 @@ class AppContact(val sjUniWatch: SJUniWatch) : AbAppContact(), ReadSubPkMsg,
                             emergencyByteArray.copyOfRange(
                                 NAME_BYTES_LIMIT,
                                 NAME_BYTES_LIMIT + NUMBER_BYTES_LIMIT + 1
-                            ),
+                            ).takeWhile { it.toInt() != 0 }.toByteArray(),
                             StandardCharsets.UTF_8
                         )
 
