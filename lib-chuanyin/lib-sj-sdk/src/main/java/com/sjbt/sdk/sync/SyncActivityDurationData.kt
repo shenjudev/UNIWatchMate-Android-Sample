@@ -164,7 +164,7 @@ class SyncActivityDurationData(val sjUniWatch: SJUniWatch) :
         val baseDay = byteBufferSyncData.get().toInt()
 
         //时间戳
-        val timestamp = byteBufferSyncData.int
+        val timestamp = byteBufferSyncData.int * 1000
         val dataLen = byteBufferSyncData.short
 
         sjUniWatch.wmLog.logD(

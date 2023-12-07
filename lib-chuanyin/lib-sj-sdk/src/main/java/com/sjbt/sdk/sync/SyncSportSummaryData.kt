@@ -18,7 +18,7 @@ import java.nio.ByteOrder
 import java.util.*
 
 class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
-    AbSyncData<WmSyncData<WmSportSummaryData>>(), ReadSubPkMsg ,
+    AbSyncData<WmSyncData<WmSportSummaryData>>(), ReadSubPkMsg,
     ExceptionStateListener {
     var lastSyncTime: Long = 0
     private var syncSportSummaryObserveEmitter: ObservableEmitter<WmSyncData<WmSportSummaryData>>? =
@@ -175,7 +175,7 @@ class SyncSportSummaryData(val sjUniWatch: SJUniWatch) :
         val baseDay = byteBufferSummarySyncData.get().toInt()
 
         //时间戳
-        val timestamp = byteBufferSummarySyncData.int
+        val timestamp = byteBufferSummarySyncData.int * 1000
         val dataLen = byteBufferSummarySyncData.short
 
         sjUniWatch.wmLog.logD(

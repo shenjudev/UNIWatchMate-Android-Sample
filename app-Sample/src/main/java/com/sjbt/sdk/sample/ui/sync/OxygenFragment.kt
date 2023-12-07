@@ -25,6 +25,6 @@ class OxygenFragment : DataListFragment<WmOxygenData>() {
             val calendar = Calendar.getInstance()
             val start: Date = DateTimeUtils.getDayStartTime(calendar, date)
             val end: Date = DateTimeUtils.getDayEndTime(calendar, date)
-            UNIWatchMate.wmSync.syncOxygenData.syncData(start.time).awaitFirst().value }
+            UNIWatchMate.wmSync.syncOxygenData.syncData(System.currentTimeMillis()-1000*60*60).awaitFirst().value }
     }
 }

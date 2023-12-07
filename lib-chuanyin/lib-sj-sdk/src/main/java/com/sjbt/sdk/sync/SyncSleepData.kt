@@ -158,7 +158,7 @@ class SyncSleepData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmSleepD
         val baseDay = byteBufferSyncData.get().toInt()
 
         //时间戳
-        val timestamp = byteBufferSyncData.int
+        val timestamp = byteBufferSyncData.int * 1000
         val dataLen = byteBufferSyncData.short
 
         sjUniWatch.wmLog.logD(

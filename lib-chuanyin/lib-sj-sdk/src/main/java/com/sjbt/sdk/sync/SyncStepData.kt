@@ -137,7 +137,7 @@ class SyncStepData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmStepDat
                                         byteBufferSyncData.put(it.payload)
                                     }
                                 }
-                                
+
                                 parseStepData()
                             }
 
@@ -167,7 +167,7 @@ class SyncStepData(val sjUniWatch: SJUniWatch) : AbSyncData<WmSyncData<WmStepDat
         val baseDay = byteBufferSyncData.get().toInt()
 
         //时间戳
-        val timestamp = byteBufferSyncData.int
+        val timestamp = byteBufferSyncData.int * 1000
         val dataLen = byteBufferSyncData.short
 
         sjUniWatch.wmLog.logD(
