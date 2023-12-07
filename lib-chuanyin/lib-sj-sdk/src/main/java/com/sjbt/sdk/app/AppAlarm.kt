@@ -7,7 +7,6 @@ import com.base.sdk.port.app.AbAppAlarm
 import com.sjbt.sdk.*
 import com.sjbt.sdk.entity.*
 import com.sjbt.sdk.spp.cmd.*
-import com.sjbt.sdk.utils.BtUtils
 import io.reactivex.rxjava3.core.*
 import io.reactivex.rxjava3.disposables.Disposable
 import java.nio.ByteBuffer
@@ -80,8 +79,17 @@ class AppAlarm(val sjUniWatch: SJUniWatch) : AbAppAlarm(), ReadSubPkMsg,
     }
 
     override var getAlarmList: Single<List<WmAlarm>> = Single.create {
-        getData = true
         getAlarmListEmitter = it
+        getData = true
+        getAlarmSubPkList()
+    }
+
+    fun appUpdateAlarm() {
+        getData = false
+        getAlarmSubPkList()
+    }
+
+    private fun getAlarmSubPkList() {
         msgList.clear()
 
         sjUniWatch.sendReadSubPkObserveNode(this, getReadAlarmListCmd()).subscribe(object :
@@ -176,11 +184,6 @@ class AppAlarm(val sjUniWatch: SJUniWatch) : AbAppAlarm(), ReadSubPkMsg,
                 observeAlarmListEmitter?.onNext(it)
             }
         }
-    }
-
-    fun appUpdateAlarm() {
-        getData = false
-        sjUniWatch.sendReadNodeCmdList(getReadAlarmListCmd())
     }
 
     fun alarmBusiness(nodeData: NodeData) {
