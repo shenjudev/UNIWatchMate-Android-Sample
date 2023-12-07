@@ -277,15 +277,17 @@ class AppContact(val sjUniWatch: SJUniWatch) : AbAppContact(), ReadSubPkMsg,
                             emergencyByteArray.copyOfRange(
                                 NAME_BYTES_LIMIT,
                                 NAME_BYTES_LIMIT + NUMBER_BYTES_LIMIT + 1
-                            ).takeWhile { it.toInt() != 0 }.toByteArray(),
+                            ),
                             StandardCharsets.UTF_8
                         )
+
+                        sjUniWatch.wmLog.logD(TAG, "emergency contact name:$name number:$num")
 
                         if (!TextUtils.isEmpty(name)) {
                             WmContact.create(name, num)?.let {
                                 mEmergencyCall.emergencyContacts.add(it)
                             }
-                            sjUniWatch.wmLog.logD(TAG, "emergency contact:$mEmergencyCall")
+
                         } else {
                             mEmergencyCall.isEnabled = false
                         }
