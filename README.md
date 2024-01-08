@@ -3,7 +3,7 @@ The UNIWatchMate is an interface framework for smartwatches. It encapsulates fun
 
 # Version 1.0.1
 
-# [Wiki](https://github.com/shenjudev/UNIWatchMate-Android-Sample/wiki)
+# [SDK documentation](https://github.com/shenjudev/UNIWatchMate-Android-Sample/wiki)
 
 ## v1.0.1(2023-11-01)
 1. The search function is modified to filter by protocol layer and Bluetooth name.
