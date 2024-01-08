@@ -12,19 +12,20 @@ class AlarmRepeatDialogFragment : AppCompatDialogFragment() {
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val items = arrayOf(
-            getString(R.string.ds_alarm_repeat_06),
             getString(R.string.ds_alarm_repeat_00),
             getString(R.string.ds_alarm_repeat_01),
             getString(R.string.ds_alarm_repeat_02),
             getString(R.string.ds_alarm_repeat_03),
             getString(R.string.ds_alarm_repeat_04),
             getString(R.string.ds_alarm_repeat_05),
+            getString(R.string.ds_alarm_repeat_06),
         )
         var repeat = (parentFragment as? Listener)?.dialogGetAlarmRepeat()?:AlarmHelper.getDefaultRepeatOption()
 
         val checkedItems = BooleanArray(items.size) { index ->
             AlarmHelper.repeatToBoolean(index,repeat)
         }
+
         return MaterialAlertDialogBuilder(requireContext())
             .setTitle(R.string.ds_alarm_repeat)
             .setMultiChoiceItems(items, checkedItems) { _, which, isChecked ->

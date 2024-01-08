@@ -271,7 +271,26 @@
     <string name="exercise_goal_step">步数</string>
     <string name="exercise_goal_distance">距离</string>
     <string name="exercise_goal_calories">卡路里</string>
-
+    <!--Exercise data type -->
+<!--    用时、距离、消耗（热量）、步数、平均配速、最大配速、最低配速、平均速度、最大速度、最低速度、平均步频、最大步频、最低步频、平均心率、最大心率、最低心率、跳绳计数、心率分布-->
+    <string name="exercise_data_time">用时</string>
+    <string name="exercise_data_distance">距离</string>
+    <string name="exercise_data_calories">消耗</string>
+    <string name="exercise_data_step">步数</string>
+    <string name="exercise_data_average_pace">平均配速</string>
+    <string name="exercise_data_max_pace">最大配速</string>
+    <string name="exercise_data_min_pace">最低配速</string>
+    <string name="exercise_data_average_speed">平均速度</string>
+    <string name="exercise_data_max_speed">最大速度</string>
+    <string name="exercise_data_min_speed">最低速度</string>
+    <string name="exercise_data_average_step_frequency">平均步频</string>
+    <string name="exercise_data_max_step_frequency">最大步频</string>
+    <string name="exercise_data_min_step_frequency">最低步频</string>
+    <string name="exercise_data_average_heart_rate">平均心率</string>
+    <string name="exercise_data_max_heart_rate">最大心率</string>
+    <string name="exercise_data_min_heart_rate">最低心率</string>
+    <string name="exercise_data_jump_rope_counting">跳绳计数</string>
+    <string name="exercise_data_heart_rate_distributione">心率分布</string>
     <!--Unit-->
     <string name="ds_unit_config">单位配置</string>
     <string name="permission_explain_msg">需要以下权限，是否请求以便进行下一步操作？</string>
@@ -299,6 +318,8 @@
     <string name="unit_mi_param"><xliff:g id="params1">%1$s</xliff:g>公里</string>
     <string name="unit_step_param"><xliff:g id="params1">%1$d</xliff:g> 步</string>
     <string name="unit_k_calories_param"><xliff:g id="params1">%1$s</xliff:g>千卡</string>
+    <string name="unit_calories_param"><xliff:g id="params1">%1$s</xliff:g>卡</string>
+
     <string name="unit_fahrenheit_param"><xliff:g id="params1">%1$s</xliff:g> ℉</string>
     <string name="unit_centigrade_param"><xliff:g id="params1">%1$s</xliff:g> ℃</string>
 
@@ -339,7 +360,8 @@
     <!--Contacts-->
     <string name="ds_contacts">常用联系人</string>
     <string name="ds_emergency_contacts">紧急联系人</string>
-    <string name="ds_contacts_tips1">最多可添加10位常用联系人。</string>
+    <string name="ds_phone_contacts">选择手机联系人</string>
+    <string name="ds_contacts_tips1">最多可添加100位常用联系人。</string>
 
 
     <!--Device Settings:Sport push-->
@@ -613,8 +635,34 @@
 
     <string name="local_dial">安装本地表盘</string>
     <string name="ds_sport_at_most">最多12个</string>
+    <!--Sync-->
+
+    <string name="data_step">步数</string>
+    <string name="data_calorie">卡路里</string>
+    <string name="data_activity_duration">活动时长</string>
+    <string name="data_sleep">睡眠</string>
+    <string name="data_heart_rate">心率</string>
+    <string name="data_oxygen">血氧</string>
+    <string name="data_blood_pressure">血压</string>
+    <string name="data_temperature">体温</string>
+    <string name="data_pressure">压力</string>
+    <string name="data_ecg">心电</string>
+    <string name="data_all">全部数据</string>
+    <string name="data_sport">运动</string>
+    <string name="data_sport_detail">运动详情</string>
+    <string name="data_game">游戏</string>
+    <string name="total_step">总步数：</string>
+    <string name="total_distance">总距离：</string>
+    <string name="total_calories">总卡路里：</string>
+    <string name="deep_sleep">深睡：</string>
+    <string name="light_sleep">浅睡：</string>
+    <string name="awake_sleep">清醒：</string>
     <string name="hourly_data">每小时数据</string>
     <string name="data_every_5_minutes">每5分钟数据</string>
+    <string name="data_daily_duration">运动活动时长分布</string>
 
+    <string name="version_app">版本号 %s</string>
+    <string name="scan_device">扫描设备</string>
+    <string name="rapid_eye_movement">眼动：</string>
 
 </resources>

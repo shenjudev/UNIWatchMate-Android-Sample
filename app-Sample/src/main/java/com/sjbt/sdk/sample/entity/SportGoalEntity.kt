@@ -7,7 +7,7 @@ import com.base.sdk.entity.settings.WmSportGoal
 @Entity
 data class SportGoalEntity(
     /**
-     * 用户Id
+     * userId
      */
     @PrimaryKey
     val userId: Long,

@@ -25,7 +25,6 @@ interface SportGoalRepository {
     val flowCurrent: StateFlow<WmSportGoal>
 
     /**
-     * 更改某个用户的单位配置。
      * @param userId
      * @param config
      */

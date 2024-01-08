@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -25,6 +26,11 @@
                 android:id="@+id/item_exercise_goal"
                 style="@style/Widget.Sample.PreferenceView.Item.Text"
                 app:preferenceTitle="@string/exercise_goal" />
+
+            <com.github.kilnn.tool.widget.item.PreferenceItem
+                android:id="@+id/item_test"
+                style="@style/Widget.Sample.PreferenceView.Item.Text"
+                app:preferenceTitle="Test Multi Msg" />
         </LinearLayout>
     </ScrollView>
 
@@ -38,4 +44,15 @@
         android:layout_marginEnd="32dp"
         android:layout_marginBottom="32dp"
         android:text="@string/account_sign_out" />
+
+    <TextView
+        android:id="@+id/tv_version"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="@dimen/dp_8"
+        android:textColor="@color/black"
+        android:textSize="@dimen/dp_10"
+        tools:text="@string/version_app" />
 </RelativeLayout>

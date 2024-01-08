@@ -106,31 +106,31 @@ object AlarmHelper {
     fun repeatToBoolean(index: Int, repeats: Set<AlarmRepeatOption>): Boolean {
         var state = false
         when (index) {
-            0 -> {
+            6 -> {
                 state = repeats.contains(AlarmRepeatOption.SUNDAY)
             }
 
-            1 -> {
+            0 -> {
                 state = repeats.contains(AlarmRepeatOption.MONDAY)
             }
 
-            2 -> {
+            1 -> {
                 state = repeats.contains(AlarmRepeatOption.TUESDAY)
             }
 
-            3 -> {
+            2 -> {
                 state = repeats.contains(AlarmRepeatOption.WEDNESDAY)
             }
 
-            4 -> {
+            3 -> {
                 state = repeats.contains(AlarmRepeatOption.THURSDAY)
             }
 
-            5 -> {
+            4 -> {
                 state = repeats.contains(AlarmRepeatOption.FRIDAY)
             }
 
-            6 -> {
+            5 -> {
                 state = repeats.contains(AlarmRepeatOption.SATURDAY)
             }
         }
@@ -150,31 +150,31 @@ object AlarmHelper {
     private fun getAlarmRepeatOptionByIndex(index: Int): AlarmRepeatOption {
         var state = AlarmRepeatOption.SUNDAY
         when (index) {
-            0 -> {
+            6 -> {
                 state = AlarmRepeatOption.SUNDAY
             }
 
-            1 -> {
+            0 -> {
                 state = AlarmRepeatOption.MONDAY
             }
 
-            2 -> {
+            1 -> {
                 state = AlarmRepeatOption.TUESDAY
             }
 
-            3 -> {
+            2 -> {
                 state = AlarmRepeatOption.WEDNESDAY
             }
 
-            4 -> {
+            3 -> {
                 state = AlarmRepeatOption.THURSDAY
             }
 
-            5 -> {
+            4 -> {
                 state = AlarmRepeatOption.FRIDAY
             }
 
-            6 -> {
+            5 -> {
                 state = AlarmRepeatOption.SATURDAY
             }
         }

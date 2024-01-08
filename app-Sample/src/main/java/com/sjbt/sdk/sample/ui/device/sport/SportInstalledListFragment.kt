@@ -68,7 +68,6 @@ class SportInstalledListFragment : BaseFragment(R.layout.fragment_sport_installe
             override fun onItemDelete(position: Int) {
                 if (adapter.sources?.get(position)?.buildIn != true) {
                     promptProgress.showProgress(getString(R.string.action_deling))
-                    installDatas.removeAt(position)
                     viewModel.deleteSport(position)
                 } else {
                     promptToast.showFailed(getString(R.string.tip_inner_sport_del_error))
@@ -98,27 +97,24 @@ class SportInstalledListFragment : BaseFragment(R.layout.fragment_sport_installe
                         }
 
                         is Success -> {
-                            val alarms = state.requestSports()
-                            if (alarms == null || alarms.isEmpty()) {
+                            val sportsMap = state.requestSports()
+                            if (sportsMap == null || sportsMap.size()==0) {
                                 viewBind.loadingView.showError(R.string.ds_no_data)
                             } else {
-                                if (alarms!!.size > 8) {
+
+                                buildInDatas.clear()
+                                buildInDatas.addAll(sportsMap[0])
+                                dragAdapter.notifyDataSetChanged()
+
+                                if (sportsMap.size() > 1) {
                                     installDatas.clear()
-                                    installDatas.addAll(alarms.subList(8, alarms!!.size))
-                                    adapter.sources =installDatas
+                                    installDatas.addAll(sportsMap[1])
+                                    adapter.sources = installDatas
                                     adapter.notifyDataSetChanged()
-                                    buildInDatas.clear()
-                                    buildInDatas.addAll(alarms.subList(0, 8))
-                                    dragAdapter.notifyDataSetChanged()
-                                } else {
-                                    buildInDatas.clear()
-                                    buildInDatas.addAll(alarms)
-                                    dragAdapter.notifyDataSetChanged()
                                 }
                                 viewBind.loadingView.visibility = View.GONE
                             }
                         }
-
                         else -> {}
                     }
                 }
@@ -127,11 +123,18 @@ class SportInstalledListFragment : BaseFragment(R.layout.fragment_sport_installe
                 viewModel.flowEvent.collect { event ->
                     when (event) {
                         is SportEvent.RequestFail -> {
-                            promptToast.showFailed(event.throwable)
+                            promptProgress.dismiss()
                         }
-
+                        is SportEvent.SportUpdateFail -> {
+                            promptProgress.dismiss()
+                            promptToast.showFailed(event.msg)
+                            adapter.notifyDataSetChanged()
+                        }
                         is SportEvent.SportRemoved -> {
                             promptProgress.dismiss()
+                            if (installDatas.size > event.position) {
+                                installDatas.removeAt(event.position)
+                            }
                             viewBind.loadingView.visibility = View.GONE
                             adapter.notifyDataSetChanged()
                         }

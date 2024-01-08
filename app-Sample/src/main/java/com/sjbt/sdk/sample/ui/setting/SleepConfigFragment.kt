@@ -14,23 +14,10 @@ import com.sjbt.sdk.sample.dialog.*
 import com.sjbt.sdk.sample.utils.*
 import com.sjbt.sdk.sample.utils.viewbinding.viewBinding
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.reactive.asFlow
 import kotlinx.coroutines.rx3.asFlow
 import kotlinx.coroutines.rx3.await
 
-/**
- * **Document**
- * https://github.com/htangsmart/FitCloudPro-SDK-Android/wiki/04.Device-info-and-configs#fcdndconfig
- *
- * ***Description**
- * Display and modify the dnd config
- *
- * **Usage**
- * 1. [DeviceConfigFragment]
- * According to whether [FcDeviceInfo.Feature.DND] supports, show or hide the entrance
- *
- * 2.[DNDConfigFragment]
- * Display and modify
- */
 class SleepConfigFragment : BaseFragment(R.layout.fragment_sleep_config),
     CompoundButton.OnCheckedChangeListener, TimePickerDialogFragment.Listener {
 
@@ -62,7 +49,7 @@ class SleepConfigFragment : BaseFragment(R.layout.fragment_sleep_config),
                 }
             }
             launch {
-                UNIWatchMate?.wmSettings?.settingSleepSettings?.get()?.toObservable()?.asFlow()
+                UNIWatchMate?.wmSettings?.settingSleepSettings?.get()?.toFlowable()?.asFlow()
                     ?.collect {
                         config = it
                         updateUI()

@@ -102,7 +102,10 @@ class DeviceConnectDialogFragment : AppCompatDialogFragment() {
                             viewBind.btnUnbind.setText(R.string.device_unbind)
                             viewBind.btnUnbind.setOnClickListener {
                                 lifecycleScope.launchWhenResumed {
-                                    UnbindConfirmDialogFragment().showNow(childFragmentManager, null)
+                                    UnbindConfirmDialogFragment().showNow(
+                                        childFragmentManager,
+                                        null
+                                    )
                                 }
                             }
                         }
@@ -112,7 +115,7 @@ class DeviceConnectDialogFragment : AppCompatDialogFragment() {
             launch {
                 deviceManager.flowConnectorState.collect {
                     timberJob?.cancel()
-                    wmConnectState=it
+                    wmConnectState = it
                     when (it) {
 
                         WmConnectState.DISCONNECTED -> {
@@ -149,7 +152,8 @@ class DeviceConnectDialogFragment : AppCompatDialogFragment() {
             }
         }
         extraNormalColor = viewBind.tvExtraMsg.textColors
-        extraErrorColor = MaterialColors.getColor(viewBind.root, com.google.android.material.R.attr.colorError)
+        extraErrorColor =
+            MaterialColors.getColor(viewBind.root, com.google.android.material.R.attr.colorError)
         viewBind.tvUnableToConnect.setOnClickListener {
             (parentFragment as? Listener)?.navToConnectHelp()
         }
@@ -217,12 +221,7 @@ class DeviceConnectViewMode : AsyncViewModel<SingleAsyncState<Unit>>(SingleAsync
 
     fun unbind() {
         suspend {
-            if(deviceManager.flowConnectorState.value==WmConnectState.VERIFIED){
-                deviceManager.reset()
-            }else{
-                deviceManager.delDevice()
-            }
-//            deviceManager.reset()
+            deviceManager.reset()
         }.execute(SingleAsyncState<Unit>::async)
         {
             copy(async = it)

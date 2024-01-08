@@ -28,32 +28,10 @@ object SingleInstance {
         InternalStorageImpl(applicationContext, CoroutinesInstance.applicationScope, CoroutinesInstance.applicationIOScope)
     }
 
-//    val moshi: Moshi by lazy {
-//        Moshi.Builder()
-//            .add(StringNotBlankJsonAdapterFactory)
-//            .add(BaseResultJsonAdapterFactory)
-//            .add(ObjectNullableJsonAdapterFactory)
-//            .add(ObjectNonNullJsonAdapterFactory)
-//            .add(ListNullableJsonAdapterFactory)
-//            .add(ListNonNullJsonAdapterFactory)
-//            .build()
-//    }
-
-//    val apiClient: ApiClient by lazy {
-//        ApiClient(moshi)
-//    }
 
     val authManager: AuthManager by lazy {
         AuthManagerImpl(internalStorage, appDatabase)
     }
-//
-//    val womenHealthRepository: WomenHealthRepository by lazy {
-//        WomenHealthRepositoryImpl(
-//            CoroutinesInstance.applicationScope,
-//            internalStorage,
-//            appDatabase
-//        )
-//    }
 
     val userInfoRepository: UserInfoRepository by lazy {
         UserInfoRepositoryImpl(CoroutinesInstance.applicationScope, internalStorage, appDatabase)
@@ -75,14 +53,6 @@ object SingleInstance {
         )
     }
 
-//    val dialRepository: DialRepository by lazy {
-//        DialRepositoryImpl(
-//            applicationContext,
-//            moshi,
-//            deviceManager,
-//            apiClient.apiService
-//        )
-//    }
 
     val sportGoalRepository: SportGoalRepository by lazy {
         SportGoalRepositoryImpl(

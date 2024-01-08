@@ -84,8 +84,7 @@ class CameraActivity : BaseActivity() {
         mediaActionSound = MediaActionSound()
         mediaActionSound!!.load(MediaActionSound.SHUTTER_CLICK)
         myOrientationListener = MyOrientationListener(this)
-        UNIWatchMate.wmApps.appCamera.cameraBackSwitch(WMCameraPosition.WMCameraPositionFront)
-        UNIWatchMate.wmApps.appCamera.cameraFlashSwitch(WMCameraFlashMode.WMCameraFlashModeOn)
+
         var width = 320
         var height = 240
         val basicInfo = CacheDataHelper.getCurrentDeiceBean()
@@ -239,7 +238,7 @@ class CameraActivity : BaseActivity() {
             } else {
                 image_flash?.setImageResource(R.mipmap.biu_icon_flash_off)
             }
-            UNIWatchMate.wmApps.appCamera.cameraFlashSwitch(if (flashOn) WMCameraFlashMode.WMCameraFlashModeOn else WMCameraFlashMode.WMCameraFlashModeOff)
+            UNIWatchMate.wmApps.appCamera.cameraFlashSwitch(if (flashOn) WMCameraFlashMode.WMCameraFlashModeOn else WMCameraFlashMode.WMCameraFlashModeOff).subscribe()
         })
 
         ivTook?.setOnClickListener(View.OnClickListener {
@@ -260,7 +259,7 @@ class CameraActivity : BaseActivity() {
 
     private fun switchCamera() {
         front = !front
-        UNIWatchMate.wmApps.appCamera.cameraBackSwitch(if (front) WMCameraPosition.WMCameraPositionFront else WMCameraPosition.WMCameraPositionRear)
+        UNIWatchMate.wmApps.appCamera.cameraBackSwitch(if (front) WMCameraPosition.WMCameraPositionFront else WMCameraPosition.WMCameraPositionRear).subscribe()
     }
 
     private fun intCamera() {
@@ -551,7 +550,7 @@ class CameraActivity : BaseActivity() {
         Timber.d(  "$localClassName -> onPause")
         isPausedCamera = true
         isCameraOpened = false
-        UNIWatchMate.wmApps.appCamera.openCloseCamera(false).subscribe().dispose()
+        UNIWatchMate.wmApps.appCamera.openCloseCamera(false).subscribe()
     }
 
     override fun onResume() {

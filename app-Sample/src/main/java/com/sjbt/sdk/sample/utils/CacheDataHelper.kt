@@ -6,22 +6,21 @@ object CacheDataHelper {
 
     private var transferringFile = false
     private var synchronizingData = false
-    private var basicInfo: WmDeviceInfo? = null
     var measureWidth = -1
     var cameraLaunchedByDevice = false
     var cameraLaunchedBySelf = false
+    private var currDeviceBean: WmDeviceInfo? = null
 
     fun clearCachedData() {
 //        setCurrentDeviceBean(null)
-        basicInfo = null
+        currDeviceBean = null
     }
 
     fun clearDataWithOutAccount() {
 //        setCurrentDeviceBean(null)
-        basicInfo = null
+        currDeviceBean = null
     }
 
-    private var currDeviceBean: WmDeviceInfo? = null
 
     fun setCurrentDeviceInfo(deviceBean: WmDeviceInfo?) {
         currDeviceBean = deviceBean
@@ -29,8 +28,6 @@ object CacheDataHelper {
     fun getCurrentDeiceBean(): WmDeviceInfo? {
         return currDeviceBean
     }
-
-
 
     fun getTransferring(): Boolean {
         return transferringFile

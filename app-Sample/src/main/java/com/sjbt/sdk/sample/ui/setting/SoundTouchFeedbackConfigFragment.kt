@@ -17,21 +17,10 @@ import com.sjbt.sdk.sample.utils.setAllChildEnabled
 import com.sjbt.sdk.sample.utils.viewLifecycle
 import com.sjbt.sdk.sample.utils.viewbinding.viewBinding
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.reactive.asFlow
 import kotlinx.coroutines.rx3.asFlow
 import kotlinx.coroutines.rx3.await
 
-/**
- * **Document**
- * https://github.com/htangsmart/FitCloudPro-SDK-Android/wiki/04.Device-info-and-configs#fcfunctionconfig
- *
- * ***Description**
- * Display and modify the simple functions on the device
- *
- * **Usage**
- * 1. [SoundTouchFeedbackConfigFragment]
- * Display and modify
- */
-//不需要连接也可以设置的
 class SoundTouchFeedbackConfigFragment : BaseFragment(R.layout.fragment_sound_touch_config),
     CompoundButton.OnCheckedChangeListener {
 
@@ -51,7 +40,7 @@ class SoundTouchFeedbackConfigFragment : BaseFragment(R.layout.fragment_sound_to
 
         viewLifecycle.launchRepeatOnStarted {
             launch {
-                UNIWatchMate.wmSettings.settingSoundAndHaptic.get().toObservable().asFlow()
+                UNIWatchMate.wmSettings.settingSoundAndHaptic.get().toFlowable().asFlow()
                     .collect {
                         config = it
                         updateUI()

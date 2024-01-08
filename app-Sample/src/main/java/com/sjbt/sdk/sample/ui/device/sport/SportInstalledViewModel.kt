@@ -1,10 +1,10 @@
 package com.sjbt.sdk.sample.ui.device.sport
 
+import android.util.SparseArray
+import androidx.core.util.size
 import androidx.lifecycle.viewModelScope
 import com.base.api.UNIWatchMate
 import com.base.sdk.entity.apps.WmSport
-import com.blankj.utilcode.util.GsonUtils
-import com.blankj.utilcode.util.ResourceUtils
 import com.sjbt.sdk.sample.MyApplication
 import com.sjbt.sdk.sample.R
 import com.sjbt.sdk.sample.base.Async
@@ -15,12 +15,13 @@ import com.sjbt.sdk.sample.base.Success
 import com.sjbt.sdk.sample.base.Uninitialized
 import com.sjbt.sdk.sample.model.LocalSportLibrary
 import com.sjbt.sdk.sample.utils.ToastUtil
+import com.sjbt.sdk.sample.utils.getSportLibrary
 import com.sjbt.sdk.sample.utils.runCatchingWithLog
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.rx3.await
 
 data class SportState(
-    val requestSports: Async<MutableList<WmSport>> = Uninitialized,
+    val requestSports: Async<SparseArray<MutableList<WmSport>>> = Uninitialized,
 )
 
 sealed class SportEvent {
@@ -44,31 +45,27 @@ class SportInstalledViewModel : StateEventViewModel<SportState, SportEvent>(Spor
     fun requestInstallSports() {
         viewModelScope.launch {
             state.copy(requestSports = Loading()).newState()
-//            UNIWatchMate.wmApps.appSport.syncSportList.asFlow().catch {
-//                state.copy(requestSports = Fail(it)).newState()
-//                SportEvent.RequestFail(it).newEvent()
-//            }.collect{
-//
-//            }
             runCatchingWithLog {
-                val sportsData = ResourceUtils.readAssets2String("sports_data.json")
-                localSportLibrary =
-                    GsonUtils.fromJson<LocalSportLibrary>(sportsData, LocalSportLibrary::class.java)
-                refreshInstallState(
-                    UNIWatchMate.wmApps.appSport.getSportList.await(),
+                localSportLibrary = getSportLibrary()
+                val fixedList =    refreshInstallState(
+                    UNIWatchMate.wmApps.appSport.getFixedSportList.await(),
                     localSportLibrary
                 )
+                val dynamicList =   refreshInstallState(
+                    UNIWatchMate.wmApps.appSport.getDynamicSportList.await(),
+                    localSportLibrary
+                )
+                val sparseArray = SparseArray<MutableList<WmSport>>()
+                sparseArray[0]= fixedList as MutableList<WmSport>?
+                sparseArray[1]= dynamicList as MutableList<WmSport>?
+                sparseArray
             }.onSuccess {
-                if (it is MutableList) {
-                    state.copy(requestSports = Success(it)).newState()
-                } else {
-                    state.copy(requestSports = Fail(Throwable("result is not a mutable list")))
-                        .newState()
-                }
+                state.copy(requestSports = Success(it)).newState()
             }.onFailure {
                 state.copy(requestSports = Fail(it)).newState()
                 SportEvent.RequestFail(it).newEvent()
             }
+
         }
     }
 
@@ -96,15 +93,21 @@ class SportInstalledViewModel : StateEventViewModel<SportState, SportEvent>(Spor
      */
     fun deleteSport(position: Int) {
         viewModelScope.launch {
-            val sports = state.requestSports()
-            if (sports != null && position + 8 < sports.size) {
-                sports.removeAt(position + 8)
+            val sportsMap = state.requestSports()
+            if (sportsMap != null && sportsMap.size>1&&sportsMap[1]!=null&&sportsMap[1].size>position) {
+               val removedSport = sportsMap[1].removeAt(position )
                 runCatchingWithLog {
-                    UNIWatchMate.wmApps.appSport.updateSportList(sports).await()
+                    UNIWatchMate.wmApps.appSport.updateDynamicSportList(sportsMap[1]).await()
                 }.onSuccess {
-                    SportEvent.SportRemoved(position).newEvent()
+                    if (it) {
+                        SportEvent.SportRemoved(position).newEvent()
+                    }else{
+                        sportsMap[1].add(position,removedSport)
+                        SportEvent.SportUpdateFail("删除失败").newEvent()
+                    }
                 }.onFailure {
                     ToastUtil.showToast(it.message)
+                    sportsMap[1].add(position,removedSport)
                     SportEvent.SportUpdateFail(it.message).newEvent()
                 }
             }
@@ -113,11 +116,11 @@ class SportInstalledViewModel : StateEventViewModel<SportState, SportEvent>(Spor
 
     fun sortFixedSportList(fromOnStart: Int, to: Int) {
         viewModelScope.launch {
-            val sports = state.requestSports()
-            if (sports != null) {
-                sports.add(to, sports.removeAt(fromOnStart))
+            val sportsMap = state.requestSports()
+            if (sportsMap != null&&sportsMap[0]!=null) {
+                sportsMap[0].add(to, sportsMap[0].removeAt(fromOnStart))
                 runCatchingWithLog {
-                    UNIWatchMate.wmApps.appSport.updateSportList(sports).await()
+                    UNIWatchMate.wmApps.appSport.updateFixedSportList(sportsMap[0]).await()
                 }.onSuccess {
                     SportEvent.SportSortSuccess().newEvent()
                 }.onFailure {
@@ -131,17 +134,17 @@ class SportInstalledViewModel : StateEventViewModel<SportState, SportEvent>(Spor
 
     fun installContactContain(position: Int, localSport: LocalSportLibrary.LocalSport) {
         viewModelScope.launch {
-            val wmSports = state.requestSports()
+            val wmSports = state.requestSports()?.get(1)
 
             wmSports?.let {
-                if (it.size >= 20) {
+                if (it.size >= 12) {
                     SportEvent.SportInstallFail(MyApplication.instance.resources.getString(R.string.ds_sport_at_most)).newEvent()
                     return@launch
                 }
                 val wmSport = WmSport(localSport.id, localSport.type, localSport.buildIn)
                 wmSports.add(wmSport)
                 runCatchingWithLog {
-                    val result = UNIWatchMate.wmApps.appSport.updateSportList(wmSports).await()
+                    val result = UNIWatchMate.wmApps.appSport.updateDynamicSportList(wmSports).await()
                     result
                 }.onSuccess {
                     localSport.installed = it

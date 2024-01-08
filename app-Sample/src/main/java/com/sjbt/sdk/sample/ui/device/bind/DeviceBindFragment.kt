@@ -7,7 +7,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.os.Handler
 import android.provider.Settings
 import android.text.TextUtils
 import android.view.Menu
@@ -25,7 +24,6 @@ import cn.bertsir.zbar.Qr.ScanResult
 import com.base.api.UNIWatchMate
 import com.base.sdk.entity.BindType
 import com.base.sdk.entity.WmBindInfo
-import com.base.sdk.entity.WmDevice
 import com.base.sdk.entity.WmDeviceModel
 import com.base.sdk.entity.apps.WmConnectState
 import com.base.sdk.entity.common.WmTimeUnit
@@ -38,11 +36,11 @@ import com.sjbt.sdk.sample.base.BaseFragment
 import com.sjbt.sdk.sample.data.device.DeviceManager
 import com.sjbt.sdk.sample.databinding.FragmentDeviceBindBinding
 import com.sjbt.sdk.sample.di.Injector
+import com.sjbt.sdk.sample.model.ScanStringParse
 import com.sjbt.sdk.sample.ui.bind.DeviceConnectDialogFragment
 import com.sjbt.sdk.sample.utils.*
 import com.sjbt.sdk.sample.utils.viewbinding.viewBinding
 import com.sjbt.sdk.sample.widget.CustomDividerItemDecoration
-import com.sjbt.sdk.utils.UrlParse
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.launch
@@ -55,7 +53,7 @@ import timber.log.Timber
 class DeviceBindFragment : BaseFragment(R.layout.fragment_device_bind),
     PromptDialogFragment.OnPromptListener, DeviceConnectDialogFragment.Listener {
     private /*const*/ val promptBindSuccessId = 1
-    private var startScan = false
+    private var startSearch = false
     private val viewBind: FragmentDeviceBindBinding by viewBinding()
     private val applicationScope = Injector.getApplicationScope()
     private val userInfoRepository = Injector.getUserInfoRepository()
@@ -70,10 +68,10 @@ class DeviceBindFragment : BaseFragment(R.layout.fragment_device_bind),
 
     private val deviceManager: DeviceManager = Injector.getDeviceManager()
 
-    private val scanDevicesAdapter: ScanDevicesAdapter = ScanDevicesAdapter().apply {
-        listener = object : ScanDevicesAdapter.Listener {
-            override fun onItemClick(device: ScanDevice) {
-                tryingBind(device)
+    private val searchDevicesAdapter: SearchDevicesAdapter = SearchDevicesAdapter().apply {
+        listener = object : SearchDevicesAdapter.Listener {
+            override fun onItemClick(device: BlueToothDevice) {
+                tryingBindSearchDevice(device)
             }
 
             override fun onItemSizeChanged(oldSize: Int, newSize: Int) {
@@ -91,69 +89,58 @@ class DeviceBindFragment : BaseFragment(R.layout.fragment_device_bind),
 
     private var bluetoothSnackbar: Snackbar? = null
 
-    private fun tryingBind(device: ScanDevice) {
+    private fun tryingBindSearchDevice(device: BlueToothDevice) {
         this::class.simpleName?.let { Timber.i("address=${device.address} name=${device.name}") }
         val userInfo = userInfoRepository.flowCurrent.value
         userInfo?.let {
-            UNIWatchMate.connect(
+            val wmDevice = UNIWatchMate.connect(
                 device.address,
-                WmBindInfo(it.id.toString(), it.name, BindType.DISCOVERY, device.mode)
+                WmBindInfo(
+                    it.id.toString(),
+                    it.name,
+                    device.address,
+                    BindType.DISCOVERY,
+                    device.deviceType,
+                    device.mode
+                )
             )
-            deviceManager.bind(
-                device.address, if (device.name.isNullOrEmpty()) {
-                    UNKNOWN_DEVICE_NAME
-                } else {
-                    device.name!!
-                }, device.mode
-            )
+            wmDevice?.let { wmDevice ->
+                deviceManager.bind(
+                    device.address, if (wmDevice.name.isNullOrEmpty()) {
+                        UNKNOWN_DEVICE_NAME
+                    } else {
+                        wmDevice.name!!
+                    }, device.mode
+                )
 
-            DeviceConnectDialogFragment().show(childFragmentManager, null)
+                DeviceConnectDialogFragment().show(childFragmentManager, null)
+            } ?: {
 
+            }
         }
     }
-
-//    fun parseSjScanQr(qrString: String): WmDevice? {
-//        var wmScanDevice: WmDevice? = null
-//
-////        val params = UrlParse.getUrlParams(qrString)
-//        val urlParams = qrString.split("?")
-//
-//        if (urlParams.isNotEmpty()) {
-//            val params = urlParams[1].split("&")
-//            if (params.isNotEmpty() && params.size >= 3) {
-//                wmScanDevice = WmDevice(WmDeviceModel.SJ_WATCH)
-//
-//                val schemeMacAddress = params[0]
-//                val schemeDeviceName = params[1]
-//                val random = params[2]
-//
-//                wmScanDevice.randomCode = random
-//
-//                wmScanDevice.address = schemeMacAddress
-//                wmScanDevice.isRecognized =
-//                    !TextUtils.isEmpty(schemeMacAddress) &&
-//                            !TextUtils.isEmpty(schemeDeviceName) &&
-//                            !TextUtils.isEmpty(random) &&
-//                            isLegalMacAddress(schemeMacAddress)
-//            }
-//        }
-//
-//        return wmScanDevice
-//    }
 
     private fun isLegalMacAddress(address: String?): Boolean {
         return !TextUtils.isEmpty(address)
     }
 
-    private fun tryingBind(scanResult: ScanResult) {
+    private fun tryingBindScanDevice(scanContent: String) {
         applicationScope.launchWithLog {
             runCatchingWithLog {
-                this::class.simpleName?.let { Timber.tag(it).i("scanResult=$scanResult") }
+                this::class.simpleName?.let { Timber.tag(it).i("scanContent=$scanContent") }
                 val userInfo = userInfoRepository.flowCurrent.value ?: return@launchWithLog
-                val bindInfo = WmBindInfo(userInfo.id.toString(), userInfo.name, BindType.SCAN_QR)
-//                        deviceManager.delDevice()
+                val scanResult = parseScanContent(scanContent)
+                val bindInfo = WmBindInfo(
+                    userInfo.id.toString(),
+                    userInfo.name,
+                    scanResult.schemeMacAddress,
+                    BindType.SCAN_QR,
+                    scanResult.projectName,
+                    scanResult.modelType
+                )
+                bindInfo.randomCode = scanResult.randomCode
+//                  deviceManager.delDevice()
                 val wmDevice = UNIWatchMate.connectScanQr(
-                    scanResult.getContent(),
                     bindInfo
                 )
                 if (wmDevice != null && wmDevice.mode != WmDeviceModel.NOT_REG) {
@@ -173,6 +160,30 @@ class DeviceBindFragment : BaseFragment(R.layout.fragment_device_bind),
                 ToastUtil.showToast(it.message)
             }
         }
+    }
+
+    private fun parseScanContent(scanContent: String): ScanStringParse {
+        val urlParams = scanContent.split("?")
+        var model = WmDeviceModel.NOT_REG
+        var randomCode = ""
+        var projectName = ""
+        var schemeMacAddress = ""
+        if (urlParams.isNotEmpty() && urlParams.size >= 2) {
+            val params = urlParams[1].split("&")
+            model = WmDeviceModel.NOT_REG
+
+            if (params.isNotEmpty() && params.size >= 3) {
+                schemeMacAddress = params[0]
+                projectName = params[1]
+                randomCode = params[2]
+                model = if ("OSW-802N" == projectName) {
+                    WmDeviceModel.SJ_WATCH
+                } else {
+                    WmDeviceModel.NOT_REG
+                }
+            }
+        }
+        return ScanStringParse(randomCode, model, projectName, schemeMacAddress)
     }
 
     override fun onPromptCancel(promptId: Int, cancelReason: Int, tag: String?) {
@@ -212,11 +223,10 @@ class DeviceBindFragment : BaseFragment(R.layout.fragment_device_bind),
         }, viewLifecycleOwner)
 
 //        viewLifecycle.addObserver(scannerHelper)
-//
         viewBind.refreshLayout.setOnRefreshListener {
             //Clear data when using pull to refresh. This is a different strategy than fabScan click event
-            if (!startScan) {
-                scanDevicesAdapter.clearItems()
+            if (!startSearch) {
+                searchDevicesAdapter.clearItems()
                 startDiscover()
             }
         }
@@ -229,11 +239,11 @@ class DeviceBindFragment : BaseFragment(R.layout.fragment_device_bind),
                 LinearLayoutManager.VERTICAL
             )
         )
-        viewBind.scanDevicesRecyclerView.adapter = scanDevicesAdapter
+        viewBind.scanDevicesRecyclerView.adapter = searchDevicesAdapter
 
         viewBind.fabScan.setOnClickListener {
-            if (!startScan) {
-                scanDevicesAdapter.clearItems()
+            if (!startSearch) {
+                searchDevicesAdapter.clearItems()
                 startDiscover()
                 viewBind.refreshLayout.isRefreshing = true
             }
@@ -252,8 +262,6 @@ class DeviceBindFragment : BaseFragment(R.layout.fragment_device_bind),
                             promptId = promptBindSuccessId
                         )
                         toggleBluetoothAlert(false)
-                    } else if (it == WmConnectState.BT_DISABLE) {
-                        toggleBluetoothAlert(true)
                     } else {
                         toggleBluetoothAlert(false)
                     }
@@ -282,7 +290,7 @@ class DeviceBindFragment : BaseFragment(R.layout.fragment_device_bind),
                 val scanResult: ScanResult = bundle.getSerializable(EXTRA_SCAN_RESULT) as ScanResult
                 scanResult?.let {
                     if (!it.getContent().isNullOrEmpty()) {
-                        tryingBind(it)
+                        tryingBindScanDevice(it.content)
                     }
                 }
             }
@@ -290,7 +298,7 @@ class DeviceBindFragment : BaseFragment(R.layout.fragment_device_bind),
     }
 
     private fun startDiscover() {
-        startScan = true
+        startSearch = true
 //       val filterTag= viewBind.editFilter.text.trim().toString()
         viewLifecycle.launchRepeatOnStarted {
             launch {
@@ -310,10 +318,10 @@ class DeviceBindFragment : BaseFragment(R.layout.fragment_device_bind),
                             Timber.e("startDiscover onCompletion")
                         }
                         viewBind.refreshLayout.isRefreshing = false
-                        startScan = false
+                        startSearch = false
                     }.collect {
                         this::class.simpleName?.let { it1 -> Timber.tag(it1).i(it.toString()) }
-                        scanDevicesAdapter.newScanResult(it, WmDeviceModel.SJ_WATCH)
+                        searchDevicesAdapter.newScanResult(it, WmDeviceModel.SJ_WATCH, "OSW-802N")
                     }
             }
         }
@@ -367,7 +375,6 @@ class DeviceBindFragment : BaseFragment(R.layout.fragment_device_bind),
         const val EXTRA_NAME = "name"
         const val UNKNOWN_DEVICE_NAME = "Unknown"
     }
-
 }
 
 class ScanErrorDelayDialogFragment : AppCompatDialogFragment() {

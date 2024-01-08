@@ -26,7 +26,7 @@ import java.util.*
 abstract class DataListFragment<T> : BaseFragment() {
 
     private val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-    protected val timeFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
+    protected val timeFormat = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault())
     protected val syncDataRepository = Injector.getSyncDataRepository()
     private var selectDate: Date = Date()
     protected lateinit var adapter: DataListAdapter<T>
@@ -79,10 +79,12 @@ abstract class DataListFragment<T> : BaseFragment() {
 
     private fun loadData(date: Date) {
         this.selectDate = date
+        promptProgress.showProgress("")
         btnDate.text = dateFormat.format(date)
         applicationScope.launch {
             adapter.sources = queryData(date)
             withContext(Dispatchers.Main){
+                promptProgress.dismiss()
                 adapter.notifyDataSetChanged()
             }
         }

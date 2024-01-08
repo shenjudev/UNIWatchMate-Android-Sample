@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.swiperefreshlayout.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/refresh_layout"
@@ -29,7 +29,18 @@
                 android:id="@+id/item_step"
                 style="@style/Widget.Sample.PreferenceView.Item.Text"
                 app:preferenceTitle="@string/data_step" />
-
+            <com.github.kilnn.tool.widget.item.PreferenceItem
+                android:id="@+id/item_calories"
+                style="@style/Widget.Sample.PreferenceView.Item.Text"
+                app:preferenceTitle="@string/data_calorie" />
+            <com.github.kilnn.tool.widget.item.PreferenceItem
+                android:id="@+id/item_activity_duration"
+                style="@style/Widget.Sample.PreferenceView.Item.Text"
+                app:preferenceTitle="@string/data_activity_duration" />
+            <com.github.kilnn.tool.widget.item.PreferenceItem
+                android:id="@+id/item_activity_distance"
+                style="@style/Widget.Sample.PreferenceView.Item.Text"
+                app:preferenceTitle="@string/exercise_data_distance" />
             <com.github.kilnn.tool.widget.item.PreferenceItem
                 android:id="@+id/item_sleep"
                 style="@style/Widget.Sample.PreferenceView.Item.Text"
@@ -49,9 +60,16 @@
                 android:id="@+id/item_sport"
                 style="@style/Widget.Sample.PreferenceView.Item.Text"
                 app:preferenceTitle="@string/data_sport" />
-
+            <com.github.kilnn.tool.widget.item.PreferenceItem
+                android:id="@+id/item_all"
+                style="@style/Widget.Sample.PreferenceView.Item.Text"
+                app:preferenceTitle="@string/data_all" />
+            <com.github.kilnn.tool.widget.item.PreferenceItem
+                android:id="@+id/item_daily_activity_duration"
+                style="@style/Widget.Sample.PreferenceView.Item.Text"
+                app:preferenceTitle="@string/data_daily_duration" />
         </LinearLayout>
 
     </ScrollView>
 
-</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+</androidx.appcompat.widget.LinearLayoutCompat>

@@ -5,7 +5,7 @@ import android.view.View
 import android.widget.CompoundButton
 import com.base.api.UNIWatchMate
 import com.base.sdk.entity.apps.WmConnectState
-import com.base.sdk.entity.settings.WmWistRaise
+import com.base.sdk.entity.settings.WmWristRaise
 import com.sjbt.sdk.sample.R
 import com.sjbt.sdk.sample.base.BaseFragment
 import com.sjbt.sdk.sample.databinding.FragmentTurnWristLightingConfigBinding
@@ -16,20 +16,10 @@ import com.sjbt.sdk.sample.utils.setAllChildEnabled
 import com.sjbt.sdk.sample.utils.viewLifecycle
 import com.sjbt.sdk.sample.utils.viewbinding.viewBinding
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.reactive.asFlow
 import kotlinx.coroutines.rx3.asFlow
 import kotlinx.coroutines.rx3.await
 
-/**
- * **Document**
- * https://github.com/htangsmart/FitCloudPro-SDK-Android/wiki/04.Device-info-and-configs#fcturnwristlightingconfig
- *
- * ***Description**
- * Display and modify the config of raise hand to lighting the device
- *
- * **Usage**
- * 1. [TurnWristLightingConfigFragment]
- * Display and modify
- */
 class TurnWristLightingConfigFragment : BaseFragment(R.layout.fragment_turn_wrist_lighting_config),
     CompoundButton.OnCheckedChangeListener {
 
@@ -38,7 +28,7 @@ class TurnWristLightingConfigFragment : BaseFragment(R.layout.fragment_turn_wris
     private val deviceManager = Injector.getDeviceManager()
     private val applicationScope = Injector.getApplicationScope()
 
-    private  var config: WmWistRaise?=null
+    private  var config: WmWristRaise?=null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -63,7 +53,7 @@ class TurnWristLightingConfigFragment : BaseFragment(R.layout.fragment_turn_wris
             }
 
             launch {
-                 UNIWatchMate.wmSettings.settingWistRaise.get().toObservable().asFlow().collect{
+                 UNIWatchMate.wmSettings.settingWistRaise.get().toFlowable().asFlow().collect{
                     config = it
                     updateUI()
                 }
@@ -82,7 +72,7 @@ class TurnWristLightingConfigFragment : BaseFragment(R.layout.fragment_turn_wris
         }
     }
 
-    private fun WmWistRaise.saveConfig() {
+    private fun WmWristRaise.saveConfig() {
         applicationScope.launchWithLog {
             UNIWatchMate.wmSettings.settingWistRaise.set(config!!).await()
         }

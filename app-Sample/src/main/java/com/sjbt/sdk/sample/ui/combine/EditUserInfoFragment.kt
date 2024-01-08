@@ -61,6 +61,7 @@ class EditUserInfoFragment : BaseFragment(R.layout.fragment_edit_user_info),
             valueDate = Date(info!!.birthYear - 1900, info!!.birthMonth - 1, info!!.birthDay)
             viewBind.editHeight.setText(info!!.height.toString())
             viewBind.editWeight.setText(info!!.weight.toString())
+            viewBind.tvName.text = info!!.name
             viewBind.rgSex.check(
                 if (info!!.sex) {
                     R.id.rb_sex_male

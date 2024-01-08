@@ -10,8 +10,11 @@ import com.base.sdk.entity.data.WmHeartRateData
 import com.base.sdk.entity.data.WmRealtimeRateData
 import com.github.kilnn.tool.widget.item.PreferenceItem
 import com.sjbt.sdk.sample.R
+import com.sjbt.sdk.sample.utils.DateTimeUtils
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.rx3.await
+import kotlinx.coroutines.rx3.awaitFirst
+import timber.log.Timber
 import java.util.*
 
 class HeartRateFiveMinutesFragment : DataListFragment<WmRealtimeRateData>() {
@@ -26,8 +29,14 @@ class HeartRateFiveMinutesFragment : DataListFragment<WmRealtimeRateData>() {
 
     override fun queryData(date: Date): List<WmRealtimeRateData>? {
         return runBlocking {
-            UNIWatchMate.wmSync.syncRealtimeRateData.syncData(System.currentTimeMillis() - 1000 * 60 * 60 * 24)
-                .await()
+            val calendar = Calendar.getInstance()
+            val start: Date = DateTimeUtils.getDayStartTime(calendar, date)
+            val end: Date = DateTimeUtils.getDayEndTime(calendar, date)
+
+                val bean =    UNIWatchMate.wmSync.syncRealtimeRateData.syncData(start.time)
+                .awaitFirst()
+            Timber.d("type="+bean.type.name)
+            bean.value
         }
     }
 

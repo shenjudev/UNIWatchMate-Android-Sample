@@ -29,6 +29,8 @@ import com.base.sdk.entity.apps.WmWeatherForecast
 import com.base.sdk.entity.apps.WmWeatherTime
 import com.base.sdk.entity.common.WmWeek
 import com.base.sdk.entity.settings.WmUnitInfo
+import com.blankj.utilcode.util.GsonUtils
+import com.blankj.utilcode.util.ResourceUtils
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.DrawableImageViewTarget
@@ -37,6 +39,7 @@ import com.github.kilnn.tool.dialog.prompt.PromptDialogHolder
 import com.github.kilnn.tool.system.SystemUtil
 import com.github.kilnn.tool.widget.item.PreferenceItem
 import com.sjbt.sdk.sample.R
+import com.sjbt.sdk.sample.model.LocalSportLibrary
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.functions.Action
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -304,6 +307,16 @@ fun step2Km(step: Int, stepLength: Float): Float {
     return stepLength * step / 1000
 }
 
+private var localSportLibrary: LocalSportLibrary? = null
+fun getSportLibrary(): LocalSportLibrary {
+    if (localSportLibrary == null) {
+        val sportsData = ResourceUtils.readAssets2String("sport_type_names.json")
+        localSportLibrary =
+            GsonUtils.fromJson(sportsData, LocalSportLibrary::class.java)
+    }
+    return localSportLibrary!!
+}
+
 fun glideShowImage(
     imageView: ImageView,
     uri: Any?,
@@ -344,7 +357,7 @@ fun getTestWeatherdata(wmWeatherTime: WmWeatherTime, code: Int): WmWeather {
     if (wmWeatherTime == WmWeatherTime.TODAY) {
         for (index in 0..23) {
             val toDayWeather = TodayWeather(
-                10, WmUnitInfo.TemperatureUnit.CELSIUS, 66, 5,
+                10f, WmUnitInfo.TemperatureUnit.CELSIUS, 66, 5,
                 code, "晴", System.currentTimeMillis() + index * 3600 * 1000, index
             )
             todayWeatherList.add(toDayWeather)
@@ -352,12 +365,14 @@ fun getTestWeatherdata(wmWeatherTime: WmWeatherTime, code: Int): WmWeather {
     } else {
         for (index in 0..6) {
             val wmWeatherForecast = WmWeatherForecast(
-                10,
-                30,
-                20,
-                 WmUnitInfo.TemperatureUnit.CELSIUS,
-                90,
+                10f,
+                30f,
+                20f,
+                WmUnitInfo.TemperatureUnit.CELSIUS,
+                90f,
+                95f,
                 5,
+                6,
                 code,
                 code,
                 "白天天气描述",

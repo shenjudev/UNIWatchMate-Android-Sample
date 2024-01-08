@@ -1,21 +1,6 @@
 package com.sjbt.sdk.sample.base
 
 object Constant {
-    val TYPES = arrayOf(
-        "全屏（竖屏）",
-        "全屏（横屏）",
-        "弹窗（竖屏）",
-        "弹窗（横屏）",
-        "底部弹窗",
-        "自定义View",
-        "自定义View（Xml）",
-        "自定义Gif背景",
-        "自定义视频背景(mov,mp4)",
-        "自定义图片背景",
-        "全屏（竖屏弹窗）",
-        "全屏（竖屏弹窗自定义View）",
-        "全屏（横屏弹窗)"
-    )
     const val WeatherCodeName = "[\n" +
             "    {\n" +
             "        \"code\": 0,\n" +
@@ -362,74 +347,6 @@ object Constant {
             "    }\n" +
             "]"
 
-    /**
-     * 全屏（竖屏）
-     */
-    const val FULL_PORT = 0
-
-    /**
-     * 全屏（横屏）
-     */
-    const val FULL_LAND = 1
-
-    /**
-     * 弹窗（竖屏）
-     */
-    const val DIALOG_PORT = 2
-
-    /**
-     * "弹窗（横屏）
-     */
-    const val DIALOG_LAND = 3
-
-    /**
-     * 底部弹窗
-     */
-    const val DIALOG_BOTTOM = 4
-
-    /**
-     * 自定义View
-     */
-    const val CUSTOM_VIEW = 5
-
-    /**
-     * 自定义View（Xml）
-     */
-    const val CUSTOM_XML = 6
-
-    /**
-     * 自定义背景GIF
-     */
-    const val CUSTOM_GIF = 7
-
-    /**
-     * 自定义背景视频
-     */
-    const val CUSTOM_MOV = 8
-
-    /**
-     * 自定义背景图片
-     */
-    const val CUSTOM_PIC = 9
-
-    /**
-     * 全屏（竖屏弹窗）
-     */
-    const val FULL_PORT_PRIVACY = 10
-
-    /**
-     * 全屏（竖屏弹窗自定义view）
-     */
-    const val FULL_PORT_PRIVACY_XML = 11
-
-    /**
-     * 全屏（横屏弹窗
-     */
-    const val FULL_LAND_PRIVACY = 12
-    const val THEME_KEY = "theme"
-    const val LOGIN_TYPE = "login_type"
-    const val LOGIN = 1
-    const val LOGIN_DELAY = 2
     const val W20 = "W20"
     const val SJJC = "sjjc"
     const val DE = "de"

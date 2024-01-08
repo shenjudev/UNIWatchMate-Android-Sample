@@ -31,20 +31,12 @@ import com.sjbt.sdk.sample.utils.setAllChildEnabled
 import com.sjbt.sdk.sample.utils.viewLifecycle
 import com.sjbt.sdk.sample.utils.viewbinding.viewBinding
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.reactive.asFlow
 import kotlinx.coroutines.rx3.asFlow
 import kotlinx.coroutines.rx3.await
 import timber.log.Timber
 
 /**
- * **Document**
- * https://github.com/htangsmart/FitCloudPro-SDK-Android/wiki/04.Device-info-and-configs#fcdrinkwaterconfig
- *
- * ***Description**
- * Display and modify the config of drink water reminder
- *
- * **Usage**
- * 1. [DrinkWaterConfigFragment]
- * Display and modify
  */
 class DrinkWaterConfigFragment : BaseFragment(R.layout.fragment_drink_water_config),
     CompoundButton.OnCheckedChangeListener,
@@ -83,7 +75,7 @@ class DrinkWaterConfigFragment : BaseFragment(R.layout.fragment_drink_water_conf
             }
 
             launch {
-                UNIWatchMate.wmSettings.settingDrinkWater.get().toObservable().asFlow().collect {
+                UNIWatchMate.wmSettings.settingDrinkWater.get().toFlowable().asFlow().collect {
                     config = it
                     updateUI()
                     Timber.i("get config = $config")

@@ -12,6 +12,7 @@ import com.sjbt.sdk.sample.utils.viewLifecycle
 import com.sjbt.sdk.sample.utils.viewbinding.viewBinding
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.reactive.collect
 import kotlinx.coroutines.rx3.asFlow
 import kotlinx.coroutines.rx3.await
 
@@ -27,7 +28,8 @@ class DeviceInfoFragment : BaseFragment(R.layout.fragment_device_info) {
             launch {
                 val it=  UNIWatchMate?.getDeviceInfo()?.await()
 
-                viewBind.itemDeviceInfo.text = "mac=${it.macAddress}\nbluetoothName=${it.bluetoothName}\n" +
+                viewBind.itemDeviceInfo.text = "mac=${it.macAddress}\n" +
+                        "bluetoothName=${it.bluetoothName}\n" +
                         "deviceName=${it.deviceName}\n" +
                         "deviceId=${it.deviceId}\n" +
                         "version=${it.version}\n"+

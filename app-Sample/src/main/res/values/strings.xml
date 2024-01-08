@@ -38,6 +38,7 @@
     <string name="unit_mi_param"><xliff:g id="params1">%1$s</xliff:g> mi</string>
     <string name="unit_step_param"><xliff:g id="params1">%1$d</xliff:g> steps</string>
     <string name="unit_k_calories_param"><xliff:g id="params1">%1$s</xliff:g> kCal</string>
+    <string name="unit_calories_param"><xliff:g id="params1">%1$s</xliff:g> Cal</string>
     <string name="unit_fahrenheit_param"><xliff:g id="params1">%1$s</xliff:g> ℉</string>
     <string name="unit_centigrade_param"><xliff:g id="params1">%1$s</xliff:g> ℃</string>
 
@@ -125,6 +126,27 @@
     <string name="exercise_goal_distance">Distance</string>
     <string name="exercise_goal_calories">Calories</string>
     <string name="exercise_goal_activity">Activity Duration</string>
+    <!--Exercise data type -->
+    <!--    用时、距离、消耗（热量）、步数、平均配速、最大配速、最低配速、平均速度、最大速度、最低速度、平均步频、最大步频、最低步频、平均心率、最大心率、最低心率、跳绳计数、心率分布-->
+    <string name="exercise_data_time">time</string>
+    <string name="exercise_data_distance">distance</string>
+    <string name="exercise_data_calories">calories</string>
+    <string name="exercise_data_step">step</string>
+    <string name="exercise_data_average_pace">average pace</string>
+    <string name="exercise_data_max_pace">max pace</string>
+    <string name="exercise_data_min_pace">min pace</string>
+    <string name="exercise_data_average_speed">average speed</string>
+    <string name="exercise_data_max_speed">max speed</string>
+    <string name="exercise_data_min_speed">min speed</string>
+    <string name="exercise_data_average_step_frequency">average step frequency</string>
+    <string name="exercise_data_max_step_frequency">max step frequency</string>
+    <string name="exercise_data_min_step_frequency">min step frequency</string>
+    <string name="exercise_data_average_heart_rate">average heart rate</string>
+    <string name="exercise_data_max_heart_rate">max heart rate</string>
+    <string name="exercise_data_min_heart_rate">min heart rate</string>
+    <string name="exercise_data_jump_rope_counting">jump rope counting</string>
+    <string name="exercise_data_heart_rate_distributione">heart rate distributione</string>
+
     <!--Account-->
     <string name="account_sign_in">Sign In</string>
     <string name="account_input_username_hint">Input username</string>
@@ -299,8 +321,9 @@
 
     <!--Contacts-->
     <string name="ds_contacts">Frequent Contacts</string>
+    <string name="ds_phone_contacts">Phone Contacts Select</string>
     <string name="ds_emergency_contacts">Emergency Contacts</string>
-    <string name="ds_contacts_tips1">Up to 10 favorite contacts can be added.</string>
+    <string name="ds_contacts_tips1">Up to 100 favorite contacts can be added.</string>
     <string name="ds_contacts_test_add_100">test add 100 contacts</string>
 
     <!--Device Settings:Sport push-->
@@ -387,7 +410,6 @@
     <string name="ds_device_shutdown">Device Shutdown</string>
     <string name="ds_device_reset">Device Reset</string>
     <string name="ds_device_local_ota">Device Local Ota</string>
-
 
     <string name="device_scan_bind_tips1">This is a simulated code scanning page, developers need to complete the scanning function by themselves</string>
     <string name="device_scan_bind_tips2">Now suppose the scan was successful, and the following string was obtained:</string>
@@ -517,6 +539,8 @@
     <string name="sport_installed_tip">Already added sports, up to 12</string>
 
     <string name="data_step">Step</string>
+    <string name="data_calorie">Calories</string>
+    <string name="data_activity_duration">Activity Duration</string>
     <string name="data_sleep">Sleep</string>
     <string name="data_heart_rate">Heart Rate</string>
     <string name="data_oxygen">Oxygen</string>
@@ -525,6 +549,9 @@
     <string name="data_pressure">Pressure</string>
     <string name="data_ecg">ECG</string>
     <string name="data_sport">Sport</string>
+    <string name="data_all">All Data</string>
+    <string name="data_daily_duration">Sport Activity Duration Distribution</string>
+    <string name="data_sport_detail">Sport Detail</string>
     <string name="data_game">Game</string>
     <string name="total_step">Total Steps：</string>
     <string name="total_distance">Total Distance：</string>
@@ -532,7 +559,11 @@
     <string name="deep_sleep">Deep Sleep：</string>
     <string name="light_sleep">Light Sleep：</string>
     <string name="awake_sleep">Awake：</string>
+    <string name="rapid_eye_movement">Rem：</string>
 
     <string name="hourly_data">Hourly data</string>
     <string name="data_every_5_minutes">Data every 5 minutes</string>
+
+    <string name="version_app">version %s</string>
+    <string name="scan_device">scan device</string>
 </resources>

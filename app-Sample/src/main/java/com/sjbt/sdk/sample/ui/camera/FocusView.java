@@ -17,11 +17,11 @@ import com.blankj.utilcode.util.SizeUtils;
 
 public class FocusView extends View {
 
-    private int focusSize;//焦点框的大小
-    private int focusColor;//焦点框的颜色
-    private int focusTime;//焦点框显示的时长
-    private int focusStrokeSize;//焦点框线条的尺寸
-    private int cornerSize;//焦点框圆角尺寸
+    private int focusSize;//焦点框的大小(The size of the focus box)
+    private int focusColor;//焦点框的颜色(The color of the focus box)
+    private int focusTime;//焦点框显示的时长(The duration of the focus box display)
+    private int focusStrokeSize;//焦点框线条的尺寸(Focus frame line size)
+    private int cornerSize;//焦点框圆角尺寸(Focus box fillet size)
     private Handler handler;
     private Runnable runnable;
     private Paint mPaint;

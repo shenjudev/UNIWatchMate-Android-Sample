@@ -9,9 +9,9 @@ import com.base.sdk.port.WmTransferState
 import com.blankj.utilcode.util.FileIOUtils
 import com.github.kilnn.tool.dialog.prompt.PromptDialogHolder
 import com.sjbt.sdk.sample.MyApplication
-import com.sjbt.sdk.sample.di.internal.CoroutinesInstance.applicationScope
 import com.sjbt.sdk.sample.dialog.CallBack
 import com.sjbt.sdk.sample.model.user.DialMock
+import com.sjbt.sdk.sample.utils.ToastUtil
 import com.sjbt.sdk.sample.utils.showFailed
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
@@ -26,7 +26,7 @@ import java.io.File
 class DfuViewModel : ViewModel() {
 
     sealed class DfuEvent {
-        class OnSuccess(val installed:DialMock) : DfuEvent()
+        class OnSuccess(val installed: DialMock) : DfuEvent()
         class OnFail(val error: Throwable) : DfuEvent()
     }
 
@@ -49,8 +49,8 @@ class DfuViewModel : ViewModel() {
                     FileIOUtils.writeFileFromIS(dialPath, inputStream)
                     val dialCoverArray = UNIWatchMate.wmApps.appDial.parseDialThumpJpg(dialPath)
                     FileIOUtils.writeFileFromBytesByChannel(coverPath, dialCoverArray, true)
-                }else{
-                    dialPath=dialMock.dialAssert!!
+                } else {
+                    dialPath = dialMock.dialAssert!!
                     val dialCoverArray = UNIWatchMate.wmApps.appDial.parseDialThumpJpg(dialPath)
                     FileIOUtils.writeFileFromBytesByChannel(coverPath, dialCoverArray, true)
                 }
@@ -67,7 +67,7 @@ class DfuViewModel : ViewModel() {
                     .collect {
                         callBack.callBack(it)
                     }
-                Timber.i( "startTransfer DIAL")
+                Timber.i("startTransfer DIAL")
                 UNIWatchMate.wmTransferFile.startTransfer(FileType.DIAL, dialList)
                     .asFlow()
 //                    .catch {
@@ -76,7 +76,7 @@ class DfuViewModel : ViewModel() {
                     .collect {
                         callBack.callBack(it)
                     }
-                _flowDfuEvent.value=DfuEvent.OnSuccess(dialMock)
+                _flowDfuEvent.value = DfuEvent.OnSuccess(dialMock)
             } catch (e: Exception) {
                 if (e !is CancellationException) {
                     e.printStackTrace()
@@ -86,19 +86,10 @@ class DfuViewModel : ViewModel() {
         }
     }
 
-    fun setGUICustomDialComponent(spaceIndex: Int, styleIndex: Int) {
-        applicationScope.launch {
-            try {
-//                withTimeout(90 * 1000) {
-//                    deviceManager.flowState.filter { it == ConnectorState.CONNECTED }.first()
-//                }
-//                deviceManager.settingsFeature.setDialComponent(
-//                    spaceIndex,
-//                    byteArrayOf(styleIndex.toByte())
-//                ).await()
-            } catch (e: Exception) {
-                Timber.w(e)
-            }
+    fun cancelInstall() {
+        UNIWatchMate.wmTransferFile.cancelTransfer().subscribe { success ->
+            Timber.i("cancelTransfer:$success")
+            ToastUtil.showToast("cancel success:$success")
         }
     }
 

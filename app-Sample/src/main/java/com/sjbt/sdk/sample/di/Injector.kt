@@ -35,42 +35,12 @@ object Injector {
     fun getUserInfoRepository(): UserInfoRepository {
         return SingleInstance.userInfoRepository
     }
-//
-//    fun getVersionRepository(): VersionRepository {
-//        return VersionRepositoryImpl(
-//            SingleInstance.deviceManager,
-//            SingleInstance.apiClient.apiService
-//        )
-//    }
-//
-//    fun getGameRepository(): GameRepository {
-//        return GameRepositoryImpl(
-//            MyApplication.instance,
-//            SingleInstance.deviceManager,
-//            SingleInstance.apiClient.apiService
-//        )
-//    }
-//
-//    fun getSportPushRepository(): SportPushRepository {
-//        return SportPushRepositoryImpl(
-//            SingleInstance.deviceManager,
-//            SingleInstance.apiClient.apiService
-//        )
-//    }
-//
-//    fun getDialRepository(): DialRepository {
-//        return SingleInstance.dialRepository
-//    }
-//
+
     fun getApplicationScope(): CoroutineScope {
         return CoroutinesInstance.applicationScope
     }
 
-    //
-//    fun getWomenHealthRepository(): WomenHealthRepository {
-//        return SingleInstance.womenHealthRepository
-//    }
-//
+
     fun getExerciseGoalRepository(): SportGoalRepository {
         return SingleInstance.sportGoalRepository
     }

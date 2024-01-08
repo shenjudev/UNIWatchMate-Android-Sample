@@ -2,9 +2,10 @@ package com.sjbt.sdk.sample.ui
 
 import android.os.Bundle
 import android.view.View
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.base.api.UNIWatchMate
+import com.blankj.utilcode.util.GsonUtils
+import com.blankj.utilcode.util.LogUtils
 import com.github.kilnn.tool.widget.ktx.clickTrigger
 import com.sjbt.sdk.sample.R
 import com.sjbt.sdk.sample.base.BaseFragment
@@ -16,54 +17,11 @@ import com.sjbt.sdk.sample.utils.setAllChildEnabled
 import com.sjbt.sdk.sample.utils.viewLifecycle
 import com.sjbt.sdk.sample.utils.viewbinding.viewBinding
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.rx3.asFlow
+import kotlinx.coroutines.reactive.asFlow
 
 /**
- * **Document**
- * https://github.com/htangsmart/FitCloudPro-SDK-Android/wiki/05.Sync-Data
- *
  * ***Description**
  * Show how to sync data, observer sync state, save sync data
- *
- * **Usage**
- * 1. [SyncFragment]
- * Observer sync state and display available data types
- *
- * 2. [DeviceManager]
- * Execute [FcDataFeature.syncData] and emit [FcDataFeature.observerSyncState]
- *
- * 3. [SyncDataRepository]
- * Save sync data
- *
- * 4. [StepFragment]
- * Display step data
- *
- * 5. [SleepFragment]
- * Display sleep data
- *
- * 6. [HeartRateFragment]
- * Display heart rate data
- *
- * 7. [OxygenFragment]
- * Display oxygen data
- *
- * 8. [BloodPressureFragment]
- * Display blood pressure data
- *
- * 9. [TemperatureFragment]
- * Display temperature data
- *
- * 10. [PressureFragment]
- * Display pressure data
- *
- * 11. [EcgFragment]
- * Display ECG data
- *
- * 12. [SportFragment]
- * Display sport data
- *
- * 13. [GameFragment]
- * Display game data
  */
 class SyncFragment : BaseFragment(R.layout.fragment_sync) {
 
@@ -73,18 +31,34 @@ class SyncFragment : BaseFragment(R.layout.fragment_sync) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewBind.refreshLayout.setOnRefreshListener {
-            deviceManager.syncData()
-        }
-        viewBind.refreshLayout.setOnRefreshListener {
-        }
+//        viewBind.refreshLayout.setOnRefreshListener {
+//            deviceManager.syncData()
+//        }
+
         viewBind.itemStep.clickTrigger(block = blockClick)
+        viewBind.itemSleep.clickTrigger(block = blockClick)
+        viewBind.itemCalories.clickTrigger(block = blockClick)
+        viewBind.itemActivityDuration.clickTrigger(block = blockClick)
         viewBind.itemSleep.clickTrigger(block = blockClick)
         viewBind.itemHeartRate.clickTrigger(block = blockClick)
         viewBind.itemOxygen.clickTrigger(block = blockClick)
+        viewBind.itemActivityDistance.clickTrigger(block = blockClick)
         viewBind.itemSport.clickTrigger(block = blockClick)
+        viewBind.itemAll.clickTrigger(block = blockClick)
+        viewBind.itemDailyActivityDuration.clickTrigger(block = blockClick)
 
         viewLifecycle.launchRepeatOnStarted {
+            launch {
+                deviceManager.flowStateConnected().collect {
+                    viewBind.refreshLayout.setAllChildEnabled(it)
+                }
+            }
+
+//            launch {
+//                UNIWatchMate.wmApps.appSport.getSupportSportList.toFlowable().asFlow().collect {
+//                    LogUtils.d("getSupportSportList = ${GsonUtils.toJson(it)}")
+//                }
+//            }
 //            launch {
 //                deviceManager.flowSyncState.collect { state ->
 //                    if (state == null || state == FcSyncState.SUCCESS) {//refresh none or success
@@ -127,8 +101,20 @@ class SyncFragment : BaseFragment(R.layout.fragment_sync) {
                 findNavController().navigate(SyncFragmentDirections.toStep())
             }
 
+            viewBind.itemCalories -> {
+                findNavController().navigate(SyncFragmentDirections.toCalories())
+            }
+
+            viewBind.itemActivityDistance -> {
+                findNavController().navigate(SyncFragmentDirections.toDistance())
+            }
+
+            viewBind.itemActivityDuration -> {
+                findNavController().navigate(SyncFragmentDirections.toActivityDuration())
+            }
+
             viewBind.itemSleep -> {
-              findNavController().navigate(SyncFragmentDirections.toSleep())
+                findNavController().navigate(SyncFragmentDirections.toSleep())
             }
 
             viewBind.itemHeartRate -> {
@@ -142,6 +128,14 @@ class SyncFragment : BaseFragment(R.layout.fragment_sync) {
             viewBind.itemSport -> {
                 findNavController().navigate(SyncFragmentDirections.toSport())
             }
+
+            viewBind.itemAll -> {
+                findNavController().navigate(SyncFragmentDirections.toAllData())
+            }
+            viewBind.itemDailyActivityDuration -> {
+                findNavController().navigate(SyncFragmentDirections.toDailyActivityDurationData())
+            }
+
         }
     }
 }

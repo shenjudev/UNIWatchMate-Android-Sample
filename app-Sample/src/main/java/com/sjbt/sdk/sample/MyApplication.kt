@@ -1,8 +1,10 @@
 package com.sjbt.sdk.sample
 
+import android.app.Activity
 import android.app.Application
 import android.content.res.Configuration
 import android.content.res.Resources
+import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.view.KeyEvent
@@ -22,6 +24,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.reactive.asFlow
 import kotlinx.coroutines.rx3.asFlow
 import kotlinx.coroutines.rx3.await
 import timber.log.Timber
@@ -30,6 +33,7 @@ import timber.log.Timber
 class MyApplication : Application() {
     val TAG: String = "MyApplication"
     private lateinit var applicationScope: CoroutineScope
+    private var isForeground = false
 
     companion object {
         lateinit var instance: MyApplication
@@ -41,12 +45,12 @@ class MyApplication : Application() {
         super.onCreate()
         instance = this
         applicationScope = Injector.getApplicationScope()
-        //第一步：初始化，需要传入支持的sdk实例
+
         uniWatchInit(this)
 
-        observeState()
+        observeDeviceState()
         Utils.init(instance)
-        //监听sdk变化
+
         UNIWatchMate.observeUniWatchChange().subscribe {
             it.setLogEnable(true)
         }
@@ -54,7 +58,37 @@ class MyApplication : Application() {
         UNIWatchMate.wmLog.logI(TAG, "APP onCreate")
 
         initAllProcess()
+
+        registerActivityLifecycleCallbacks(object : ActivityLifecycleCallbacks {
+            override fun onActivityCreated(p0: Activity, p1: Bundle?) {
+            }
+
+            override fun onActivityStarted(p0: Activity) {
+                isForeground = true
+                UNIWatchMate.setAppFront(true)
+            }
+
+            override fun onActivityResumed(p0: Activity) {
+            }
+
+            override fun onActivityPaused(p0: Activity) {
+                isForeground = false
+                UNIWatchMate.setAppFront(false)
+            }
+
+            override fun onActivityStopped(p0: Activity) {
+                isForeground = false
+                UNIWatchMate.setAppFront(false)
+            }
+
+            override fun onActivitySaveInstanceState(p0: Activity, p1: Bundle) {
+            }
+
+            override fun onActivityDestroyed(p0: Activity) {
+            }
+        })
     }
+
 
     private fun initAllProcess() {
         FormatterUtil.init(Resources.getSystem().configuration.locale)
@@ -65,20 +99,17 @@ class MyApplication : Application() {
         FormatterUtil.init(Resources.getSystem().configuration.locale)
     }
 
-    private fun observeState() {
+    private fun observeDeviceState() {
 
         UNIWatchMate.observeConnectState.subscribe {
 
             Timber.e(TAG, it.name)
 
             when (it) {
-                WmConnectState.BT_DISABLE -> {
-
-                }
 
                 WmConnectState.VERIFIED -> {
                     UNIWatchMate.wmApps.appCamera.observeCameraOpenState.subscribe {
-                        Timber.e( "设备相机状态1：$it")
+                        Timber.e("Device camera status：$it")
                     }
                 }
 
@@ -92,34 +123,36 @@ class MyApplication : Application() {
             launchWithLog {
                 UNIWatchMate.wmApps.appWeather.observeWeather.asFlow().collect {
                     if (it.wmWeatherTime == WmWeatherTime.SEVEN_DAYS) {
-                        val result2 = UNIWatchMate?.wmApps?.appWeather?.pushSevenDaysWeather(
+                        UNIWatchMate?.wmApps?.appWeather?.pushSevenDaysWeather(
                             getTestWeatherdata(WmWeatherTime.SEVEN_DAYS, 32),
                             WmUnitInfo.TemperatureUnit.CELSIUS
-                        )?.await()
-                        Timber.e( "push seven_days weather result = $result2")
-                        ToastUtil.showToast(
-                            "push seven_days weather test ${
-                                if (result2) getString(R.string.tip_success) else getString(
-                                    R.string.tip_failed
-                                )
-                            }"
-                        )
+                        )?.toFlowable().asFlow().collect { result2 ->
+                            Timber.e("push seven_days weather result = $result2")
+                            ToastUtil.showToast(
+                                "push seven_days weather test ${
+                                    if (result2) getString(R.string.tip_success) else getString(
+                                        R.string.tip_failed
+                                    )
+                                }"
+                            )
+                        }
                     } else if (it.wmWeatherTime == WmWeatherTime.TODAY) {
-                        val result = UNIWatchMate?.wmApps?.appWeather?.pushTodayWeather(
+                        UNIWatchMate?.wmApps?.appWeather?.pushTodayWeather(
                             getTestWeatherdata(WmWeatherTime.TODAY, 32),
                             WmUnitInfo.TemperatureUnit.CELSIUS
-                        )?.await()
-                        UNIWatchMate.wmLog.logE(
-                            TAG,
-                            "push today weather result = $result"
-                        )
-                        ToastUtil.showToast(
-                            "push today weather test ${
-                                if (result) getString(R.string.tip_success) else getString(
-                                    R.string.tip_failed
-                                )
-                            }"
-                        )
+                        )?.toFlowable().asFlow().collect { result ->
+                            UNIWatchMate.wmLog.logE(
+                                TAG,
+                                "push today weather result = $result"
+                            )
+                            ToastUtil.showToast(
+                                "push today weather test ${
+                                    if (result) getString(R.string.tip_success) else getString(
+                                        R.string.tip_failed
+                                    )
+                                }"
+                            )
+                        }
                     }
                 }
             }
@@ -127,9 +160,13 @@ class MyApplication : Application() {
                 UNIWatchMate.wmApps.appCamera.observeCameraOpenState.asFlow().collect {
                     if (it) {//
                         if (ActivityUtils.getTopActivity() != null) {
-                            Timber.e( "设备相机状态1：$it")
-                            CacheDataHelper.cameraLaunchedByDevice = true
-                            CameraActivity.launchActivity(ActivityUtils.getTopActivity())
+
+                            Timber.e("Device camera status：$isForeground")
+
+                            if (isForeground) {
+                                CacheDataHelper.cameraLaunchedByDevice = true
+                                CameraActivity.launchActivity(ActivityUtils.getTopActivity())
+                            }
                         }
                     } else if (ActivityUtils.getTopActivity() is CameraActivity) {
                         ActivityUtils.getTopActivity().finish()
@@ -145,18 +182,21 @@ class MyApplication : Application() {
                             it1
                         )
                     }
-
                     ToastUtil.showToast(it.toString(), false)
                 }.collect {
                     ToastUtil.showToast("FindMobile $it", true)
                     val topActivity = ActivityUtils.getTopActivity()
                     if (topActivity != null && topActivity is BaseActivity) {
-                        topActivity.showFindPhoneDialogWithCallback( getString(R.string.ds_find_phone_found),
-                            getString(R.string.ds_find_phone_stop),object:CallBack<String>{
+                        topActivity.showFindPhoneDialogWithCallback(getString(R.string.ds_find_phone_found),
+                            getString(R.string.ds_find_phone_stop), object : CallBack<String> {
                                 override fun callBack(o: String) {
                                     applicationScope.launch {
-                                        val result = UNIWatchMate.wmApps.appFind.stopFindMobile().await()
-                                        ToastUtil.showToast("reply observeFindMobile result: $result", true)
+                                        val result =
+                                            UNIWatchMate.wmApps.appFind.stopFindMobile().await()
+                                        ToastUtil.showToast(
+                                            "reply observeFindMobile result: $result",
+                                            true
+                                        )
                                     }
                                 }
                             })

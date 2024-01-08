@@ -53,6 +53,15 @@
             android:id="@+id/toStep"
             app:destination="@id/stepFragment" />
         <action
+            android:id="@+id/toCalories"
+            app:destination="@id/calorieFragment" />
+        <action
+            android:id="@+id/toDistance"
+            app:destination="@id/distanceFragment" />
+        <action
+            android:id="@+id/toActivityDuration"
+            app:destination="@id/activityDurationFragment" />
+        <action
             android:id="@+id/toSleep"
             app:destination="@id/sleepFragment" />
         <action
@@ -61,32 +70,38 @@
         <action
             android:id="@+id/toOxygen"
             app:destination="@id/oxygenFragment" />
-        <!--        <action-->
-        <!--            android:id="@+id/toBloodPressure"-->
-        <!--            app:destination="@id/bloodPressureFragment"/>-->
-        <!--        <action-->
-        <!--            android:id="@+id/toTemperature"-->
-        <!--            app:destination="@id/temperatureFragment"/>-->
-        <!--        <action-->
-        <!--            android:id="@+id/toPressure"-->
-        <!--            app:destination="@id/pressureFragment"/>-->
-        <!--        <action-->
-        <!--            android:id="@+id/toEcg"-->
-        <!--            app:destination="@id/ecgFragment"/>-->
         <action
             android:id="@+id/toSport"
             app:destination="@id/sportFragment" />
-        <!--        <action-->
-        <!--            android:id="@+id/toGame"-->
-        <!--            app:destination="@id/gameFragment"/>-->
+        <action
+            android:id="@+id/toAllData"
+            app:destination="@id/AllData" />
+        <action
+            android:id="@+id/toDailyActivityDurationData"
+            app:destination="@id/DailyActivityDurationData" />
     </fragment>
 
+    <fragment
+        android:id="@+id/calorieFragment"
+        android:name="com.sjbt.sdk.sample.ui.sync.CalorieFragment"
+        android:label="@string/data_calorie"
+        tools:layout="@layout/fragment_data_list" />
+    <fragment
+        android:id="@+id/distanceFragment"
+        android:name="com.sjbt.sdk.sample.ui.sync.DistanceFragment"
+        android:label="@string/exercise_data_distance"
+        tools:layout="@layout/fragment_data_list" />
+
+    <fragment
+        android:id="@+id/activityDurationFragment"
+        android:name="com.sjbt.sdk.sample.ui.sync.ActivityDurationFragment"
+        android:label="@string/data_activity_duration"
+        tools:layout="@layout/fragment_data_list" />
     <fragment
         android:id="@+id/stepFragment"
         android:name="com.sjbt.sdk.sample.ui.sync.StepFragment"
         android:label="@string/data_step"
         tools:layout="@layout/fragment_step" />
-
     <fragment
         android:id="@+id/sleepFragment"
         android:name="com.sjbt.sdk.sample.ui.sync.SleepFragment"
@@ -127,11 +142,13 @@
             android:id="@+id/to5MinutesHeartRateFragment"
             app:destination="@id/fiveMinutesHeartRateFragment" />
     </fragment>
+
     <fragment
         android:id="@+id/hourHeartRateFragment"
         android:name="com.sjbt.sdk.sample.ui.sync.HeartRateHourlyFragment"
         android:label="@string/hourly_data"
         tools:layout="@layout/fragment_data_list" />
+
     <fragment
         android:id="@+id/fiveMinutesHeartRateFragment"
         android:name="com.sjbt.sdk.sample.ui.sync.HeartRateFiveMinutesFragment"
@@ -159,20 +176,32 @@
         android:id="@+id/sportFragment"
         android:name="com.sjbt.sdk.sample.ui.sync.SportFragment"
         android:label="@string/data_sport"
-        tools:layout="@layout/fragment_data_list" />
+        tools:layout="@layout/fragment_data_list">
+        <action
+            android:id="@+id/toSportDetail"
+            app:destination="@id/sportDetailFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/AllData"
+        android:name="com.sjbt.sdk.sample.ui.sync.AllDataFragment"
+        android:label="@string/data_all"
+        tools:layout="@layout/fragment_data_list"/>
 
-    <!--    <fragment-->
-    <!--        android:id="@+id/gameFragment"-->
-    <!--        android:name="com.topstep.fitcloud.sample2.ui.sync.GameFragment"-->
-    <!--        android:label="@string/data_game"-->
-    <!--        tools:layout="@layout/fragment_data_list"/>-->
+    <fragment
+        android:id="@+id/DailyActivityDurationData"
+        android:name="com.sjbt.sdk.sample.ui.sync.DailyActivityDurationDataFragment"
+        android:label="@string/data_daily_duration"
+        tools:layout="@layout/fragment_data_list"/>
 
-    <!--    <fragment-->
-    <!--        android:id="@+id/cricketFragment"-->
-    <!--        android:name="com.topstep.fitcloud.sample2.ui.device.cricket.CricketFragment"-->
-    <!--        android:label="@string/cricket_match"-->
-    <!--        tools:layout="@layout/fragment_cricket"/>-->
-
+    <fragment
+        android:id="@+id/sportDetailFragment"
+        android:name="com.sjbt.sdk.sample.ui.sync.SportDetailFragment"
+        android:label="@string/data_sport_detail"
+        tools:layout="@layout/fragment_sport_detail">
+        <argument
+            android:name="wmSportSummaryData"
+            app:argType="com.base.sdk.entity.data.WmSportSummaryData" />
+    </fragment>
 
     <fragment
         android:id="@+id/combineFragment"
@@ -181,12 +210,6 @@
         <action
             android:id="@+id/toEditUserInfo"
             app:destination="@id/editUserInfoFragment" />
-        <!--        <action-->
-        <!--            android:id="@+id/toWhHomePage"-->
-        <!--            app:destination="@id/whHomePageFragment"/>-->
-        <!--        <action-->
-        <!--            android:id="@+id/toWhDetail"-->
-        <!--            app:destination="@id/whDetailFragment"/>-->
         <action
             android:id="@+id/toExerciseGoal"
             app:destination="@id/exerciseGoalFragment" />
@@ -244,9 +267,9 @@
         android:label="@string/ds_config"
         tools:layout="@layout/fragment_device_config">
 
-        <!--        <action-->
-        <!--            android:id="@+id/toNotificationConfig"-->
-        <!--            app:destination="@id/notificationConfigFragment" />-->
+        <!-- <action-->
+        <!--   android:id="@+id/toNotificationConfig"-->
+        <!--   app:destination="@id/notificationConfigFragment" />-->
         <action
             android:id="@+id/toUnitConfig"
             app:destination="@id/unitConfigFragment" />
@@ -303,9 +326,9 @@
 
     <fragment
         android:id="@+id/unitConfigFragment"
-        android:name="com.sjbt.sdk.sample.ui.setting.FunctionConfigFragment"
+        android:name="com.sjbt.sdk.sample.ui.setting.UnitConfigFragment"
         android:label="@string/ds_unit_config"
-        tools:layout="@layout/fragment_function_config" />
+        tools:layout="@layout/fragment_unit_config" />
     <fragment
         android:id="@+id/soundTouchConfigFragment"
         android:name="com.sjbt.sdk.sample.ui.setting.SoundTouchFeedbackConfigFragment"
@@ -321,31 +344,6 @@
         android:name="com.sjbt.sdk.sample.ui.device.language.LanguageListFragment"
         android:label="@string/language_set"
         tools:layout="@layout/fragment_language_list" />
-
-    <!--    <fragment-->
-    <!--        android:id="@+id/healthMonitorConfigFragment"-->
-    <!--        android:name="com.topstep.fitcloud.sample2.ui.device.config.HealthMonitorConfigFragment"-->
-    <!--        android:label="@string/ds_health_monitor_config"-->
-    <!--        tools:layout="@layout/fragment_health_monitor_config">-->
-    <!--        <action-->
-    <!--            android:id="@+id/toHrAlarmConfig"-->
-    <!--            app:destination="@id/hrAlarmConfigFragment"/>-->
-    <!--        <action-->
-    <!--            android:id="@+id/toBpAlarmConfig"-->
-    <!--            app:destination="@id/bpAlarmConfigFragment"/>-->
-    <!--    </fragment>-->
-
-    <!--    <fragment-->
-    <!--        android:id="@+id/hrAlarmConfigFragment"-->
-    <!--        android:name="com.topstep.fitcloud.sample2.ui.device.config.HrAlarmConfigFragment"-->
-    <!--        android:label="@string/ds_heart_rate_alarm"-->
-    <!--        tools:layout="@layout/fragment_hr_alarm_config"/>-->
-
-    <!--    <fragment-->
-    <!--        android:id="@+id/bpAlarmConfigFragment"-->
-    <!--        android:name="com.topstep.fitcloud.sample2.ui.device.config.BpAlarmConfigFragment"-->
-    <!--        android:label="@string/ds_blood_pressure_alarm"-->
-    <!--        tools:layout="@layout/fragment_bp_alarm_config"/>-->
 
     <fragment
         android:id="@+id/sedentaryConfigFragment"
@@ -394,8 +392,20 @@
         android:id="@+id/contactsFragment"
         android:name="com.sjbt.sdk.sample.ui.device.contacts.ContactsFragment"
         android:label="@string/ds_contacts"
-        tools:layout="@layout/fragment_contacts" />
-
+        tools:layout="@layout/fragment_contacts">
+        <action
+            android:id="@+id/toPhoneContacts"
+            app:destination="@id/phoneContacts" />
+    </fragment>
+    <fragment
+        android:id="@+id/phoneContacts"
+        android:name="com.sjbt.sdk.sample.ui.device.contacts.PhoneContactsFragment"
+        android:label="@string/ds_phone_contacts"
+        tools:layout="@layout/fragment_phone_contacts" >
+        <argument
+            android:name="contactNum"
+            app:argType="integer"/>
+    </fragment>
     <fragment
         android:id="@+id/emergencyContacts"
         android:name="com.sjbt.sdk.sample.ui.device.contacts.EmergencyContactFragment"
@@ -413,7 +423,6 @@
         <action
             android:id="@+id/toDialLibrary"
             app:destination="@id/dialLibraryFragment" />
-
 
     </fragment>
     <fragment
