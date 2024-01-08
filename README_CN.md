@@ -1,7 +1,7 @@
 # UNIWatchMate  
 UNIWatchMate智能手表的接口框架，负责与手表设备通信等功能的封装，向上提供给App操作智能手表的相关接口，向下可以对接其他手表的SDK。  
 
-# Version 1.0.1
+# Version 1.0.3
 
 # [Wiki](https://github.com/shenjudev/UNIWatchMate-Android-Sample/wiki)  
 ## v1.0.3(2023-11-15)
