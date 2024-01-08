@@ -113,7 +113,7 @@ dependencies {
     implementation(name: 'lib-api-1.0.3', ext: 'aar')//api层aar
     implementation(name: 'lib-interface-1.0.3', ext: 'aar')
     implementation(name: 'lib-sj-sdk-1.0.3', ext: 'aar')//
-    implementation(name: 'lib-fc-sdk-1.0.1', ext: 'aar')//
+//    implementation(name: 'lib_fc_sdk_1.0.1', ext: 'aar')//
 
     implementation(name: 'lib_jni_opencv_1.0.1_202310091127', ext: 'aar')
 
