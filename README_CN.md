@@ -6,7 +6,7 @@ UNIWatchMate智能手表的接口框架，负责与手表设备通信等功能�
 # [Wiki](https://github.com/shenjudev/UNIWatchMate-Android-Sample/wiki)  
 
 ## v1.0.1(2023-11-01)
-1. 搜索功能修改为通过设备型号及蓝牙名称  
+1. 搜索功能修改为通过协议层及蓝牙名称过滤  
 2. 增加联系人及紧急联系人功能  
 3. 增加运动删除及安装功能  
 4. 增加天气功能  
