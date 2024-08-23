@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?android:windowBackground"
+    android:orientation="vertical"
+    >
+
+    <com.sjbt.sdk.sample.widget.LoadingView
+        android:id="@+id/loading_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/ll_emergency"
+        android:orientation="vertical">
+
+        <com.github.kilnn.tool.widget.item.PreferenceItem
+            android:id="@+id/item_emergency_contact_switch"
+            style="@style/Widget.Sample.PreferenceView.Item.Switch"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            app:preferenceTitle="@string/ds_emergency_contacts" />
+
+        <com.github.kilnn.tool.widget.item.PreferenceItem
+            android:id="@+id/item_emergency_contact"
+            style="@style/Widget.Sample.PreferenceView.Item.Text"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            app:preferenceTitle="@string/ds_no_data" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/color_25000000" />
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+</FrameLayout>

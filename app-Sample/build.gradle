@@ -1,0 +1,209 @@
+plugins {
+    id 'com.android.application'
+    id 'kotlin-parcelize'
+    id 'org.jetbrains.kotlin.android'
+    id 'kotlin-kapt'
+    id 'androidx.navigation.safeargs.kotlin'
+}
+
+android {
+    namespace 'com.sjbt.sdk.sample'
+    compileSdk rootProject.ext.buildConfig.compileSdkVersion
+
+    signingConfigs {
+        release {
+            storeFile file("uniwatchmate.jks")
+            storePassword "uniwatchpwd"
+            keyAlias "uniwatchdemo"
+            keyPassword "uniwatchpwd"
+
+            applicationVariants.all { variant ->
+                variant.outputs.all { output ->
+                    outputFileName = "uniwatch_sample_" + buildType.name + "_${variant.versionName}_${buildTime()}.apk"
+                }
+            }
+        }
+
+        debug {
+            storeFile file("uniwatchmate.jks")
+            storePassword "uniwatchpwd"
+            keyAlias "uniwatchdemo"
+            keyPassword "uniwatchpwd"
+
+            applicationVariants.all { variant ->
+                variant.outputs.all { output ->
+                    outputFileName = "uniwatch_sample_" + buildType.name + "_${variant.versionName}_${buildTime()}.apk"
+                }
+            }
+        }
+    }
+
+    defaultConfig {
+        applicationId "com.sjbt.sdk.sample"
+        minSdkVersion rootProject.ext.buildConfig.minSdkVersion
+        targetSdkVersion rootProject.ext.buildConfig.targetSdkVersion
+        versionCode 84
+        versionName "1.0.84"
+        signingConfig signingConfigs.release
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments += [
+                        "room.schemaLocation"  : "$projectDir/schemas".toString(),
+                        "room.incremental"     : "true",
+                        "room.expandProjection": "true"]
+            }
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
+        }
+        debug {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.debug
+        }
+    }
+
+    dexOptions {
+        //最大堆内存
+        javaMaxHeapSize '2048m'
+        //预编译
+        preDexLibraries = true
+        //线程数
+        threadCount = 16
+        dexInProcess = true
+    }
+    buildFeatures {
+        viewBinding = true
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
+    }
+}
+repositories {
+    flatDir {
+        dirs 'libs', '/libs'
+    }
+}
+//当前时间
+def static buildTime() {
+    def date = new Date()
+    return date.format("yyyMMddHHmm")
+}
+
+dependencies {
+
+
+    testImplementation 'junit:junit:4.13.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+
+    implementation fileTree(dir: 'libs', include: ['*.jar', "*.aar"])
+
+    implementation project(path: ':zbarlibrary')
+    implementation project(path: ':file-chooser-lib')
+    implementation project(path: ':imagepicker')
+
+    implementation rootProject.ext.libs.corektx
+    implementation rootProject.ext.libs.appcompat
+    implementation rootProject.ext.libs.design
+    implementation rootProject.ext.libs.permissionx
+    implementation rootProject.ext.libs.rx_android_ble
+
+    implementation rootProject.ext.libs.rxandroid
+    implementation rootProject.ext.libs.rxjava
+
+    implementation rootProject.ext.libs.constraint
+    implementation rootProject.ext.libs.gson
+
+    //retrofit2
+    implementation rootProject.ext.libs.retrofit
+
+    //glide
+    implementation rootProject.ext.libs.glide
+
+    //picker_view
+    implementation rootProject.ext.libs.picker_view
+
+    implementation 'com.github.kilnn:wheelview:1.0.2'
+
+    //Required
+    implementation "com.jakewharton.timber:timber:5.0.1"
+//Base
+    implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
+    implementation 'androidx.recyclerview:recyclerview:1.2.1'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4'
+
+    implementation 'com.kyleduo.switchbutton:library:2.0.0'
+
+    //JetPack-Lifecycle
+    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.5.1'
+    implementation 'androidx.lifecycle:lifecycle-common-java8:2.5.1'
+    implementation 'androidx.lifecycle:lifecycle-process:2.5.1'
+    implementation 'androidx.lifecycle:lifecycle-service:2.5.1'
+    //JetPack-ViewModel
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-savedstate:2.5.1'
+
+    implementation 'androidx.activity:activity-ktx:1.6.0'
+    implementation 'androidx.fragment:fragment-ktx:1.5.4'
+
+    //JetPack-SplashScreen
+    implementation 'androidx.core:core-splashscreen:1.0.0'
+
+    //JetPack-Room
+    implementation 'androidx.room:room-runtime:2.5.0'
+    kapt 'androidx.room:room-compiler:2.5.0'
+    implementation 'androidx.room:room-ktx:2.5.0'
+
+    //JetPack-Navigation
+    implementation 'androidx.navigation:navigation-fragment-ktx:2.5.3'
+    implementation 'androidx.navigation:navigation-ui-ktx:2.5.3'
+
+    //JetPack-DataStore
+    implementation 'androidx.datastore:datastore:1.0.0'
+    implementation 'androidx.datastore:datastore-preferences:1.0.0'
+
+    //JetPack-WorkManager
+    implementation 'androidx.work:work-runtime-ktx:2.7.1'
+
+    implementation 'com.squareup.okhttp3:logging-interceptor:4.9.1'
+
+    //JetPack-CameraX
+    implementation 'androidx.camera:camera-core:1.2.1'
+    implementation 'androidx.camera:camera-camera2:1.2.1'
+    implementation 'androidx.camera:camera-lifecycle:1.2.1'
+    implementation 'androidx.camera:camera-view:1.2.1'
+    implementation 'androidx.camera:camera-extensions:1.2.1'
+    implementation 'androidx.window:window:1.0.0'
+
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-rx3:1.6.4'
+
+    implementation 'androidx.multidex:multidex:2.0.1'
+
+    implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.50'
+//    implementation 'io.github.cymchad:BaseRecyclerViewAdapterHelper:4.0.1'
+
+    //带数字的进度条
+    implementation 'com.akexorcist:round-corner-progress-bar:2.1.2'
+
+    //代替shape简单实现圆角背景
+    implementation 'com.github.JavaNoober.BackgroundLibrary:library:1.7.2'
+    //代替selector简单实现selector注入
+    implementation 'com.github.tianzhijiexian:SelectorInjection:1.1.6'
+    testImplementation 'junit:junit:4.13.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+
+    implementation 'com.arthenica:ffmpeg-kit-full:6.0-2'
+
+
+
+}

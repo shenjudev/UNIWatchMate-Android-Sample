@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    tools:parentTag="androidx.appcompat.widget.LinearLayoutCompat"
+    >
+
+    <View
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:visibility="gone"
+        android:background="@color/black" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_45"
+        android:orientation="horizontal"
+        android:layout_marginBottom="@dimen/sp_20"
+        android:paddingHorizontal="@dimen/sp_20"
+        android:showDividers="middle">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_left"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            style="@style/btn_style_4"
+            android:gravity="center"
+            android:text="@string/cancel"
+            android:scrollbars="none"
+            android:layout_marginEnd="@dimen/dp_10"/>
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_right"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            style="@style/btn_style_1"
+            android:gravity="center"
+            android:scrollbars="none"
+            android:autoSizeTextType="uniform"
+            android:singleLine="true"
+            android:autoSizeMinTextSize="@dimen/sp_14"
+            android:autoSizeMaxTextSize="@dimen/sp_18"
+            android:ellipsize="end"
+            android:layout_marginStart="@dimen/dp_10"
+            android:text="@string/confirm"/>
+    </LinearLayout>
+</merge>

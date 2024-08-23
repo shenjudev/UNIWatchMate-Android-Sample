@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/layout_content"
+        style="@style/Widget.Sample.PreferenceBase"
+        android:layout_centerVertical="true"
+        android:layout_toStartOf="@+id/img_delete"
+        android:descendantFocusability="blocksDescendants"
+        android:paddingTop="12dp"
+        android:paddingBottom="12dp">
+
+        <TextView
+            android:id="@+id/tv_dial_id"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:textAppearance="?textAppearanceCaption"
+            android:textColor="?android:textColorPrimary"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <ImageView
+        android:id="@+id/img_delete"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:background="?selectableItemBackgroundBorderless"
+        android:padding="12dp"
+        android:src="@drawable/ic_baseline_delete_24" />
+    <TextView
+        android:id="@+id/tv_dial_built_in"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:text="@string/built_in_dial"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="15dp"
+        android:textAppearance="?textAppearanceCaption"
+        android:textColor="?android:textColorPrimary" />
+</RelativeLayout>
+
+

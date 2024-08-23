@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="PreferenceItemView">
+        <attr name="name" format="string" />
+        <attr name="showLine" format="boolean" />
+        <attr name="showSwitch" format="boolean" />
+    </declare-styleable>
+
+    <declare-styleable name="color_picker">
+        <!-- 背景圆的半径 -->
+        <attr name="circle_radius" format="dimension" />
+        <!-- 可滑动小球的半径 -->
+        <attr name="center_radius" format="dimension" />
+        <!-- 可滑动小球的颜色 -->
+        <attr name="center_color" format="color" />
+    </declare-styleable>
+
+    <!--CommItemView 属性-->
+    <declare-styleable name="CommItemView">
+        <attr name="backColor" format="color|reference" />
+        <!--图标-->
+        <attr name="icon" />
+        <!--图标大小-->
+        <attr name="ic_size" format="dimension" />
+        <!--title字体大小-->
+        <attr name="title_size" format="dimension" />
+        <!--title颜色-->
+        <attr name="title_color" format="color|reference" />
+        <!--data字体大小-->
+        <attr name="data_size" format="dimension"/>
+        <!--data颜色-->
+        <attr name="data_color"  format="color|reference" />
+        <!--unit字体大小-->
+        <attr name="unit_size"  format="dimension"/>
+        <!--unit颜色-->
+        <attr name="unit_color"  format="color|reference" />
+        <!--是否显示箭头-->
+        <attr name="show_right_arrow" format="boolean" />
+        <!--title-->
+        <attr name="title" />
+        <!--data-->
+        <attr name="data" format="string"/>
+        <!--单位-->
+        <attr name="unit" format="string"/>
+        <!--边框颜色-->
+        <attr name="border_color" format="color|reference" />
+        <!--最小高度-->
+        <attr name="min_height" format="dimension" />
+        <attr name="show_bottom_divider" format="boolean" />
+        <attr name="padding_start" format="dimension"/>
+        <attr name="padding_end" format="dimension"/>
+    </declare-styleable>
+
+    <declare-styleable name="CustomIconView">
+        <attr name="compassBgIcon" format="reference"/>
+        <attr name="qiblaHouseIcon" format="reference"/>
+        <attr name="pointerIcon" format="reference"/>
+        <attr name="qiblaHouseAngle" format="float"/>
+    </declare-styleable>
+</resources>

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_checked="true" android:drawable="@mipmap/ic_bell_on_24" />
+    <item android:drawable="@mipmap/ic_bell_off_24" />
+</selector>

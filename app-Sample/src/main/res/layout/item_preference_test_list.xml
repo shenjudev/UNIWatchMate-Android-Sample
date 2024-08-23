@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.github.kilnn.tool.widget.item.PreferenceItem xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/item_preference_text"
+    style="@style/Widget.Sample.PreferenceView.Item.Text"
+    app:preferenceImageTint="?colorPrimary"
+    app:preferenceTitle="@string/app_view_gridding" />

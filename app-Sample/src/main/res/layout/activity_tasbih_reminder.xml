@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@id/btn_save"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:paddingTop="@dimen/dp_10">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_66"
+                android:layout_marginHorizontal="@dimen/dp_16"
+                android:background="@drawable/shape_bg_round_white_16"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingStart="@dimen/dp_20">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/dp_66"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical"
+                    android:text="@string/enable_reminder"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/text_size_btn" />
+
+                <com.kyleduo.switchbutton.SwitchButton
+                    android:id="@+id/switch_reminder"
+                    style="@style/SwitchButtonStyle" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/dp_16"
+                android:layout_marginTop="@dimen/dp_10"
+                android:paddingVertical="@dimen/dp_10"
+                android:orientation="vertical"
+                android:background="@drawable/shape_bg_round_white_16">
+
+                <com.sjbt.sdk.sample.widget.CommItemView
+                    android:id="@+id/reminder_start_time"
+                    style="@style/pray_item_style"
+                    app:title="@string/start_time"/>
+
+                <com.sjbt.sdk.sample.widget.CommItemView
+                    android:id="@+id/reminder_end_time"
+                    style="@style/pray_item_style"
+                    app:title="@string/end_time"/>
+
+                <com.sjbt.sdk.sample.widget.CommItemView
+                    android:id="@+id/reminder_interval_time"
+                    style="@style/pray_item_style"
+                    app:data="123"
+                    app:show_bottom_divider="false"
+                    app:title="@string/interval_time"/>
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/dp_16"
+                android:layout_marginTop="@dimen/dp_20"
+                android:text="@string/muslim_repeat"
+                android:textColor="@color/black"
+                android:textSize="@dimen/sp_18" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/reminder_repeat_week"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/dp_16"
+                android:layout_marginTop="@dimen/dp_10"
+                android:orientation="horizontal"
+                app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+                tools:itemCount="7"
+                tools:listitem="@layout/item_repeat" />
+
+            <TextView
+                android:id="@+id/reminder_remark"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/dp_16"
+                android:layout_marginTop="@dimen/dp_20"
+                android:text="@string/reminder_example"
+                android:textColor="@color/black"
+                android:textSize="@dimen/sp_12" />
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btn_save"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_50"
+        android:text="@string/muslim_save"
+        android:textColor="@color/black"
+        android:textSize="@dimen/sp_16"
+        android:layout_marginHorizontal="@dimen/dp_40"
+        android:layout_marginBottom="@dimen/dp_20"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+</androidx.constraintlayout.widget.ConstraintLayout>

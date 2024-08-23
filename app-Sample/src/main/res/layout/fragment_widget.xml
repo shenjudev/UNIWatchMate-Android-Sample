@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".ui.combine.WidgetFragment">
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <TextView
+                android:paddingVertical="@dimen/dp_10"
+                android:paddingHorizontal="@dimen/dp_20"
+                android:textColor="@color/black"
+                android:textSize="@dimen/sp_16"
+                android:background="@color/color_f8f9fa"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/have_widget" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/show_recycle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+                app:spanCount="1" />
+
+            <TextView
+                android:paddingVertical="@dimen/dp_10"
+                android:paddingHorizontal="@dimen/dp_20"
+                android:textColor="@color/black"
+                android:textSize="@dimen/sp_16"
+                android:background="@color/color_f8f9fa"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/add_widget" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/setting_recycle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+                app:spanCount="1" />
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+</FrameLayout>

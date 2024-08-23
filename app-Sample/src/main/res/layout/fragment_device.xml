@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:id="@+id/layout_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:divider="?dividerVertical"
+        android:orientation="vertical"
+        android:showDividers="end|middle">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:tag="ignoreParentState">
+
+            <FrameLayout
+                android:id="@+id/item_device_bind"
+                style="@style/Widget.Sample.PreferenceBase"
+                android:visibility="visible">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:text="连接"
+                    android:textAppearance="?textAppearanceSubtitle2"
+                    app:drawableStartCompat="@drawable/ic_baseline_add_24"
+                    app:drawableTint="?colorOnSurface" />
+
+            </FrameLayout>
+
+            <RelativeLayout
+                android:id="@+id/item_device_info"
+                style="@style/Widget.Sample.PreferenceView"
+                android:visibility="gone"
+                >
+
+                <LinearLayout
+                    android:id="@+id/layout_device_info"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:paddingEnd="@dimen/dp_10"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/tv_device_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:ellipsize="end"
+                        android:maxLines="1"
+                        android:textAppearance="?textAppearanceSubtitle1"
+                        android:textColor="?android:textColorPrimary"
+                        tools:text="X20-123H" />
+
+                    <TextView
+                        android:id="@+id/tv_device_state"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="@string/device_state_connecting"
+                        android:textAppearance="?textAppearanceCaption"
+                        android:textColor="?android:textColorSecondary" />
+
+                    <com.sjbt.sdk.sample.widget.BatteryImageView
+                        android:id="@+id/battery_view"
+                        android:layout_width="28dp"
+                        android:layout_height="14dp"
+                        android:layout_marginTop="6dp" />
+
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/tv_device_reset"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toEndOf="@+id/layout_device_info"
+                    android:layout_marginStart="@dimen/dp_10"
+                    android:text="@string/ds_device_reset"
+                    android:textColor="@color/black"
+                    android:background="@color/primary_danger"
+                    android:paddingHorizontal="@dimen/dp_3"
+                    />
+
+                <ImageView
+                    android:id="@+id/img_device_add"
+                    android:layout_width="61dp"
+                    android:layout_height="61dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginEnd="8dp"
+                    android:src="@mipmap/ic_device_default" />
+<!-- android:src="@drawable/ic_baseline_add_24"
+android:padding="@dimen/dp_15"
+-->
+            </RelativeLayout>
+
+        </LinearLayout>
+
+        <com.github.kilnn.tool.widget.item.PreferenceItem
+            android:id="@+id/item_device_config"
+            style="@style/Widget.Sample.PreferenceView.Item.Text"
+            app:preferenceTitle="@string/ds_config" />
+
+        <com.github.kilnn.tool.widget.item.PreferenceItem
+            android:id="@+id/item_qr_codes"
+            style="@style/Widget.Sample.PreferenceView.Item.Text"
+            android:visibility="gone"
+            app:preferenceTitle="@string/ds_qr_codes" />
+
+        <com.github.kilnn.tool.widget.item.PreferenceItem
+            android:id="@+id/item_alarm"
+            style="@style/Widget.Sample.PreferenceView.Item.Text"
+            app:preferenceTitle="@string/ds_alarm" />
+
+        <com.github.kilnn.tool.widget.item.PreferenceItem
+            android:id="@+id/item_contacts"
+            style="@style/Widget.Sample.PreferenceView.Item.Text"
+            app:preferenceTitle="@string/ds_contacts" />
+
+        <com.github.kilnn.tool.widget.item.PreferenceItem
+            android:id="@+id/item_test_send_notification"
+            style="@style/Widget.Sample.PreferenceView.Item.Text"
+            app:preferenceTitle="@string/ds_test_send_notification" />
+
+        <com.github.kilnn.tool.widget.item.PreferenceItem
+            android:id="@+id/item_sport_push"
+            style="@style/Widget.Sample.PreferenceView.Item.Text"
+            app:preferenceTitle="@string/ds_sport_push" />
+
+        <com.github.kilnn.tool.widget.item.PreferenceItem
+            android:id="@+id/item_dial"
+            style="@style/Widget.Sample.PreferenceView.Item.Text"
+            app:preferenceTitle="@string/ds_dial" />
+
+        <com.github.kilnn.tool.widget.item.PreferenceItem
+            android:id="@+id/item_camera"
+            style="@style/Widget.Sample.PreferenceView.Item.Text"
+            app:preferenceTitle="@string/ds_camera_control" />
+
+        <com.github.kilnn.tool.widget.item.PreferenceItem
+            android:id="@+id/item_basic_device_info"
+            style="@style/Widget.Sample.PreferenceView.Item.Text"
+            app:preferenceTitle="@string/ds_basic_device_info" />
+
+        <com.github.kilnn.tool.widget.item.PreferenceItem
+            android:id="@+id/item_transfer_file"
+            style="@style/Widget.Sample.PreferenceView.Item.Text"
+            app:preferenceTitle="@string/ds_transfer_file" />
+
+        <com.github.kilnn.tool.widget.item.PreferenceItem
+            android:id="@+id/item_test_weather"
+            style="@style/Widget.Sample.PreferenceView.Item.Text"
+            android:visibility="visible"
+            app:preferenceTitle="@string/ds_test_weather" />
+
+        <com.github.kilnn.tool.widget.item.PreferenceItem
+            android:id="@+id/item_other_features"
+            style="@style/Widget.Sample.PreferenceView.Item.Text"
+            app:preferenceTitle="@string/ds_other_features" />
+
+        <com.github.kilnn.tool.widget.item.PreferenceItem
+            android:id="@+id/item_push_date_time"
+            style="@style/Widget.Sample.PreferenceView.Item.Text"
+            app:preferenceTitle="@string/ds_synchronize_date_and_time" />
+
+        <com.github.kilnn.tool.widget.item.PreferenceItem
+            android:id="@+id/item_sync_test_file"
+            style="@style/Widget.Sample.PreferenceView.Item.Text"
+            app:preferenceTitle="@string/ds_synchronize_test_file"/>
+
+        <com.github.kilnn.tool.widget.item.PreferenceItem
+            android:id="@+id/item_widget"
+            style="@style/Widget.Sample.PreferenceView.Item.Text"
+            app:preferenceTitle="@string/widget" />
+
+        <com.github.kilnn.tool.widget.item.PreferenceItem
+            android:id="@+id/item_feature"
+            style="@style/Widget.Sample.PreferenceView.Item.Text"
+            app:preferenceTitle="@string/feature" />
+
+        <com.github.kilnn.tool.widget.item.PreferenceItem
+            android:id="@+id/item_muslim"
+            style="@style/Widget.Sample.PreferenceView.Item.Text"
+            app:preferenceTitle="@string/muslim" />
+
+        <!-- <com.sjbt.sdk.sample.widget.PreferenceItemView
+             android:id="@+id/item_version_info"
+             style="@style/Widget.Sample.PreferenceView.Item.Text"
+             app:name="@string/version_info" />-->
+    </LinearLayout>
+
+</ScrollView>

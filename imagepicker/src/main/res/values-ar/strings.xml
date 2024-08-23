@@ -1,0 +1,16 @@
+<?xml version="1.0" ?>
+<resources>
+    <string name="ip_all_images">جميع الصور</string>
+    <string name="ip_folder_image_count">إجمالي %1$d صور</string>
+    <string name="ip_preview_image_count">%1$d/%2$d</string>
+    <string name="ip_select_limit">يمكن اختيار %1$d حد أقصى</string>
+    <string name="ip_complete">انتهى</string>
+    <string name="ip_select_complete">انتهى (%1$d/%2$d)</string>
+    <string name="ip_preview">معاينة</string>
+    <string name="ip_preview_count">معاينة (%1$d)</string>
+    <string name="ip_photo_crop">قص الصورة</string>
+    <string name="ip_origin">الصورة الأصلية</string>
+    <string name="ip_origin_size">الصورة الأصلية (%1$s)</string>
+    <string name="photo">ألبوم الصور</string>
+    <string name="take_photo">الكاميرا</string>
+</resources>

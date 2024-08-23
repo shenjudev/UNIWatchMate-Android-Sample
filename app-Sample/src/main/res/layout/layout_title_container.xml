@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+
+    android:paddingTop="@dimen/dp_40"
+    android:id="@+id/top_view"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:id="@+id/layoutTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        android:layout_marginStart="@dimen/dp_15"
+        android:layout_marginEnd="@dimen/dp_20"
+        android:minHeight="@dimen/dp_50"
+        android:paddingBottom="@dimen/dp_10"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/iv_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:src="@mipmap/ic_topnav_back_arr_40" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:maxLines="1"
+            android:paddingStart="@dimen/dp_40"
+            android:paddingEnd="@dimen/dp_40"
+            android:textColor="@color/black"
+            android:textSize="@dimen/sp_18"
+            tools:text="@string/app_name" />
+
+        <TextView
+            android:id="@+id/tv_right"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dp_40"
+            android:layout_alignParentEnd="true"
+            android:gravity="center"
+            android:minHeight="@dimen/dp_30"
+            android:paddingRight="@dimen/dp_15"
+            android:text="@string/cancel"
+            android:textColor="@color/black"
+            android:textSize="@dimen/text_size_16"
+            android:visibility="invisible"
+            android:paddingEnd="@dimen/dp_15" />
+
+        <ImageView
+            android:id="@+id/iv_right_2"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dp_40"
+            android:scaleType="fitCenter"
+            android:paddingStart="@dimen/dp_10"
+            android:layout_toStartOf="@+id/iv_right"
+            android:visibility="invisible" />
+
+        <ImageView
+            android:id="@+id/iv_right"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dp_40"
+            android:layout_alignParentEnd="true"
+            android:paddingHorizontal="@dimen/dp_20"
+            android:scaleType="fitCenter"
+            android:src="@mipmap/ic_topnav_add_40"
+            android:visibility="invisible"
+            />
+    </RelativeLayout>
+
+    <FrameLayout
+        android:id="@+id/layoutContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1">
+
+    </FrameLayout>
+
+</LinearLayout>

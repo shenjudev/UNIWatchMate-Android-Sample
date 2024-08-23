@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<resources>
+    <!--波斯语-->
+    <string name="ip_all_images">همه تصاویر</string>
+    <string name="ip_folder_image_count">مجموعی از %1$d عکس</string>
+    <string name="ip_preview_image_count">%1$d/%2$d</string>
+    <string name="ip_select_limit">حداکثر %1$d تصویر می توان انتخاب کرد</string>
+    <string name="ip_complete">تکمیل شد</string>
+    <string name="ip_select_complete">تکمیل شد (%1$d/%2$d)</string>
+    <string name="ip_preview">پیش نمایش</string>
+    <string name="ip_preview_count">پیش نمایش (%1$d)</string>
+    <string name="ip_photo_crop">جداکردن تصویر</string>
+    <string name="ip_origin">تصویر اصلی</string>
+    <string name="ip_origin_size">تصویر اصلی (%1$s)</string>
+    <string name="photo">آلبوم عکس</string>
+    <string name="take_photo">دوربین</string>
+</resources>

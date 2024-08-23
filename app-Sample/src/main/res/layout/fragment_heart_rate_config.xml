@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:id="@+id/layout_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:divider="?dividerVertical"
+        android:orientation="vertical"
+        android:showDividers="middle">
+
+        <com.github.kilnn.tool.widget.item.PreferenceItem
+            android:id="@+id/item_auto_heart_rate_measurement_switch"
+            style="@style/Widget.Sample.PreferenceView.Item.Switch"
+            android:layout_marginBottom="@dimen/dp_10"
+            app:preferenceTitle="@string/ds_automatic_heart_rate_measurement" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_20"
+            android:orientation="vertical">
+
+            <com.github.kilnn.tool.widget.item.PreferenceItem
+                android:id="@+id/item_max_heart_rate"
+                style="@style/Widget.Sample.PreferenceView.Item.Text"
+                app:preferenceTitle="@string/ds_max_heart_rate" />
+
+            <TextView
+                android:id="@+id/item_heart_rate_interval"
+                style="@style/Widget.Item.Text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginBottom="@dimen/dp_8"
+                android:text="@string/ds_heart_rate_interva" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_20"
+            android:orientation="vertical">
+
+            <com.github.kilnn.tool.widget.item.PreferenceItem
+                android:id="@+id/item_exercise_heart_rate_high_alert_switch"
+                style="@style/Widget.Sample.PreferenceView.Item.Switch"
+                app:preferenceTitle="@string/ds_exercise_heart_rate_high_alert_switch" />
+
+            <com.github.kilnn.tool.widget.item.PreferenceItem
+                android:id="@+id/item_exercise_heart_rate_high_alert"
+                style="@style/Widget.Sample.PreferenceView.Item.Text"
+                app:preferenceTitle="@string/ds_exercise_heart_rate_high_alert" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_20"
+            android:orientation="vertical">
+
+            <com.github.kilnn.tool.widget.item.PreferenceItem
+                android:id="@+id/item_quiet_heart_rate_high_alert_switch"
+                style="@style/Widget.Sample.PreferenceView.Item.Switch"
+                app:preferenceTitle="@string/ds_quiet_heart_rate_high_alert_switch" />
+
+            <com.github.kilnn.tool.widget.item.PreferenceItem
+                android:id="@+id/item_quiet_heart_rate_high_alert"
+                style="@style/Widget.Sample.PreferenceView.Item.Text"
+                app:preferenceTitle="@string/ds_quiet_heart_rate_high_alert" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+</ScrollView>

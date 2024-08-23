@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/dp_10"
+    android:minHeight="@dimen/dp_50"
+    android:paddingHorizontal="@dimen/dp_10">
+
+    <ImageView
+        android:id="@+id/ivAlbumIcon"
+        android:layout_width="@dimen/dp_40"
+        android:layout_height="@dimen/dp_40"
+        android:layout_centerVertical="true"
+        android:src="@mipmap/ic_music_album_40" />
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:minHeight="@dimen/dp_40"
+        android:layout_marginRight="@dimen/dp_10"
+        android:layout_marginLeft="@dimen/dp_12"
+        android:layout_toLeftOf="@+id/ivSelect"
+        android:layout_toRightOf="@+id/ivAlbumIcon"
+        android:layout_centerVertical="true"
+        android:orientation="vertical"
+        android:layout_marginStart="@dimen/dp_12"
+        android:layout_toEndOf="@+id/ivAlbumIcon"
+        android:layout_marginEnd="@dimen/dp_10"
+        android:layout_toStartOf="@+id/ivSelect">
+
+        <TextView
+            android:id="@+id/tvFileName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center_vertical|start"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:textColor="@color/white"
+            android:textSize="@dimen/sp_16" />
+
+        <TextView
+            android:id="@+id/tvFileSize"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_2"
+            android:layout_toRightOf="@+id/ivAlbumIcon"
+            android:maxLines="1"
+            android:textColor="@color/color_8e8e93"
+            android:textSize="@dimen/sp_10"
+            android:layout_toEndOf="@+id/ivAlbumIcon" />
+
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/ivSelect"
+        android:layout_width="@dimen/dp_18"
+        android:layout_height="@dimen/dp_18"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:src="@drawable/shape_bg_round_white"
+        android:layout_alignParentEnd="true" />
+
+</RelativeLayout>

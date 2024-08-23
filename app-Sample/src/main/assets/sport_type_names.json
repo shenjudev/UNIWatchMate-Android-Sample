@@ -1,0 +1,1876 @@
+{
+  "sports": [
+    {
+      "id": 1,
+      "sport_type": 0,
+      "type": 1,
+      "names": {
+        "zh-cn": "户外跑步",
+        "en": "Outdoor run   ",
+        "de": "Im Freien laufen",
+        "ar": "الجري في الهواء الطلق",
+        "it": "Corsa all'aperto",
+        "es": "Correr al aire libre",
+        "fr": "Course en plein air ",
+        "pt": "Corrida ao ar livre",
+        "fa": "دویدن در فضای آزاد",
+        "ru": "Бег на открытом воздухе",
+        "null": null
+      }
+    },
+    {
+      "id": 2,
+      "sport_type": 1,
+      "type": 1,
+      "names": {
+        "zh-cn": "户外健走",
+        "en": "Outdoor walk",
+        "de": "Spaziergang im Freien",
+        "ar": "المشي في الهواء الطلق",
+        "it": "Passeggiata all'aperto",
+        "es": "Andar en el exterior",
+        "fr": "Marche en plein air",
+        "pt": " Caminhada externa ",
+        "fa": "پیاده‌روی در فضای آزاد",
+        "ru": "Ходьба пешком на открытом воздухе",
+        "null": null
+      }
+    },
+    {
+      "id": 4,
+      "sport_type": 5,
+      "type": 1,
+      "names": {
+        "zh-cn": "登山",
+        "en": "Mountaineering   ",
+        "de": "Bergsteigen",
+        "ar": "تسلق الجبال",
+        "it": "alpinismo",
+        "es": "montañismo ",
+        "fr": "alpinisme ",
+        "pt": "montanhismo",
+        "fa": "کوهنوردی",
+        "ru": "Горный туризм",
+        "null": null
+      }
+    },
+    {
+      "id": 5,
+      "sport_type": 5,
+      "type": 1,
+      "names": {
+        "zh-cn": "越野跑",
+        "en": "Cross country running",
+        "de": "Langstreckenlauf",
+        "ar": "الجري في الأرياف",
+        "it": "Corsa campestre",
+        "es": "Correr a campo traviesa",
+        "fr": "Course de fond",
+        "pt": "Correndo em trilha",
+        "fa": "دوی کراس شهری",
+        "ru": "Бег по пересеченной местности",
+        "null": null
+      }
+    },
+    {
+      "id": 3,
+      "sport_type": 0,
+      "type": 4,
+      "names": {
+        "zh-cn": "跑步机",
+        "en": "Treadmill",
+        "de": "Laufband",
+        "ar": "تريد ميل",
+        "it": "Tapis roulant",
+        "es": "Cinta andadora",
+        "fr": "Tapis de course",
+        "pt": "Esteira",
+        "fa": "تردمیل",
+        "ru": "Беговая дорожка",
+        "null": null
+      }
+    },
+    {
+      "id": 13,
+      "sport_type": 5,
+      "type": 1,
+      "names": {
+        "zh-cn": "户外徒步",
+        "en": "Outdoor hiking",
+        "de": "Wandern im Freien",
+        "ar": "المشي لمسافات طويلة في الهواء الطلق",
+        "it": "Escursioni all'aperto",
+        "es": "Montañismo en pista",
+        "fr": "Randonnée en plein air",
+        "pt": "Caminhada ao ar livre",
+        "fa": "پیاده‌روی در فضای آزاد",
+        "ru": "Пешеходная прогулка вне помещения",
+        "null": null
+      }
+    },
+    {
+      "id": 66,
+      "sport_type": 0,
+      "type": 2,
+      "names": {
+        "zh-cn": "室内跑步",
+        "en": "Indoor running",
+        "de": "Laufen in der Halle",
+        "ar": "الجري في الأماكن المغلقة",
+        "it": "Corsa indoor",
+        "es": "Atletismo en pista cubierta",
+        "fr": "Course en salle",
+        "pt": "Corrida na esteira",
+        "fa": "ورزش دو سالنی",
+        "ru": "Бег в помещении",
+        "null": null
+      }
+    },
+    {
+      "id": 6,
+      "sport_type": 2,
+      "type": 3,
+      "names": {
+        "zh-cn": "户外骑行",
+        "en": "Outdoor cycling",
+        "de": "Radfahren im Freien",
+        "ar": "ركوب الدراجة في الهواء الطلق",
+        "it": "Ciclismo all'aperto",
+        "es": "Ciclismo en el exterior",
+        "fr": "Cyclisme en plein air",
+        "pt": "Ciclismo ao ar livre",
+        "fa": "دوچرخه‌سواری در فضای آزاد",
+        "ru": "Езда на велосипеде вне помещения",
+        "null": null
+      }
+    },
+    {
+      "id": 15,
+      "sport_type": 11,
+      "type": 3,
+      "names": {
+        "zh-cn": "打猎",
+        "en": "Hunt",
+        "de": "Jagen",
+        "ar": "الصيد",
+        "it": "Caccia",
+        "es": "Caza",
+        "fr": "Hunt",
+        "pt": "Caçar",
+        "fa": "شکار",
+        "ru": "Охота",
+        "null": null
+      }
+    },
+    {
+      "id": 17,
+      "sport_type": 5,
+      "type": 3,
+      "names": {
+        "zh-cn": "滑板",
+        "en": "Skateboard",
+        "de": "Skateboard",
+        "ar": "التزلج على اللوح",
+        "it": "Skateboard",
+        "es": "Skateboard",
+        "fr": "Skateboard",
+        "pt": "Skate",
+        "fa": "اسکیت‌بورد",
+        "ru": "Скейтборд",
+        "null": null
+      }
+    },
+    {
+      "id": 18,
+      "sport_type": 5,
+      "type": 3,
+      "names": {
+        "zh-cn": "轮滑",
+        "en": "Roller skating",
+        "de": "Rollschuhlaufen",
+        "ar": "التزلج بالعجلات",
+        "it": "Pattinaggio a rotelle",
+        "es": "Patinaje sobre ruedas",
+        "fr": "Patinage à roulettes",
+        "pt": "Patins",
+        "fa": "اسکیتینگ با کفش چرخ‌دار",
+        "ru": "Катание на роликовых коньках",
+        "null": null
+      }
+    },
+    {
+      "id": 19,
+      "sport_type": 5,
+      "type": 3,
+      "names": {
+        "zh-cn": "户外滑冰",
+        "en": "Outdoor skating",
+        "de": "Rollschuhlaufen im Freien",
+        "ar": "التزلج في الهواء الطلق",
+        "it": "Pattinaggio all'aperto",
+        "es": "Patinaje en el exterior",
+        "fr": "Patinage en plein air",
+        "pt": "Patinação ao ar livre",
+        "fa": "اسکیت بیرونی",
+        "ru": "Катание на коньках вне помещения",
+        "null": null
+      }
+    },
+    {
+      "id": 20,
+      "sport_type": 12,
+      "type": 3,
+      "names": {
+        "zh-cn": "马术",
+        "en": "Equestrian",
+        "de": "Reiten",
+        "ar": "ركوب الخيل",
+        "it": "Equitazione",
+        "es": "Hípica",
+        "fr": "Équitation",
+        "pt": "Equitação",
+        "fa": "سوارکاری",
+        "ru": "Верховая езда",
+        "null": null
+      }
+    },
+    {
+      "id": 7,
+      "sport_type": 2,
+      "type": 4,
+      "names": {
+        "zh-cn": "室内骑行",
+        "en": "Indoor cycling",
+        "de": "Radfahren in der Halle",
+        "ar": "ركوب الدراجة في الأماكن المغلقة",
+        "it": "Ciclismo indoor",
+        "es": "Ciclismo en pista cubierta",
+        "fr": "Cyclisme en salle",
+        "pt": "Ciclismo indoor",
+        "fa": "دوچرخه‌سازی در فضای بسته",
+        "ru": "Езда на велосипеде в помещении",
+        "null": null
+      }
+    },
+    {
+      "id": 8,
+      "sport_type": 4,
+      "type": 4,
+      "names": {
+        "zh-cn": "自由训练",
+        "en": "Free sports",
+        "de": "Freie Sportarten",
+        "ar": "تمارين رياضية حرة",
+        "it": "esercizi a corpo libero",
+        "es": "deportes libres",
+        "fr": "sports libres",
+        "pt": "esportes livres",
+        "fa": "ورزش‌های آزاد",
+        "ru": "Свободный спорт",
+        "null": null
+      }
+    },
+    {
+      "id": 9,
+      "sport_type": 6,
+      "type": 4,
+      "names": {
+        "zh-cn": "篮球",
+        "en": "Basketball   ",
+        "de": "Basketball",
+        "ar": "كرة السلة",
+        "it": "basket",
+        "es": "básquetbol",
+        "fr": "basket-ball ",
+        "pt": "basquetebol",
+        "fa": "بسکتبال",
+        "ru": "Баскетбол   ",
+        "null": null
+      }
+    },
+    {
+      "id": 10,
+      "sport_type": 6,
+      "type": 4,
+      "names": {
+        "zh-cn": "足球",
+        "en": "Football ",
+        "de": "Fußball",
+        "ar": "كرة القدم",
+        "it": "football americano",
+        "es": "fútbol ",
+        "fr": "football ",
+        "pt": "futebol",
+        "fa": "فوتبال",
+        "ru": "Футбол ",
+        "null": null
+      }
+    },
+    {
+      "id": 11,
+      "sport_type": 6,
+      "type": 4,
+      "names": {
+        "zh-cn": "乒乓球",
+        "en": "Table tennis",
+        "de": "Tischtennis",
+        "ar": "تنس الطاولة",
+        "it": "ping pong",
+        "es": "tenis de mesa",
+        "fr": "tennis de table",
+        "pt": "tênis de mesa",
+        "fa": "تنیس روی میز",
+        "ru": "Настольный теннис",
+        "null": null
+      }
+    },
+    {
+      "id": 12,
+      "sport_type": 6,
+      "type": 4,
+      "names": {
+        "zh-cn": "羽毛球",
+        "en": "Badminton ",
+        "de": "Badminton",
+        "ar": "تنس الريشة",
+        "it": "badminton",
+        "es": "badminton ",
+        "fr": "badminton ",
+        "pt": "badminton",
+        "fa": "بدمینتون",
+        "ru": "Бадминтон ",
+        "null": null
+      }
+    },
+    {
+      "id": 23,
+      "sport_type": 4,
+      "type": 4,
+      "names": {
+        "zh-cn": "核心训练",
+        "en": "Core training",
+        "de": "Kern-Training",
+        "ar": "تمارين كور",
+        "it": "Training addominali",
+        "es": "Entrenamiento central",
+        "fr": "Formation de base",
+        "pt": "Treino fundamental",
+        "fa": "آموزش مرکزی",
+        "ru": "Основная тренировка",
+        "null": null
+      }
+    },
+    {
+      "id": 24,
+      "sport_type": 4,
+      "type": 4,
+      "names": {
+        "zh-cn": "混合有氧",
+        "en": "Mixed aerobic",
+        "de": "Gemischte Aerobic",
+        "ar": "تمارين هوائية مختلطة",
+        "it": "Misto aerobico",
+        "es": "Aeróbics mixto",
+        "fr": "Aérobic mixte",
+        "pt": "Aeróbica mista",
+        "fa": "ایروبیک ترکیبی",
+        "ru": "Смешанная аэробика",
+        "null": null
+      }
+    },
+    {
+      "id": 25,
+      "sport_type": 4,
+      "type": 4,
+      "names": {
+        "zh-cn": "力量训练",
+        "en": "Strength Training",
+        "de": "Krafttraining",
+        "ar": "تمارين القوة",
+        "it": "Allenamento di forza",
+        "es": "Entrenamiento de fuerza",
+        "fr": "Entraînement musculaire",
+        "pt": "Treino de Força",
+        "fa": "آموزش استقامت",
+        "ru": "Силовая тренировка",
+        "null": null
+      }
+    },
+    {
+      "id": 26,
+      "sport_type": 4,
+      "type": 4,
+      "names": {
+        "zh-cn": "拉伸",
+        "en": "Stretch",
+        "de": "Dehnen",
+        "ar": "التمدد",
+        "it": "Stretching",
+        "es": "Estiramiento",
+        "fr": "Stretch",
+        "pt": "Alongamento",
+        "fa": "حرکت کششی",
+        "ru": "Вытягивание",
+        "null": null
+      }
+    },
+    {
+      "id": 28,
+      "sport_type": 7,
+      "type": 4,
+      "names": {
+        "zh-cn": "普拉提",
+        "en": "Pilates",
+        "de": "Pilates",
+        "ar": "تمارين بيلاتيس",
+        "it": "Pilates",
+        "es": "Pilates",
+        "fr": "Pilates",
+        "pt": "Pilates",
+        "fa": "ورزش کششی",
+        "ru": "Пилатес",
+        "null": null
+      }
+    },
+    {
+      "id": 31,
+      "sport_type": 4,
+      "type": 4,
+      "names": {
+        "zh-cn": "踏步机",
+        "en": "Stepper",
+        "de": "Stepper",
+        "ar": "ستيبر",
+        "it": "Stepper",
+        "es": "Stepper",
+        "fr": "Stepper",
+        "pt": "Step",
+        "fa": "استپر",
+        "ru": "Степ-платформа",
+        "null": null
+      }
+    },
+    {
+      "id": 33,
+      "sport_type": 4,
+      "type": 4,
+      "names": {
+        "zh-cn": "体操",
+        "en": "Gymnastics   ",
+        "de": "Gymnastik",
+        "ar": "الجمباز",
+        "it": "ginnastica",
+        "es": "gimnasia",
+        "fr": "gymnastique ",
+        "pt": "ginástica",
+        "fa": "ژیمناستیک",
+        "ru": "Гимнастика",
+        "null": null
+      }
+    },
+    {
+      "id": 34,
+      "sport_type": 4,
+      "type": 4,
+      "names": {
+        "zh-cn": "椭圆机",
+        "en": "Elliptical machine",
+        "de": "Elliptische Maschine",
+        "ar": "جهاز اليبتيكال ",
+        "it": "Step training",
+        "es": "Máquina para hacer elípticas",
+        "fr": "Machine elliptique",
+        "pt": "Máquina elíptica",
+        "fa": "دستگاه بیضی‌شکل",
+        "ru": "Эллиптический тренажер",
+        "null": null
+      }
+    },
+    {
+      "id": 35,
+      "sport_type": 7,
+      "type": 4,
+      "names": {
+        "zh-cn": "瑜伽",
+        "en": "Yoga   ",
+        "de": "Yoga",
+        "ar": "اليوغا",
+        "it": "yoga",
+        "es": "yoga",
+        "fr": "yoga ",
+        "pt": "ioga",
+        "fa": "یوگا",
+        "ru": "Йога",
+        "null": null
+      }
+    },
+    {
+      "id": 36,
+      "sport_type": 11,
+      "type": 4,
+      "names": {
+        "zh-cn": "钓鱼",
+        "en": "Fishing",
+        "de": "Angeln",
+        "ar": "صيد السمك",
+        "it": "Pesca",
+        "es": "Pesca",
+        "fr": "Pêche",
+        "pt": "Pesca",
+        "fa": "ماهی گیری",
+        "ru": "Рыбная ловля",
+        "null": null
+      }
+    },
+    {
+      "id": 37,
+      "sport_type": 8,
+      "type": 4,
+      "names": {
+        "zh-cn": "冰壶",
+        "en": "Curling",
+        "de": "Eisstockschießen",
+        "ar": "الكيرلنج",
+        "it": "Curling",
+        "es": "Curling",
+        "fr": "Curling",
+        "pt": "Treino de curl",
+        "fa": "کرلینگ",
+        "ru": "Керлинг",
+        "null": null
+      }
+    },
+    {
+      "id": 38,
+      "sport_type": 8,
+      "type": 4,
+      "names": {
+        "zh-cn": "室内滑冰",
+        "en": "Indoor skating",
+        "de": "Schlittschuhlaufen in der Halle",
+        "ar": "التزلج في الأماكن المغلقة",
+        "it": "Pattinaggio al coperto",
+        "es": "Patinaje exterior",
+        "fr": "Patinage en salle",
+        "pt": "Patinação indoor",
+        "fa": "اسکی در داخل",
+        "ru": "Катание на коньках в помещении",
+        "null": null
+      }
+    },
+    {
+      "id": 39,
+      "sport_type": 6,
+      "type": 4,
+      "names": {
+        "zh-cn": "板球",
+        "en": "Cricket   ",
+        "de": "Kricket",
+        "ar": "كريكيت",
+        "it": "cricket",
+        "es": "cricket",
+        "fr": "cricket ",
+        "pt": "críquete",
+        "fa": "کریکت",
+        "ru": "Крикет   ",
+        "null": null
+      }
+    },
+    {
+      "id": 40,
+      "sport_type": 6,
+      "type": 4,
+      "names": {
+        "zh-cn": "棒球",
+        "en": "Baseball",
+        "de": "Baseball",
+        "ar": "بيسبول",
+        "it": "baseball",
+        "es": "beisbol",
+        "fr": "baseball ",
+        "pt": "beisebol",
+        "fa": "بیسبال",
+        "ru": "Бейсбол",
+        "null": null
+      }
+    },
+    {
+      "id": 41,
+      "sport_type": 6,
+      "type": 4,
+      "names": {
+        "zh-cn": "保龄球",
+        "en": "Bowling",
+        "de": "Bowling",
+        "ar": "البولينج",
+        "it": "Bowling",
+        "es": "Bolos",
+        "fr": "Bowling",
+        "pt": "Boliche",
+        "fa": "بولینگ",
+        "ru": "Боулинг",
+        "null": null
+      }
+    },
+    {
+      "id": 42,
+      "sport_type": 6,
+      "type": 4,
+      "names": {
+        "zh-cn": "壁球",
+        "en": "Squash",
+        "de": "Squash",
+        "ar": "سكواش",
+        "it": "Squash",
+        "es": "Squash",
+        "fr": "Courge",
+        "pt": "Squash",
+        "fa": "اسکواش",
+        "ru": "Сквош",
+        "null": null
+      }
+    },
+    {
+      "id": 43,
+      "sport_type": 6,
+      "type": 4,
+      "names": {
+        "zh-cn": "垒球",
+        "en": "Softball",
+        "de": "Softball",
+        "ar": "السوفتبول",
+        "it": "Softball",
+        "es": "Softball",
+        "fr": "Softball",
+        "pt": "Softball",
+        "fa": "سافت بال",
+        "ru": "Софтбол",
+        "null": null
+      }
+    },
+    {
+      "id": 45,
+      "sport_type": 6,
+      "type": 4,
+      "names": {
+        "zh-cn": "排球",
+        "en": "Volleyball",
+        "de": "Volleyball",
+        "ar": "كرة الطائرة",
+        "it": "pallavolo",
+        "es": "voleibol",
+        "fr": "volley-ball ",
+        "pt": "voleibol",
+        "fa": "والیبال",
+        "ru": "Волейбол",
+        "null": null
+      }
+    },
+    {
+      "id": 46,
+      "sport_type": 6,
+      "type": 4,
+      "names": {
+        "zh-cn": "手球",
+        "en": "Handball",
+        "de": "Handball",
+        "ar": "كرة اليد",
+        "it": "Pallamano",
+        "es": "Balonmano",
+        "fr": "Handball",
+        "pt": "Handball",
+        "fa": "هندبال",
+        "ru": "Гандбол",
+        "null": null
+      }
+    },
+    {
+      "id": 47,
+      "sport_type": 9,
+      "type": 4,
+      "names": {
+        "zh-cn": "芭蕾舞",
+        "en": "Ballet",
+        "de": "Ballett",
+        "ar": "الباليه",
+        "it": "Balletto",
+        "es": "Balé",
+        "fr": "Ballet",
+        "pt": "Ballet",
+        "fa": "بالت",
+        "ru": "Балет",
+        "null": null
+      }
+    },
+    {
+      "id": 50,
+      "sport_type": 9,
+      "type": 4,
+      "names": {
+        "zh-cn": "街舞",
+        "en": "Street dance",
+        "de": "Street Dance",
+        "ar": "رقص شوارع",
+        "it": "Danza di strada",
+        "es": "Baile callejero",
+        "fr": "Danse de rue",
+        "pt": "Street dance",
+        "fa": "رقص خیابانی",
+        "ru": "Стрит-данс",
+        "null": null
+      }
+    },
+    {
+      "id": 52,
+      "sport_type": 9,
+      "type": 4,
+      "names": {
+        "zh-cn": "舞蹈",
+        "en": "Dance",
+        "de": "Tanz",
+        "ar": "رقص",
+        "it": "Danza",
+        "es": "Baile",
+        "fr": "Danse",
+        "pt": "Dança",
+        "fa": "رقص",
+        "ru": "Танец",
+        "null": null
+      }
+    },
+    {
+      "id": 55,
+      "sport_type": 12,
+      "type": 4,
+      "names": {
+        "zh-cn": "空手道",
+        "en": "Karate",
+        "de": "Karate",
+        "ar": "الكراتيه",
+        "it": "Karate",
+        "es": "Karate",
+        "fr": "Karaté",
+        "pt": "Caratê",
+        "fa": "کاراته",
+        "ru": "Карате",
+        "null": null
+      }
+    },
+    {
+      "id": 56,
+      "sport_type": 12,
+      "type": 4,
+      "names": {
+        "zh-cn": "拳击",
+        "en": "Boxing",
+        "de": "Boxen",
+        "ar": "الملاكمة",
+        "it": "Boxe",
+        "es": "Boxeo",
+        "fr": "Boxe",
+        "pt": "Boxe",
+        "fa": "بوکس",
+        "ru": "Бокс",
+        "null": null
+      }
+    },
+    {
+      "id": 57,
+      "sport_type": 12,
+      "type": 4,
+      "names": {
+        "zh-cn": "柔道",
+        "en": "Judo",
+        "de": "Judo",
+        "ar": "الجودو",
+        "it": "Judo",
+        "es": "Judo",
+        "fr": "Judo",
+        "pt": "Judô",
+        "fa": "جودو",
+        "ru": "Дзюдо",
+        "null": null
+      }
+    },
+    {
+      "id": 58,
+      "sport_type": 12,
+      "type": 4,
+      "names": {
+        "zh-cn": "摔跤",
+        "en": "Wrestling",
+        "de": "Ringen",
+        "ar": "المصارعة",
+        "it": "Wrestling",
+        "es": "Lucha libre",
+        "fr": "Lutte",
+        "pt": "Luta-livre",
+        "fa": "کشتی",
+        "ru": "Борьба",
+        "null": null
+      }
+    },
+    {
+      "id": 59,
+      "sport_type": 12,
+      "type": 4,
+      "names": {
+        "zh-cn": "太极",
+        "en": "Tai Chi",
+        "de": "Tai Chi",
+        "ar": "تاي تشي",
+        "it": "Tai Chi",
+        "es": "Tai Chi",
+        "fr": "Tai Chi",
+        "pt": "Tai Chi",
+        "fa": "تای چی",
+        "ru": "Тайцзицюань",
+        "null": null
+      }
+    },
+    {
+      "id": 61,
+      "sport_type": 12,
+      "type": 4,
+      "names": {
+        "zh-cn": "跆拳道",
+        "en": "Taekwondo",
+        "de": "Taekwondo",
+        "ar": "التيكواندو",
+        "it": "Taekwondo",
+        "es": "Taekwondo",
+        "fr": "Taekwondo",
+        "pt": "Taekwondo",
+        "fa": "تکواندو",
+        "ru": "Таэквон-до",
+        "null": null
+      }
+    },
+    {
+      "id": 62,
+      "sport_type": 12,
+      "type": 4,
+      "names": {
+        "zh-cn": "武术",
+        "en": "Martial arts",
+        "de": "Kampfsportarten",
+        "ar": "فنون الدفاع عن النفس",
+        "it": "Arti marziali",
+        "es": "Artes marciales",
+        "fr": "Arts martiaux",
+        "pt": "Artes marciais",
+        "fa": "هنرهای رزمی",
+        "ru": "Боевые искусства",
+        "null": null
+      }
+    },
+    {
+      "id": 63,
+      "sport_type": 12,
+      "type": 4,
+      "names": {
+        "zh-cn": "自由搏击",
+        "en": "Free sparring",
+        "de": "Freies Sparring",
+        "ar": "القتال الحر",
+        "it": "Sparring libero",
+        "es": "Combate libre",
+        "fr": "Combat libre",
+        "pt": "Combate livre",
+        "fa": "بوکس آزاد ",
+        "ru": "Вольный бой",
+        "null": null
+      }
+    },
+    {
+      "id": 64,
+      "sport_type": 4,
+      "type": 4,
+      "names": {
+        "zh-cn": "高强度间歇训练",
+        "en": "HIIT",
+        "de": "HIIT",
+        "ar": "التدريب المتواتر عالي الكثافة (HIIT)",
+        "it": "HIIT",
+        "es": "HIIT",
+        "fr": "HIIT",
+        "pt": "HIIT",
+        "fa": "تمرین های بدنی تناوبی تنشی",
+        "ru": "Высокоинтенсивная интервальная тренировка",
+        "null": null
+      }
+    },
+    {
+      "id": 65,
+      "sport_type": 11,
+      "type": 4,
+      "names": {
+        "zh-cn": "射箭",
+        "en": "Archery",
+        "de": "Bogenschießen",
+        "ar": "الرماية",
+        "it": "Tiro con l'arco",
+        "es": "Tiro con arco",
+        "fr": "Tir à l'arc",
+        "pt": "Arquearia",
+        "fa": "تیراندازی با کمان",
+        "ru": "Стрельба из лука",
+        "null": null
+      }
+    },
+    {
+      "id": 79,
+      "sport_type": 5,
+      "type": 4,
+      "names": {
+        "zh-cn": "攀岩",
+        "en": "Rock climbing",
+        "de": "Klettern",
+        "ar": "تسلق الصخور",
+        "it": "Arrampicata su roccia",
+        "es": "Escalada",
+        "fr": "Escalade",
+        "pt": "Escalada",
+        "fa": "صخره نوردی",
+        "ru": "Скалолазание",
+        "null": null
+      }
+    },
+    {
+      "id": 80,
+      "sport_type": 5,
+      "type": 4,
+      "names": {
+        "zh-cn": "跑酷",
+        "en": "Parkour",
+        "de": "Parkour",
+        "ar": "باركور",
+        "it": "Parkour",
+        "es": "Parkour",
+        "fr": "Parkour",
+        "pt": "Parkour",
+        "fa": "پارکور",
+        "ru": "Паркур",
+        "null": null
+      }
+    },
+    {
+      "id": 83,
+      "sport_type": 4,
+      "type": 4,
+      "names": {
+        "zh-cn": "爬楼梯",
+        "en": "Climb the stairs",
+        "de": "Treppensteigen",
+        "ar": "صعود السلالم",
+        "it": "Salire le scale",
+        "es": "Subir escaleras",
+        "fr": "Monter les escaliers",
+        "pt": "Subir escadas",
+        "fa": "بالا رفتن از پله‌ها",
+        "ru": "Подъем по лестнице",
+        "null": null
+      }
+    },
+    {
+      "id": 84,
+      "sport_type": 4,
+      "type": 4,
+      "names": {
+        "zh-cn": "交叉训练Crossfit",
+        "en": "Crossfit",
+        "de": "Crossfit",
+        "ar": "Crossfit",
+        "it": "Crossfit",
+        "es": "Crossfit",
+        "fr": "Crossfit",
+        "pt": "Crossfit",
+        "fa": "کراس‌فیت",
+        "ru": "Кроссфит",
+        "null": null
+      }
+    },
+    {
+      "id": 85,
+      "sport_type": 4,
+      "type": 4,
+      "names": {
+        "zh-cn": "健身操",
+        "en": "Aerobics",
+        "de": "Aerobic",
+        "ar": "تمارين رياضية هوائية",
+        "it": "Aerobica",
+        "es": "Aeróbico",
+        "fr": "Aérobic",
+        "pt": "Aeróbica",
+        "fa": "ایروبیک",
+        "ru": "Аэробика",
+        "null": null
+      }
+    },
+    {
+      "id": 86,
+      "sport_type": 4,
+      "type": 4,
+      "names": {
+        "zh-cn": "体能训练",
+        "en": "Physical Training",
+        "de": "Körperliches Training",
+        "ar": "التمارين البدنية",
+        "it": "Allenamento fisico",
+        "es": "Entrenamiento físico",
+        "fr": "Entraînement physique",
+        "pt": "Treino Físico",
+        "fa": "آموزش فیزیکی",
+        "ru": "Физическая подготовка",
+        "null": null
+      }
+    },
+    {
+      "id": 93,
+      "sport_type": 4,
+      "type": 4,
+      "names": {
+        "zh-cn": "仰卧起坐",
+        "en": "Sit-up",
+        "de": "Situp",
+        "ar": "تمرين المعدة",
+        "it": "squat",
+        "es": "sentarse",
+        "fr": "sit-up ",
+        "pt": "abdominal",
+        "fa": "دراز و نشست",
+        "ru": "Подъем корпуса",
+        "null": null
+      }
+    },
+    {
+      "id": 94,
+      "sport_type": 4,
+      "type": 4,
+      "names": {
+        "zh-cn": "功能性训练",
+        "en": "Functional training",
+        "de": "Funktionelles Training",
+        "ar": "التمارين الوظيفية",
+        "it": "Allenamento funzionale",
+        "es": "Entrenamiento funcional",
+        "fr": "Entraînement fonctionnel",
+        "pt": "Treino funcional",
+        "fa": "آموزش عملی",
+        "ru": "Функциональная тренировка",
+        "null": null
+      }
+    },
+    {
+      "id": 97,
+      "sport_type": 4,
+      "type": 4,
+      "names": {
+        "zh-cn": "腰腹训练",
+        "en": "Waist and abdomen training",
+        "de": "Training der Taille und des Bauches",
+        "ar": "تمارين الخصر والبطن",
+        "it": "Allenamento della vita e dell'addome",
+        "es": "Entrenamiento de cintura y abdomen",
+        "fr": "Entraînement de la taille et de l'abdomen",
+        "pt": "Treino de quadril e abdome",
+        "fa": "آموزش برای دور کمر و شکم",
+        "ru": "Тренировка талии и пресса",
+        "null": null
+      }
+    },
+    {
+      "id": 99,
+      "sport_type": 9,
+      "type": 4,
+      "names": {
+        "zh-cn": "民族舞",
+        "en": "National dance",
+        "de": "Nationaler Tanz",
+        "ar": "الرقص الوطني",
+        "it": "Danza nazionale",
+        "es": "Bailes nacionales",
+        "fr": "Danse nationale",
+        "pt": "Dança nacional",
+        "fa": "رقص ملی",
+        "ru": "Национальный танец",
+        "null": null
+      }
+    },
+    {
+      "id": 101,
+      "sport_type": 9,
+      "type": 4,
+      "names": {
+        "zh-cn": "拉丁舞",
+        "en": "Latin dance",
+        "de": "Lateinischer Tanz",
+        "ar": "رقص لاتيني",
+        "it": "Ballo latino",
+        "es": "Baile latino",
+        "fr": "Danse latine",
+        "pt": "Dança latina",
+        "fa": "رقص لاتین",
+        "ru": "Латиноамериканские танцы",
+        "null": null
+      }
+    },
+    {
+      "id": 102,
+      "sport_type": 12,
+      "type": 4,
+      "names": {
+        "zh-cn": "击剑",
+        "en": "Fencing",
+        "de": "Fechten",
+        "ar": "المبارزة بالسيف",
+        "it": "Scherma",
+        "es": "Esgrima",
+        "fr": "Clôture",
+        "pt": "Esgrima",
+        "fa": "شمشیربازی",
+        "ru": "Фехтование",
+        "null": null
+      }
+    },
+    {
+      "id": 103,
+      "sport_type": 6,
+      "type": 4,
+      "names": {
+        "zh-cn": "橄榄球",
+        "en": "Rugby",
+        "de": "Rugby",
+        "ar": "الرجبي",
+        "it": "Rugby",
+        "es": "Rugby",
+        "fr": "Rugby",
+        "pt": "Rugby",
+        "fa": "راگبی",
+        "ru": "Футбол",
+        "null": null
+      }
+    },
+    {
+      "id": 104,
+      "sport_type": 6,
+      "type": 4,
+      "names": {
+        "zh-cn": "曲棍球",
+        "en": "Hockey",
+        "de": "Hockey",
+        "ar": "الهوكي",
+        "it": "hockey",
+        "es": "hockey ",
+        "fr": "hockey ",
+        "pt": "hóquei",
+        "fa": "هاکی",
+        "ru": "Хоккей",
+        "null": null
+      }
+    },
+    {
+      "id": 105,
+      "sport_type": 6,
+      "type": 4,
+      "names": {
+        "zh-cn": "网球",
+        "en": "Tennis",
+        "de": "Tennis",
+        "ar": "التنس",
+        "it": "tennis",
+        "es": "tenis",
+        "fr": "tennis ",
+        "pt": "tênis",
+        "fa": "تنیس",
+        "ru": "Теннис",
+        "null": null
+      }
+    },
+    {
+      "id": 109,
+      "sport_type": 8,
+      "type": 4,
+      "names": {
+        "zh-cn": "雪上运动",
+        "en": "Snow sports",
+        "de": "Schneesportarten",
+        "ar": "الألعاب الرياضية الثلجية",
+        "it": "Sport sulla neve",
+        "es": "Deportes de invierno",
+        "fr": "Sports de neige",
+        "pt": "Esportes de neve",
+        "fa": "ورزش های زمستانه",
+        "ru": "Зимние виды спорта",
+        "null": null
+      }
+    },
+    {
+      "id": 111,
+      "sport_type": 8,
+      "type": 4,
+      "names": {
+        "zh-cn": "冰球",
+        "en": "Puck",
+        "de": "Puck",
+        "ar": "القرص",
+        "it": "Puck",
+        "es": "Disco",
+        "fr": "Puck",
+        "pt": "Puck",
+        "fa": "هاکی روی یخ",
+        "ru": "Шайба",
+        "null": null
+      }
+    },
+    {
+      "id": 114,
+      "sport_type": 11,
+      "type": 4,
+      "names": {
+        "zh-cn": "飞镖",
+        "en": "Darts",
+        "de": "Darts",
+        "ar": "رمي السهام",
+        "it": "Freccette",
+        "es": "Dardos",
+        "fr": "Fléchettes",
+        "pt": "Dardos",
+        "fa": "دارت",
+        "ru": "Дротики",
+        "null": null
+      }
+    },
+    {
+      "id": 116,
+      "sport_type": 11,
+      "type": 4,
+      "names": {
+        "zh-cn": "呼啦圈",
+        "en": "Hula Hoop",
+        "de": "Hula-Hoop-Reifen",
+        "ar": "هولا هوب",
+        "it": "Hula Hoop",
+        "es": "Hulahop",
+        "fr": "Hula Hoop",
+        "pt": "Bambolê",
+        "fa": "هولا هوپ",
+        "ru": "Хула-хуп",
+        "null": null
+      }
+    },
+    {
+      "id": 118,
+      "sport_type": 11,
+      "type": 4,
+      "names": {
+        "zh-cn": "飞盘",
+        "en": "Frisbee",
+        "de": "Frisbee",
+        "ar": "الصحن الطائر",
+        "it": "Frisbee",
+        "es": "Frisbi",
+        "fr": "Frisbee",
+        "pt": "Frisbee",
+        "fa": "بشقاب پرنده",
+        "ru": "Фрисби",
+        "null": null
+      }
+    },
+    {
+      "id": 119,
+      "sport_type": 12,
+      "type": 4,
+      "names": {
+        "zh-cn": "田径",
+        "en": "Track and field",
+        "de": "Leichtathletik",
+        "ar": "سباقات المضمار والميدان",
+        "it": "Atletica leggera",
+        "es": "Competición de atletismo",
+        "fr": "Athlétisme",
+        "pt": "Atletismo",
+        "fa": "دو و میدانی",
+        "ru": "Легкая атлетика",
+        "null": null
+      }
+    },
+    {
+      "id": 121,
+      "sport_type": 4,
+      "type": 4,
+      "names": {
+        "zh-cn": "划船机",
+        "en": "Rowing machine",
+        "de": "Rudermaschine",
+        "ar": "جهاز التجديف",
+        "it": "Vogatore",
+        "es": "Máquina de remo ",
+        "fr": "Machine à ramer",
+        "pt": "Máquina de remo",
+        "fa": "دستگاه قایق رانی",
+        "ru": "Гребной тренажер",
+        "null": null
+      }
+    },
+    {
+      "id": 122,
+      "sport_type": 4,
+      "type": 4,
+      "names": {
+        "zh-cn": "跳绳",
+        "en": "Skipping rope",
+        "de": "Springseil",
+        "ar": "نط الحبل ",
+        "it": "Corda per saltare",
+        "es": "Cuerda de saltar",
+        "fr": "Corde à sauter",
+        "pt": "Corda",
+        "fa": "طناب پرشی",
+        "ru": "Скакалка",
+        "null": null
+      }
+    },
+    {
+      "id": 126,
+      "sport_type": 8,
+      "type": 4,
+      "names": {
+        "zh-cn": "滑雪",
+        "en": "Ski",
+        "de": "Ski",
+        "ar": "التزلج",
+        "it": "Sci",
+        "es": "Esquí",
+        "fr": "Ski",
+        "pt": "Esqui",
+        "fa": "اسکی",
+        "ru": "Лыжи",
+        "null": null
+      }
+    },
+    {
+      "id": 129,
+      "sport_type": 8,
+      "type": 4,
+      "names": {
+        "zh-cn": "高山滑雪",
+        "en": "Alpine skiing",
+        "de": "Alpen-Skifahren",
+        "ar": "التزلج على المنحدرات الجليدية",
+        "it": "Sci alpino",
+        "es": "Esquí alpino",
+        "fr": "Ski alpin",
+        "pt": "Esqui alpino",
+        "fa": "اسکی آلپاین",
+        "ru": "Горнолыжный спорт",
+        "null": null
+      }
+    },
+    {
+      "id": 400,
+      "sport_type": 0,
+      "type": 4,
+      "names": {
+        "zh-cn": "马拉松",
+        "en": "Marathon",
+        "de": "Marathonlauf",
+        "ar": "ماراثون",
+        "it": "Maratona",
+        "es": "Maratón",
+        "fr": "Marathon",
+        "pt": "Maratona",
+        "fa": "ماراتن",
+        "ru": "Марафон",
+        "null": null
+      }
+    },
+    {
+      "id": 135,
+      "sport_type": 1,
+      "type": 4,
+      "names": {
+        "zh-cn": "室内健走",
+        "en": "Indoor Walking",
+        "de": "Indoor-Walking",
+        "ar": "المشي الداخلي",
+        "it": "Camminata Indoor",
+        "es": "Caminata Interior",
+        "fr": "Marche Intérieure",
+        "pt": "Caminhada Indoor",
+        "fa": "پیاده‌روی سرپوشیده",
+        "ru": "Занятия ходьбой в помещении",
+        "null": null
+      }
+    },
+    {
+      "id": 401,
+      "sport_type": 4,
+      "type": 4,
+      "names": {
+        "zh-cn": "最大摄氧量",
+        "en": "VO2 Max",
+        "de": "VO2max",
+        "ar": "الحد الأقصى لاستهلاك الأكسجين",
+        "it": "Massimo Consumo di Ossigeno",
+        "es": "VO2 Máximo",
+        "fr": "VO2 Max",
+        "pt": "VO2 Máximo",
+        "fa": "حداکثر مصرف اکسیژن",
+        "ru": "Максимальное потребление кислорода",
+        "null": null
+      }
+    },
+    {
+      "id": 403,
+      "sport_type": 4,
+      "type": 4,
+      "names": {
+        "zh-cn": "单杠",
+        "en": "High Bar",
+        "de": "Reck",
+        "ar": "العارضة العالية",
+        "it": "Sbarra Alta",
+        "es": "Barra Fija",
+        "fr": "Barre Fixe",
+        "pt": "Barra Fixa",
+        "fa": "تک اهرم",
+        "ru": "Перекладина",
+        "null": null
+      }
+    },
+    {
+      "id": 404,
+      "sport_type": 4,
+      "type": 4,
+      "names": {
+        "zh-cn": "双杠",
+        "en": "Parallel Bars",
+        "de": "Barren",
+        "ar": "البارات المتوازية",
+        "it": "Sbarre Parallele",
+        "es": "Barras Paralelas",
+        "fr": "Barres Parallèles",
+        "pt": "Barras Paralelas",
+        "fa": "دو اهرم",
+        "ru": "Параллельные брусья",
+        "null": null
+      }
+    },
+    {
+      "id": 405,
+      "sport_type": 4,
+      "type": 4,
+      "names": {
+        "zh-cn": "跳高",
+        "en": "High Jump",
+        "de": "Hochsprung",
+        "ar": "الوثب العالي",
+        "it": "Salto in Alto",
+        "es": "Salto de Altura",
+        "fr": "Saut en Hauteur",
+        "pt": "Salto em Altura",
+        "fa": "پرش ارتفاع",
+        "ru": "Прыжки в высоту",
+        "null": null
+      }
+    },
+    {
+      "id": 406,
+      "sport_type": 4,
+      "type": 4,
+      "names": {
+        "zh-cn": "跳远",
+        "en": "Long Jump",
+        "de": "Weitsprung",
+        "ar": "الوثب الطويل",
+        "it": "Salto in Lungo",
+        "es": "Salto de Longitud",
+        "fr": "Saut en Longueur",
+        "pt": "Salto em Distância",
+        "fa": "پرش طول",
+        "ru": "Прыжки в длину",
+        "null": null
+      }
+    },
+    {
+      "id": 407,
+      "sport_type": 4,
+      "type": 4,
+      "names": {
+        "zh-cn": "引体向上",
+        "en": "Pull Up",
+        "de": "Klimmzug",
+        "ar": "شد الجسم للأعلى",
+        "it": "Trazione",
+        "es": "Dominada",
+        "fr": "Traction",
+        "pt": "Barra Fixa",
+        "fa": "بالا کشیدن",
+        "ru": "Подтягивание",
+        "null": null
+      }
+    },
+    {
+      "id": 408,
+      "sport_type": 4,
+      "type": 4,
+      "names": {
+        "zh-cn": "俯卧撑",
+        "en": "Push Up",
+        "de": "Liegestütz",
+        "ar": "تمرين الضغط",
+        "it": "Piegamento sulle Braccia",
+        "es": "Flexión",
+        "fr": "Pompage",
+        "pt": "Flexão",
+        "fa": "دراز و نشست",
+        "ru": "Отжимание",
+        "null": null
+      }
+    },
+    {
+      "id": 409,
+      "sport_type": 4,
+      "type": 4,
+      "names": {
+        "zh-cn": "平板支撑",
+        "en": "Plank",
+        "de": "Plank",
+        "ar": "بلانك",
+        "it": "Plank",
+        "es": "Plancha",
+        "fr": "Planche",
+        "pt": "Prancha",
+        "fa": "پلانک",
+        "ru": "Планка",
+        "null": null
+      }
+    },
+    {
+      "id": 410,
+      "sport_type": 4,
+      "type": 4,
+      "names": {
+        "zh-cn": "泡沫轴筋膜放松",
+        "en": "Foam Rolling",
+        "de": "Faszienrolle",
+        "ar": "تدليك بالأسطوانة الرغوية",
+        "it": "Rilascio Miofasciale con Rullo in Schiuma",
+        "es": "Rodillo de Espuma",
+        "fr": "Rouleau de Mousse",
+        "pt": "Rolamento com Rolo de Espuma",
+        "fa": "استراحت با غلتک کف",
+        "ru": "Миофасциальный Релиз с Использованием Валика",
+        "null": null
+      }
+    },
+    {
+      "id": 411,
+      "sport_type": 4,
+      "type": 4,
+      "names": {
+        "zh-cn": "健身游戏",
+        "en": "Fitness Game",
+        "de": "Fitness-Spiel",
+        "ar": "لعبة اللياقة البدنية",
+        "it": "Gioco Fitness",
+        "es": "Juego de Fitness",
+        "fr": "Jeu de Fitness",
+        "pt": "Jogo de Fitness",
+        "fa": "بازی تناسب اندام",
+        "ru": "Фитнес-игра",
+        "null": null
+      }
+    },
+    {
+      "id": 412,
+      "sport_type": 4,
+      "type": 4,
+      "names": {
+        "zh-cn": "舒缓冥想",
+        "en": "Relaxation Meditation",
+        "de": "Entspannungsmeditation",
+        "ar": "تأمل الاسترخاء",
+        "it": "Meditazione Rilassante",
+        "es": "Meditación de Relajación",
+        "fr": "Méditation de Relaxation",
+        "pt": "Meditação de Relaxamento",
+        "fa": "مراقبه آرامش بخش",
+        "ru": "Релаксационная Медитация",
+        "null": null
+      }
+    },
+    {
+      "id": 413,
+      "sport_type": 4,
+      "type": 4,
+      "names": {
+        "zh-cn": "漫步机",
+        "en": "Treadmill",
+        "de": "Laufband",
+        "ar": "جهاز المشي",
+        "it": "Tapis Roulant",
+        "es": "Cinta de Correr",
+        "fr": "Tapis de Course",
+        "pt": "Esteira",
+        "fa": "دستگاه راه رفتن",
+        "ru": "Беговая дорожка",
+        "null": null
+      }
+    },
+    {
+      "id": 414,
+      "sport_type": 6,
+      "type": 4,
+      "names": {
+        "zh-cn": "澳式足球",
+        "en": "Australian Football",
+        "de": "Australischer Fußball",
+        "ar": "كرة القدم الأسترالية",
+        "it": "Calcio Australiano",
+        "es": "Fútbol Australiano",
+        "fr": "Football Australien",
+        "pt": "Futebol Australiano",
+        "fa": "فوتبال استرالیایی",
+        "ru": "Австралийский Футбол",
+        "null": null
+      }
+    },
+    {
+      "id": 415,
+      "sport_type": 6,
+      "type": 4,
+      "names": {
+        "zh-cn": "美式橄榄球",
+        "en": "American Football",
+        "de": "American Football",
+        "ar": "كرة القدم الأمريكية",
+        "it": "Football Americano",
+        "es": "Fútbol Americano",
+        "fr": "Football Américain",
+        "pt": "Futebol Americano",
+        "fa": "فوتبال آمریکایی",
+        "ru": "Американский Футбол",
+        "null": null
+      }
+    },
+    {
+      "id": 416,
+      "sport_type": 6,
+      "type": 4,
+      "names": {
+        "zh-cn": "长曲棍球",
+        "en": "Field Hockey",
+        "de": "Feldhockey",
+        "ar": "الهوكي الميداني",
+        "it": "Hockey su Prato",
+        "es": "Hockey sobre Césped",
+        "fr": "Hockey sur Gazon",
+        "pt": "Hóquei em Campo",
+        "fa": "هاکی چمنی",
+        "ru": "Хоккей на Траве",
+        "null": null
+      }
+    },
+    {
+      "id": 134,
+      "sport_type": 6,
+      "type": 4,
+      "names": {
+        "zh-cn": "高尔夫",
+        "en": "Golf",
+        "de": "Golf",
+        "ar": "جولف",
+        "it": "Golf",
+        "es": "Golf",
+        "fr": "Golf",
+        "pt": "Golfe",
+        "fa": "گلف",
+        "ru": "Гольф",
+        "null": null
+      }
+    },
+    {
+      "id": 417,
+      "sport_type": 6,
+      "type": 4,
+      "names": {
+        "zh-cn": "匹克球",
+        "en": "Pickleball",
+        "de": "Pickleball",
+        "ar": "بيكلبول",
+        "it": "Pickleball",
+        "es": "Pickleball",
+        "fr": "Pickleball",
+        "pt": "Pickleball",
+        "fa": "پیکلبال",
+        "ru": "Пиклбол",
+        "null": null
+      }
+    },
+    {
+      "id": 426,
+      "sport_type": 8,
+      "type": 4,
+      "names": {
+        "zh-cn": "单板滑雪",
+        "en": "Snowboarding",
+        "de": "Snowboarden",
+        "ar": "التزلج على الثلج",
+        "it": "Snowboard",
+        "es": "Snowboard",
+        "fr": "Snowboard",
+        "pt": "Snowboard",
+        "fa": "اسنوبورد",
+        "ru": "Сноубординг",
+        "null": null
+      }
+    },
+    {
+      "id": 418,
+      "sport_type": 9,
+      "type": 4,
+      "names": {
+        "zh-cn": "团体操",
+        "en": "Group Gymnastics",
+        "de": "Gruppengymnastik",
+        "ar": "الجمباز الجماعي",
+        "it": "Ginnastica di Gruppo",
+        "es": "Gimnasia en Grupo",
+        "fr": "Gymnastique en Groupe",
+        "pt": "Ginástica em Grupo",
+        "fa": "ژیمناستیک گروهی",
+        "ru": "Групповая гимнастика",
+        "null": null
+      }
+    },
+    {
+      "id": 419,
+      "sport_type": 9,
+      "type": 4,
+      "names": {
+        "zh-cn": "搏击操",
+        "en": "Kickboxing Fitness",
+        "de": "Kickbox-Fitness",
+        "ar": "لياقة الكيك بوكسينغ",
+        "it": "Fitness Kickboxing",
+        "es": "Kickboxing Fitness",
+        "fr": "Kickboxing Fitness",
+        "pt": "Kickboxing Fitness",
+        "fa": "کیک‌بوکسینگ تناسب‌اندام",
+        "ru": "Кикбоксинг для Фитнеса",
+        "null": null
+      }
+    },
+    {
+      "id": 420,
+      "sport_type": 11,
+      "type": 4,
+      "names": {
+        "zh-cn": "蹦极",
+        "en": "Bungee Jumping",
+        "de": "Bungee-Jumping",
+        "ar": "القفز بالحبل المطاطي",
+        "it": "Salto Bungee",
+        "es": "Bungee",
+        "fr": "Saut à l'Élastique",
+        "pt": "Salto de Bungee",
+        "fa": "پرش با طناب کشی",
+        "ru": "Банджи Джампинг",
+        "null": null
+      }
+    },
+    {
+      "id": 421,
+      "sport_type": 11,
+      "type": 4,
+      "names": {
+        "zh-cn": "手摇车",
+        "en": "Handcycle",
+        "de": "Handbike",
+        "ar": "الدراجة اليدوية",
+        "it": "Handcycle",
+        "es": "Handbike",
+        "fr": "Handbike",
+        "pt": "Handcycle",
+        "fa": "دوچرخه دستی",
+        "ru": "Ручной Велосипед",
+        "null": null
+      }
+    },
+    {
+      "id": 422,
+      "sport_type": 11,
+      "type": 4,
+      "names": {
+        "zh-cn": "平衡车",
+        "en": "Balance Bike",
+        "de": "Laufrad",
+        "ar": "دراجة توازن",
+        "it": "Bici senza Pedali",
+        "es": "Bicicleta de Equilibrio",
+        "fr": "Vélo d'Équilibre",
+        "pt": "Bicicleta de Equilíbrio",
+        "fa": "دوچرخه تعادلی",
+        "ru": "Велосипед для Развития Баланса",
+        "null": null
+      }
+    },
+    {
+      "id": 423,
+      "sport_type": 11,
+      "type": 4,
+      "names": {
+        "zh-cn": "休闲运动",
+        "en": "Leisure Sports",
+        "de": "Freizeitsport",
+        "ar": "الرياضة الترفيهية",
+        "it": "Sport Ricreativo",
+        "es": "Deportes de Ocio",
+        "fr": "Sports de Loisirs",
+        "pt": "Esportes Recreativos",
+        "fa": "ورزش تفریحی",
+        "ru": "Досуговые Виды Спорта",
+        "null": null
+      }
+    },
+    {
+      "id": 424,
+      "sport_type": 12,
+      "type": 4,
+      "names": {
+        "zh-cn": "射击",
+        "en": "Shooting",
+        "de": "Schießsport",
+        "ar": "رماية",
+        "it": "Tiro",
+        "es": "Tiro",
+        "fr": "Tir",
+        "pt": "Tiro",
+        "fa": "تیراندازی",
+        "ru": "Стрельба",
+        "null": null
+      }
+    },
+    {
+      "id": 425,
+      "sport_type": 12,
+      "type": 4,
+      "names": {
+        "zh-cn": "蹦床",
+        "en": "Trampoline",
+        "de": "Trampolinspringen",
+        "ar": "الترامبولين",
+        "it": "Trampolino",
+        "es": "Trampolín",
+        "fr": "Trampoline",
+        "pt": "Trampolim",
+        "fa": "ترامپولین",
+        "ru": "Батут",
+        "null": null
+      }
+    }
+  ]
+}

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimaryLight">#2747F8</color>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+
+    <color name="purple_200">#FFBB86FC</color>
+    <color name="purple_500">#FF6200EE</color>
+    <color name="purple_700">#FF3700B3</color>
+    <color name="teal_200">#FF03DAC5</color>
+    <color name="teal_700">#FF018786</color>
+    <color name="color_black">#FF000000</color>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="color_white">#FFFFFFFF</color>
+    <color name="color_222222">#222222</color>
+    <color name="color_b3000000">#B3000000</color>
+    <color name="color_f2f2f7">#F2F2F7</color>
+    <color name="color_FF453A">#FF453A</color>
+    <color name="color_46567B">#FF46567B</color>
+    <color name="color_4dfff">#4DFFFFFF</color>
+    <color name="color_e0e0e0">#e0e0e0</color>
+    <color name="color_F3F3F3">#F3F3F3</color>
+    <color name="color_ff453a">#FF453A</color>
+    <color name="color_ff9500">#FF9500</color>
+    <color name="color_339999">#339999</color>
+    <color name="color_26FF9500">#26FF9500</color>
+    <color name="color_f8f9fa">#f8f9fa</color>
+    <color name="color_c7c7c7">#ffc7c7cc</color>
+    <color name="color_b3ffffff">#B3FFFFFF</color>
+    <color name="color_1affffff">#1AFFFFFF</color>
+
+    <color name="color_00000000">#00000000</color>
+    <color name="color_16000000">#16000000</color>
+    <color name="color_1a000000">#1a000000</color>
+    <color name="transparent">#00000000</color>
+    <color name="color_30000000">#30000000</color>
+    <color name="color_25000000">#25000000</color>
+    <color name="color_19000000">#19000000</color>
+    <color name="color_8e8e93">#8E8E93</color>
+    <color name="color_05BEB5">#05BEB5</color>
+    <color name="color_21E6E0">#21E6E0</color>
+    <color name="color_E5E5EA">#E5E5EA</color>
+    <color name="color_34c759">#34C759</color>
+    <color name="color_8c8c8c">#FF8C8C8C</color>
+    <color name="color_99000000">#99000000</color>
+
+    <color name="primary_gray_3">#333333</color>
+
+    <!-- 主色红 -->
+    <color name="primary_danger">#F03817</color>
+    <color name="primary_danger_dark">#C52A0F</color>
+    <color name="primary_danger_light">#FFFCD7D0</color>
+
+</resources>

@@ -1,0 +1,194 @@
+[
+  {
+    "id": 3,
+    "label": "collect time_hour24",
+    "widget": "textbox",
+    "data": "time_hour24",
+    "view": [
+      -138,
+      3,
+      90,
+      90
+    ],
+    "direction": 0,
+    "rotation": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "align": 3,
+    "alpha": 255,
+    "zorder": 1,
+    "animation": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "text_align": 3,
+    "font_color": [
+      255,
+      255,
+      255,
+      255
+    ],
+    "font_bkcolor": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "font_type": 7,
+    "font_size": 70,
+    "separator_id": 0,
+    "prefix_id": 0,
+    "postfix_id": 0
+  },
+  {
+    "id": 4,
+    "label": "collect dot_second",
+    "widget": "textbox",
+    "data": "dot_second",
+    "view": [
+      -110,
+      0,
+      28,
+      90
+    ],
+    "direction": 0,
+    "rotation": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "align": 3,
+    "alpha": 255,
+    "zorder": 1,
+    "animation": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "text_align": 2,
+    "font_color": [
+      255,
+      255,
+      255,
+      255
+    ],
+    "font_bkcolor": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "font_type": 7,
+    "font_size": 70,
+    "separator_id": 0,
+    "prefix_id": 0,
+    "postfix_id": 0
+  },
+  {
+    "id": 5,
+    "label": "collect minute",
+    "widget": "textbox",
+    "data": "minute",
+    "view": [
+      -20,
+      3,
+      90,
+      90
+    ],
+    "direction": 0,
+    "rotation": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "align": 3,
+    "alpha": 255,
+    "zorder": 1,
+    "animation": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "text_align": 1,
+    "font_color": [
+      255,
+      255,
+      255,
+      255
+    ],
+    "font_bkcolor": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "font_type": 7,
+    "font_size": 70,
+    "separator_id": 0,
+    "prefix_id": 0,
+    "postfix_id": 0
+  },
+  {
+    "id": 7,
+    "label": "collect date_weekday",
+    "widget": "textbox",
+    "data": "date_weekday_day",
+    "align": 3,
+    "view": [
+      -35,
+      90,
+      150,
+      34
+    ],
+    "direction": 0,
+    "rotation": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "alpha": 255,
+    "text_align": 3,
+    "font_color": [
+      255,
+      255,
+      255,
+      255
+    ],
+    "font_bkcolor": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "font_type": 2,
+    "font_size": 26,
+    "animation": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "prefix_id": 0,
+    "separator_id": 0,
+    "postfix_id": 0,
+    "zorder": 1
+  }
+]

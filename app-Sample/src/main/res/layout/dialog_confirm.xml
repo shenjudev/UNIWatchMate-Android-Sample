@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    style="@style/dialog_container">
+
+    <TextView
+        style="@style/dialog_tip"
+        android:layout_marginTop="@dimen/dp_10"
+        android:text="@string/gentlly_remind" />
+
+    <TextView
+        android:id="@+id/tv_tip"
+        style="@style/dialog_tip"
+        android:layout_marginTop="@dimen/dp_20" />
+
+    <TextView
+        android:id="@+id/btn_ok"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="@dimen/dp_20"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:paddingHorizontal="@dimen/dp_25"
+        android:paddingVertical="@dimen/dp_8"
+        android:text="@string/confirm"
+        android:textColor="@color/black"
+        android:textSize="@dimen/text_size_14"
+        app:bl_corners_radius="@dimen/dp_50"
+        app:bl_pressed_solid_color="@color/color_16000000"
+        app:bl_pressed_stroke_color="@color/color_25000000"
+        app:bl_stroke_width="1dp"
+        app:bl_unPressed_solid_color="@color/white"
+        app:bl_unPressed_stroke_color="@color/color_25000000" />
+
+</LinearLayout>

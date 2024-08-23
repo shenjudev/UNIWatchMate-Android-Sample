@@ -1,0 +1,695 @@
+[
+  {
+    "id": 1,
+    "indonesianName": "Ar-Rahmaan",
+    "arabicName": "الرَّحْمَنُ",
+    "englishName": "Yang Maha Pengasih",
+    "favorite": false
+  },
+  {
+    "id": 2,
+    "indonesianName": "Ar-Raheem",
+    "arabicName": "الرَّحِيمُ",
+    "englishName": "Yang Maha Penyayang",
+    "favorite": false
+  },
+  {
+    "id": 3,
+    "indonesianName": "Al-Malik",
+    "arabicName": "المَلِكُ",
+    "englishName": "Yang Maha Merajai/Memerintah",
+    "favorite": false
+  },
+  {
+    "id": 4,
+    "indonesianName": "Al-Quddus",
+    "arabicName": "القُدُّوسُ",
+    "englishName": "Yang Maha Suci",
+    "favorite": false
+  },
+  {
+    "id": 5,
+    "indonesianName": "As-Salam",
+    "arabicName": "السَّلَامُ",
+    "englishName": "Yang Maha Memberi Kesejahteraan",
+    "favorite": false
+  },
+  {
+    "id": 6,
+    "indonesianName": "Al-Mu’min",
+    "arabicName": "المُؤْمِنُ",
+    "englishName": "Yang Maha Memberi Keamanan",
+    "favorite": false
+  },
+  {
+    "id": 7,
+    "indonesianName": "Al-Muhaymin",
+    "arabicName": "المُهَيْمِنُ",
+    "englishName": "Yang Maha Mengatur",
+    "favorite": false
+  },
+  {
+    "id": 8,
+    "indonesianName": "Al-Azeez",
+    "arabicName": "العَزِيزُ",
+    "englishName": "Yang Maha Perkasa",
+    "favorite": false
+  },
+  {
+    "id": 9,
+    "indonesianName": "Al-Jabbar",
+    "arabicName": "الجَبَّارُ",
+    "englishName": "Yang Memiliki Mutlak Kegagahan",
+    "favorite": false
+  },
+  {
+    "id": 10,
+    "indonesianName": "Al-Mutakabbir",
+    "arabicName": "المُتَكَبِّرُ",
+    "englishName": "Yang Maha Megah, Yang Memiliki Kebesaran",
+    "favorite": false
+  },
+  {
+    "id": 11,
+    "indonesianName": "Al-Khaaliq",
+    "arabicName": "الخَالِقُ",
+    "englishName": "Yang Maha Pencipta",
+    "favorite": false
+  },
+  {
+    "id": 12,
+    "indonesianName": "Al-Baari’",
+    "arabicName": "البَارِىءُ",
+    "englishName": "Yang Maha Melepaskan (Membuat, Membentuk, Menyeimbangkan)",
+    "favorite": false
+  },
+  {
+    "id": 13,
+    "indonesianName": "Al-Musawwir",
+    "arabicName": "المُصَوِّرُ",
+    "englishName": "Yang Maha Membentuk Rupa (makhluk-Nya)",
+    "favorite": false
+  },
+  {
+    "id": 14,
+    "indonesianName": "Al-Ghaffar",
+    "arabicName": "الغَفَّارُ",
+    "englishName": "Yang Maha Pengampun",
+    "favorite": false
+  },
+  {
+    "id": 15,
+    "indonesianName": "Al-Qahhar",
+    "arabicName": "القَهَّارُ",
+    "englishName": "Yang Maha Memaksa",
+    "favorite": false
+  },
+  {
+    "id": 16,
+    "indonesianName": "Al-Wahhaab",
+    "arabicName": "الوَهَّابُ",
+    "englishName": "Yang Maha Pemberi Karunia",
+    "favorite": false
+  },
+  {
+    "id": 17,
+    "indonesianName": "Ar-Razzaaq",
+    "arabicName": "الرَّزَّاقُ",
+    "englishName": "Yang Maha Pemberi Rezeki",
+    "favorite": false
+  },
+  {
+    "id": 18,
+    "indonesianName": "Al-Fattaah",
+    "arabicName": "الفَتَّاحُ",
+    "englishName": "Yang Maha Pembuka Rahmat",
+    "favorite": false
+  },
+  {
+    "id": 19,
+    "indonesianName": "Al-‘aleem",
+    "arabicName": "العَلِيمُ",
+    "englishName": "Yang Maha Mengetahui (Memiliki Ilmu)",
+    "favorite": false
+  },
+  {
+    "id": 20,
+    "indonesianName": "Al-Qaabid",
+    "arabicName": "القَابِضُ",
+    "englishName": "Yang Maha Menyempitkan (makhluk-Nya)",
+    "favorite": false
+  },
+  {
+    "id": 21,
+    "indonesianName": "Al-Baasit",
+    "arabicName": "البَاسِطُ",
+    "englishName": "Yang Maha Melapangkan (makhluk-Nya)",
+    "favorite": false
+  },
+  {
+    "id": 22,
+    "indonesianName": "Al-Khaafidh",
+    "arabicName": "الخَافِضُ",
+    "englishName": "Yang Maha Merendahkan (makhluk-Nya)",
+    "favorite": false
+  },
+  {
+    "id": 23,
+    "indonesianName": "Ar-Raafi’",
+    "arabicName": "الرَّافِعُ",
+    "englishName": "Yang Maha Meninggikan (makhluk-Nya)",
+    "favorite": false
+  },
+  {
+    "id": 24,
+    "indonesianName": "Al-Mu’izz",
+    "arabicName": "المُعِزُّ",
+    "englishName": "Yang Maha Memuliakan (makhluk-Nya)",
+    "favorite": false
+  },
+  {
+    "id": 25,
+    "indonesianName": "Al-Muzil",
+    "arabicName": "المُذِلُّ",
+    "englishName": "Yang Maha Menghinakan (makhluk-Nya)",
+    "favorite": false
+  },
+  {
+    "id": 26,
+    "indonesianName": "As-Samee’",
+    "arabicName": "السَّمِيعُ",
+    "englishName": "Yang Maha Mendengar",
+    "favorite": false
+  },
+  {
+    "id": 27,
+    "indonesianName": "Al-Baseer",
+    "arabicName": "البَصِيرُ",
+    "englishName": "Yang Maha Melihat",
+    "favorite": false
+  },
+  {
+    "id": 28,
+    "indonesianName": "Al-Hakam",
+    "arabicName": "الحَكَمُ",
+    "englishName": "Yang Maha Menetapkan",
+    "favorite": false
+  },
+  {
+    "id": 29,
+    "indonesianName": "Al-‘adl",
+    "arabicName": "العَدْلُ",
+    "englishName": "Yang Maha Adil",
+    "favorite": false
+  },
+  {
+    "id": 30,
+    "indonesianName": "Al-Lateef",
+    "arabicName": "اللَّطِيفُ",
+    "englishName": "Yang Maha Lembut",
+    "favorite": false
+  },
+  {
+    "id": 31,
+    "indonesianName": "Al-Khabeer",
+    "arabicName": " الخَبِيرُ",
+    "englishName": "Yang Maha Mengenal",
+    "favorite": false
+  },
+  {
+    "id": 32,
+    "indonesianName": "Al-Haleem",
+    "arabicName": " الحَلِيمُ",
+    "englishName": "Yang Maha Penyantun",
+    "favorite": false
+  },
+  {
+    "id": 33,
+    "indonesianName": "Al-‘atheem",
+    "arabicName": "العَظِيمُ",
+    "englishName": "Yang Maha Agung",
+    "favorite": false
+  },
+  {
+    "id": 34,
+    "indonesianName": "Al-Ghafoor",
+    "arabicName": "الغَفُورُ",
+    "englishName": "Yang Maha Memberi Pengampun",
+    "favorite": false
+  },
+  {
+    "id": 35,
+    "indonesianName": "Ash-Shakoor",
+    "arabicName": "الشَّكُورُ",
+    "englishName": "Yang Maha Pembalas Budi (Menghargai)",
+    "favorite": false
+  },
+  {
+    "id": 36,
+    "indonesianName": "Al-‘alee",
+    "arabicName": "العَلِيُّ",
+    "englishName": "Yang Maha Tinggi",
+    "favorite": false
+  },
+  {
+    "id": 37,
+    "indonesianName": "Al-Kabeer",
+    "arabicName": "الكَبِيرُ",
+    "englishName": "Yang Maha Besar",
+    "favorite": false
+  },
+  {
+    "id": 38,
+    "indonesianName": "Al-Hafeedh",
+    "arabicName": "الحَفِيظُ",
+    "englishName": "Yang Maha Memelihara",
+    "favorite": false
+  },
+  {
+    "id": 39,
+    "indonesianName": "Al-Muqeet",
+    "arabicName": " المُقِيتُ",
+    "englishName": "Yang Maha Pemberi Kecukupan",
+    "favorite": false
+  },
+  {
+    "id": 40,
+    "indonesianName": "Al-Haseeb",
+    "arabicName": "الحَسِيبُ",
+    "englishName": "Yang Maha Membuat Perhitungan",
+    "favorite": false
+  },
+  {
+    "id": 41,
+    "indonesianName": "Al-Jaleel",
+    "arabicName": "الجَلِيلُ",
+    "englishName": "Yang Maha Luhur",
+    "favorite": false
+  },
+  {
+    "id": 42,
+    "indonesianName": "Al-Kareem",
+    "arabicName": "الكَرِيمُ",
+    "englishName": "Yang Maha Pemurah",
+    "favorite": false
+  },
+  {
+    "id": 43,
+    "indonesianName": "Ar-Raqeeb",
+    "arabicName": "الرَّقِيبُ",
+    "englishName": "Yang Maha Mengawasi",
+    "favorite": false
+  },
+  {
+    "id": 44,
+    "indonesianName": "Al-Mujeeb",
+    "arabicName": "المُجِيبُ",
+    "englishName": "Yang Maha Mengabulkan",
+    "favorite": false
+  },
+  {
+    "id": 45,
+    "indonesianName": "Al-Waasi’",
+    "arabicName": "الوَاسِعُ",
+    "englishName": "Yang Maha Luas",
+    "favorite": false
+  },
+  {
+    "id": 46,
+    "indonesianName": "Al-Hakeem",
+    "arabicName": "الحَكِيمُ",
+    "englishName": "Yang Maha Maka Bijaksana",
+    "favorite": false
+  },
+  {
+    "id": 47,
+    "indonesianName": "Al-Wadood",
+    "arabicName": "الوَدُودُ",
+    "englishName": "Yang Maha Mengasihi",
+    "favorite": false
+  },
+  {
+    "id": 48,
+    "indonesianName": "Al-Majeed",
+    "arabicName": "المَجِيدُ",
+    "englishName": "Yang Maha Mulia",
+    "favorite": false
+  },
+  {
+    "id": 49,
+    "indonesianName": "Al-Ba’ith",
+    "arabicName": "البَاعِثُ",
+    "englishName": "Yang Maha Membangkitkan",
+    "favorite": false
+  },
+  {
+    "id": 50,
+    "indonesianName": "Ash-Shaheed",
+    "arabicName": "الشَّهِيدُ",
+    "englishName": "Yang Maha Menyaksikan",
+    "favorite": false
+  },
+  {
+    "id": 51,
+    "indonesianName": "Al-Haqq",
+    "arabicName": "الحَقُّ",
+    "englishName": "Yang Maha Benar",
+    "favorite": false
+  },
+  {
+    "id": 52,
+    "indonesianName": "Al-Wakeel",
+    "arabicName": "الوَكِيلُ",
+    "englishName": "Yang Maha Memelihara",
+    "favorite": false
+  },
+  {
+    "id": 53,
+    "indonesianName": "Al-Qawiyy",
+    "arabicName": "القَوِيُّ",
+    "englishName": "Yang Maha Kuat",
+    "favorite": false
+  },
+  {
+    "id": 54,
+    "indonesianName": "Al-Mateen",
+    "arabicName": "المَتِينُ",
+    "englishName": "Yang Maha Kokoh",
+    "favorite": false
+  },
+  {
+    "id": 55,
+    "indonesianName": "Al-Waliyy",
+    "arabicName": "الوَلِيُّ",
+    "englishName": "Yang Maha Melindungi",
+    "favorite": false
+  },
+  {
+    "id": 56,
+    "indonesianName": "Al-Hameed",
+    "arabicName": "الحَمِيدُ",
+    "englishName": "Yang Maha Terpuji",
+    "favorite": false
+  },
+  {
+    "id": 57,
+    "indonesianName": "Al-Muhsee",
+    "arabicName": "المُحْصِي",
+    "englishName": "Yang Maha Mengkalkulasi",
+    "favorite": false
+  },
+  {
+    "id": 58,
+    "indonesianName": "Al-Mubdi",
+    "arabicName": "المُبْدِىءُ",
+    "englishName": "Yang Maha Memulai",
+    "favorite": false
+  },
+  {
+    "id": 59,
+    "indonesianName": "Al-Mu’id",
+    "arabicName": "المُعِيدُ",
+    "englishName": "Yang Maha Mengembalikan Kehidupan",
+    "favorite": false
+  },
+  {
+    "id": 60,
+    "indonesianName": "Al-Muhyee",
+    "arabicName": "المُحْيِي",
+    "englishName": "Yang Maha Menghidupkan",
+    "favorite": false
+  },
+  {
+    "id": 61,
+    "indonesianName": "Al-Mumeet",
+    "arabicName": "المُمِيتُ",
+    "englishName": "Yang Maha Mematikan",
+    "favorite": false
+  },
+  {
+    "id": 62,
+    "indonesianName": "Al-Hayy",
+    "arabicName": "الحَيُّ",
+    "englishName": "Yang Maha Hidup",
+    "favorite": false
+  },
+  {
+    "id": 63,
+    "indonesianName": "Al-Qayyoom",
+    "arabicName": "القَيُّومُ",
+    "englishName": "Yang Maha Mandiri",
+    "favorite": false
+  },
+  {
+    "id": 64,
+    "indonesianName": "Al-Waajid",
+    "arabicName": "الوَاجِدُ",
+    "englishName": "Yang Maha Penemu",
+    "favorite": false
+  },
+  {
+    "id": 65,
+    "indonesianName": "Al-Maajid",
+    "arabicName": "المَاجِدُ",
+    "englishName": "Yang Maha Mulia",
+    "favorite": false
+  },
+  {
+    "id": 66,
+    "indonesianName": "Al-Waahid",
+    "arabicName": "الوَاحِدُ",
+    "englishName": "Yang Maha Tunggal",
+    "favorite": false
+  },
+  {
+    "id": 67,
+    "indonesianName": "Al-Ahad",
+    "arabicName": "الأحَدُ",
+    "englishName": "Yang Maha Esa",
+    "favorite": false
+  },
+  {
+    "id": 68,
+    "indonesianName": "As-Samad",
+    "arabicName": "الصَّمَدُ",
+    "englishName": "Yang Maha Dibutuhkan, Tempat Meminta",
+    "favorite": false
+  },
+  {
+    "id": 69,
+    "indonesianName": "Al-Qadir",
+    "arabicName": "القَادِرُ",
+    "englishName": "Yang Maha Menentukan, Maha Menyeimbangkan",
+    "favorite": false
+  },
+  {
+    "id": 70,
+    "indonesianName": "Al-Muqtadir",
+    "arabicName": "المُقْتَدِرُ",
+    "englishName": "Yang Maha Berkuasa",
+    "favorite": false
+  },
+  {
+    "id": 71,
+    "indonesianName": "Al-Muqaddim",
+    "arabicName": "المُقَدِّمُ",
+    "englishName": "Yang Maha Mendahulukan",
+    "favorite": false
+  },
+  {
+    "id": 72,
+    "indonesianName": "Al-Mu’akhkhir",
+    "arabicName": "المُؤَخِّرُ",
+    "englishName": "Yang Maha Mengakhirkan",
+    "favorite": false
+  },
+  {
+    "id": 73,
+    "indonesianName": "Al-Awwal",
+    "arabicName": "الأَوَّلُ",
+    "englishName": "Yang Maha Awal",
+    "favorite": false
+  },
+  {
+    "id": 74,
+    "indonesianName": "Al-Aakhir",
+    "arabicName": "الآخِرُ",
+    "englishName": "Yang Maha Akhir",
+    "favorite": false
+  },
+  {
+    "id": 75,
+    "indonesianName": "Az-Dhaahir",
+    "arabicName": "الظَّاهِرُ",
+    "englishName": "Yang Maha Nyata",
+    "favorite": false
+  },
+  {
+    "id": 76,
+    "indonesianName": "Al-Baatin",
+    "arabicName": "البَاطِنُ",
+    "englishName": "Yang Maha Ghaib",
+    "favorite": false
+  },
+  {
+    "id": 77,
+    "indonesianName": "Al-Waali",
+    "arabicName": "الوَالِي",
+    "englishName": "Yang Maha Memerintah",
+    "favorite": false
+  },
+  {
+    "id": 78,
+    "indonesianName": "Al-Muta’ali",
+    "arabicName": "المُتَعَالِ",
+    "englishName": "Yang Maha Tinggi",
+    "favorite": false
+  },
+  {
+    "id": 79,
+    "indonesianName": "Al-Barr",
+    "arabicName": "البَرُّ",
+    "englishName": "Yang Maha Penderma",
+    "favorite": false
+  },
+  {
+    "id": 80,
+    "indonesianName": "At-Tawwab",
+    "arabicName": "التَّوَّابُ",
+    "englishName": "Yang Maha Penerima Tobat",
+    "favorite": false
+  },
+  {
+    "id": 81,
+    "indonesianName": "Al-Muntaqim",
+    "arabicName": "المُنْتَقِمُ",
+    "englishName": "Yang Maha Pemberi Balasan",
+    "favorite": false
+  },
+  {
+    "id": 82,
+    "indonesianName": "Al-‘afuww",
+    "arabicName": "العَفُوُّ",
+    "englishName": "Yang Maha Pemaaf",
+    "favorite": false
+  },
+  {
+    "id": 83,
+    "indonesianName": "Ar-Ra’oof",
+    "arabicName": "الرَّؤُوفُ",
+    "englishName": "Yang Maha Pengasuh",
+    "favorite": false
+  },
+  {
+    "id": 84,
+    "indonesianName": "Maalik-Ul-Mulk",
+    "arabicName": "مَالِكُ المُلْكِ",
+    "englishName": "Yang Maha Penguasa Kerajaan (Semesta)",
+    "favorite": false
+  },
+  {
+    "id": 85,
+    "indonesianName": "Dhul-Jalaali Wal-Ikraam",
+    "arabicName": "ذُو الجَلَالِ وَالإِكْرَامِ",
+    "englishName": "Yang Maha Pemilik Kebesaran dan Kemuliaan",
+    "favorite": false
+  },
+  {
+    "id": 86,
+    "indonesianName": "Al-Muqsit",
+    "arabicName": "المُقْسِطُ",
+    "englishName": "Yang Maha Pemberi Keadilan",
+    "favorite": false
+  },
+  {
+    "id": 87,
+    "indonesianName": "Al-Jaami’",
+    "arabicName": "الجَامِعُ",
+    "englishName": "Yang Maha Mengumpulkan",
+    "favorite": false
+  },
+  {
+    "id": 88,
+    "indonesianName": "Al-Ghaniyy",
+    "arabicName": "الغَنِيُّ",
+    "englishName": "Yang Maha Kaya",
+    "favorite": false
+  },
+  {
+    "id": 89,
+    "indonesianName": "Al-Mughni",
+    "arabicName": "المُغْنِيُّ",
+    "englishName": "Yang Maha Pemberi Kekayaan",
+    "favorite": false
+  },
+  {
+    "id": 90,
+    "indonesianName": "Al-Mani’",
+    "arabicName": "المَانِعُ",
+    "englishName": "Yang Maha Mencegah",
+    "favorite": false
+  },
+  {
+    "id": 91,
+    "indonesianName": "Ad-Dharr",
+    "arabicName": "الضَّارُ",
+    "englishName": "Yang Maha Penimpa Kemudharatan",
+    "favorite": false
+  },
+  {
+    "id": 92,
+    "indonesianName": "An-Nafi’",
+    "arabicName": "النَّافِعُ",
+    "englishName": "Yang Maha Memberi Manfaat",
+    "favorite": false
+  },
+  {
+    "id": 93,
+    "indonesianName": "An-Nur",
+    "arabicName": "النُّورُ",
+    "englishName": "Yang Maha Bercahaya (Menerangi, Memberi Cahaya)",
+    "favorite": false
+  },
+  {
+    "id": 94,
+    "indonesianName": "Al-Haadi",
+    "arabicName": "الهَادِي",
+    "englishName": "Yang Maha Pemberi Petunjuk",
+    "favorite": false
+  },
+  {
+    "id": 95,
+    "indonesianName": "Al-Badee’",
+    "arabicName": "البَدِيعُ",
+    "englishName": "Yang Indah Tidak Mempunyai Banding",
+    "favorite": false
+  },
+  {
+    "id": 96,
+    "indonesianName": "Al-Baaqi",
+    "arabicName": "البَاقِي",
+    "englishName": "Yang Maha Kekal",
+    "favorite": false
+  },
+  {
+    "id": 97,
+    "indonesianName": "Al-Waarith",
+    "arabicName": "الوَارِثُ",
+    "englishName": "Yang Maha Pewaris",
+    "favorite": false
+  },
+  {
+    "id": 98,
+    "indonesianName": "Ar-Rasheed",
+    "arabicName": "الرَّشِيدُ",
+    "englishName": "Yang Maha Pandai",
+    "favorite": false
+  },
+  {
+    "id": 99,
+    "indonesianName": "As-Saboor",
+    "arabicName": "الصَّبُورُ",
+    "englishName": "Yang Maha Sabar",
+    "favorite": false
+  }
+]

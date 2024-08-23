@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:id="@+id/layout_location_fail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:minHeight="@dimen/dp_60"
+        android:visibility="invisible"
+        android:paddingHorizontal="@dimen/dp_16">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/ic_info_circle_20" />
+
+        <TextView
+            android:id="@+id/tv_location_fail"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/dp_10"
+            android:layout_weight="1"
+            android:textColor="@color/black"
+            android:text="@string/location_failed" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/ic_menu_arr_right_24" />
+
+    </LinearLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_above="@+id/layout_angle"
+        android:layout_alignParentTop="true">
+
+        <com.sjbt.sdk.sample.widget.CustomMuslimCompass
+            android:id="@+id/iv_compass"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_marginHorizontal="@dimen/dp_16"
+            app:compassBgIcon="@mipmap/img_qibla_direction_bg"
+            app:qiblaHouseIcon="@mipmap/ic_qibla_hose"
+            app:pointerIcon="@mipmap/ic_compress_60"
+            app:qiblaHouseAngle="270" />
+
+    </FrameLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/layout_angle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginHorizontal="@dimen/dp_16"
+        android:layout_marginBottom="@dimen/dp_40"
+        android:background="@drawable/shape_bg_round_white_16"
+        android:padding="18dp">
+
+        <!-- 左边上面的TextView -->
+        <TextView
+            android:id="@+id/tv_device_angle_qibla"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="-°"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/text_size_22"
+            app:layout_constraintEnd_toStartOf="@id/middle_line"
+            app:layout_constraintHorizontal_chainStyle="spread"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_chainStyle="spread" />
+
+        <!-- 左边下面的TextView -->
+        <TextView
+            android:id="@+id/tv_device_angle_qibla_tips"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_5"
+            android:text="@string/device_angle_to_qibla"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/sp_12"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/middle_line"
+            app:layout_constraintHorizontal_chainStyle="spread"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_device_angle_qibla"
+            app:layout_constraintVertical_chainStyle="spread" />
+
+        <!-- 中间的竖直灰色中线 -->
+        <View
+            android:id="@+id/middle_line"
+            android:layout_width="1dp"
+            android:layout_height="0dp"
+            android:background="@android:color/darker_gray"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!-- 右边上面的TextView -->
+        <TextView
+            android:id="@+id/tv_qibla_angle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="-°"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/text_size_22"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_chainStyle="spread"
+            app:layout_constraintStart_toEndOf="@id/middle_line"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_chainStyle="spread" />
+
+        <!-- 右边下面的TextView -->
+        <TextView
+            android:id="@+id/tv_qibla_angle_tips"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_5"
+            android:text="@string/qibla_angle"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/sp_12"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_chainStyle="spread"
+            app:layout_constraintStart_toEndOf="@id/middle_line"
+            app:layout_constraintTop_toBottomOf="@id/tv_qibla_angle"
+            app:layout_constraintVertical_chainStyle="spread" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</RelativeLayout>

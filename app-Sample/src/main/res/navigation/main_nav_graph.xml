@@ -1,0 +1,508 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    app:startDestination="@id/deviceFragment">
+
+    <fragment
+        android:id="@+id/deviceFragment"
+        android:name="com.sjbt.sdk.sample.ui.DeviceFragment"
+        android:label="@string/device_module"
+        tools:layout="@layout/fragment_device">
+        <action
+            android:id="@+id/toDeviceBind"
+            app:destination="@id/deviceBindFragment" />
+        <action
+            android:id="@+id/toDeviceConfig"
+            app:destination="@id/deviceConfigFragment" />
+        <action
+            android:id="@+id/toDeviceInfo"
+            app:destination="@id/deviceBasicInfo" />
+
+        <action
+            android:id="@+id/toAlarm"
+            app:destination="@id/alarmFragment" />
+        <action
+            android:id="@+id/toPageContacts"
+            app:destination="@id/contactPageFragment" />
+        <action
+            android:id="@+id/toEmergencyContacts"
+            app:destination="@id/toEmergencyContacts" />
+        <action
+            android:id="@+id/toDialHomePage"
+            app:destination="@id/dialHomePageFragment" />
+        <action
+            android:id="@+id/toSportHomePage"
+            app:destination="@id/sportHomePageFragment" />
+        <action
+            android:id="@+id/toOtherFeatures"
+            app:destination="@id/otherFeaturesFragment" />
+        <action
+            android:id="@+id/toConnectHelp"
+            app:destination="@id/connectHelpFragment" />
+        <action
+            android:id="@+id/toBgRunSettings"
+            app:destination="@id/bgRunSettingsFragment" />
+        <action
+            android:id="@+id/toWidget"
+            app:destination="@id/widgetFragment" />
+        <action
+            android:id="@+id/toFeature"
+            app:destination="@id/featureFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/syncFragment"
+        android:name="com.sjbt.sdk.sample.ui.SyncFragment"
+        android:label="@string/module_sync">
+        <action
+            android:id="@+id/toStep"
+            app:destination="@id/stepFragment" />
+        <action
+            android:id="@+id/toCalories"
+            app:destination="@id/calorieFragment" />
+        <action
+            android:id="@+id/toDistance"
+            app:destination="@id/distanceFragment" />
+        <action
+            android:id="@+id/toActivityDuration"
+            app:destination="@id/activityDurationFragment" />
+        <action
+            android:id="@+id/toSleep"
+            app:destination="@id/sleepFragment" />
+        <action
+            android:id="@+id/toHeartRateHomePage"
+            app:destination="@id/heartRateHomePageFragment" />
+        <action
+            android:id="@+id/toOxygen"
+            app:destination="@id/oxygenFragment" />
+        <action
+            android:id="@+id/toSport"
+            app:destination="@id/sportFragment" />
+        <action
+            android:id="@+id/toAllData"
+            app:destination="@id/AllData" />
+        <action
+            android:id="@+id/toDailyActivityDurationData"
+            app:destination="@id/DailyActivityDurationData" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/calorieFragment"
+        android:name="com.sjbt.sdk.sample.ui.sync.CalorieFragment"
+        android:label="@string/data_calorie"
+        tools:layout="@layout/fragment_data_list" />
+    <fragment
+        android:id="@+id/distanceFragment"
+        android:name="com.sjbt.sdk.sample.ui.sync.DistanceFragment"
+        android:label="@string/exercise_data_distance"
+        tools:layout="@layout/fragment_data_list" />
+
+    <fragment
+        android:id="@+id/activityDurationFragment"
+        android:name="com.sjbt.sdk.sample.ui.sync.ActivityDurationFragment"
+        android:label="@string/data_activity_duration"
+        tools:layout="@layout/fragment_data_list" />
+    <fragment
+        android:id="@+id/stepFragment"
+        android:name="com.sjbt.sdk.sample.ui.sync.StepFragment"
+        android:label="@string/data_step"
+        tools:layout="@layout/fragment_step" />
+    <fragment
+        android:id="@+id/sleepFragment"
+        android:name="com.sjbt.sdk.sample.ui.sync.SleepFragment"
+        android:label="@string/data_sleep"
+        tools:layout="@layout/fragment_sleep" />
+
+    <fragment
+        android:id="@+id/heartRateFragment"
+        android:name="com.sjbt.sdk.sample.ui.sync.HeartRateHourlyFragment"
+        android:label="@string/data_heart_rate"
+        tools:layout="@layout/fragment_data_list" />
+
+    <fragment
+        android:id="@+id/oxygenFragment"
+        android:name="com.sjbt.sdk.sample.ui.sync.OxygenFragment"
+        android:label="@string/data_oxygen"
+        tools:layout="@layout/fragment_data_list" />
+    <!--    <fragment-->
+    <!--        android:id="@+id/bloodPressureFragment"-->
+    <!--        android:name="com.topstep.fitcloud.sample2.ui.sync.BloodPressureFragment"-->
+    <!--        android:label="@string/data_blood_pressure"-->
+    <!--        tools:layout="@layout/fragment_data_list"/>-->
+    <fragment
+        android:id="@+id/heartRateConfigFragment"
+        android:name="com.sjbt.sdk.sample.ui.setting.HeartRateConfigFragment"
+        android:label="@string/ds_heart_rate_config"
+        tools:layout="@layout/fragment_heart_rate_config" />
+
+    <fragment
+        android:id="@+id/heartRateHomePageFragment"
+        android:name="com.sjbt.sdk.sample.ui.setting.HeartRateHomePageFragment"
+        android:label="@string/ds_heart_rate_config"
+        tools:layout="@layout/fragment_heart_rate_config">
+        <action
+            android:id="@+id/toHourHeartRateFragment"
+            app:destination="@id/hourHeartRateFragment" />
+        <action
+            android:id="@+id/to5MinutesHeartRateFragment"
+            app:destination="@id/fiveMinutesHeartRateFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/hourHeartRateFragment"
+        android:name="com.sjbt.sdk.sample.ui.sync.HeartRateHourlyFragment"
+        android:label="@string/hourly_data"
+        tools:layout="@layout/fragment_data_list" />
+
+    <fragment
+        android:id="@+id/fiveMinutesHeartRateFragment"
+        android:name="com.sjbt.sdk.sample.ui.sync.HeartRateFiveMinutesFragment"
+        android:label="@string/data_every_5_minutes"
+        tools:layout="@layout/fragment_data_list" />
+    <!--    <fragment-->
+    <!--        android:id="@+id/temperatureFragment"-->
+    <!--        android:name="com.topstep.fitcloud.sample2.ui.sync.TemperatureFragment"-->
+    <!--        android:label="@string/data_temperature"-->
+    <!--        tools:layout="@layout/fragment_data_list"/>-->
+
+    <!--    <fragment-->
+    <!--        android:id="@+id/pressureFragment"-->
+    <!--        android:name="com.topstep.fitcloud.sample2.ui.sync.PressureFragment"-->
+    <!--        android:label="@string/data_pressure"-->
+    <!--        tools:layout="@layout/fragment_data_list"/>-->
+
+    <!--    <fragment-->
+    <!--        android:id="@+id/ecgFragment"-->
+    <!--        android:name="com.topstep.fitcloud.sample2.ui.sync.EcgFragment"-->
+    <!--        android:label="@string/data_ecg"-->
+    <!--        tools:layout="@layout/fragment_ecg"/>-->
+
+    <fragment
+        android:id="@+id/sportFragment"
+        android:name="com.sjbt.sdk.sample.ui.sync.SportFragment"
+        android:label="@string/data_sport"
+        tools:layout="@layout/fragment_data_list">
+        <action
+            android:id="@+id/toSportDetail"
+            app:destination="@id/sportDetailFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/AllData"
+        android:name="com.sjbt.sdk.sample.ui.sync.AllDataFragment"
+        android:label="@string/data_all"
+        tools:layout="@layout/fragment_data_list" />
+
+    <fragment
+        android:id="@+id/DailyActivityDurationData"
+        android:name="com.sjbt.sdk.sample.ui.sync.DailyActivityDurationDataFragment"
+        android:label="@string/data_daily_duration"
+        tools:layout="@layout/fragment_data_list" />
+
+    <fragment
+        android:id="@+id/sportDetailFragment"
+        android:name="com.sjbt.sdk.sample.ui.sync.SportDetailFragment"
+        android:label="@string/data_sport_detail"
+        tools:layout="@layout/fragment_sport_detail">
+        <argument
+            android:name="wmSportSummaryData"
+            app:argType="com.base.sdk.entity.data.WmSportSummaryData" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/combineFragment"
+        android:name="com.sjbt.sdk.sample.ui.CombineFragment"
+        android:label="@string/module_user">
+        <action
+            android:id="@+id/toEditUserInfo"
+            app:destination="@id/editUserInfoFragment" />
+        <action
+            android:id="@+id/toExerciseGoal"
+            app:destination="@id/exerciseGoalFragment" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/deviceBindFragment"
+        android:name="com.sjbt.sdk.sample.ui.device.bind.DeviceBindFragment"
+        android:label="@string/device_bind"
+        tools:layout="@layout/fragment_device_bind">
+        <action
+            android:id="@+id/toDeviceQrCode"
+            app:destination="@id/deviceQrCodeFragment" />
+        <action
+            android:id="@+id/toCustomQr"
+            app:destination="@id/deviceCustomQrFragment" />
+        <action
+            android:id="@+id/toConnectHelp"
+            app:destination="@id/connectHelpFragment" />
+        <action
+            android:id="@+id/toBgRunSettings"
+            app:destination="@id/bgRunSettingsFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/deviceQrCodeFragment"
+        android:name="com.sjbt.sdk.sample.ui.bind.DeviceQrCodeFragment"
+        android:label="@string/device_scan_bind"
+        tools:layout="@layout/fragment_device_qr_code" />
+    <fragment
+        android:id="@+id/deviceCustomQrFragment"
+        android:name="com.sjbt.sdk.sample.ui.bind.DeviceCustomQrFragment"
+        android:label="@string/device_scan_bind"
+        tools:layout="@layout/fragment_device_custom_qr" />
+
+    <fragment
+        android:id="@+id/connectHelpFragment"
+        android:name="com.sjbt.sdk.sample.ui.device.bind.ConnectHelpFragment"
+        android:label="@string/connect_help"
+        tools:layout="@layout/fragment_connect_help" />
+
+    <fragment
+        android:id="@+id/bgRunSettingsFragment"
+        android:name="com.sjbt.sdk.sample.ui.device.bgrun.BgRunSettingsFragment"
+        android:label="@string/bg_run_settings_module"
+        tools:layout="@layout/fragment_bg_run_settings" />
+    <fragment
+        android:id="@+id/deviceBasicInfo"
+        android:name="com.sjbt.sdk.sample.ui.device.DeviceInfoFragment"
+        android:label="@string/ds_basic_device_info"
+        tools:layout="@layout/fragment_device_info" />
+    <fragment
+        android:id="@+id/deviceConfigFragment"
+        android:name="com.sjbt.sdk.sample.ui.setting.DeviceConfigFragment"
+        android:label="@string/ds_config"
+        tools:layout="@layout/fragment_device_config">
+
+        <!-- <action-->
+        <!--   android:id="@+id/toNotificationConfig"-->
+        <!--   app:destination="@id/notificationConfigFragment" />-->
+        <action
+            android:id="@+id/toUnitConfig"
+            app:destination="@id/unitConfigFragment" />
+        <action
+            android:id="@+id/toSoundTouchFeedback"
+            app:destination="@id/soundTouchConfigFragment" />
+        <action
+            android:id="@+id/toAppView"
+            app:destination="@id/appViewFragment" />
+
+        <action
+            android:id="@+id/toLanguage"
+            app:destination="@id/languageConfigFragment" />
+        <action
+            android:id="@+id/toHeartRate"
+            app:destination="@id/heartRateConfigFragment" />
+
+        <action
+            android:id="@+id/toDrinkWaterConfig"
+            app:destination="@id/drinkWaterConfigFragment" />
+        <action
+            android:id="@+id/toSedentary"
+            app:destination="@id/sedentaryConfigFragment" />
+        <action
+            android:id="@+id/toTurnWristLightingConfig"
+            app:destination="@id/turnWristLightingConfigFragment" />
+        <action
+            android:id="@+id/toSleepConfig"
+            app:destination="@id/sleepConfigFragment" />
+
+    </fragment>
+
+    <!--    <fragment-->
+    <!--        android:id="@+id/pageConfigFragment"-->
+    <!--        android:name="com.topstep.fitcloud.sample2.ui.device.config.PageConfigFragment"-->
+    <!--        android:label="@string/ds_page_config"-->
+    <!--        tools:layout="@layout/fragment_page_config"/>-->
+
+    <!--    <fragment-->
+    <!--        android:id="@+id/notificationConfigFragment"-->
+    <!--        android:name="com.sjbt.sdk.sample.ui.setting.notification.NotificationConfigFragment"-->
+    <!--        android:label="@string/ds_notification_config"-->
+    <!--        tools:layout="@layout/fragment_notification_config">-->
+    <!--        <action-->
+    <!--            android:id="@+id/toOtherNotification"-->
+    <!--            app:destination="@id/otherNotificationFragment" />-->
+    <!--    </fragment>-->
+
+    <!--    <fragment-->
+    <!--        android:id="@+id/otherNotificationFragment"-->
+    <!--        android:name="com.sjbt.sdk.sample.ui.setting.notification.OtherNotificationListFragment"-->
+    <!--        android:label="@string/ds_notification_others"-->
+    <!--        tools:layout="@layout/fragment_other_notification_list" />-->
+
+    <fragment
+        android:id="@+id/unitConfigFragment"
+        android:name="com.sjbt.sdk.sample.ui.setting.UnitConfigFragment"
+        android:label="@string/ds_unit_config"
+        tools:layout="@layout/fragment_unit_config" />
+    <fragment
+        android:id="@+id/soundTouchConfigFragment"
+        android:name="com.sjbt.sdk.sample.ui.setting.SoundTouchFeedbackConfigFragment"
+        android:label="@string/ds_sound_touch_config"
+        tools:layout="@layout/fragment_sound_touch_config" />
+    <fragment
+        android:id="@+id/appViewFragment"
+        android:name="com.sjbt.sdk.sample.ui.setting.AppViewConfigFragment"
+        android:label="@string/app_view"
+        tools:layout="@layout/fragment_app_view" />
+    <fragment
+        android:id="@+id/languageConfigFragment"
+        android:name="com.sjbt.sdk.sample.ui.device.language.LanguageListFragment"
+        android:label="@string/language_set"
+        tools:layout="@layout/fragment_language_list" />
+
+    <fragment
+        android:id="@+id/sedentaryConfigFragment"
+        android:name="com.sjbt.sdk.sample.ui.setting.SedentaryConfigFragment"
+        android:label="@string/ds_sedentary_config"
+        tools:layout="@layout/fragment_sedentary_config" />
+
+    <fragment
+        android:id="@+id/drinkWaterConfigFragment"
+        android:name="com.sjbt.sdk.sample.ui.setting.DrinkWaterConfigFragment"
+        android:label="@string/ds_drink_water_config"
+        tools:layout="@layout/fragment_drink_water_config" />
+
+
+    <fragment
+        android:id="@+id/turnWristLightingConfigFragment"
+        android:name="com.sjbt.sdk.sample.ui.setting.TurnWristLightingConfigFragment"
+        android:label="@string/ds_turn_wrist_lighting_config"
+        tools:layout="@layout/fragment_turn_wrist_lighting_config" />
+
+    <fragment
+        android:id="@+id/sleepConfigFragment"
+        android:name="com.sjbt.sdk.sample.ui.setting.SleepConfigFragment"
+        android:label="@string/ds_sleep_config"
+        tools:layout="@layout/fragment_sleep_config" />
+
+
+    <fragment
+        android:id="@+id/alarmFragment"
+        android:name="com.sjbt.sdk.sample.ui.device.alarm.AlarmListFragment" />
+    <fragment
+        android:id="@+id/widgetFragment"
+        android:name="com.sjbt.sdk.sample.ui.combine.WidgetFragment"
+        android:label="@string/widget"
+        tools:layout="@layout/fragment_widget" />
+    <fragment
+        android:id="@+id/featureFragment"
+        android:name="com.sjbt.sdk.sample.ui.device.FeatureListFragment"
+        android:label="@string/feature"
+        tools:layout="@layout/fragment_feature_list" />
+
+
+    <fragment
+        android:id="@+id/contactPageFragment"
+        android:name="com.sjbt.sdk.sample.ui.device.contacts.ContactHomePageFragment"
+        android:label="@string/ds_contacts"
+        tools:layout="@layout/fragment_contact_home_page">
+        <action
+            android:id="@+id/toContacts"
+            app:destination="@id/contactsFragment" />
+        <action
+            android:id="@+id/toEmergencyContacts"
+            app:destination="@id/emergencyContacts" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/contactsFragment"
+        android:name="com.sjbt.sdk.sample.ui.device.contacts.ContactsFragment"
+        android:label="@string/ds_contacts"
+        tools:layout="@layout/fragment_contacts">
+        <action
+            android:id="@+id/toPhoneContacts"
+            app:destination="@id/phoneContacts" />
+    </fragment>
+    <fragment
+        android:id="@+id/phoneContacts"
+        android:name="com.sjbt.sdk.sample.ui.device.contacts.PhoneContactsFragment"
+        android:label="@string/ds_phone_contacts"
+        tools:layout="@layout/fragment_phone_contacts">
+        <argument
+            android:name="contactNum"
+            app:argType="integer" />
+    </fragment>
+    <fragment
+        android:id="@+id/emergencyContacts"
+        android:name="com.sjbt.sdk.sample.ui.device.contacts.EmergencyContactFragment"
+        android:label="@string/ds_emergency_contacts"
+        tools:layout="@layout/fragment_emergency_contacts" />
+    <fragment
+        android:id="@+id/dialHomePageFragment"
+        android:name="com.sjbt.sdk.sample.ui.device.dial.DialHomePageFragment"
+        android:label="@string/ds_dial"
+        tools:layout="@layout/fragment_dial_home_page">
+        <action
+            android:id="@+id/toInstalledList"
+            app:destination="@id/installedDialsFragment" />
+
+        <action
+            android:id="@+id/toDialLibrary"
+            app:destination="@id/dialLibraryFragment" />
+        <action
+            android:id="@+id/toDiyDialFragment"
+            app:destination="@id/diyDialFragment" />
+
+    </fragment>
+    <fragment
+        android:id="@+id/sportHomePageFragment"
+        android:name="com.sjbt.sdk.sample.ui.device.sport.SportHomePageFragment"
+        android:label="@string/ds_sport"
+        tools:layout="@layout/fragment_sport_home_page">
+        <action
+            android:id="@+id/toInstalledList"
+            app:destination="@id/installedSportsFragment" />
+
+        <action
+            android:id="@+id/toSportLibrary"
+            app:destination="@id/sportLibraryFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/sportLibraryFragment"
+        android:name="com.sjbt.sdk.sample.ui.device.sport.SportLibraryFragment"
+        android:label="@string/ds_sport_library"
+        tools:layout="@layout/fragment_sport_library" />
+    <fragment
+        android:id="@+id/dialLibraryFragment"
+        android:name="com.sjbt.sdk.sample.ui.device.dial.library.DialLibraryFragment"
+        android:label="@string/ds_dial_library"
+        tools:layout="@layout/fragment_dial_library" />
+
+
+    <fragment
+        android:id="@+id/installedDialsFragment"
+        android:name="com.sjbt.sdk.sample.ui.device.dial.DialInstalledListFragment"
+        android:label="@string/ds_dial_installed"
+        tools:layout="@layout/fragment_dial_installed_list" />
+    <fragment
+        android:id="@+id/installedSportsFragment"
+        android:name="com.sjbt.sdk.sample.ui.device.sport.SportInstalledListFragment"
+        android:label="@string/ds_sport_installed"
+        tools:layout="@layout/fragment_sport_installed_list" />
+    <fragment
+        android:id="@+id/diyDialFragment"
+        android:name="com.sjbt.sdk.sample.ui.device.dial.diyDial.DiyDialFragment"
+        android:label="@string/ds_dial_custom"
+        tools:layout="@layout/fragment_diy_dial" />
+
+    <fragment
+        android:id="@+id/otherFeaturesFragment"
+        android:name="com.sjbt.sdk.sample.ui.device.OtherFeaturesFragment"
+        android:label="@string/ds_other_features"
+        tools:layout="@layout/fragment_other_features" />
+
+
+    <fragment
+        android:id="@+id/editUserInfoFragment"
+        android:name="com.sjbt.sdk.sample.ui.combine.EditUserInfoFragment"
+        android:label="@string/account_edit_user_info"
+        tools:layout="@layout/fragment_edit_user_info" />
+
+    <fragment
+        android:id="@+id/exerciseGoalFragment"
+        android:name="com.sjbt.sdk.sample.ui.combine.ExerciseGoalFragment"
+        tools:layout="@layout/fragment_exercise_goal" />
+
+</navigation>

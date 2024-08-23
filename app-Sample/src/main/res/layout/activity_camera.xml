@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/black">
+
+    <androidx.camera.view.PreviewView
+        android:id="@+id/previewView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintDimensionRatio="9:16"
+        app:scaleType="fitCenter" />
+
+    <ImageView
+        android:id="@+id/iv_took_pic"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:visibility="gone" />
+
+    <ImageView
+        android:id="@+id/iv_close"
+        android:layout_width="@dimen/dp_35"
+        android:layout_height="@dimen/dp_35"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_40"
+        android:onClick="@{onClickListener}"
+        android:scaleType="fitCenter"
+        android:src="@mipmap/ic_topnav_back_arr_40"
+        app:bl_corners_radius="@dimen/dp_35"
+        app:bl_solid_color="@color/color_b3000000" />
+
+    <ImageView
+        android:id="@+id/image_flash"
+        android:layout_width="@dimen/dp_35"
+        android:layout_height="@dimen/dp_35"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="@dimen/dp_40"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        android:onClick="@{onClickListener}"
+        android:padding="10dp"
+        android:src="@mipmap/biu_icon_flash_off"
+        app:bl_corners_radius="@dimen/dp_35"
+        app:bl_solid_color="@color/color_b3000000" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:paddingHorizontal="@dimen/dp_30">
+
+        <ImageView
+            android:id="@+id/iv_took"
+            android:layout_width="@dimen/dp_50"
+            android:layout_height="@dimen/dp_50"
+            android:layout_centerVertical="true"
+            android:onClick="@{onClickListener}"
+            android:scaleType="fitCenter" />
+
+        <!--            <com.metawatch.app.widget.customview.VideoControlView-->
+        <!--                android:id="@+id/controlView"-->
+        <!--                android:layout_width="60dp"-->
+        <!--                android:layout_height="60dp"-->
+        <!--                android:layout_centerInParent="true"-->
+        <!--                android:layout_marginBottom="30dp"-->
+        <!--                app:excircleRadius="30dp"-->
+        <!--                app:innerCircleRadius="20dp" />-->
+
+        <ImageView
+            android:id="@+id/img_take_photo"
+            android:layout_width="60dp"
+            android:layout_height="@dimen/dp_60"
+            android:layout_centerInParent="true"
+            android:layout_marginBottom="30dp"
+            android:src="@mipmap/biu_icon_camera_tack" />
+
+        <ImageView
+            android:id="@+id/image_switch"
+            android:layout_width="@dimen/dp_50"
+            android:layout_height="@dimen/dp_50"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:onClick="@{onClickListener}"
+            android:padding="10dp"
+            android:src="@mipmap/biu_icon_camera_switch"
+            app:bl_corners_radius="@dimen/dp_15"
+            app:bl_solid_color="@color/color_b3000000" />
+    </RelativeLayout>
+
+</RelativeLayout>

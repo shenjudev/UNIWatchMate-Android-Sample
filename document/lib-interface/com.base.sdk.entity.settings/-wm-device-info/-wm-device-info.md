@@ -1,0 +1,6 @@
+//[lib-interface](../../../index.md)/[com.base.sdk.entity.settings](../index.md)/[WmDeviceInfo](index.md)/[WmDeviceInfo](-wm-device-info.md)
+
+# WmDeviceInfo
+
+[androidJvm]\
+constructor(model: [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html), macAddress: [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html), version: [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html), deviceId: [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html), bluetoothName: [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html), deviceName: [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html), dialAbility: [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html), screen: [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html), lang: [Int](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html), cw: [Int](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html), ch: [Int](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html), ncw: [Int](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html), nch: [Int](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html))

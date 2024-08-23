@@ -1,0 +1,16 @@
+<?xml version="1.0" ?>
+<resources>
+    <string name="ip_all_images">Todas as imagens</string>
+    <string name="ip_folder_image_count">Total de %1$d imagens</string>
+    <string name="ip_preview_image_count">%1$d/%2$d</string>
+    <string name="ip_select_limit">Um máximo de 1$d imagens podem ser selecionadas</string>
+    <string name="ip_complete">Concluído</string>
+    <string name="ip_select_complete">Concluído (%1$d/%2$d)</string>
+    <string name="ip_preview">Ver</string>
+    <string name="ip_preview_count">Ver (%1$d)</string>
+    <string name="ip_photo_crop">Corte de imagem</string>
+    <string name="ip_origin">Imagem original</string>
+    <string name="ip_origin_size">Imagem original (%1$s)</string>
+    <string name="photo">Álbum de Fotos</string>
+    <string name="take_photo">Câmera</string>
+</resources>

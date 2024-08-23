@@ -1,0 +1,194 @@
+[
+  {
+    "id": 3,
+    "label": "hour",
+    "widget": "textbox",
+    "data": "time_hour24",
+    "view": [
+      20,
+      10,
+      90,
+      90
+    ],
+    "direction": 0,
+    "rotation": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "align": 1,
+    "alpha": 255,
+    "zorder": 1,
+    "animation": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "text_align": 2,
+    "font_color": [
+      255,
+      255,
+      255,
+      255
+    ],
+    "font_bkcolor": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "font_type": 7,
+    "font_size": 70,
+    "separator_id": 0,
+    "prefix_id": 0,
+    "postfix_id": 0
+  },
+  {
+    "id": 4,
+    "label": "dot",
+    "widget": "textbox",
+    "data": "dot_second",
+    "view": [
+      110,
+      5,
+      28,
+      90
+    ],
+    "direction": 0,
+    "rotation": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "align": 1,
+    "alpha": 255,
+    "zorder": 1,
+    "animation": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "text_align": 2,
+    "font_color": [
+      255,
+      255,
+      255,
+      255
+    ],
+    "font_bkcolor": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "font_type": 7,
+    "font_size": 70,
+    "separator_id": 0,
+    "prefix_id": 0,
+    "postfix_id": 0
+  },
+  {
+    "id": 5,
+    "label": "minute",
+    "widget": "textbox",
+    "data": "minute",
+    "view": [
+      140,
+      10,
+      90,
+      90
+    ],
+    "direction": 0,
+    "rotation": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "align": 1,
+    "alpha": 255,
+    "zorder": 1,
+    "animation": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "text_align": 1,
+    "font_color": [
+      255,
+      255,
+      255,
+      255
+    ],
+    "font_bkcolor": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "font_type": 7,
+    "font_size": 70,
+    "separator_id": 0,
+    "prefix_id": 0,
+    "postfix_id": 0
+  },
+  {
+    "id": 7,
+    "label": "week",
+    "widget": "textbox",
+    "data": "date_weekday_day",
+    "align": 1,
+    "view": [
+      30,
+      100,
+      200,
+      40
+    ],
+    "direction": 0,
+    "rotation": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "alpha": 255,
+    "text_align": 1,
+    "font_color": [
+      255,
+      255,
+      255,
+      255
+    ],
+    "font_bkcolor": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "font_type": 2,
+    "font_size": 26,
+    "animation": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "prefix_id": 0,
+    "separator_id": 0,
+    "postfix_id": 0,
+    "zorder": 1
+  }
+]

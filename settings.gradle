@@ -1,0 +1,9 @@
+include ':app-Sample'
+include ':app-Demo'
+
+//include ':lib-chuanyin:lib-interface'
+//include ':lib-chuanyin:lib-sj-sdk'
+//include ':lib-chuanyin:lib-api'
+include ':zbarlibrary'
+include ':file-chooser-lib'
+include ':imagepicker'

@@ -1,0 +1,76 @@
+package com.sjbt.sdk.sample.utils
+
+import android.content.Context
+import com.base.sdk.entity.settings.WmFunctionSupport
+import com.sjbt.sdk.sample.R
+import com.sjbt.sdk.sample.model.device.FeaturesModel
+
+object FeatureData {
+
+    fun getFeatureList(context: Context,feature: WmFunctionSupport): MutableList<FeaturesModel> {
+        val list = mutableListOf<FeaturesModel>()
+        // 添加所有功能到列表
+        list.add(FeaturesModel(1,context.getString(R.string.weather_sync_switch), feature.supportWeatherState == 1))
+        list.add(FeaturesModel(2,context.getString(R.string.fitness_records), feature.sportSupportState == 1))
+        list.add(FeaturesModel(3,context.getString(R.string.heart_rate), feature.supportRateState == 1))
+        list.add(FeaturesModel(4,context.getString(R.string.camera_remote_v1), feature.supportCameraControlState == 1))
+        list.add(FeaturesModel(5,context.getString(R.string.notification_management), feature.supportNotifyMsgState == 1))
+        list.add(FeaturesModel(6,context.getString(R.string.alarm_settings), feature.supportAlarmState == 1))
+        list.add(FeaturesModel(7,context.getString(R.string.local_music_sync), feature.supportTransferMusicState == 1))
+        list.add(FeaturesModel(8,context.getString(R.string.contacts_sync), feature.supportContactState == 1))
+        list.add(FeaturesModel(9,context.getString(R.string.find_watch), feature.supportFindDeviceState == 1))
+        list.add(FeaturesModel(10,context.getString(R.string.find_phone), feature.supportFindPhoneState == 1))
+        list.add(FeaturesModel(11,context.getString(R.string.app_view_feature), feature.supportAppViewState == 1))
+        list.add(FeaturesModel(12,context.getString(R.string.incoming_call_ring), feature.supportSetRingState == 1))
+        list.add(FeaturesModel(13,context.getString(R.string.notification_touch), feature.supportSetNotifyTouchState == 1))
+        list.add(FeaturesModel(14,context.getString(R.string.crown_touch_feedback), feature.supportSetCrownTouchState == 1))
+        list.add(FeaturesModel(15,context.getString(R.string.system_touch_feedback), feature.supportSetSystemTouchState == 1))
+        list.add(FeaturesModel(16,context.getString(R.string.raise_to_wake), feature.supportWristScreenState == 1))
+        list.add(FeaturesModel(17,context.getString(R.string.blood_oxygen), feature.supportBloodOxygenState == 1))
+        list.add(FeaturesModel(18,context.getString(R.string.blood_pressure), feature.supportBloodPressState == 1))
+        list.add(FeaturesModel(19,context.getString(R.string.blood_sugar), feature.supportBloodSugarState == 1))
+        list.add(FeaturesModel(20,context.getString(R.string.sleep_settings_data), feature.supportSleepState == 1))
+        list.add(FeaturesModel(21,context.getString(R.string.ebook_sync), feature.supportTransferEbookState == 1))
+        list.add(FeaturesModel(22,context.getString(R.string.slow_mode_w20a), feature.supportSlowModel == 1))
+        list.add(FeaturesModel(23,context.getString(R.string.camera_remote_preview), feature.supportCameraPreview == 1))
+        list.add(FeaturesModel(24,context.getString(R.string.video_file_sync_avi), feature.supportVideoTransfer == 1))
+        list.add(FeaturesModel(25,context.getString(R.string.payment_code), feature.supportPayeeCode == 1))
+        list.add(FeaturesModel(26,context.getString(R.string.watch_face_market), feature.supportDialMarket == 1))
+        list.add(FeaturesModel(27,context.getString(R.string.notification_list_expand), feature.supportUnfoldNotification == 1))
+        list.add(FeaturesModel(28,context.getString(R.string.call_bluetooth), feature.supportBleDell == 1))
+        list.add(FeaturesModel(29,context.getString(R.string.display_off_call_bluetooth), feature.supportShowBleDellSwitch == 1))
+        list.add(FeaturesModel(30,context.getString(R.string.emergency_contacts), feature.supportEmergencyContact == 1))
+        list.add(FeaturesModel(31,context.getString(R.string.sync_favorite_contacts), feature.supportSyncCollectContact == 1))
+        list.add(FeaturesModel(32,context.getString(R.string.quick_reply), feature.supportQuickRespond == 1))
+        list.add(FeaturesModel(33,context.getString(R.string.step_goal), feature.supportStepGoal == 1))
+        list.add(FeaturesModel(34,context.getString(R.string.calorie_goal), feature.supportCalorieGoal == 1))
+        list.add(FeaturesModel(35,context.getString(R.string.activity_duration_goal), feature.supportActDurationGoal == 1))
+        list.add(FeaturesModel(36,context.getString(R.string.sedentary_reminder), feature.supportSedentaryReminder == 1))
+        list.add(FeaturesModel(37,context.getString(R.string.drink_water_reminder), feature.supportDrinkWaterReminder == 1))
+        list.add(FeaturesModel(38,context.getString(R.string.hand_washing_reminder), feature.supportWashHandsReminder == 1))
+        list.add(FeaturesModel(39,context.getString(R.string.auto_heart_rate_detection), feature.supportAutoRate == 1))
+        list.add(FeaturesModel(40,context.getString(R.string.rem_sleep_stage), feature.supportREM == 1))
+        list.add(FeaturesModel(41,context.getString(R.string.support_multiple_sports), feature.supportMultiSport == 1))
+        list.add(FeaturesModel(42,context.getString(R.string.display_fixed_sport_type), feature.supportShowFixMotionType == 1))
+        list.add(FeaturesModel(43,context.getString(R.string.auto_sport_detection_start), feature.supportSportAutoRecogniseStart == 1))
+        list.add(FeaturesModel(44,context.getString(R.string.auto_sport_detection_end), feature.supportSportAutoRecogniseEnd == 1))
+        list.add(FeaturesModel(45,context.getString(R.string.alarm_label), feature.supportAlarmLabel == 1))
+        list.add(FeaturesModel(46,context.getString(R.string.alarm_notes), feature.supportAlarmRemark == 1))
+        list.add(FeaturesModel(47,context.getString(R.string.world_clock), feature.supportWorldClock == 1))
+        list.add(FeaturesModel(48,context.getString(R.string.app_change_device_language), feature.supportAppChangeLanguage == 1))
+        list.add(FeaturesModel(49,context.getString(R.string.widgets), feature.supportWidgets == 1))
+        list.add(FeaturesModel(50,context.getString(R.string.app_adjust_device_volume), feature.supportAppControlVolume == 1))
+        list.add(FeaturesModel(51,context.getString(R.string.quiet_high_heart_rate_reminder), feature.supportQuietHeartRateAlert == 1))
+        list.add(FeaturesModel(52,context.getString(R.string.sports_high_heart_rate_reminder), feature.supportSportHeartRateAlert == 1))
+        list.add(FeaturesModel(53,context.getString(R.string.daily_high_heart_rate_reminder), feature.supportDailyHeartRateAlert == 1))
+        list.add(FeaturesModel(54,context.getString(R.string.continuous_blood_oxygen), feature.supportContinuousOxygen == 1))
+        list.add(FeaturesModel(55,context.getString(R.string.bluetooth_disconnect_reminder), feature.supportBTDisconnectReminder == 1))
+        list.add(FeaturesModel(56,context.getString(R.string.call_bluetooth_same_name_ble), feature.supportBtBleSameName == 1))
+        list.add(FeaturesModel(57,context.getString(R.string.event_reminder), feature.supportEventReminder == 1))
+        list.add(FeaturesModel(58,context.getString(R.string.screen_on_reminder), feature.supportScreenReminder == 1))
+        list.add(FeaturesModel(59,context.getString(R.string.restart_device), feature.supportRebootDevice == 1))
+        list.add(FeaturesModel(60,context.getString(R.string.navigation), feature.supportMapNav == 1))
+        list.add(FeaturesModel(61,context.getString(R.string.compass), feature.supportMapCompass == 1))
+        return list
+    }
+}

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <!--<businessiness.widget.textview.MediumTextView
+        android:id="@+id/tv_restore_default"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:layout_marginEnd="@dimen/dp_20"
+        android:padding="@dimen/dp_11"
+        android:text="@string/restore_default"
+        android:textColor="@color/primary"
+        android:textSize="@dimen/text_size_btn" />
+
+    <include layout="@layout/layout_divider" />-->
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/dp_5"
+        android:paddingBottom="@dimen/dp_5">
+
+        <com.contrarywind.view.WheelView
+            android:id="@+id/wv_goal"
+            style="@style/wheel_view_style"
+            android:layout_width="match_parent" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_unit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignEnd="@id/wv_goal"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="@dimen/dp_50"
+            android:textColor="@color/black"
+            android:textSize="@dimen/text_size_wheel_view"
+            tools:ignore="RtlSymmetry" />
+    </RelativeLayout>
+
+    <include layout="@layout/layout_dialog_comm_footer" />
+</LinearLayout>

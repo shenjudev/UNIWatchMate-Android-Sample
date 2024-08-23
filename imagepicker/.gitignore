@@ -1,0 +1,13 @@
+*.iml
+.gradle
+/local.properties
+/.idea
+/build
+/captures
+.idea/
+app/release/
+.gradle/
+local.properties
+/.gradle
+/*.iml
+app/src/test

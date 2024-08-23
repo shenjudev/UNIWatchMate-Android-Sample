@@ -1,0 +1,464 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/layout_next_event"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_160"
+        android:gravity="center"
+        android:orientation="vertical"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/up_next"
+            android:textColor="@color/black"
+            android:textSize="@dimen/text_size_btn" />
+
+        <TextView
+            android:id="@+id/tv_event_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_6"
+            android:text="-"
+            android:textColor="@color/white"
+            android:textSize="@dimen/sp_32"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tv_pray_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_2"
+            android:text="--:-- "
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_size_btn"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tv_pray_time_left"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_10"
+            android:text="@string/starts_in"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_size_btn" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/layout_location_fail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/color_ff9500"
+        android:gravity="center_vertical"
+        android:minHeight="@dimen/dp_60"
+        android:paddingHorizontal="@dimen/dp_16"
+        android:visibility="invisible">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/ic_info_circle_20" />
+
+        <TextView
+            android:id="@+id/tv_location_fail"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/dp_10"
+            android:layout_weight="1"
+            android:text="@string/location_failed"
+            android:textColor="@color/black" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/ic_menu_arr_right_24" />
+
+    </LinearLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:animateLayoutChanges="true"
+            android:background="@color/color_f2f2f7"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_66"
+                android:layout_marginHorizontal="@dimen/dp_16"
+                android:layout_marginTop="@dimen/dp_16"
+                android:background="@drawable/shape_bg_round_white_16"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingStart="@dimen/dp_20">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/dp_66"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical"
+                    android:text="@string/prayer_timings_reminder"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/text_size_btn" />
+
+                <com.kyleduo.switchbutton.SwitchButton
+                    android:id="@+id/switch_reminder"
+                    style="@style/SwitchButtonStyle"
+                    android:checked="false" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/layout_prayer_timings"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/dp_16"
+                android:layout_marginTop="@dimen/dp_16"
+                android:paddingBottom="@dimen/dp_16"
+                android:background="@drawable/shape_bg_round_white_16"
+                android:gravity="center_vertical"
+                android:orientation="vertical"
+                >
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp_48"
+                    android:layout_marginTop="@dimen/dp_10"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingHorizontal="@dimen/dp_20">
+
+                    <ImageView
+                        android:id="@+id/iv_prev_day"
+                        android:layout_width="@dimen/dp_36"
+                        android:layout_height="@dimen/dp_36"
+                        android:background="?android:attr/selectableItemBackgroundBorderless"
+                        android:focusable="true"
+                        android:onClick="onClick"
+                        android:padding="@dimen/dp_6"
+                        android:src="@mipmap/ic_arr_left_circle_gray_24" />
+
+                    <TextView
+                        android:id="@+id/tv_date"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="6月28日，2024"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/text_size_btn" />
+
+                    <ImageView
+                        android:id="@+id/iv_next_day"
+                        android:layout_width="@dimen/dp_36"
+                        android:layout_height="@dimen/dp_36"
+                        android:background="?android:attr/selectableItemBackgroundBorderless"
+                        android:focusable="true"
+                        android:onClick="onClick"
+                        android:padding="@dimen/dp_6"
+                        android:src="@mipmap/ic_arr_right_circle_gray_24" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/layout_fajr"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp_48"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingHorizontal="@dimen/dp_20">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="start"
+                        android:text="@string/fajr"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/text_size_btn" />
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:layout_weight="1" />
+
+                    <TextView
+                        android:id="@+id/tv_fajr_time"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/dp_6"
+                        android:text="--:-- "
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/text_size_btn" />
+
+                    <androidx.appcompat.widget.AppCompatToggleButton
+                        android:id="@+id/img_fajr_alarm"
+                        android:layout_width="@dimen/dp_24"
+                        android:layout_height="@dimen/dp_24"
+                        android:layout_marginStart="@dimen/dp_20"
+                        android:background="@drawable/selector_pray_alarm"
+                        android:foreground="?android:attr/selectableItemBackgroundBorderless"
+                        android:textOff=""
+                        android:textOn="" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/layout_sunrise"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp_48"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingHorizontal="@dimen/dp_20">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/sunrise"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/text_size_btn" />
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:layout_weight="1" />
+
+                    <TextView
+                        android:id="@+id/tv_sunrise_time"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/dp_6"
+                        android:text="--:-- "
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/text_size_btn" />
+
+                    <androidx.appcompat.widget.AppCompatToggleButton
+                        android:id="@+id/img_sunrise_alarm"
+                        android:layout_width="@dimen/dp_24"
+                        android:layout_height="@dimen/dp_24"
+                        android:layout_marginStart="@dimen/dp_20"
+                        android:background="@drawable/selector_pray_alarm"
+                        android:foreground="?android:attr/selectableItemBackgroundBorderless"
+                        android:textOff=""
+                        android:textOn="" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/layout_dhuhr"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp_48"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingHorizontal="@dimen/dp_20">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/dhuhr"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/text_size_btn" />
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:layout_weight="1" />
+
+                    <TextView
+                        android:id="@+id/tv_dhuhr_time"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/dp_6"
+                        android:text="--:-- "
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/text_size_btn" />
+
+                    <androidx.appcompat.widget.AppCompatToggleButton
+                        android:id="@+id/img_dhuhr_alarm"
+                        android:layout_width="@dimen/dp_24"
+                        android:layout_height="@dimen/dp_24"
+                        android:layout_marginStart="@dimen/dp_20"
+                        android:background="@drawable/selector_pray_alarm"
+                        android:foreground="?android:attr/selectableItemBackgroundBorderless"
+                        android:textOff=""
+                        android:textOn="" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/layout_asr"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp_48"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingHorizontal="@dimen/dp_20">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/asr"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/text_size_btn" />
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:layout_weight="1" />
+
+                    <TextView
+                        android:id="@+id/tv_asr_time"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/dp_6"
+                        android:text="--:-- "
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/text_size_btn" />
+
+                    <androidx.appcompat.widget.AppCompatToggleButton
+                        android:id="@+id/img_asr_alarm"
+                        android:layout_width="@dimen/dp_24"
+                        android:layout_height="@dimen/dp_24"
+                        android:layout_marginStart="@dimen/dp_20"
+                        android:background="@drawable/selector_pray_alarm"
+                        android:foreground="?android:attr/selectableItemBackgroundBorderless"
+                        android:textOff=""
+                        android:textOn="" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/layout_maghrib"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp_48"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingHorizontal="@dimen/dp_20">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/maghrib"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/text_size_btn" />
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:layout_weight="1" />
+
+                    <TextView
+                        android:id="@+id/tv_maghrib_time"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/dp_6"
+                        android:text="--:-- "
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/text_size_btn" />
+
+                    <androidx.appcompat.widget.AppCompatToggleButton
+                        android:id="@+id/img_maghrib_alarm"
+                        android:layout_width="@dimen/dp_24"
+                        android:layout_height="@dimen/dp_24"
+                        android:layout_marginStart="@dimen/dp_20"
+                        android:background="@drawable/selector_pray_alarm"
+                        android:foreground="?android:attr/selectableItemBackgroundBorderless"
+                        android:textOff=""
+                        android:textOn="" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/layout_isha"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp_48"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingHorizontal="@dimen/dp_20">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/isha"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/text_size_btn" />
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:layout_weight="1" />
+
+                    <TextView
+                        android:id="@+id/tv_isha_time"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/dp_6"
+                        android:text="--:-- "
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/text_size_btn" />
+
+                    <androidx.appcompat.widget.AppCompatToggleButton
+                        android:id="@+id/img_isha_alarm"
+                        android:layout_width="@dimen/dp_24"
+                        android:layout_height="@dimen/dp_24"
+                        android:layout_marginStart="@dimen/dp_20"
+                        android:background="@drawable/selector_pray_alarm"
+                        android:foreground="?android:attr/selectableItemBackgroundBorderless"
+                        android:textOff=""
+                        android:textOn="" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/dp_16"
+                android:layout_marginTop="@dimen/dp_16"
+                android:background="@drawable/shape_bg_round_white_16"
+                android:gravity="center_vertical"
+                android:orientation="vertical"
+                android:paddingVertical="@dimen/dp_10">
+
+                <com.sjbt.sdk.sample.widget.CommItemView
+                    android:id="@+id/ll_tasbih_reminder"
+                    style="@style/pray_item_style"
+                    app:icon="@mipmap/ic_prayer_20"
+                    app:title="@string/tasbih_reminder" />
+
+                <com.sjbt.sdk.sample.widget.CommItemView
+                    android:id="@+id/ll_name_of_allah"
+                    style="@style/pray_item_style"
+                    app:icon="@mipmap/ic_crow_20"
+                    app:title="@string/names_of_allah" />
+
+                <com.sjbt.sdk.sample.widget.CommItemView
+                    android:id="@+id/ll_qibla_direction"
+                    style="@style/pray_item_style"
+                    app:icon="@mipmap/ic_compress_20"
+                    app:title="@string/qibla_direction" />
+
+                <com.sjbt.sdk.sample.widget.CommItemView
+                    android:id="@+id/ll_calc_method"
+                    style="@style/pray_item_style"
+                    app:icon="@mipmap/ic_contrast_20"
+                    app:title="@string/calc_method" />
+
+                <com.sjbt.sdk.sample.widget.CommItemView
+                    android:id="@+id/ll_asr_method"
+                    style="@style/pray_item_style"
+                    app:icon="@mipmap/ic_contrast_20"
+                    app:show_bottom_divider="false"
+                    app:title="@string/asr_method" />
+            </LinearLayout>
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_60" />
+        </LinearLayout>
+
+    </ScrollView>
+
+</LinearLayout>

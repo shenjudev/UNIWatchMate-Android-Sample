@@ -1,0 +1,16 @@
+<?xml version="1.0" ?>
+<resources>
+    <string name="ip_all_images">सभी छवियाँ</string>
+    <string name="ip_folder_image_count">%1$d छवियों का कुल योग</string>
+    <string name="ip_preview_image_count">%1$d/%2$d</string>
+    <string name="ip_select_limit">अधिकतम %1$d छवियों का चयन किया जा सकता है</string>
+    <string name="ip_complete">पूर्ण हुआ</string>
+    <string name="ip_select_complete">पूर्ण हुआ (%1$d/%2$d)</string>
+    <string name="ip_preview">प्रिव्यू</string>
+    <string name="ip_preview_count">प्रिव्यू (%1$d)</string>
+    <string name="ip_photo_crop">छवि फसल</string>
+    <string name="ip_origin">मूल छवि</string>
+    <string name="ip_origin_size">मूल छवि (%1$s)</string>
+    <string name="photo">फोटो एल्बम</string>
+    <string name="take_photo">कैमरा</string>
+</resources>

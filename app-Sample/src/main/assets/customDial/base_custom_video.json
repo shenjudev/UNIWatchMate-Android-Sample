@@ -1,0 +1,66 @@
+{
+  "version": "2.0",
+  "dial": {
+    "name": "Customwatchface",
+    "provider": "",
+    "create": "",
+    "lastupdate": "",
+    "uuid": "",
+    "width": [
+      320,
+      320
+    ],
+    "height": [
+      390,
+      390
+    ]
+  },
+  "static": [
+    {
+      "widget": "thumbnail",
+      "data": "none",
+      "label": "Thumbnail",
+      "view": [
+        0,
+        0,
+        200,
+        240
+      ],
+      "direction": 0,
+      "alpha": 255,
+      "align": 9,
+      "zorder": 0,
+      "resource": [
+        "preview.jpg"
+      ],
+      "id": 1
+    },
+    {
+      "widget": "live_background",
+      "data": "none",
+      "label": "video background",
+      "view": [
+        0,
+        0,
+        320,
+        390
+      ],
+      "align": 9,
+      "direction": 0,
+      "alpha": 255,
+      "zorder": 0,
+      "postfix_id": 0,
+      "bg_color": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "resource": [
+        "bg.hex"
+      ],
+      "id": 2
+    }
+  ],
+  "active": []
+}

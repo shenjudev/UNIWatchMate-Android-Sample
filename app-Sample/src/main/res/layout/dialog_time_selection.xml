@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingTop="@dimen/dp_5"
+        android:paddingBottom="@dimen/dp_5">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2">
+
+            <com.contrarywind.view.WheelView
+                android:id="@+id/wv_hour"
+                style="@style/wheel_view_style" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text=":"
+                android:textColor="@color/black"
+                android:textSize="@dimen/text_size_wheel_view" />
+
+            <com.contrarywind.view.WheelView
+                android:id="@+id/wv_min"
+                style="@style/wheel_view_style" />
+        </LinearLayout>
+
+        <com.contrarywind.view.WheelView
+            android:id="@+id/wv_ime_quantum"
+            style="@style/wheel_view_style" />
+    </LinearLayout>
+
+    <!--底部-->
+    <include layout="@layout/layout_dialog_comm_footer" />
+</LinearLayout>
