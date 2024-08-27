@@ -6,9 +6,9 @@ import android.view.View;
 
 import androidx.appcompat.widget.AppCompatTextView;
 
-import com.bigkoo.pickerview.adapter.ArrayWheelAdapter;
-import com.bigkoo.pickerview.adapter.NumericWheelAdapter;
-import com.contrarywind.view.WheelView;
+import com.github.kilnn.wheelview.WheelView;
+import com.github.kilnn.wheelview.adapters.ArrayWheelAdapter;
+import com.github.kilnn.wheelview.adapters.NumericWheelAdapter;
 import com.sjbt.sdk.sample.R;
 import com.sjbt.sdk.sample.ui.dialog.BaseDialogFragment;
 import com.sjbt.sdk.sample.utils.DateUtil;
@@ -140,27 +140,27 @@ public class TimeSelectionDialogMuslim extends BaseDialogFragment {
         mWvImeQuantum.setVisibility(mShow24Format ? View.GONE : View.VISIBLE);
         if (!mShow24Format) {
             mWvImeQuantum.setCyclic(false);
-            mWvImeQuantum.setItemsVisibleCount(mVisibleCount);
-            mWvImeQuantum.setAdapter(new ArrayWheelAdapter<>(Arrays.asList(mTimeQuantumArr)));
+            mWvImeQuantum.setVisibleItems(mVisibleCount);
+            mWvImeQuantum.setViewAdapter(new ArrayWheelAdapter<>(getContext(),mTimeQuantumArr));
             mWvImeQuantum.setCurrentItem(mSelectedHour < 12 ? 0 : 1);
         }
 
         //时
         mWvHour.setCyclic(mIsHCyclic);
-        mWvHour.setItemsVisibleCount(mVisibleCount);
+        mWvImeQuantum.setVisibleItems(mVisibleCount);
         if (mShow24Format) {
-            mWvHour.setAdapter(new NumericWheelAdapter(0, 23));
+            mWvHour.setViewAdapter(new NumericWheelAdapter(getContext(),0, 23));
             mWvHour.setCurrentItem(mSelectedHour);
         } else {
-            mWvHour.setAdapter(new NumericWheelAdapter(1, 12));
+            mWvHour.setViewAdapter(new NumericWheelAdapter(getContext(),1, 12));
             int position = mSelectedHour % 12;
-            mWvHour.setCurrentItem(position == 0 ? mWvHour.getItemsCount() - 1 : position - 1);
+            mWvHour.setCurrentItem(position == 0 ? mWvHour.getVisibleItems() - 1 : position - 1);
         }
 
         //分
         mWvMin.setCyclic(mIsMCyclic);
-        mWvMin.setItemsVisibleCount(mVisibleCount);
-        mWvMin.setAdapter(new NumericWheelAdapter(0, 59));
+        mWvMin.setVisibleItems(mVisibleCount);
+        mWvMin.setViewAdapter(new NumericWheelAdapter(getContext(),0, 59));
         mWvMin.setCurrentItem(mSelectedMin);
     }
 

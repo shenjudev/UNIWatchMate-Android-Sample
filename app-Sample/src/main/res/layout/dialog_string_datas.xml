@@ -25,7 +25,7 @@
         android:paddingTop="@dimen/dp_5"
         android:paddingBottom="@dimen/dp_5">
 
-        <com.contrarywind.view.WheelView
+        <com.github.kilnn.wheelview.WheelView
             android:id="@+id/wv_goal"
             style="@style/wheel_view_style"
             android:layout_width="match_parent" />

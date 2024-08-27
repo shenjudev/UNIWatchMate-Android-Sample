@@ -6,9 +6,9 @@ import android.text.TextUtils;
 import android.view.MotionEvent;
 import android.view.View;
 import androidx.appcompat.widget.AppCompatTextView;
-
-import com.bigkoo.pickerview.adapter.ArrayWheelAdapter;
-import com.contrarywind.view.WheelView;
+import com.github.kilnn.wheelview.OnWheelClickedListener;
+import com.github.kilnn.wheelview.WheelView;
+import com.github.kilnn.wheelview.adapters.ArrayWheelAdapter;
 import com.sjbt.sdk.sample.R;
 import java.util.ArrayList;
 
@@ -24,8 +24,8 @@ public class CommWheelViewDialog extends BaseDialogFragment {
     private static final String KEY_CURRENT = "key_current";
     private static final String KEY_DATA = "key_data";
 
-    WheelView mWheelView;
-    AppCompatTextView mTvRight, mTvLeft;
+    private WheelView mWheelView;
+    private AppCompatTextView mTvRight, mTvLeft;
     private OnItemSelectListener mOnItemSelectListener;
     private String mCurrent;
 
@@ -128,8 +128,8 @@ public class CommWheelViewDialog extends BaseDialogFragment {
     @SuppressLint("ClickableViewAccessibility")
     private void initWheelView() {
         mWheelView.setCyclic(false);
-        mWheelView.setItemsVisibleCount(mVisibleCount);
-        mWheelView.setAdapter(new ArrayWheelAdapter<>(mDataList));
+        mWheelView.setVisibleItems(mVisibleCount);
+        mWheelView.setViewAdapter(new ArrayWheelAdapter<>(getContext(),mDataList.toArray()));
         int current = 0;
         for (int i = 0; i < mDataList.size(); i++) {
             String s = mDataList.get(i);
@@ -139,12 +139,16 @@ public class CommWheelViewDialog extends BaseDialogFragment {
             }
         }
         mWheelView.setCurrentItem(current);
-        mWheelView.setOnItemSelectedListener(index -> {
-            mCurrent = mDataList.get(index);
-            //LogUtil.d("mCurrent -- "+mCurrent);
-            mTvRight.setEnabled(true);
+        mWheelView.addClickingListener(new OnWheelClickedListener() {
+            @Override
 
+            public void onItemClicked(WheelView wheel, int itemIndex) {
+                mCurrent = mDataList.get(itemIndex);
+                //LogUtil.d("mCurrent -- "+mCurrent);
+                mTvRight.setEnabled(true);
+            }
         });
+
         //处理滑动延迟onItemSelected问题
         mWheelView.setOnTouchListener(new View.OnTouchListener() {
             @Override

@@ -304,11 +304,10 @@
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_weight">1</item>
-        <item name="wheelview_dividerColor">@color/transparent</item>
-        <item name="wheelview_lineSpacingMultiplier">2.8</item>
-        <item name="wheelview_textColorCenter">@color/black</item>
-        <item name="wheelview_textColorOut">@color/primary_gray_3</item>
-        <item name="wheelview_textSize">@dimen/text_size_wheel_view</item>
+        <item name="dividerColor">@color/transparent</item>
+        <item name="android:lineSpacingMultiplier">2.8</item>
+        <item name="counterTextColor">@color/black</item>
+        <item name="android:textSize">@dimen/text_size_wheel_view</item>
         <item name="android:layout_gravity">center_vertical</item>
     </style>
 </resources>

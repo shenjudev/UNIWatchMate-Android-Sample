@@ -130,7 +130,7 @@ dependencies {
     implementation rootProject.ext.libs.glide
 
     //picker_view
-    implementation rootProject.ext.libs.picker_view
+//    implementation rootProject.ext.libs.picker_view
 
     implementation 'com.github.kilnn:wheelview:1.0.2'
 
