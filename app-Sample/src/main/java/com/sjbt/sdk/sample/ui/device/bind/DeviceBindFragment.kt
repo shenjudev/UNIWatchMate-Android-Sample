@@ -135,7 +135,7 @@ class DeviceBindFragment : BaseFragment(R.layout.fragment_device_bind),
                     scanResult.schemeMacAddress,
                     BindType.SCAN_QR,
                     scanResult.projectName,
-                    scanResult.modelType
+                    WmDeviceModel.SJ_WATCH
                 )
                 bindInfo.randomCode = scanResult.randomCode
 //                  deviceManager.delDevice()

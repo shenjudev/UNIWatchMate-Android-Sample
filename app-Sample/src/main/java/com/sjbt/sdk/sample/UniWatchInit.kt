@@ -54,6 +54,12 @@ fun uniWatchInit(application: Application) {
             "https://cdniotpub.aiframe.net/media/spark/device/784a30834a783866bfe34a19be29a2c0/4a2ec1313e593ffabc3917f787927638.png")
     )
 
+    supportDeviceList.add(
+        WmSupportTypeBean("TY42_ZYT01",
+            "TY42_ZYT01",
+            "https://cdniotpub.aiframe.net/media/spark/device/784a30834a783866bfe34a19be29a2c0/b34a75927b93366b9c7d41d9e4e3a67c.png",
+            "https://cdniotpub.aiframe.net/media/spark/device/784a30834a783866bfe34a19be29a2c0/4a2ec1313e593ffabc3917f787927638.png")
+    )
     sjUniWatch.setSupportDeviceTypeList(supportDeviceList)
 
     UNIWatchMate.init(
