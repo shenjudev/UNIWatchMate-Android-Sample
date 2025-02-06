@@ -8,18 +8,21 @@
     android:paddingEnd="32dp">
 
     <EditText
+        android:id="@+id/edit_username"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
         android:hint="@string/account_input_username_hint"/>
 
     <EditText
+        android:id="@+id/edit_password"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:hint="@string/account_input_password_hint"/>
 
     <EditText
+        android:id="@+id/edit_height"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
@@ -27,6 +30,7 @@
         android:inputType="number"/>
 
     <EditText
+        android:id="@+id/edit_weight"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
@@ -34,6 +38,7 @@
         android:inputType="number"/>
 
     <RadioGroup
+        android:id="@+id/rg_sex"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
@@ -55,6 +60,7 @@
     </RadioGroup>
 
     <com.github.kilnn.tool.widget.item.PreferenceItem
+        android:id="@+id/pi_birthday"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         style="@style/Widget.Sample.PreferenceView.Item.Text"
@@ -63,6 +69,7 @@
         app:preferenceTitle="@string/account_edit_birthday" />
 
     <Button
+        android:id="@+id/btn_sign_up"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"

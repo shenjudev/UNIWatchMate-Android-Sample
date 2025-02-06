@@ -6,15 +6,21 @@
     android:gravity="center"
     android:orientation="vertical"
     tools:context=".ui.device.AiChatFragment">
-
+    <TextView
+        android:text="@string/ai_chat_tip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
     <ImageView
+        android:layout_marginTop="@dimen/dp_50"
+        android:id="@+id/iv_photo"
         android:layout_width="240dp"
         android:layout_height="@dimen/dp_200" />
 
 
     <Button
+        android:id="@+id/btn_audio"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_20"
-        android:text="音频" />
+        android:text="@string/play" />
 </LinearLayout>

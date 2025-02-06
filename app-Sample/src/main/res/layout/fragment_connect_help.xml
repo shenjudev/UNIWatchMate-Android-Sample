@@ -54,6 +54,7 @@
             app:drawableStartCompat="@drawable/shape_dot_color_primary"/>
 
         <RelativeLayout
+            android:id="@+id/layout_permission"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp">
@@ -81,6 +82,7 @@
         </RelativeLayout>
 
         <RelativeLayout
+            android:id="@+id/layout_location_service"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp">

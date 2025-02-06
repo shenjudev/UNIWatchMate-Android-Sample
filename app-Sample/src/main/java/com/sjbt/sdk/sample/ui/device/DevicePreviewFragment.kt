@@ -44,7 +44,7 @@ class DevicePreviewFragment : BaseFragment(R.layout.fragment_device_preview),
         viewLifecycle.launchRepeatOnStarted {
             launch {
                 UNIWatchMate.wmApps.appVideoPreview.observeVideoPreviewState.subscribe { status: Int ->
-                    Log.e(TAG, "Video_Preview_state：$status")
+                    Log.e(TAG, "observeVideoPreviewState：$status   $isOpenVideoPreview")
                     viewBind.btnPlay.isClickable = true
                     hideInfoDialog()
                     if (status == 2) {
@@ -103,7 +103,7 @@ class DevicePreviewFragment : BaseFragment(R.layout.fragment_device_preview),
         isOpenVideoPreview = !isOpenVideoPreview
         UNIWatchMate.wmApps.appVideoPreview.toggleVideoPreview(isOpenVideoPreview)
             .subscribe { resultCode: Int ->
-                Log.e(TAG, "Video_Preview_state：$resultCode")
+                Log.e(TAG, "toggleVideoPreview：$resultCode")
                 if (resultCode != 0) {
                     if (isIvPlay == 1) {
                         when (resultCode) {

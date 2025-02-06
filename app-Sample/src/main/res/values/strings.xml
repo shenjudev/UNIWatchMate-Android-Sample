@@ -332,5 +332,8 @@
     <string name="stop_recorded">Stop Recorded</string>
     <string name="ds_basic_device_chat">AI Chat</string>
     <string name="play">play</string>
+    <string name="playing">playing</string>
+    <string name="ai_chat_tip">Tip: Wait to receive device pictures and audio data</string>
+
 
 </resources>

@@ -79,13 +79,8 @@ android {
         threadCount = 16
         dexInProcess = true
     }
-    viewBinding {
-        enabled = true
-    }
-
-    // 自动生成BuildConfig
     buildFeatures {
-        dataBinding = true
+        viewBinding = true
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_11
@@ -208,7 +203,6 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
 
     implementation 'com.arthenica:ffmpeg-kit-full:6.0-2'
-
 
 
 }

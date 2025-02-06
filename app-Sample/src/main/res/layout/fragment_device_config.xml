@@ -13,6 +13,7 @@
         android:showDividers="middle|end">
 
         <com.github.kilnn.tool.widget.item.PreferenceItem
+            android:id="@+id/item_language"
             style="@style/Widget.Sample.PreferenceView.Item.Text"
             app:preferenceTitle="@string/language_set" />
 

@@ -82,13 +82,15 @@ class AiChatFragment : BaseFragment(R.layout.fragment_ai_chat) {
         viewBind.btnAudio.setOnClickListener {
             if (curWaveFilePath.isEmpty())
                 return@setOnClickListener
+
+            viewBind.btnAudio.text = getString(R.string.playing)
             playbackAudio(curWaveFilePath, object : AudioPlayer.AudioPlayerListener {
                 override fun onComplete() {
-                    viewBind.btnAudio.text = getString(R.string.action_start)
+                    viewBind.btnAudio.text = getString(R.string.play)
                 }
 
                 override fun onError(error: String) {
-                    viewBind.btnAudio.text = getString(R.string.action_start)
+                    viewBind.btnAudio.text = getString(R.string.play)
                 }
             })
         }

@@ -13,15 +13,12 @@ abstract class UserDao {
     @Insert(onConflict = OnConflictStrategy.ABORT)
     abstract suspend fun insert(userEntity: UserEntity)
 
-    @RewriteQueriesToDropUnusedColumns
     @Query("SELECT * FROM UserEntity WHERE id=:userId")
     internal abstract fun flowUserInfo(userId: Long): Flow<UserInfo>
 
-    @RewriteQueriesToDropUnusedColumns
     @Query("SELECT * FROM UserEntity WHERE id=:userId")
     abstract suspend fun queryUserInfo(userId: Long): UserInfo
 
-    @RewriteQueriesToDropUnusedColumns
     @Query("SELECT * FROM UserEntity WHERE name=:userName")
     abstract suspend fun queryUserInfo(userName: String): UserInfo
 
