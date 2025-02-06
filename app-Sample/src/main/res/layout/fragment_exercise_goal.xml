@@ -12,17 +12,14 @@
         android:showDividers="middle">
 
         <com.github.kilnn.tool.widget.item.PreferenceItem
-            android:id="@+id/item_step"
             style="@style/Widget.Sample.PreferenceView.Item.Text"
             app:preferenceTitle="@string/exercise_goal_step" />
 
         <com.github.kilnn.tool.widget.item.PreferenceItem
-            android:id="@+id/item_calories"
             style="@style/Widget.Sample.PreferenceView.Item.Text"
             app:preferenceTitle="@string/exercise_goal_calories" />
 
         <com.github.kilnn.tool.widget.item.PreferenceItem
-            android:id="@+id/item_activity_duration"
             style="@style/Widget.Sample.PreferenceView.Item.Text"
             app:preferenceTitle="@string/exercise_goal_activity" />
     </LinearLayout>

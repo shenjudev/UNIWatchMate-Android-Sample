@@ -21,6 +21,10 @@ abstract class UserDao {
     @Query("SELECT * FROM UserEntity WHERE id=:userId")
     abstract suspend fun queryUserInfo(userId: Long): UserInfo
 
+    @RewriteQueriesToDropUnusedColumns
+    @Query("SELECT * FROM UserEntity WHERE name=:userName")
+    abstract suspend fun queryUserInfo(userName: String): UserInfo
+
     @Query("UPDATE UserEntity SET height=:height,weight=:weight,sex=:sex,birthYear=:birthYear,birthMonth=:birthMonth,birthDay=:birthDay WHERE id=:userId")
     abstract suspend fun updateUserInfo(
         userId: Long,

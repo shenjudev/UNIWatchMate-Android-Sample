@@ -10,12 +10,14 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.stateIn
+import java.util.UUID
 
 interface UserInfoRepository {
 
     val flowCurrent: StateFlow<UserInfo?>
 
     suspend fun getUserInfo(userId: Long): UserInfo?
+    suspend fun getUserInfo(userName: String): UserInfo?
 
     suspend fun setUserInfo(userInfo: UserInfo)
 
@@ -41,8 +43,13 @@ internal class UserInfoRepositoryImpl constructor(
         return userDao.queryUserInfo(userId)
     }
 
+    override suspend fun getUserInfo(userName: String): UserInfo? {
+        return userDao.queryUserInfo(userName)
+    }
+
+
     override suspend fun setUserInfo(userInfo: UserInfo) {
-        if (getUserInfo(userId = userInfo.id) == null) {
+        if (getUserInfo(userInfo.id) == null) {
             userDao.insert(
                 UserEntity(userInfo.id,"name","password", userInfo.height, userInfo.weight, userInfo.sex, userInfo.birthYear,userInfo.birthMonth,userInfo.birthDay)
             )

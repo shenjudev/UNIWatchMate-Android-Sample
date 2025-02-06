@@ -16,7 +16,6 @@ import com.sjbt.sdk.sample.di.internal.SingleInstance
 import com.sjbt.sdk.sample.dialog.CallBack
 import com.sjbt.sdk.sample.dialog.ConfirmDialog
 import com.sjbt.sdk.sample.model.user.DialMock
-import com.sjbt.sdk.sample.ui.device.dial.library.DialLibraryDfuDialogFragment
 import com.sjbt.sdk.sample.ui.dialog.LoadingDialog
 import com.sjbt.sdk.sample.utils.CacheDataHelper
 import com.sjbt.sdk.sample.utils.ToastUtil
@@ -204,8 +203,8 @@ abstract class BaseActivity : AppCompatActivity() {
                     val extension: String = FileUtils.getFileExtension(file)
                     if (extension == BTConfig.DIAL) {
                         val dialMock = DialMock(-2, file.absolutePath, -1, "")
-                        DialLibraryDfuDialogFragment.newInstance(dialMock)
-                            .show(supportFragmentManager, null)
+//                        DialLibraryDfuDialogFragment.newInstance(dialMock)
+//                            .show(supportFragmentManager, null)
                     }
                 }
             }

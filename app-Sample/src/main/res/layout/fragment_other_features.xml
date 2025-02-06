@@ -13,32 +13,15 @@
         android:showDividers="middle|end">
 
         <com.github.kilnn.tool.widget.item.PreferenceItem
-            android:id="@+id/item_find_device"
-            style="@style/Widget.Sample.PreferenceView.Item.Text"
-            app:preferenceTitle="@string/ds_find_device"/>
-        <com.github.kilnn.tool.widget.item.PreferenceItem
-            android:id="@+id/item_stop_find_device"
             android:visibility="gone"
             style="@style/Widget.Sample.PreferenceView.Item.Text"
             app:preferenceTitle="@string/ds_stop_find_device"/>
 
-<!--        <com.github.kilnn.tool.widget.item.PreferenceItem-->
-<!--            android:id="@+id/item_device_reboot"-->
-<!--            style="@style/Widget.Sample.PreferenceView.Item.Text"-->
-<!--            app:preferenceTitle="@string/ds_device_reboot"/>-->
-
-<!--        <com.github.kilnn.tool.widget.item.PreferenceItem-->
-<!--            android:id="@+id/item_device_shutdown"-->
-<!--            style="@style/Widget.Sample.PreferenceView.Item.Text"-->
-<!--            app:preferenceTitle="@string/ds_device_shutdown"/>-->
-
         <com.github.kilnn.tool.widget.item.PreferenceItem
-            android:id="@+id/item_device_reset"
             style="@style/Widget.Sample.PreferenceView.Item.Text"
             app:preferenceTitle="@string/ds_device_reset"/>
 
         <com.github.kilnn.tool.widget.item.PreferenceItem
-            android:id="@+id/item_local_ota"
             style="@style/Widget.Sample.PreferenceView.Item.Text"
             app:preferenceTitle="@string/ds_device_local_ota"/>
 
@@ -48,7 +31,6 @@
             app:preferenceTitle="@string/ds_device_reboot"/>
 
         <com.github.kilnn.tool.widget.item.PreferenceItem
-            android:id="@+id/item_disconnect"
             style="@style/Widget.Sample.PreferenceView.Item.Text"
             app:preferenceTitle="@string/ds_device_disconnet"/>
     </LinearLayout>

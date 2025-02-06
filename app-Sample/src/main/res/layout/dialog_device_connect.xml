@@ -35,7 +35,6 @@
 
 
     <TextView
-        android:id="@+id/tv_address"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
@@ -97,7 +96,6 @@
         android:minHeight="@dimen/dialog_device_connect_min_height">
 
         <LinearLayout
-            android:id="@+id/layout_connecting"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -119,7 +117,6 @@
                 android:textAppearance="?textAppearanceCaption"/>
 
             <TextView
-                android:id="@+id/tv_unable_to_connect"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
@@ -131,14 +128,12 @@
         </LinearLayout>
 
         <RelativeLayout
-            android:id="@+id/layout_action"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:visibility="gone">
 
             <TextView
-                android:id="@+id/tv_extra_msg"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignWithParentIfMissing="true"
@@ -162,7 +157,6 @@
     </FrameLayout>
 
     <Button
-        android:id="@+id/btn_unbind"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"

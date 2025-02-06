@@ -10,7 +10,6 @@
         android:layout_marginBottom="?actionBarSize">
 
         <RelativeLayout
-            android:id="@+id/layout_tips"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginStart="32dp"
@@ -68,7 +67,6 @@
         </RelativeLayout>
 
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-            android:id="@+id/refresh_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
@@ -77,7 +75,6 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
                 <EditText
-                    android:id="@+id/edit_filter"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_alignParentTop="true"
@@ -87,7 +84,6 @@
                     android:hint=""
                     android:inputType="number" />
                 <RelativeLayout
-                    android:id="@+id/layout_location_service"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingStart="16dp"
@@ -115,12 +111,10 @@
                 </RelativeLayout>
 
                 <com.google.android.material.divider.MaterialDivider
-                    android:id="@+id/recycler_divider"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"/>
 
                 <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/scan_devices_recycler_view"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"/>
             </LinearLayout>
@@ -140,7 +134,6 @@
     </LinearLayout>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab_scan"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:contentDescription="@string/action_search"

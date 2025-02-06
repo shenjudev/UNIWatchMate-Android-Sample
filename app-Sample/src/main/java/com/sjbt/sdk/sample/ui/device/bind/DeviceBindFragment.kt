@@ -31,6 +31,7 @@ import com.github.kilnn.tool.dialog.prompt.PromptDialogFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.sjbt.sdk.sample.BuildConfig
+import com.sjbt.sdk.sample.MyApplication
 import com.sjbt.sdk.sample.R
 import com.sjbt.sdk.sample.base.BaseFragment
 import com.sjbt.sdk.sample.data.device.DeviceManager
@@ -175,7 +176,7 @@ class DeviceBindFragment : BaseFragment(R.layout.fragment_device_bind),
                 schemeMacAddress = params[0]
                 projectName = params[1]
                 randomCode = params[2]
-                model = if ("OSW-802N" == projectName) {
+                model = if (MyApplication.instance.devicePrefix == projectName) {
                     WmDeviceModel.SJ_WATCH
                 } else {
                     WmDeviceModel.NOT_REG
@@ -205,21 +206,6 @@ class DeviceBindFragment : BaseFragment(R.layout.fragment_device_bind),
         if (BuildConfig.DEBUG) {
 //            viewBind.editFilter.visibility=View.VISIBLE
         }
-        requireActivity().addMenuProvider(object : MenuProvider {
-            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-                menuInflater.inflate(R.menu.menu_device_bind, menu)
-            }
-
-            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
-                if (menuItem.itemId == R.id.menu_qr_code_scanner) {
-                    PermissionHelper.requestAppCamera(this@DeviceBindFragment) {
-                        findNavController().navigate(DeviceBindFragmentDirections.toCustomQr())
-                    }
-                    return true
-                }
-                return false
-            }
-        }, viewLifecycleOwner)
 
 //        viewLifecycle.addObserver(scannerHelper)
         viewBind.refreshLayout.setOnRefreshListener {
@@ -305,7 +291,7 @@ class DeviceBindFragment : BaseFragment(R.layout.fragment_device_bind),
                     30000,
                     WmTimeUnit.MILLISECONDS,
                     WmDeviceModel.SJ_WATCH,
-                    "oraimo"
+                    MyApplication.instance.devicePrefix
                 )?.asFlow()
                     ?.catch {
                         this::class.simpleName?.let { tag ->
@@ -320,7 +306,7 @@ class DeviceBindFragment : BaseFragment(R.layout.fragment_device_bind),
                         startSearch = false
                     }?.collect {
                         this::class.simpleName?.let { it1 -> Timber.tag(it1).i(it.toString()) }
-                        searchDevicesAdapter.newScanResult(it, WmDeviceModel.SJ_WATCH, "OSW-802N")
+                        searchDevicesAdapter.newScanResult(it, WmDeviceModel.SJ_WATCH, MyApplication.instance.deviceType)
                     }
             }
         }

@@ -63,13 +63,6 @@ class OtherFeaturesFragment : BaseFragment(R.layout.fragment_other_features) {
             }
         }
 
-        viewBind.itemFindDevice.clickTrigger {
-            viewLifecycleScope.launchWhenStarted {
-                val appFind = UNIWatchMate.wmApps.appFind.findWatch(WmFind(5, 5)).await()
-                showToast("appFind $appFind")
-            }
-        }
-
         viewBind.itemStopFindDevice.clickTrigger {
             viewLifecycleScope.launchWhenStarted {
                 val stopFind = UNIWatchMate.wmApps.appFind.stopFindWatch().await()
@@ -254,7 +247,6 @@ class OtherFeaturesFragment : BaseFragment(R.layout.fragment_other_features) {
                                     otaFileResult(it)
                                 }
                     }
-
                 }
             }
         }
@@ -266,7 +258,6 @@ class OtherFeaturesFragment : BaseFragment(R.layout.fragment_other_features) {
         } else {
             showToast(it.message, true)
         }
-
     }
 
     private fun otaFileResult(it: WmTransferState) {

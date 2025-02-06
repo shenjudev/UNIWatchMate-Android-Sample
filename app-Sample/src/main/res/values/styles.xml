@@ -13,12 +13,6 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
-    <style name="Widget.Sample.Button.Unelevated" parent="Widget.MaterialComponents.Button.UnelevatedButton"/>
-
-    <style name="Widget.Sample.Button.Unelevated.Round">
-        <item name="cornerRadius">96dp</item>
-    </style>
-
     <style name="Widget.Sample.Button.Outlined" parent="Widget.MaterialComponents.Button.OutlinedButton"/>
 
     <style name="Widget.Sample.Button.Outlined.Round">
@@ -53,26 +47,12 @@
     </style>
 
     <!--PreferenceItem:type_switch-->
-    <style name="Widget.Sample.PreferenceView.Item.Switch">
-        <item name="preferenceType">type_switch</item>
-        <item name="showPreferenceIndicator">false</item>
-    </style>
 
     <style name="Widget.Sample.PreferenceView.Item.Image">
         <item name="preferenceType">type_image</item>
         <item name="showPreferenceIndicator">false</item>
     </style>
     <!--PreferenceItem:type_text-->
-    <style name="Widget.Item.Text" parent="android:Widget">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:textSize">16sp</item>
-        <item name="android:textColor">@color/black</item>
-    </style>
-    <style name="Widget.Item.Switch" parent="android:Widget">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-    </style>
 
     <style name="PromptToastTheme" parent="BasePromptDialogTheme">
         <item name="prompt_gravity">bottom</item>
@@ -122,13 +102,6 @@
         <!-- 退出时的动画 -->
     </style>
 
-    <style name="ActivityInOutAnim" parent="@android:style/Animation.Activity">
-        <item name="android:activityOpenEnterAnimation">@anim/in_from_right</item>
-        <item name="android:activityOpenExitAnimation">@anim/out_to_left</item>
-        <item name="android:activityCloseEnterAnimation">@anim/in_from_left</item>
-        <item name="android:activityCloseExitAnimation">@anim/out_to_right</item>
-    </style>
-
     <style name="dialog_container">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
@@ -158,39 +131,6 @@
         <item name="android:windowBackground">@color/black</item>
     </style>
 
-    <style name="SwitchButtonStyle">
-        <item name="android:paddingStart">@dimen/dp_10</item>
-        <item name="android:paddingEnd">@dimen/dp_10</item>
-        <item name="android:paddingTop">@dimen/dp_8</item>
-        <item name="android:paddingBottom">@dimen/dp_4</item>
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:gravity">center_vertical</item>
-        <item name="kswAnimationDuration">300</item>
-        <item name="kswBackColor">@color/primary_gray_3</item>
-        <item name="kswBackDrawable">@drawable/back_drawable</item>
-        <item name="kswThumbDrawable">@drawable/selector_thumb</item>
-        <item name="kswThumbMarginBottom">-9dp</item>
-        <item name="kswThumbMarginLeft">-6dp</item>
-        <item name="kswThumbMarginRight">-6dp</item>
-        <item name="kswThumbMarginTop">-1.5dp</item>
-        <item name="kswThumbRangeRatio">1.4</item>
-    </style>
-
-    <style name="pray_item_style">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="min_height">@dimen/dp_48</item>
-        <item name="title_size">@dimen/text_size_sub_title</item>
-        <item name="title_color">@color/black</item>
-        <item name="data_size">@dimen/text_size_sub_title</item>
-        <item name="data_color">@color/black</item>
-        <item name="unit_size">@dimen/text_size_sub_title</item>
-        <item name="unit_color">@color/black</item>
-        <item name="show_bottom_divider">true</item>
-        <item name="android:foreground">?android:attr/selectableItemBackground</item>
-    </style>
-
     <!--dialog从底部滑入滑出的动画-->
     <style name="Dialog_Anim_Bottom" parent="Theme.AppCompat.Light.Dialog">
         <item name="android:windowEnterAnimation">@anim/slide_in_bottom</item>
@@ -198,16 +138,8 @@
     </style>
 
     <!--中间缩放-->
-    <style name="Dialog_Anim_Center_Zoom" parent="Theme.AppCompat.Light.Dialog">
-        <item name="android:windowEnterAnimation">@anim/zoom_in_center</item>
-        <item name="android:windowExitAnimation">@anim/zoom_out_center</item>
-    </style>
 
     <!-- dialog 淡入淡出动画 -->
-    <style name="Dialog_Anim_Fade" parent="@android:style/Theme.Dialog">
-        <item name="android:windowEnterAnimation">@android:anim/fade_in</item>
-        <item name="android:windowExitAnimation">@android:anim/fade_out</item>
-    </style>
 
     <style name="btn_style_1">
         <item name="bl_corners_radius">@dimen/dp_16</item>
@@ -222,49 +154,6 @@
         <item name="bl_solid_color">@color/colorPrimaryLight</item>
         <item name="bl_unEnabled_gradient_endColor">@color/colorPrimaryLight</item>
         <item name="bl_unEnabled_gradient_startColor">@color/colorPrimaryLight</item>
-    </style>
-
-    <style name="btn_style_1_1">
-        <item name="bl_corners_radius">@dimen/dp_25</item>
-        <item name="bl_enabled_gradient_angle">0</item>
-        <item name="bl_enabled_gradient_endColor">@color/colorPrimary</item>
-        <item name="bl_enabled_gradient_startColor">@color/colorPrimary</item>
-        <item name="bl_ripple_color">@color/colorPrimaryDark</item>
-        <item name="bl_ripple_enable">true</item>
-        <item name="android:textSize">@dimen/sp_18</item>
-        <item name="bl_enabled_gradient_type">linear</item>
-        <item name="android:textColor">@color/white</item>
-        <item name="bl_solid_color">@color/colorPrimaryLight</item>
-        <item name="bl_unEnabled_gradient_endColor">@color/colorPrimaryLight</item>
-        <item name="bl_unEnabled_gradient_startColor">@color/colorPrimaryLight</item>
-    </style>
-
-    <style name="btn_style_2">
-        <item name="bl_corners_radius">@dimen/dp_25</item>
-        <item name="bl_enabled_gradient_angle">0</item>
-        <item name="bl_enabled_gradient_endColor">@color/colorPrimary</item>
-        <item name="bl_enabled_gradient_startColor">@color/colorPrimary</item>
-        <item name="bl_ripple_color">@color/colorPrimary</item>
-        <item name="bl_ripple_enable">true</item>
-        <item name="android:textColor">@color/black</item>
-        <item name="bl_enabled_gradient_type">linear</item>
-        <item name="bl_solid_color">@color/black</item>
-        <item name="bl_unEnabled_gradient_endColor">@color/colorPrimary</item>
-        <item name="bl_unEnabled_gradient_startColor">@color/colorPrimary</item>
-    </style>
-
-    <style name="btn_style_3">
-        <item name="bl_corners_radius">@dimen/dp_25</item>
-        <item name="bl_enabled_gradient_angle">0</item>
-        <item name="bl_enabled_gradient_endColor">@color/black</item>
-        <item name="bl_enabled_gradient_startColor">@color/black</item>
-        <item name="bl_ripple_color">@color/colorPrimary</item>
-        <item name="bl_ripple_enable">true</item>
-        <item name="android:textColor">@color/white</item>
-        <item name="bl_enabled_gradient_type">linear</item>
-        <item name="bl_solid_color">@color/black</item>
-        <item name="bl_unEnabled_gradient_endColor">@color/black</item>
-        <item name="bl_unEnabled_gradient_startColor">@color/black</item>
     </style>
 
 
@@ -282,21 +171,6 @@
         <item name="bl_stroke_width">@dimen/dp_1</item>
         <item name="bl_unEnabled_gradient_endColor">@color/white</item>
         <item name="bl_unEnabled_gradient_startColor">@color/white</item>
-    </style>
-
-    <style name="btn_style_5">
-        <item name="bl_corners_radius">@dimen/dp_16</item>
-        <item name="bl_enabled_gradient_angle">0</item>
-        <item name="bl_enabled_gradient_endColor">@color/primary_danger</item>
-        <item name="bl_enabled_gradient_startColor">@color/primary_danger</item>
-        <item name="bl_ripple_color">@color/primary_danger_dark</item>
-        <item name="bl_ripple_enable">true</item>
-        <item name="android:textColor">@color/black</item>
-        <item name="android:textSize">@dimen/sp_18</item>
-        <item name="bl_enabled_gradient_type">linear</item>
-        <item name="bl_stroke_width">@dimen/dp_1</item>
-        <item name="bl_unEnabled_gradient_endColor">@color/primary_danger_light</item>
-        <item name="bl_unEnabled_gradient_startColor">@color/primary_danger_light</item>
     </style>
 
     <!--WheelView Style-->

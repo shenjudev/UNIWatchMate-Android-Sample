@@ -388,7 +388,6 @@ fun getTestWeatherdata(wmWeatherTime: WmWeatherTime, code: Int): WmWeather {
     val wmLocation = WmLocation("cn", "xi'an", "district", 10.12345, 10.12345)
 
     return WmWeather(1,
-        System.currentTimeMillis(),
         wmLocation,
         weatherForecastList,
         todayWeatherList

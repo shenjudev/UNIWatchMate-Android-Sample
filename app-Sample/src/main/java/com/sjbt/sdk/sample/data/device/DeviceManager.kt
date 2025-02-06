@@ -11,6 +11,7 @@ import com.base.sdk.entity.data.WmBatteryInfo
 import com.base.sdk.entity.settings.WmPersonalInfo
 import com.blankj.utilcode.util.ActivityUtils
 import com.blankj.utilcode.util.LogUtils
+import com.sjbt.sdk.sample.MyApplication
 import com.sjbt.sdk.sample.base.BaseActivity
 import com.sjbt.sdk.sample.base.storage.InternalStorage
 import com.sjbt.sdk.sample.data.config.SportGoalRepository
@@ -216,7 +217,7 @@ internal class DeviceManagerImpl(
                                                 userInfo.name,
                                                 device.address,
                                                 BindType.CONNECT_BACK,
-                                                "OSW-802N",
+                                                MyApplication.instance.deviceType,
                                                 storageDevice.wmDeviceMode
                                         )
                                 )
@@ -246,16 +247,6 @@ internal class DeviceManagerImpl(
                     return@launchWithLog
                 }
                 CacheDataHelper.setSynchronizingData(true)
-//                showLoadingDialog()
-//                runCatchingWithLog {
-//                    val deviceInfo =
-//                        UNIWatchMate.getDeviceInfo()
-//                            .await()
-//                    Timber.d("getDeviceInfo=$deviceInfo")
-//                    CacheDataHelper.setCurrentDeviceInfo(deviceInfo)
-//                }.onFailure {
-//                    ToastUtil.showToast(it.message,true)
-//                }
                 runCatchingWithLog {
                     val result = UNIWatchMate.wmApps.appDateTime.setDateTime(null).await()
                     Timber.d("settingDateTime wmDateTime=${result}")

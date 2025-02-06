@@ -42,8 +42,8 @@ android {
         applicationId "com.sjbt.sdk.sample"
         minSdkVersion rootProject.ext.buildConfig.minSdkVersion
         targetSdkVersion rootProject.ext.buildConfig.targetSdkVersion
-        versionCode 84
-        versionName "1.0.84"
+        versionCode 1
+        versionName "1.0.0"
         signingConfig signingConfigs.release
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -79,8 +79,13 @@ android {
         threadCount = 16
         dexInProcess = true
     }
+    viewBinding {
+        enabled = true
+    }
+
+    // 自动生成BuildConfig
     buildFeatures {
-        viewBinding = true
+        dataBinding = true
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_11

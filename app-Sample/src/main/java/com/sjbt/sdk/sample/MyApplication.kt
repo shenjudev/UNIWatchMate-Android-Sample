@@ -2,11 +2,13 @@ package com.sjbt.sdk.sample
 
 import android.app.Activity
 import android.app.Application
+import android.content.Context
 import android.content.res.Configuration
 import android.content.res.Resources
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.KeyEvent
 import com.base.api.UNIWatchMate
 import com.base.sdk.entity.apps.WmConnectState
@@ -18,10 +20,11 @@ import com.blankj.utilcode.util.ActivityUtils
 import com.blankj.utilcode.util.LogUtils
 import com.blankj.utilcode.util.Utils
 import com.sjbt.sdk.sample.base.BaseActivity
+import com.sjbt.sdk.sample.data.user.UserInfoRepository
 import com.sjbt.sdk.sample.di.Injector
 import com.sjbt.sdk.sample.dialog.CallBack
 import com.sjbt.sdk.sample.model.MuslimAllahInfo
-import com.sjbt.sdk.sample.ui.camera.CameraActivity
+import com.sjbt.sdk.sample.model.user.UserInfo
 import com.sjbt.sdk.sample.utils.*
 import com.sjbt.sdk.utils.BtUtils
 import com.sjbt.sdk.utils.log.GsonUtil
@@ -33,6 +36,7 @@ import kotlinx.coroutines.reactive.asFlow
 import kotlinx.coroutines.rx3.asFlow
 import kotlinx.coroutines.rx3.await
 import timber.log.Timber
+import java.io.File
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 
@@ -44,6 +48,9 @@ class MyApplication : Application() {
 
     private var currActivity: Activity? = null
 
+    val deviceType = "E1118"
+    val devicePrefix = "LensMoo_"
+    var mediaPath = ""
     companion object {
         lateinit var instance: MyApplication
             private set
@@ -60,11 +67,18 @@ class MyApplication : Application() {
         observeDeviceState()
         Utils.init(instance)
 
+        mediaPath = createDirectoryInExternalFilesDir("media")
+
         UNIWatchMate.observeUniWatchChange().subscribe {
             it.setLogEnable(true)
         }
 
         UNIWatchMate.wmLog.logI(TAG, "APP onCreate")
+        applicationScope.launch {
+            val userInfo = Injector.getUserInfoRepository().getUserInfo("123456")
+            if (userInfo == null)
+                Injector.getAuthManager().signUp("123456", "123456", 0, 0, false, 0, 0, 0)
+        }
 
         initAllProcess()
 
@@ -177,21 +191,21 @@ class MyApplication : Application() {
                 }
             }
             launchWithLog {
-                UNIWatchMate.wmApps.appCamera.observeCameraOpenState.asFlow().collect {
-                    if (it) {//
-                        if (ActivityUtils.getTopActivity() != null) {
-
-                            Timber.e("Device camera status：$isForeground")
-
-                            if (isForeground) {
-                                CacheDataHelper.cameraLaunchedByDevice = true
-                                CameraActivity.launchActivity(ActivityUtils.getTopActivity())
-                            }
-                        }
-                    } else if (ActivityUtils.getTopActivity() is CameraActivity) {
-                        ActivityUtils.getTopActivity().finish()
-                    }
-                }
+//                UNIWatchMate.wmApps.appVideoPreview.observeCameraOpenState.asFlow().collect {
+//                    if (it) {//
+//                        if (ActivityUtils.getTopActivity() != null) {
+//
+//                            Timber.e("Device camera status：$isForeground")
+//
+//                            if (isForeground) {
+//                                CacheDataHelper.cameraLaunchedByDevice = true
+//                                CameraActivity.launchActivity(ActivityUtils.getTopActivity())
+//                            }
+//                        }
+//                    } else if (ActivityUtils.getTopActivity() is CameraActivity) {
+//                        ActivityUtils.getTopActivity().finish()
+//                    }
+//                }
             }
 
             launchWithLog {
@@ -254,11 +268,11 @@ class MyApplication : Application() {
                 }
             }
 
-            launchWithLog {
-                UNIWatchMate.wmApps.appQuickReply.observeQuickReply.asFlow().collect {
-                    ToastUtil.showToast("receive quick reply: ${GsonUtil.toJson(it)}", true)
-                }
-            }
+//            launchWithLog {
+//                UNIWatchMate.wmApps.appQuickReply.observeQuickReply.asFlow().collect {
+//                    ToastUtil.showToast("receive quick reply: ${GsonUtil.toJson(it)}", true)
+//                }
+//            }
 
             launchWithLog {
                 UNIWatchMate.wmApps.appPhone.observePhoneHangUp.asFlow().collect {
@@ -266,28 +280,28 @@ class MyApplication : Application() {
                 }
             }
 
-            launchWithLog {
-                UNIWatchMate.observeCustomDataFromDevice.subscribe {
-                    Timber.i("收到自定义数据:" + BtUtils.bytesToHexString(it))
-
-                    val byteBuffer = ByteBuffer.wrap(it).order(ByteOrder.LITTLE_ENDIAN)
-
-                    val head = byteBuffer.get().toInt()
-                    val cmdId = byteBuffer.get(1).toInt()
-                    if (head == 0x2B) {
-                        if (cmdId == 0x01) {
-                            Timber.i("需要回消息：$cmdId")
-
-                            val byteArray = ByteArray(1)
-                            byteArray[0] = 0x01//成功
-//                    byteArray[0] = 0x00//失败
-                            UNIWatchMate.sendCustomDataResponse(byteArray)
-                        } else if (cmdId == 0x02) {
-                            Timber.i("不需要回消息：$cmdId")
-                        }
-                    }
-                }
-            }
+//            launchWithLog {
+//                UNIWatchMate.observeCustomDataFromDevice.subscribe {
+//                    Timber.i("收到自定义数据:" + BtUtils.bytesToHexString(it))
+//
+//                    val byteBuffer = ByteBuffer.wrap(it).order(ByteOrder.LITTLE_ENDIAN)
+//
+//                    val head = byteBuffer.get().toInt()
+//                    val cmdId = byteBuffer.get(1).toInt()
+//                    if (head == 0x2B) {
+//                        if (cmdId == 0x01) {
+//                            Timber.i("需要回消息：$cmdId")
+//
+//                            val byteArray = ByteArray(1)
+//                            byteArray[0] = 0x01//成功
+////                    byteArray[0] = 0x00//失败
+//                            UNIWatchMate.sendCustomDataResponse(byteArray)
+//                        } else if (cmdId == 0x02) {
+//                            Timber.i("不需要回消息：$cmdId")
+//                        }
+//                    }
+//                }
+//            }
         }
     }
 
@@ -330,5 +344,15 @@ class MyApplication : Application() {
         }
         sendKeyCode(keyCode)
     }
-
+    private fun createDirectoryInExternalFilesDir(dirName: String): String {
+        // 获取外部应用专属存储目录
+        val externalFilesDir = getExternalFilesDir(null)
+        val newDir = File(externalFilesDir, dirName)
+        if (newDir.mkdirs()) {
+            Log.d("AppUtils", "Directory created: ${newDir.absolutePath}")
+        } else {
+            Log.e("AppUtils", "Directory not created: ${newDir.absolutePath}")
+        }
+        return newDir.absolutePath
+    }
 }

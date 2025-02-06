@@ -56,7 +56,7 @@ class LaunchViewMode : ViewModel() {
         return if (Injector.getAuthManager().hasAuthedUser()) {
             LaunchNavigation.NavToMain
         } else {
-            LaunchNavigation.NavToSignIn
+            LaunchNavigation.NavToMain
         }
     }
 }

@@ -6,7 +6,6 @@
     android:background="?android:windowBackground">
 
     <LinearLayout
-        android:id="@+id/ll_content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:divider="?dividerVertical"
@@ -14,13 +13,11 @@
         android:showDividers="middle|end">
 
         <com.github.kilnn.tool.widget.item.PreferenceItem
-            android:id="@+id/item_app_view_gridding"
             style="@style/Widget.Sample.PreferenceView.Item.Image"
             app:preferenceImageTint="?colorPrimary"
             app:preferenceTitle="@string/app_view_gridding"/>
 
         <com.github.kilnn.tool.widget.item.PreferenceItem
-            android:id="@+id/item_app_view_list"
             style="@style/Widget.Sample.PreferenceView.Item.Image"
             app:preferenceImageTint="?colorPrimary"
             app:preferenceTitle="@string/app_view_list"/>

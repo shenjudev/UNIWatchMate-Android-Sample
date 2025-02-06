@@ -65,26 +65,40 @@ object PermissionHelper {
     }
 
     fun requestAppStorage(fragment: Fragment, grantResult: ((Boolean) -> Unit)) {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            grantResult.invoke(true)
-            return
-        }
-
-        val permissions = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            arrayListOf(
-                Manifest.permission.READ_MEDIA_IMAGES,
-                Manifest.permission.READ_MEDIA_VIDEO,
-            )
-        }else{
-            arrayListOf(
-                Manifest.permission.READ_EXTERNAL_STORAGE,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE
-            )
-        }
-
-        requestPermission(fragment, permissions, grantResult)
+        requestPermission(fragment, getStoragePermission()!!, grantResult)
     }
 
+    /**
+     * 存储权限
+     *
+     * @return
+     */
+    private fun getStoragePermission(): ArrayList<String>? {
+        //Android 14
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+            return arrayListOf(
+                Manifest.permission.READ_MEDIA_IMAGES,
+                Manifest.permission.READ_MEDIA_VIDEO,
+                Manifest.permission.READ_MEDIA_VISUAL_USER_SELECTED
+            )
+        }
+        //Android 13
+        if (Build.VERSION.SDK_INT == Build.VERSION_CODES.TIRAMISU) {
+            return arrayListOf(
+                Manifest.permission.READ_MEDIA_IMAGES,
+                Manifest.permission.READ_MEDIA_VIDEO
+            )
+        }
+        //Android 11、12
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            arrayListOf(
+                Manifest.permission.READ_EXTERNAL_STORAGE
+            )
+        } else arrayListOf(
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.READ_EXTERNAL_STORAGE
+        )
+    }
     fun requestAppStorageAudio(fragment: Fragment, grantResult: ((Boolean) -> Unit)) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
             grantResult.invoke(true)

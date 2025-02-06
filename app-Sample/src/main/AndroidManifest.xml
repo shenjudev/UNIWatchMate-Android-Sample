@@ -42,14 +42,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:replace="android:theme">
-        <activity
-            android:name=".ui.device.dial.CustomDialActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.device.dial.MediaGridActivity"
-            android:configChanges="keyboard|keyboardHidden|navigation"
-            android:exported="false"
-            android:screenOrientation="portrait" />
+
         <activity
             android:name=".ui.LaunchActivity"
             android:exported="true"
@@ -64,15 +57,6 @@
         <activity android:name=".ui.auth.AuthActivity" />
         <activity android:name=".ui.MainActivity" />
 
-        <activity android:name=".ui.muslim.FavoriteAllahActivity" />
-        <activity android:name=".ui.muslim.MuslimWorshipActivity" />
-        <activity android:name=".ui.muslim.MuslimCompassActivity" />
-        <activity android:name=".ui.muslim.NameOfAllahActivity" />
-        <activity android:name=".ui.muslim.TasbihReminderActivity" />
-        <activity
-            android:name=".ui.camera.CameraActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/MwAppTheme" />
         <activity
             android:name=".ui.fileTrans.FileTransferActivity"
             android:screenOrientation="portrait"
