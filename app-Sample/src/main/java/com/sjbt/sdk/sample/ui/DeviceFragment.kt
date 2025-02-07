@@ -136,6 +136,9 @@ class DeviceFragment : BaseFragment(R.layout.fragment_device),
                     .subscribe { status: Int ->
                         Log.e(TAG,"observeVideoPreviewShootState:$status")
                         viewBind.btnVideo.isClickable = true
+                        if (!viewBind.btnRecord.isClickable){
+                            viewBind.btnRecord.isClickable = true
+                        }
                         //设备通知
                         if (status == 1) {
                             viewBind.btnVideo.text = getString(R.string.stop_video_recording)
@@ -151,6 +154,9 @@ class DeviceFragment : BaseFragment(R.layout.fragment_device),
                     .subscribe { status: Int ->
                         Log.e(TAG,"observeAudioState:$status")
                         viewBind.btnRecord.isClickable = true
+                        if (!viewBind.btnVideo.isClickable){
+                            viewBind.btnVideo.isClickable = true
+                        }
                         //设备通知
                         if (status == 1) {
                             viewBind.btnRecord.text = getString(R.string.stop_recorded)
