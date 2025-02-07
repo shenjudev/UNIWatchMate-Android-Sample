@@ -1,7 +1,7 @@
 # UNIWatchMate  
 UNIWatchMate智能眼镜的接口框架，负责与眼镜设备通信等功能的封装，向上提供给App操作智能眼镜的相关接口的SDK。  
 
-# Version 1.0.5
+# Version 1.0.0
 
 # [SDK documentation](https://github.com/shenjudev/UNIWatchMate-Android-Sample/wiki)  
 
