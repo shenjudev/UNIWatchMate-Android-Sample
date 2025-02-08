@@ -105,7 +105,7 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
 
-    implementation fileTree(dir: 'libs', include: ['*.jar', "*.aar"])
+    implementation fileTree(dir: 'libs', include: ['*.jar', '*.aar'])
 
     implementation project(path: ':zbarlibrary')
     implementation project(path: ':file-chooser-lib')
