@@ -236,7 +236,25 @@ class DeviceFragment : BaseFragment(R.layout.fragment_device),
 
             viewBind.tvDeviceReset -> {
                 applicationScope.launchWithLog {
-                    deviceManager?.reset()
+                    deviceManager?.reset{
+                        when(it){
+                            0 ->{
+                                ToastUtil.showToast("UNBIND SUCCESS")
+                            }
+                            1 ->{
+                                ToastUtil.showToast("UNBIND FAIL")
+                            }
+                            2 ->{
+                                ToastUtil.showToast("UNBIND REFUSE")
+                            }
+                            3 ->{
+                                ToastUtil.showToast("UNBIND OTHER ERROR")
+                            }
+                            -1 ->{
+                                ToastUtil.showToast("UNBIND TIME OUT")
+                            }
+                        }
+                    }
                 }
             }
 

@@ -72,7 +72,25 @@ class OtherFeaturesFragment : BaseFragment(R.layout.fragment_other_features) {
 
         viewBind.itemDeviceReset.clickTrigger {
             viewLifecycleScope.launchWhenStarted {
-                deviceManager.reset()
+                deviceManager?.reset{
+                    when(it){
+                        0 ->{
+                            showToast("UNBIND SUCCESS")
+                        }
+                        1 ->{
+                            showToast("UNBIND FAIL")
+                        }
+                        2 ->{
+                            showToast("UNBIND REFUSE")
+                        }
+                        3 ->{
+                            showToast("UNBIND OTHER ERROR")
+                        }
+                        -1 ->{
+                            showToast("UNBIND TIME OUT")
+                        }
+                    }
+                }
             }
         }
 
@@ -133,7 +151,7 @@ class OtherFeaturesFragment : BaseFragment(R.layout.fragment_other_features) {
                         val dialFile = File(filePath)
                         startLocalUpdate(dialFile)
                     } else {
-                        ToastUtil.showToast(getString(R.string.error_selecting_file))
+                        showToast(getString(R.string.error_selecting_file))
                     }
 
 

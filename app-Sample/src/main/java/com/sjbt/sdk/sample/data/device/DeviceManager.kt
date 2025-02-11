@@ -1,6 +1,7 @@
 package com.sjbt.sdk.sample.data.device
 
 import android.content.Context
+import android.util.Log
 import androidx.annotation.IntDef
 import com.base.api.UNIWatchMate
 import com.base.sdk.entity.BindType
@@ -11,6 +12,7 @@ import com.base.sdk.entity.data.WmBatteryInfo
 import com.base.sdk.entity.settings.WmPersonalInfo
 import com.blankj.utilcode.util.ActivityUtils
 import com.blankj.utilcode.util.LogUtils
+import com.blankj.utilcode.util.Utils.Callback
 import com.sjbt.sdk.sample.MyApplication
 import com.sjbt.sdk.sample.base.BaseActivity
 import com.sjbt.sdk.sample.base.storage.InternalStorage
@@ -27,6 +29,7 @@ import com.sjbt.sdk.sample.utils.CacheDataHelper
 import com.sjbt.sdk.sample.utils.ToastUtil
 import com.sjbt.sdk.sample.utils.launchWithLog
 import com.sjbt.sdk.sample.utils.runCatchingWithLog
+import com.sjbt.sdk.utils.CustomException
 import com.sjbt.sdk.utils.log.GsonUtil
 import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Observable
@@ -34,6 +37,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.rx3.asFlow
 import kotlinx.coroutines.rx3.await
 import kotlinx.coroutines.rx3.awaitSingleOrNull
@@ -75,7 +79,7 @@ interface DeviceManager {
     /**
      * Reset device and clear the device info in the storage.
      */
-    suspend fun reset()
+    suspend fun reset(callback:Callback<Int>)
 
     /**
      * reboot the device
@@ -391,13 +395,23 @@ internal class DeviceManagerImpl(
         clearDevice()
     }
 
-    override suspend fun reset() {
+    override suspend fun reset(callback: Callback<Int>) {
         Timber.d("reset")
+        Log.e(TAG,"RESET")
         UNIWatchMate.reset().onErrorReturn {
+            val throwable = (it as CustomException)
+            Log.e(TAG,"RESET ERROR  ${throwable.code}   ${throwable.message}")
+            callback.onCall(throwable.code)
             Completable.create { emitter -> emitter.onComplete() }
-        }.awaitSingleOrNull()
-        clearDevice()
+        }.doOnComplete {
+            Log.e(TAG,"RESET SUCCESS")
+            callback.onCall(0)
+            runBlocking {
+                clearDevice()
+            }
+        }.subscribe()
     }
+
 
     override suspend fun reboot() {
         Timber.d("reboot")

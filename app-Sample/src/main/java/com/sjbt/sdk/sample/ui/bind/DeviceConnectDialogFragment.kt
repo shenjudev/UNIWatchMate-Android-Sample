@@ -21,6 +21,7 @@ import com.sjbt.sdk.sample.data.device.DeviceManager
 import com.sjbt.sdk.sample.databinding.DialogDeviceConnectBinding
 import com.sjbt.sdk.sample.di.Injector
 import com.sjbt.sdk.sample.utils.PermissionHelper
+import com.sjbt.sdk.sample.utils.ToastUtil
 import com.sjbt.sdk.sample.utils.launchRepeatOnStarted
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
@@ -233,7 +234,25 @@ class DeviceConnectViewMode : AsyncViewModel<SingleAsyncState<Unit>>(SingleAsync
 
     fun unbind() {
         suspend {
-            deviceManager.reset()
+            deviceManager.reset{
+                when(it){
+                    0 ->{
+                        ToastUtil.showToast("UNBIND SUCCESS")
+                    }
+                    1 ->{
+                        ToastUtil.showToast("UNBIND FAIL")
+                    }
+                    2 ->{
+                        ToastUtil.showToast("UNBIND REFUSE")
+                    }
+                    3 ->{
+                        ToastUtil.showToast("UNBIND OTHER ERROR")
+                    }
+                    -1 ->{
+                        ToastUtil.showToast("UNBIND TIME OUT")
+                    }
+                }
+            }
         }.execute(SingleAsyncState<Unit>::async)
         {
             copy(async = it)
