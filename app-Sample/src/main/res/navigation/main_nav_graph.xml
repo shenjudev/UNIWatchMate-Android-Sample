@@ -36,6 +36,9 @@
         <action
             android:id="@+id/toAiChat"
             app:destination="@id/deviceAiChatFragment" />
+        <action
+            android:id="@+id/toCustomMessage"
+            app:destination="@id/customMessageFragment" />
     </fragment>
 
 
@@ -106,5 +109,10 @@
         android:label="@string/ds_other_features"
         tools:layout="@layout/fragment_other_features" />
 
+    <fragment
+        android:id="@+id/customMessageFragment"
+        android:name="com.sjbt.sdk.sample.ui.device.CustomMessageFragment"
+        android:label="自定义消息"
+        tools:layout="@layout/fragment_custom_message" />
 
 </navigation>

@@ -74,7 +74,7 @@ class DeviceFragment : BaseFragment(R.layout.fragment_device),
         viewBind.btnTakePhoto.setOnClickListener(blockClick)
         viewBind.btnVideo.setOnClickListener(blockClick)
         viewBind.btnRecord.setOnClickListener(blockClick)
-
+        viewBind.btnCustomMessage.setOnClickListener(blockClick)
 
         viewBind.itemDevicePreview.setOnClickListener(blockClick)
         viewBind.itemDeviceChat.setOnClickListener(blockClick)
@@ -324,6 +324,10 @@ class DeviceFragment : BaseFragment(R.layout.fragment_device),
                             }
                         }
                     }
+            }
+
+            viewBind.btnCustomMessage -> {
+                findNavController().navigate(DeviceFragmentDirections.toCustomMessage())
             }
         }
     }

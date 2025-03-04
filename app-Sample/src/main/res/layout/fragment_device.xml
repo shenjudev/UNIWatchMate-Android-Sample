@@ -196,6 +196,13 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="@dimen/dp_10"
                 android:text="@string/start_recorded" />
+
+            <Button
+                android:id="@+id/btn_custom_message"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/dp_10"
+                android:text="自定义消息" />
         </LinearLayout>
 
     </LinearLayout>
