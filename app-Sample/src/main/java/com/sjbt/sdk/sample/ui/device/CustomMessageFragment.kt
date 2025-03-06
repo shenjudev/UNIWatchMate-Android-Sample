@@ -17,6 +17,10 @@ class CustomMessageFragment : BaseFragment(R.layout.fragment_custom_message) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        UNIWatchMate.observeCustomDataFromDevice.subscribe {
+            viewBind.tvReceivedData.text = "收到消息：" + BtUtils.bytesToHexString(it)
+        }
+
         viewBind.btnSend.setOnClickListener {
             val message = viewBind.etInput.text.toString()
             if (message.isEmpty()) {
