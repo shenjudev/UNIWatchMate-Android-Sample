@@ -19,6 +19,11 @@ class CustomMessageFragment : BaseFragment(R.layout.fragment_custom_message) {
 
         UNIWatchMate.observeCustomDataFromDevice.subscribe {
             viewBind.tvReceivedData.text = "收到消息：" + BtUtils.bytesToHexString(it)
+            UNIWatchMate.sendCustomDataResponse(byteArrayOf(1)).subscribe ({
+
+            },{
+
+            })
         }
 
         viewBind.btnSend.setOnClickListener {
