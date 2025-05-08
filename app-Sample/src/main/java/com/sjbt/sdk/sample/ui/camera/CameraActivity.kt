@@ -109,7 +109,7 @@ class CameraActivity : BaseActivity() {
                     height = basicInfo.ch
                 }
 
-                osiJni.initEncoder(width, height)
+                osiJni.initEncoder(width, height, 350,20, 0)
                 initView()
                 intCamera()
 

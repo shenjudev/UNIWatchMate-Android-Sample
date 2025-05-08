@@ -4,6 +4,10 @@ UNIWatchMate智能手表的接口框架，负责与手表设备通信等功能�
 # Version 1.0.5
 
 # [SDK documentation](https://github.com/shenjudev/UNIWatchMate-Android-Sample/wiki)  
+## v1.0.6(2025-05-08)
+1. 更新lib_jni_opencv_1.0.8，集成最新的编码库
+2. osiJni.initEncoder(width, height, 350, 20, 0) 其中第5个参数为pmode, 如果是w20必须传0，w30传1
+
 ## v1.0.5(2024-08-03)
 1. 简化蓝牙连接方法
 2. 增加外部设置支持的手表产品类型

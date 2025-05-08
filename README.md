@@ -4,6 +4,9 @@ The UNIWatchMate is an interface framework for smartwatches. It encapsulates fun
 # Version 1.0.5
 
 # [SDK documentation](https://github.com/shenjudev/UNIWatchMate-Android-Sample/wiki)
+## v1.0.6(2025-05-08)
+1. upgraded lib_jni_opencv_1.0.8 and integrated the latest h264 encoder
+2. The fifth parameter in osiJni.initEncoder(width, height, 350, 20, 0) is pmode. If it is w20, 0 must be passed; if it is w30, 1 must be passed
 
 ## v1.0.5(2024-08-03)
 1. Simplify the Bluetooth pairing process.
