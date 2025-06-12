@@ -2,7 +2,6 @@ package com.sjbt.sdk.sample
 
 import android.app.Activity
 import android.app.Application
-import android.content.Context
 import android.content.res.Configuration
 import android.content.res.Resources
 import android.os.Bundle
@@ -15,19 +14,12 @@ import com.base.sdk.entity.apps.WmConnectState
 import com.base.sdk.entity.apps.WmMusicControlType
 import com.base.sdk.entity.apps.WmWeatherTime
 import com.base.sdk.entity.settings.WmUnitInfo
-import com.base.sdk.port.app.AbAppPhone
 import com.blankj.utilcode.util.ActivityUtils
-import com.blankj.utilcode.util.LogUtils
 import com.blankj.utilcode.util.Utils
 import com.sjbt.sdk.sample.base.BaseActivity
-import com.sjbt.sdk.sample.data.user.UserInfoRepository
 import com.sjbt.sdk.sample.di.Injector
 import com.sjbt.sdk.sample.dialog.CallBack
-import com.sjbt.sdk.sample.model.MuslimAllahInfo
-import com.sjbt.sdk.sample.model.user.UserInfo
 import com.sjbt.sdk.sample.utils.*
-import com.sjbt.sdk.utils.BtUtils
-import com.sjbt.sdk.utils.log.GsonUtil
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.onCompletion
@@ -37,8 +29,6 @@ import kotlinx.coroutines.rx3.asFlow
 import kotlinx.coroutines.rx3.await
 import timber.log.Timber
 import java.io.File
-import java.nio.ByteBuffer
-import java.nio.ByteOrder
 
 
 class MyApplication : Application() {
@@ -136,11 +126,11 @@ class MyApplication : Application() {
 
 //        监听设备连接状态(Observe device state)
         UNIWatchMate.observeConnectState.subscribe {
-            CacheDataHelper.deviceConnectState = it
+            CacheDataHelper.deviceConnectStateInfo = it
 
-            Timber.e(TAG, it.name)
+            Timber.e("$TAG  ${it.state}" )
 
-            when (it) {
+            when (it.state) {
                 WmConnectState.BIND_SUCCESS -> {
                     UNIWatchMate.wmApps.appCamera.observeCameraOpenState.subscribe {
                         Timber.e("Device camera status：$it")

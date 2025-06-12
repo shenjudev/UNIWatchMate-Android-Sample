@@ -119,10 +119,10 @@ class DeviceConnectDialogFragment : AppCompatDialogFragment() {
                 }
             }
             launch {
-                deviceManager.flowConnectorState.collect {
+                deviceManager.flowConnectorStateInfo.collect {
                     timberJob?.cancel()
-                    wmConnectState = it
-                    when (it) {
+                    wmConnectState = it.state
+                    when (it.state) {
 
                         WmConnectState.DISCONNECTED -> {
                             viewBind.tvState.setText(R.string.device_state_disconnected)

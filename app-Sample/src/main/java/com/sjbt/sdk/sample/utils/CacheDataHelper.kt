@@ -2,6 +2,7 @@ package com.sjbt.sdk.sample.utils
 
 import android.text.TextUtils
 import com.base.sdk.entity.apps.WmConnectState
+import com.base.sdk.entity.apps.WmConnectStateInfo
 import com.base.sdk.entity.settings.WmDeviceInfo
 import com.blankj.utilcode.util.LogUtils
 import com.blankj.utilcode.util.SPUtils
@@ -18,7 +19,7 @@ object CacheDataHelper {
     private var currDeviceBean: WmDeviceInfo? = null
     private var globalUserInfo: UserInfo? = null
 
-    var deviceConnectState:WmConnectState = WmConnectState.DISCONNECTED
+    var deviceConnectStateInfo:WmConnectStateInfo = WmConnectStateInfo(WmConnectState.DISCONNECTED)
 
     private var longitude: Double = 0.0
     private var latitude: Double = 0.0

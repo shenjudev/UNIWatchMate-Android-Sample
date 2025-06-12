@@ -11,7 +11,6 @@ import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import com.base.api.UNIWatchMate
 import com.base.sdk.entity.apps.WmConnectState
-import com.base.sdk.entity.apps.WmFind
 import com.base.sdk.exception.WmTransferException
 import com.base.sdk.port.FileType
 import com.base.sdk.port.State
@@ -28,7 +27,6 @@ import com.sjbt.sdk.sample.databinding.FragmentOtherFeaturesBinding
 import com.sjbt.sdk.sample.di.Injector
 import com.sjbt.sdk.sample.utils.CacheDataHelper.setTransferring
 import com.sjbt.sdk.sample.utils.PermissionHelper
-import com.sjbt.sdk.sample.utils.ToastUtil
 import com.sjbt.sdk.sample.utils.ToastUtil.showToast
 import com.sjbt.sdk.sample.utils.launchRepeatOnStarted
 import com.sjbt.sdk.sample.utils.launchWithLog
@@ -236,7 +234,7 @@ class OtherFeaturesFragment : BaseFragment(R.layout.fragment_other_features) {
     private fun startOta() {
         applicationScope.launchWithLog {
             runCatchingWithLog {
-                if (deviceManager.flowConnectorState.value != WmConnectState.BIND_SUCCESS) {
+                if (deviceManager.flowConnectorStateInfo.value.state != WmConnectState.BIND_SUCCESS) {
                     showToast(getString(R.string.device_state_disconnected))
                     return@launchWithLog
                 }

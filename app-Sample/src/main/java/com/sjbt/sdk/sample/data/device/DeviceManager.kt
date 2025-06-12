@@ -8,6 +8,7 @@ import com.base.sdk.entity.BindType
 import com.base.sdk.entity.WmBindInfo
 import com.base.sdk.entity.WmDeviceModel
 import com.base.sdk.entity.apps.WmConnectState
+import com.base.sdk.entity.apps.WmConnectStateInfo
 import com.base.sdk.entity.data.WmBatteryInfo
 import com.base.sdk.entity.settings.WmPersonalInfo
 import com.blankj.utilcode.util.ActivityUtils
@@ -23,13 +24,11 @@ import com.sjbt.sdk.sample.entity.DeviceBindEntity
 import com.sjbt.sdk.sample.entity.toModel
 import com.sjbt.sdk.sample.model.device.ConnectorDevice
 import com.sjbt.sdk.sample.model.device.deviceModeToInt
-import com.sjbt.sdk.sample.model.user.UserInfo
 import com.sjbt.sdk.sample.ui.device.bind.DeviceBindFragment.Companion.UNKNOWN_DEVICE_NAME
 import com.sjbt.sdk.sample.utils.CacheDataHelper
 import com.sjbt.sdk.sample.utils.ToastUtil
 import com.sjbt.sdk.sample.utils.launchWithLog
 import com.sjbt.sdk.sample.utils.runCatchingWithLog
-import com.sjbt.sdk.utils.CustomException
 import com.sjbt.sdk.utils.log.GsonUtil
 import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Observable
@@ -40,7 +39,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.rx3.asFlow
 import kotlinx.coroutines.rx3.await
-import kotlinx.coroutines.rx3.awaitSingleOrNull
 import timber.log.Timber
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -49,7 +47,7 @@ interface DeviceManager {
 
     val flowDevice: StateFlow<ConnectorDevice?>?
 
-    val flowConnectorState: StateFlow<WmConnectState>// connectorState
+    val flowConnectorStateInfo: StateFlow<WmConnectStateInfo>// connectorState
 
     val flowBattery: StateFlow<WmBatteryInfo?>
 
@@ -116,11 +114,11 @@ interface DeviceManager {
 }
 
 fun DeviceManager.flowStateConnected(): Flow<Boolean> {
-    return flowConnectorState.map { it == WmConnectState.BIND_SUCCESS }.distinctUntilChanged()
+    return flowConnectorStateInfo.map { it.state == WmConnectState.BIND_SUCCESS }.distinctUntilChanged()
 }
 
 fun DeviceManager.isConnected(): Boolean {
-    return flowConnectorState.value == WmConnectState.BIND_SUCCESS
+    return flowConnectorStateInfo.value.state == WmConnectState.BIND_SUCCESS
 }
 
 /**
@@ -176,14 +174,14 @@ internal class DeviceManagerImpl(
     /**
      * Connector state combine adapter state and current device
      */
-    override val flowConnectorState = combine(
+    override val flowConnectorStateInfo: StateFlow<WmConnectStateInfo> = combine(
             flowDevice,
-            UNIWatchMate.observeConnectState.startWithItem(WmConnectState.DISCONNECTED)
+            UNIWatchMate.observeConnectState.startWithItem(WmConnectStateInfo(WmConnectState.DISCONNECTED) )
                     .asFlow().distinctUntilChanged()
-    ) { device, connectorState ->
+    ) { device, connectorStateInfo ->
         //Device trying bind success,save it
-        Timber.e("flowConnectorState flowDevice == ${flowDevice.value}  connectorState == $connectorState" + Thread.currentThread().name)
-        if (device != null && device.isTryingBind && connectorState == WmConnectState.BIND_SUCCESS) {
+        Timber.e("flowConnectorState flowDevice == ${flowDevice.value}  connectorState == ${connectorStateInfo.state}" + Thread.currentThread().name)
+        if (device != null && device.isTryingBind && connectorStateInfo.state == WmConnectState.BIND_SUCCESS) {
             saveDevice(device, device.name)
             Timber.d("saveDevice" + Thread.currentThread().name)
             if (device.name != UNKNOWN_DEVICE_NAME) {
@@ -198,8 +196,8 @@ internal class DeviceManagerImpl(
                 }
             }
         }
-        connectorState
-    }.stateIn(applicationScope, SharingStarted.Eagerly, WmConnectState.DISCONNECTED)
+        connectorStateInfo
+    }.stateIn(applicationScope, SharingStarted.Eagerly, WmConnectStateInfo(WmConnectState.DISCONNECTED))
 
     private val _flowSyncEvent = Channel<Int>()//通知SyncFragment去响应同步结果
     override val flowSyncEvent = _flowSyncEvent.receiveAsFlow()
@@ -233,9 +231,9 @@ internal class DeviceManagerImpl(
         }
 
         applicationScope.launch {
-            flowConnectorState.collect {
+            flowConnectorStateInfo.collect {
                 Timber.i("onConnected if verified state:$it" + Thread.currentThread().name)
-                if (it == WmConnectState.BIND_SUCCESS) {
+                if (it.state == WmConnectState.BIND_SUCCESS) {
                     onConnected()
                 }
             }
@@ -260,7 +258,7 @@ internal class DeviceManagerImpl(
                 runCatchingWithLog {
                     //first check has data,if not ,get from watch
                     sportGoalRepository.flowCurrent.value.let {
-                        if (flowConnectorState.value == WmConnectState.BIND_SUCCESS) {
+                        if (flowConnectorStateInfo.value.state == WmConnectState.BIND_SUCCESS) {
                             if (it.activityDuration == 0.toShort() || it.calories == 0 || it.steps == 0) {
                                 val sportGoal =
                                         UNIWatchMate.wmSettings.settingSportGoal.get().await()
@@ -353,9 +351,9 @@ internal class DeviceManagerImpl(
         }
     }
 
-    override val flowBattery: StateFlow<WmBatteryInfo?> = flowConnectorState
+    override val flowBattery: StateFlow<WmBatteryInfo?> = flowConnectorStateInfo
             .filter {
-                it == WmConnectState.BIND_SUCCESS
+                it.state == WmConnectState.BIND_SUCCESS
             }
             .flatMapLatest {//flatMap 不同的是，它会取消先前启动的流
 
@@ -398,17 +396,24 @@ internal class DeviceManagerImpl(
     override suspend fun reset(callback: Callback<Int>) {
         Timber.d("reset")
         Log.e(TAG,"RESET")
-        UNIWatchMate.reset().onErrorReturn {
-            val throwable = (it as CustomException)
-            Log.e(TAG,"RESET ERROR  ${throwable.code}   ${throwable.message}")
-            callback.onCall(throwable.code)
-            Completable.create { emitter -> emitter.onComplete() }
-        }.doOnComplete {
+
+        UNIWatchMate.reset().subscribe({
             Log.e(TAG,"RESET SUCCESS")
             callback.onCall(0)
             runBlocking {
                 clearDevice()
             }
+
+        }, {
+            Log.e(TAG,"RESET ERROR    ${it.message}")
+            callback.onCall(1)
+            Completable.create { emitter -> emitter.onComplete() }
+        })
+
+        UNIWatchMate.reset().onErrorReturn {
+
+        }.doOnComplete {
+
         }.subscribe()
     }
 

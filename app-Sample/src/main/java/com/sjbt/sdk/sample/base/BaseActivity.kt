@@ -193,7 +193,7 @@ abstract class BaseActivity : AppCompatActivity() {
     private fun startOta(dialFile: File) {
         Injector.getApplicationScope().launchWithLog {
             runCatchingWithLog {
-                if (SingleInstance.deviceManager.flowConnectorState.value != WmConnectState.BIND_SUCCESS) {
+                if (SingleInstance.deviceManager.flowConnectorStateInfo.value.state != WmConnectState.BIND_SUCCESS) {
                     ToastUtil.showToast(getString(R.string.device_state_disconnected))
                     return@launchWithLog
                 }

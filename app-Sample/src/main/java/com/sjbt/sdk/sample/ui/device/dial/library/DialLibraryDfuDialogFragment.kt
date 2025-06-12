@@ -8,6 +8,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.base.api.UNIWatchMate
+import com.base.sdk.entity.apps.WmConnectState
 import com.base.sdk.port.AbWmTransferFile
 import com.base.sdk.port.State
 import com.base.sdk.port.WmTransferState
@@ -16,6 +17,7 @@ import com.github.kilnn.tool.widget.ktx.clickTrigger
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.sjbt.sdk.sample.R
 import com.sjbt.sdk.sample.databinding.DialogDialLibraryDfuBinding
+import com.sjbt.sdk.sample.di.internal.SingleInstance
 import com.sjbt.sdk.sample.dialog.CallBack
 import com.sjbt.sdk.sample.model.user.DialMock
 import com.sjbt.sdk.sample.utils.PermissionHelper
@@ -56,6 +58,7 @@ class DialLibraryDfuDialogFragment : AppCompatDialogFragment() {
         requireArguments().let {
             dialPacket = it.getParcelableCompat(EXTRA_DIAL_PACKET)!!
         }
+
         if (requireParentFragment() != null) {
             dfuViewModel = ViewModelProvider(requireParentFragment())[DfuViewModel::class.java]
         }else{

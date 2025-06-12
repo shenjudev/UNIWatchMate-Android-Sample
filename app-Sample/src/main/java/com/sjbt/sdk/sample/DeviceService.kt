@@ -29,14 +29,14 @@ class DeviceService : LifecycleService() {
         notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
         NotificationHelper.createDeviceChannel(this, notificationManager)
         lifecycleScope.launch {
-            deviceManager.flowConnectorState.collect {
-                changeState(it)
+            deviceManager.flowConnectorStateInfo.collect {
+                changeState(it.state)
             }
         }
         ProcessLifecycleOwner.get().lifecycle.addObserver(object : DefaultLifecycleObserver {
             override fun onStart(owner: LifecycleOwner) {
                 if (!hasSetForegrounded) {
-                    changeState(deviceManager.flowConnectorState.value)
+                    changeState(deviceManager.flowConnectorStateInfo.value.state)
                 }
             }
         })

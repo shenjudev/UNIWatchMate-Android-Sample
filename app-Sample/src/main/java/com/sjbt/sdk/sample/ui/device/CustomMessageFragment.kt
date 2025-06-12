@@ -17,9 +17,9 @@ class CustomMessageFragment : BaseFragment(R.layout.fragment_custom_message) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        UNIWatchMate.observeCustomDataFromDevice.subscribe {
-            viewBind.tvReceivedData.text = "收到消息：" + BtUtils.bytesToHexString(it)
-        }
+//        UNIWatchMate.observeCustomDataFromDevice.subscribe {
+//            viewBind.tvReceivedData.text = "收到消息：" + BtUtils.bytesToHexString(it)
+//        }
 
         viewBind.btnSend.setOnClickListener {
             val message = viewBind.etInput.text.toString()
@@ -34,13 +34,13 @@ class CustomMessageFragment : BaseFragment(R.layout.fragment_custom_message) {
             }
 
             // 发送数据并等待回复
-            UNIWatchMate.sendCustomDataWithResponse(1, BtUtils.hexStringToByteArray(message))
-                .subscribe({ response ->
-                    // 显示接收到的数据
-                    viewBind.tvReceivedData.text = "收到消息：" + BtUtils.bytesToHexString(response)
-                }, { error ->
-                    ToastUtil.showToast("发送失败: ${error.message}")
-                })
+//            UNIWatchMate.sendCustomDataWithResponse(1, BtUtils.hexStringToByteArray(message))
+//                .subscribe({ response ->
+//                    // 显示接收到的数据
+//                    viewBind.tvReceivedData.text = "收到消息：" + BtUtils.bytesToHexString(response)
+//                }, { error ->
+//                    ToastUtil.showToast("发送失败: ${error.message}")
+//                })
         }
 
         viewBind.btnSendNoReply.setOnClickListener {
@@ -56,12 +56,12 @@ class CustomMessageFragment : BaseFragment(R.layout.fragment_custom_message) {
             }
 
             // 发送数据不等待回复
-            UNIWatchMate.sendCustomDataNoResponse(1, BtUtils.hexStringToByteArray(message))
-                .subscribe({
-                    ToastUtil.showToast("发送成功")
-                }, { error ->
-                    ToastUtil.showToast("发送失败: ${error.message}")
-                })
+//            UNIWatchMate.sendCustomDataNoResponse(1, BtUtils.hexStringToByteArray(message))
+//                .subscribe({
+//                    ToastUtil.showToast("发送成功")
+//                }, { error ->
+//                    ToastUtil.showToast("发送失败: ${error.message}")
+//                })
         }
     }
 } 

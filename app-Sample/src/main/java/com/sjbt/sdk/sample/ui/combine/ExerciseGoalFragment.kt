@@ -64,7 +64,7 @@ class ExerciseGoalFragment : BaseFragment(R.layout.fragment_exercise_goal),
 
     private fun WmSportGoal.saveConfig() {
         applicationScope.launchWithLog {
-            if (deviceManager.flowConnectorState.value == WmConnectState.BIND_SUCCESS) {
+            if (deviceManager.flowConnectorStateInfo.value.state == WmConnectState.BIND_SUCCESS) {
                 Timber.i("${this@saveConfig}")
                 UNIWatchMate.wmSettings.settingSportGoal.set(this@saveConfig).await()
             }

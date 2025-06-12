@@ -9,12 +9,8 @@ import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.text.TextUtils
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.AppCompatDialogFragment
-import androidx.core.view.MenuProvider
 import androidx.core.view.isVisible
 import androidx.fragment.app.setFragmentResultListener
 import androidx.lifecycle.lifecycleScope
@@ -236,8 +232,8 @@ class DeviceBindFragment : BaseFragment(R.layout.fragment_device_bind),
 
         viewLifecycle.launchRepeatOnStarted {
             launch {
-                deviceManager.flowConnectorState.collect {
-                    if (it == WmConnectState.BIND_SUCCESS) {
+                deviceManager.flowConnectorStateInfo.collect {
+                    if (it.state == WmConnectState.BIND_SUCCESS) {
                         /**
                          * Show bind success, and exit in [onPromptCancel]
                          */

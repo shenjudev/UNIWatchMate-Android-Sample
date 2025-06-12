@@ -17,7 +17,6 @@ import com.sjbt.sdk.sample.di.Injector
 import com.sjbt.sdk.sample.di.internal.CoroutinesInstance.applicationScope
 import com.sjbt.sdk.sample.entity.MediaCountBean
 import com.sjbt.sdk.sample.ui.bind.DeviceConnectDialogFragment
-import com.sjbt.sdk.sample.utils.CacheDataHelper
 import com.sjbt.sdk.sample.utils.ToastUtil
 import com.sjbt.sdk.sample.utils.launchRepeatOnStarted
 import com.sjbt.sdk.sample.utils.launchWithLog
@@ -75,6 +74,7 @@ class DeviceFragment : BaseFragment(R.layout.fragment_device),
         viewBind.btnVideo.setOnClickListener(blockClick)
         viewBind.btnRecord.setOnClickListener(blockClick)
         viewBind.btnCustomMessage.setOnClickListener(blockClick)
+        viewBind.itemPhotoLibrary.setOnClickListener(blockClick)
 
         viewBind.itemDevicePreview.setOnClickListener(blockClick)
         viewBind.itemDeviceChat.setOnClickListener(blockClick)
@@ -95,27 +95,27 @@ class DeviceFragment : BaseFragment(R.layout.fragment_device),
             }
 
             launch {
-                deviceManager.flowConnectorState.collect {
+                deviceManager.flowConnectorStateInfo.collect {
                     this::class.simpleName?.let { it1 ->
                         Timber.i("flowConnectorState=$it")
                     }
-                    viewBind.tvDeviceState.setText(it.toStringRes())
+                    viewBind.tvDeviceState.setText(it.state.toStringRes())
 
-                    if (it == WmConnectState.DISCONNECTED) {
+                    if (it.state == WmConnectState.DISCONNECTED) {
                         viewBind.tvDeviceState.setText("重连")
                         viewBind.tvDeviceState.setOnClickListener {
 //                            deviceManager.reconnect()
                         }
                     }
                     viewBind.tvDeviceReset.visibility = View.GONE
-                    if (it == WmConnectState.BIND_SUCCESS) {
+                    if (it.state == WmConnectState.BIND_SUCCESS) {
                         getMediaCount()
                         getStore()
                         getDeviceVideoPreviewState()
                         viewBind.tvDeviceReset.visibility = View.VISIBLE
                     }
 
-                    viewBind.layoutContent.setAllChildEnabled(it == WmConnectState.BIND_SUCCESS)
+                    viewBind.layoutContent.setAllChildEnabled(it.state == WmConnectState.BIND_SUCCESS)
                 }
             }
 
@@ -328,6 +328,9 @@ class DeviceFragment : BaseFragment(R.layout.fragment_device),
 
             viewBind.btnCustomMessage -> {
                 findNavController().navigate(DeviceFragmentDirections.toCustomMessage())
+            }
+            viewBind.itemPhotoLibrary -> {
+                findNavController().navigate(DeviceFragmentDirections.toPhotoLibrary())
             }
         }
     }

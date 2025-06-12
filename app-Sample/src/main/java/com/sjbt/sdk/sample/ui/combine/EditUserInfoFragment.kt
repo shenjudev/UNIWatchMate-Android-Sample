@@ -115,7 +115,7 @@ class EditUserInfoFragment : BaseFragment(R.layout.fragment_edit_user_info),
                 userInfoRepository.setUserInfo(
                     it
                 )
-                if (deviceManager.flowConnectorState.value == WmConnectState.BIND_SUCCESS) {
+                if (deviceManager.flowConnectorStateInfo.value.state == WmConnectState.BIND_SUCCESS) {
                     val userInfo =
                         UNIWatchMate.wmSettings.settingPersonalInfo.set(it.toSdkUser()).doOnError {
                             ToastUtil.showToast(it.message)

@@ -335,5 +335,34 @@
     <string name="playing">playing</string>
     <string name="ai_chat_tip">Tip: Wait to receive device pictures and audio data</string>
 
-
+    <string name="album_setting">Album settings</string>
+    <string name="import_title">Import</string>
+    <string name="photo_to_phone">Import Photos to Phone</string>
+    <string name="no_photo_import">No photos to import</string>
+    <string name="auto_save">Auto Save</string>
+    <string name="auto_save_tip">Automatically save images to the phone\'s system album when syncing to the app</string>
+    <string name="please_no_out_app">Please do not exit the application</string>
+    <string name="stop_import">terminate</string>
+    <string name="saved_to_album">Saved to album</string>
+    <string name="no_photo">No photo available</string>
+    <string name="user_glasses_take_photo">Take a photo with your glasses quickly</string>
+    <string name="new_photos_count">%d new photos</string>
+    <string name="toaday">Today</string>
+    <string name="imporing_tip">Importing (%d/%d)...</string>
+    <string name="device_disconnect">Device not connected</string>
+    <string name="has_save_count_photo">Saved %d photos</string>
+    <string name="sure_delete_select_photo">Delete selected photos?</string>
+    <string name="delete">Delete</string>
+    <string name="deleted">Deleted</string>
+    <string name="saved_album">Saved to album</string>
+    <string name="fail_save">Failed to save image to system album</string>
+    <string name="sure_del_current_photo">Delete the current photo?</string>
+    <string name="importing_dot">Importing...</string>
+    <string name="fail_del">Delete failed</string>
+    <string name="fail_del_of_device">Device failed to delete image</string>
+    <string name="import_complete">Imported</string>
+    <string name="choosed_number">Selected %d/%d items</string>
+    <string name="account_not_exit">Account not found!</string>
+    <string name="input_correct_phone_number">Please enter a valid phone number!</string>
+    <string name="input_phone">Mobile number</string>
 </resources>

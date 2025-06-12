@@ -293,7 +293,7 @@ class FileTransferActivity : BaseActivity(), View.OnClickListener,
                     Observable.create<List<LocalFileBean>> { emitter ->
                         mLocalVideoBeans =
                             GetVideoListUtils.instance.loadPageMediaData(this@FileTransferActivity)
-                        emitter.onNext(mLocalVideoBeans)
+                        mLocalVideoBeans?.let { emitter.onNext(it) }
                         emitter.onComplete()
                     }.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                         .subscribe(object : Observer<List<LocalFileBean>> {
