@@ -14,7 +14,9 @@ import android.view.ViewGroup
 import androidx.lifecycle.lifecycleScope
 import com.base.api.UNIWatchMate
 import com.blankj.utilcode.util.AppUtils
+import com.blankj.utilcode.util.LogUtils
 import com.bumptech.glide.Glide
+import com.shenju.opus.OpusDecoderJni
 import com.sjbt.sdk.sample.MyApplication
 import com.sjbt.sdk.sample.R
 import com.sjbt.sdk.sample.base.BaseFragment
@@ -42,6 +44,13 @@ class AiChatFragment : BaseFragment(R.layout.fragment_ai_chat) {
     private var mediaPath = MyApplication.instance.mediaPath
     private var curWaveFilePath = ""
     private val audioPlayer = AudioPlayer()
+    private var remainingData = ByteArray(0)
+    private val SAMPLE_RATE = 16000
+    private val CHANNELS = 1
+    private val BYTES_PER_SAMPLE = 2
+    private val MAX_FRAME_SIZE = 6 * 320
+    private val opusHandle = OpusDecoderJni.createDecoder(16000, 1)
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewLifecycle.launchRepeatOnStarted {
@@ -74,7 +83,46 @@ class AiChatFragment : BaseFragment(R.layout.fragment_ai_chat) {
             }
             launch {
                 UNIWatchMate.wmApps.appAIAssistant.observeAudioData.collect {
-                    tempCachePcmData = tempCachePcmData.plus(it)
+                    // 将剩余的数据和新到的音频数据合并
+                    var cachePcmData = ByteArray(0)
+
+                    val combinedData = remainingData + it
+
+                    var index = 0
+                    val pcmData = ByteArray(MAX_FRAME_SIZE * CHANNELS * BYTES_PER_SAMPLE)
+                    // 处理合并后的数据
+                    while (index + 41 <= combinedData.size) {
+                        // 获取当前帧的大小，第一字节是帧长度
+                        val frameLength = combinedData[index].toInt() and 0xFF  // 获取帧长度
+                        if (frameLength != 40) {
+                            // 如果帧长度不是 40，跳过这帧（可以根据需求处理异常情况）
+                            Log.e(tag, "Invalid frame length: $frameLength")
+                            index += 1
+                            continue
+                        }
+                        val frame =
+                            combinedData.copyOfRange(index + 1, index + 1 + frameLength) // 获取帧数据
+                        // 调用 decode 解码每一帧数据
+                        val frameSize = OpusDecoderJni.decode(
+                            decoder = opusHandle,
+                            opusData = frame,
+                            pcmData = pcmData,
+                            frameSize = 40
+                        )
+                        val acatualFrameSize = frameSize * CHANNELS * BYTES_PER_SAMPLE
+                        cachePcmData = cachePcmData.plus(pcmData.copyOfRange(0, acatualFrameSize))
+
+                        //现将pcmData缓存起来，最后一次一起写入文件
+                        index += 41
+                    }
+                    tempCachePcmData = tempCachePcmData.plus(cachePcmData)
+                    // 保存剩余的数据（不完整的一部分帧）
+                    remainingData = if (index < combinedData.size) {
+                        LogUtils.e("JNI", "remainingData: ${combinedData.size - index}")
+                        combinedData.copyOfRange(index, combinedData.size)
+                    } else {
+                        ByteArray(0)  // 如果没有剩余数据，清空缓存
+                    }
                 }
             }
         }
