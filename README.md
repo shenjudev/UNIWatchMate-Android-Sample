@@ -2,9 +2,12 @@
 
 The interface framework of UNIWatchMate smart glasses is responsible for the encapsulation of functions such as communication with the glasses device, and provides the SDK for the App to operate the relevant interfaces of smart glasses.
 
-# Version 1.0.6
+# Version 1.0.7
 
 # [SDK documentation](https://github.com/shenjudev/UNIWatchMate-Android-Sample/wiki)
+## v1.0.7(2025-07-3)
+1. SDK updates for long AI dialogues and demos
+
 ## v1.0.6(2025-06-12)
 1. Album
 
