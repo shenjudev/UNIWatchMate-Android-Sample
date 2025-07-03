@@ -37,6 +37,9 @@
             android:id="@+id/toAiChat"
             app:destination="@id/deviceAiChatFragment" />
         <action
+            android:id="@+id/toNewAiChat"
+            app:destination="@id/deviceNewAiChatFragment" />
+        <action
             android:id="@+id/toCustomMessage"
             app:destination="@id/customMessageFragment" />
         <action
@@ -86,7 +89,13 @@
         android:id="@+id/deviceAiChatFragment"
         android:name="com.sjbt.sdk.sample.ui.device.AiChatFragment"
         android:label="@string/ds_basic_device_preview"
-        tools:layout="@layout/fragment_device_preview" />
+        tools:layout="@layout/fragment_ai_chat" />
+
+    <fragment
+        android:id="@+id/deviceNewAiChatFragment"
+        android:name="com.sjbt.sdk.sample.ui.device.NewAiChatFragment"
+        android:label="@string/ds_basic_device_preview"
+        tools:layout="@layout/fragment_new_ai_chat" />
 
     <fragment
         android:id="@+id/deviceConfigFragment"

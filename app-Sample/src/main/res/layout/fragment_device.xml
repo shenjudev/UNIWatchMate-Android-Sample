@@ -165,7 +165,10 @@
             style="@style/Widget.Sample.PreferenceView.Item.Text"
             app:preferenceTitle="@string/ds_basic_device_chat" />
 
-
+        <com.github.kilnn.tool.widget.item.PreferenceItem
+            android:id="@+id/item_device_chat_new"
+            style="@style/Widget.Sample.PreferenceView.Item.Text"
+            app:preferenceTitle="@string/ds_basic_device_long_chat" />
         <com.github.kilnn.tool.widget.item.PreferenceItem
             android:id="@+id/item_other_features"
             style="@style/Widget.Sample.PreferenceView.Item.Text"

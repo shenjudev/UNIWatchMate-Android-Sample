@@ -204,6 +204,8 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
 
 //    implementation 'com.arthenica:ffmpeg-kit-full:6.0-2'
-
+//    implementation 'com.artillery.pay:paycertification:leadingSmart_1.0.53'
+//    /*可选*/
+//    implementation 'com.artillery.pay:loglibrary:leadingSmart_1.0.53'
 
 }

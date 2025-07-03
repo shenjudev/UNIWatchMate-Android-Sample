@@ -331,9 +331,19 @@
     <string name="stop_video_recording">Stop Video recording</string>
     <string name="stop_recorded">Stop Recorded</string>
     <string name="ds_basic_device_chat">AI Chat</string>
+    <string name="ds_basic_device_long_chat">Long AI Chat</string>
     <string name="play">play</string>
     <string name="playing">playing</string>
     <string name="ai_chat_tip">Tip: Wait to receive device pictures and audio data</string>
+    <string name="ai_long_chat_tip">Tip: Wait to receive device audio data</string>
+    <string name="offline_voice_switch">Offline Voice</string>
+    <string name="offline_voice_enabled">Offline voice enabled</string>
+    <string name="offline_voice_disabled">Offline voice disabled</string>
+    <string name="offline_voice_switch_failed">Failed to switch offline voice</string>
+    <string name="offline_voice_read_failed">Failed to read wakeup word status</string>
+    <string name="offline_voice_support_status">Offline Voice Support</string>
+    <string name="offline_voice_supported">Supported</string>
+    <string name="offline_voice_not_supported">Not Supported</string>
 
     <string name="album_setting">Album settings</string>
     <string name="import_title">Import</string>
@@ -365,4 +375,5 @@
     <string name="account_not_exit">Account not found!</string>
     <string name="input_correct_phone_number">Please enter a valid phone number!</string>
     <string name="input_phone">Mobile number</string>
+    <string name="tip_device_take_photo_and_send">The device takes photos and sends them to the mobile phone</string>
 </resources>

@@ -78,6 +78,7 @@ class DeviceFragment : BaseFragment(R.layout.fragment_device),
 
         viewBind.itemDevicePreview.setOnClickListener(blockClick)
         viewBind.itemDeviceChat.setOnClickListener(blockClick)
+        viewBind.itemDeviceChatNew.setOnClickListener(blockClick)
 
         viewLifecycle.launchRepeatOnStarted {
             launch {
@@ -265,7 +266,9 @@ class DeviceFragment : BaseFragment(R.layout.fragment_device),
             viewBind.itemDeviceChat -> {
                 findNavController().navigate(DeviceFragmentDirections.toAiChat())
             }
-
+            viewBind.itemDeviceChatNew -> {
+                findNavController().navigate(DeviceFragmentDirections.toNewAiChat())
+            }
             viewBind.btnCount -> {
                 getMediaCount()
             }

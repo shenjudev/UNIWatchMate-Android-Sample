@@ -432,9 +432,19 @@
     <string name="stop_video_recording">结束录像</string>
     <string name="stop_recorded">结束录音</string>
     <string name="ds_basic_device_chat">AI 聊天</string>
+    <string name="ds_basic_device_long_chat">AI长对话 聊天</string>
     <string name="play">播放</string>
     <string name="playing">播放中</string>
     <string name="ai_chat_tip">提示：等待接收设备图片和音频数据。</string>
+    <string name="ai_long_chat_tip">提示：等待接收设备音频数据。</string>
+    <string name="offline_voice_switch">离线语音</string>
+    <string name="offline_voice_enabled">离线语音已启用</string>
+    <string name="offline_voice_disabled">离线语音已禁用</string>
+    <string name="offline_voice_switch_failed">离线语音开关设置失败</string>
+    <string name="offline_voice_read_failed">读取唤醒词状态失败</string>
+    <string name="offline_voice_support_status">离线语音支持状态</string>
+    <string name="offline_voice_supported">支持</string>
+    <string name="offline_voice_not_supported">不支持</string>
     <string name="album_setting">相册设置</string>
     <string name="import_title">导入</string>
     <string name="photo_to_phone">照片导入手机</string>
@@ -465,4 +475,5 @@
     <string name="account_not_exit">账号不存在！</string>
     <string name="input_correct_phone_number">请输入正确的手机号码！</string>
     <string name="input_phone">手机号码</string>
+    <string name="tip_device_take_photo_and_send">设备拍照并发送给手机</string>
 </resources>
