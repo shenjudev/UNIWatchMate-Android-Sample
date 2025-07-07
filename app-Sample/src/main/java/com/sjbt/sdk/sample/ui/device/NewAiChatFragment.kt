@@ -80,6 +80,7 @@ class NewAiChatFragment : BaseFragment(R.layout.fragment_new_ai_chat) {
                         viewBind.btnAudio.text = getString(R.string.action_loading)
                         curWaveFilePath = ""
                     } else {
+                        //设备告诉App本次语音结束
                         viewBind.btnImage.isEnabled = true
                         ToastUtil.showToast("stop")
                         viewBind.btnAudio.text = getString(R.string.play)
@@ -88,6 +89,12 @@ class NewAiChatFragment : BaseFragment(R.layout.fragment_new_ai_chat) {
                     }
                 }
             }
+            launch {
+                UNIWatchMate.wmApps.appAIAssistant.observeLongChatExitState.collect {
+                    //关闭AI助手,退出语音对话模式，需要 新固件 适配
+                }
+            }
+
             launch {
                 UNIWatchMate.wmApps.appAIAssistant.observeLongChatVideoFrame.collect {
                     LogUtils.eTag(tag,"observeLongChatVideoFrame 的data frameType = ${it.frameType}")
