@@ -9,6 +9,8 @@ import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import android.view.KeyEvent
+import com.android.mltcode.paycertification.call.VerificationListener
+import com.android.mltcode.paycertificationapi.PayCertificationApi
 import com.base.api.UNIWatchMate
 import com.base.sdk.entity.apps.WmConnectState
 import com.base.sdk.entity.apps.WmMusicControlType
@@ -20,6 +22,7 @@ import com.sjbt.sdk.sample.base.BaseActivity
 import com.sjbt.sdk.sample.di.Injector
 import com.sjbt.sdk.sample.dialog.CallBack
 import com.sjbt.sdk.sample.utils.*
+import com.sjbt.sdk.utils.BtUtils
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.onCompletion
@@ -29,6 +32,8 @@ import kotlinx.coroutines.rx3.asFlow
 import kotlinx.coroutines.rx3.await
 import timber.log.Timber
 import java.io.File
+import java.nio.ByteBuffer
+import java.nio.ByteOrder
 
 
 class MyApplication : Application() {
@@ -180,6 +185,38 @@ class MyApplication : Application() {
                     }
                 }
             }
+
+            launchWithLog {
+                UNIWatchMate.observeCustomDataFromDevice.asFlow().collect{ customData ->
+                    Timber.e("收到自定义数据:" + BtUtils.bytesToHexString(customData))
+                    val byteBuffer = ByteBuffer.wrap(customData).order(ByteOrder.LITTLE_ENDIAN)
+
+                    // 1 byte type and n bytes data
+                    val type = byteBuffer.get().toInt()
+                    // 拿到data
+                    val data = ByteArray(byteBuffer.remaining())
+                    byteBuffer.get(data)
+                    Timber.e("data:" + BtUtils.bytesToHexString(data))
+                    if (type == 2) {
+                        Timber.i("离线语音验证 收到设备蓝牙数据，发送给sdk：${data.size} ${BtUtils.bytesToHexString(data)}}")
+                        PayCertificationApi.distributionData(data, object : VerificationListener {
+                            override fun onSuccess() {
+                                Timber.i("离线语音验证 onSuccess: 校验成功")
+                            }
+
+                            override fun onError(code: Int) {
+                                Timber.e("离线语音验证 onError: 错误码: $code")
+                            }
+
+                            override fun onUnknown(error: Int) {
+                                Timber.e("离线语音验证 onError: 未知错误码: $error")
+                            }
+                        })
+                    }
+                }
+            }
+
+
             launchWithLog {
 //                UNIWatchMate.wmApps.appVideoPreview.observeCameraOpenState.asFlow().collect {
 //                    if (it) {//
@@ -270,28 +307,7 @@ class MyApplication : Application() {
                 }
             }
 
-//            launchWithLog {
-//                UNIWatchMate.observeCustomDataFromDevice.subscribe {
-//                    Timber.i("收到自定义数据:" + BtUtils.bytesToHexString(it))
-//
-//                    val byteBuffer = ByteBuffer.wrap(it).order(ByteOrder.LITTLE_ENDIAN)
-//
-//                    val head = byteBuffer.get().toInt()
-//                    val cmdId = byteBuffer.get(1).toInt()
-//                    if (head == 0x2B) {
-//                        if (cmdId == 0x01) {
-//                            Timber.i("需要回消息：$cmdId")
-//
-//                            val byteArray = ByteArray(1)
-//                            byteArray[0] = 0x01//成功
-////                    byteArray[0] = 0x00//失败
-//                            UNIWatchMate.sendCustomDataResponse(byteArray)
-//                        } else if (cmdId == 0x02) {
-//                            Timber.i("不需要回消息：$cmdId")
-//                        }
-//                    }
-//                }
-//            }
+
         }
     }
 

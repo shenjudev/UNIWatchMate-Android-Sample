@@ -13,7 +13,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Switch
 import androidx.lifecycle.lifecycleScope
+import com.android.mltcode.paycertificationapi.PayCertificationApi
 import com.base.api.UNIWatchMate
+import com.base.api.UNIWatchMate.sendCustomData
+import com.base.sdk.entity.apps.WmConnectState
 import com.blankj.utilcode.util.AppUtils
 import com.blankj.utilcode.util.LogUtils
 import com.bumptech.glide.Glide
@@ -24,16 +27,22 @@ import com.sjbt.sdk.sample.base.BaseFragment
 import com.sjbt.sdk.sample.databinding.FragmentAiChatBinding
 import com.sjbt.sdk.sample.databinding.FragmentDevicePreviewBinding
 import com.sjbt.sdk.sample.databinding.FragmentNewAiChatBinding
+import com.sjbt.sdk.sample.di.internal.SingleInstance.deviceManager
+import com.sjbt.sdk.sample.ui.toStringRes
 import com.sjbt.sdk.sample.utils.AudioPlayer
+import com.sjbt.sdk.sample.utils.CacheDataHelper
 import com.sjbt.sdk.sample.utils.ToastUtil
 import com.sjbt.sdk.sample.utils.launchRepeatOnStarted
+import com.sjbt.sdk.sample.utils.setAllChildEnabled
 import com.sjbt.sdk.sample.utils.viewLifecycle
 import com.sjbt.sdk.sample.utils.viewbinding.viewBinding
 import io.reactivex.rxjava3.core.Single
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.rx3.asFlow
+import kotlinx.coroutines.rx3.await
 import kotlinx.coroutines.rx3.collect
 import kotlinx.coroutines.withContext
+import timber.log.Timber
 import java.io.BufferedOutputStream
 import java.io.ByteArrayOutputStream
 import java.io.File
@@ -70,8 +79,24 @@ class NewAiChatFragment : BaseFragment(R.layout.fragment_new_ai_chat) {
         
         // 初始化离线语音支持状态
         initOfflineVoiceSupportStatus()
+
+
         
         viewLifecycle.launchRepeatOnStarted {
+
+            launch {
+                deviceManager.flowConnectorStateInfo.collect {
+                    if (it.state == WmConnectState.BIND_SUCCESS) {
+                        val it=  UNIWatchMate.getDeviceInfo().await()
+                        Timber.e("离线语音验证 offline_asr_auth = ${it.offline_asr_auth} "
+                            )
+                            if (it.offline_asr_auth != "0"){
+                                payCertificationInit(it.deviceName)
+                            }
+                    }
+                }
+            }
+
             launch {
                 UNIWatchMate.wmApps.appAIAssistant.observeLongChatAssistantState.collect {
                     if (it) {
@@ -197,6 +222,31 @@ class NewAiChatFragment : BaseFragment(R.layout.fragment_new_ai_chat) {
             switchWakeupWord(isChecked)
         }
     }
+
+    private fun payCertificationInit(deviceName: String) {
+        PayCertificationApi.init(MyApplication.instance, deviceName) { data: ByteArray ->
+            //写入蓝牙数据
+            Timber.i(
+
+                "PayCertificationApi.init callback data size:${data.size}  }"
+            )
+            Timber.e("离线语音验证 收到sdk数据 发送给设备 ${data.size}")
+            val type = 0x02
+            val dataWithType = ByteArray(data.size + 1)
+            dataWithType[0] = type.toByte()
+            System.arraycopy(data, 0, dataWithType, 1, data.size)
+            sendCustomData(dataWithType, false).subscribe({ result ->
+                // 处理成功结果
+                Timber.i( "发送离线语音验证数据成功")
+            }, { error ->
+                // 处理错误
+                Timber.e( "发送离线语音验证数据失败")
+            })
+            true
+        }
+    }
+
+
 
     override fun onDestroyView() {
         super.onDestroyView()

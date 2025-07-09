@@ -22,13 +22,13 @@ allprojects {
         jcenter()
         mavenCentral()
         maven { url 'https://jitpack.io' }
-//        maven {
-//            credentials {
-//                username '62b55284cc840e517b9aca0e'
-//                password 'iWpt_eTO_kkV'
-//            }
-//            url 'https://packages.aliyun.com/62b55fe264c8a06be2d617ed/maven/2245079-release-t4eapy'
-//        }
+        maven {
+            credentials {
+                username '62b55284cc840e517b9aca0e'
+                password 'iWpt_eTO_kkV'
+            }
+            url 'https://packages.aliyun.com/62b55fe264c8a06be2d617ed/maven/2245079-release-t4eapy'
+        }
     }
 }
 
