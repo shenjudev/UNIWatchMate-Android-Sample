@@ -344,9 +344,9 @@ class NewAiChatFragment : BaseFragment(R.layout.fragment_new_ai_chat) {
                     UNIWatchMate.getGlassesFunctionSupportState()
                 }
                 
-                // 根据 supportVolcEngine 判断是否支持离线语音
-                // supportVolcEngine == 1 表示支持
-                val isSupported = functionSupport.supportVolcEngine == 1
+                // 根据 supportWakeWord 判断是否支持离线语音
+                // supportWakeWord == 1 表示支持
+                val isSupported = functionSupport.supportWakeWord == 1
                 
                 viewBind.tvOfflineVoiceSupport.text = if (isSupported) {
                     getString(R.string.offline_voice_supported)
