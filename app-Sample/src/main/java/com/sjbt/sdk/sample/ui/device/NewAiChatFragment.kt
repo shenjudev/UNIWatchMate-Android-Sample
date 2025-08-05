@@ -90,7 +90,7 @@ class NewAiChatFragment : BaseFragment(R.layout.fragment_new_ai_chat) {
                         val it=  UNIWatchMate.getDeviceInfo().await()
                         Timber.e("离线语音验证 offline_asr_auth = ${it.offline_asr_auth} "
                             )
-                            if (it.offline_asr_auth != "0"){
+                            if (it.offline_asr_auth != "1"){//如果值为"1"，就说明已经验证通过了，不再需要去验证了。
                                 payCertificationInit(it.deviceName)
                             }
                     }
