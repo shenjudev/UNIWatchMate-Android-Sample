@@ -43,8 +43,8 @@ class MyApplication : Application() {
 
     private var currActivity: Activity? = null
 
-    val deviceType = ""
-    val devicePrefix = ""
+    val deviceType = "E1118"
+    val devicePrefix = "LensMoo_"
     var mediaPath = ""
     companion object {
         lateinit var instance: MyApplication
