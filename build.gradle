@@ -22,12 +22,13 @@ allprojects {
         jcenter()
         mavenCentral()
         maven { url 'https://jitpack.io' }
+
         maven {
             credentials {
-                username '62b55284cc840e517b9aca0e'
-                password 'iWpt_eTO_kkV'
+                username '5ff28ca9ed01613630f9d551'
+                password 'cxN-HwJ]yzST'
             }
-            url 'https://packages.aliyun.com/62b55fe264c8a06be2d617ed/maven/2245079-release-t4eapy'
+            url 'https://packages.aliyun.com/6718aa5c2c78927f26d82a35/maven/mltcloudai'
         }
     }
 }

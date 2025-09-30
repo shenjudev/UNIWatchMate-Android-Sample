@@ -447,7 +447,7 @@ class PhotoLibraryViewModel : ViewModel() {
         viewModelScope.launch {
             _events.emit(PhotoLibraryEvent.StartSendPhoto)
             if (SingleInstance.deviceManager.flowConnectorStateInfo.value.state == WmConnectState.BIND_SUCCESS) {
-                UNIWatchMate.wmApps.appPhotoLibrary.letDeviceSendPhotoByElmentIndex(index)
+                UNIWatchMate.wmApps.appPhotoLibrary.letDeviceSendPhotoByElementIndex(index)
                     .toObservable().asFlow().catch {
                         it.printStackTrace()
                         LogUtils.e("letDeviceSendPhotoElement ${it.message}")

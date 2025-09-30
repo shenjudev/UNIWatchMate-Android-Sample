@@ -42,6 +42,13 @@ android {
             path file('src/main/jni/CMakeLists.txt')
         }
     }
+
+    // 16k对齐配置
+    packagingOptions {
+        jniLibs {
+            useLegacyPackaging = false
+        }
+    }
 }
 
 dependencies {

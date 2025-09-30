@@ -7,7 +7,9 @@ set(OPUS_DIR ${CMAKE_SOURCE_DIR}/../opus)
 
 # 设置编译标志
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -O2")  # 优化级别
-
+# 16k对齐编译选项
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wl,-z,max-page-size=16384")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wl,-z,max-page-size=16384")
 add_definitions(
         -DOPUS_BUILD
         -DHAVE_CONFIG_H
