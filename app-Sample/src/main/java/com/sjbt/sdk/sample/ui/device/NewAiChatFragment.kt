@@ -133,6 +133,7 @@ class NewAiChatFragment : BaseFragment(R.layout.fragment_new_ai_chat) {
                     Glide.with(viewBind.ivPhoto).load(jpegData).into(viewBind.ivPhoto)
                 }
             }
+
             launch {
                 UNIWatchMate.wmApps.appAIAssistant.observeLongChatAudioData.collect {
                     LogUtils.eTag(tag,"收到observeLongChatAudioData 的data size = ${it.size}")

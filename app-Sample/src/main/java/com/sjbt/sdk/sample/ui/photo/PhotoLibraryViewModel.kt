@@ -117,6 +117,26 @@ class PhotoLibraryViewModel : ViewModel() {
                     processVideoFrame(videoFrame)
                 }
         }
+        //无存储设备，点击拍照后，设备会给APP主动发送 这次拍照照片的分片数量
+//        viewModelScope.launch(Dispatchers.IO) {
+//            UNIWatchMate.wmApps.appPhotoLibrary.observeDeviceTakePhotoElementCount.asFlow()
+//                .collect { count ->
+//                    jpegDataOutStream.reset()
+//                    curPhotoElementCount = count
+//                    LogUtils.e("getDevicePhotoElementCount curPhotoElementCount = $curPhotoElementCount")
+//
+//                    if (curPhotoElementCount < 1) {
+//                        LogUtils.e("getDevicePhotoElementCount is 0")
+//                        letDeviceEndSendPhotoState()
+//                    }else{
+//                        curPhotoElementIndex = 1
+//                        curPhotoElementCount = count
+//                        LogUtils.d("PhotoLibraryViewModel", "Device photo element count for $count: $count")
+//
+//                        startReceiveImg()
+//                    }
+//                }
+//        }
     }
 
     /**

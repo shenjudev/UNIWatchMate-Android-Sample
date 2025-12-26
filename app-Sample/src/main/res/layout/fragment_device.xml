@@ -102,7 +102,9 @@
             </RelativeLayout>
         </LinearLayout>
 
+        <!-- 照片数量行：当设备无存储时隐藏 -->
         <LinearLayout
+            android:id="@+id/layout_media_count"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/dp_10"
@@ -124,7 +126,9 @@
         </LinearLayout>
 
 
+        <!-- 存储信息行：当设备无存储时隐藏 -->
         <LinearLayout
+            android:id="@+id/layout_storage"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/dp_10"
@@ -178,6 +182,7 @@
             style="@style/Widget.Sample.PreferenceView.Item.Text"
             app:preferenceTitle="@string/photo" />
 
+        <!-- 底部操作按钮容器：当设备无存储时隐藏 -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -213,6 +218,19 @@
                 android:text="自定义消息" />
 
         </LinearLayout>
+
+        <!-- 无存储设备提示文字：当设备无存储时显示 -->
+        <TextView
+            android:id="@+id/tv_storage_device_status"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/dp_10"
+            android:layout_marginVertical="@dimen/dp_16"
+            android:gravity="center"
+            android:textAppearance="?textAppearanceBody1"
+            android:textColor="?android:textColorSecondary"
+            android:visibility="gone"
+            tools:text="无存储设备" />
 
     </LinearLayout>
 

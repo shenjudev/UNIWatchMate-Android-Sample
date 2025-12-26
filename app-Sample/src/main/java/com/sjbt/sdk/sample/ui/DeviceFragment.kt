@@ -4,11 +4,14 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.annotation.StringRes
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.findNavController
 import com.base.api.UNIWatchMate
 import com.base.sdk.entity.BindType
 import com.base.sdk.entity.WmBindInfo
 import com.base.sdk.entity.apps.WmConnectState
+import com.blankj.utilcode.util.LogUtils
 import com.sjbt.sdk.sample.MyApplication
 import com.sjbt.sdk.sample.R
 import com.sjbt.sdk.sample.base.BaseFragment
@@ -25,7 +28,13 @@ import com.sjbt.sdk.sample.utils.viewLifecycle
 import com.sjbt.sdk.sample.utils.viewbinding.viewBinding
 import com.sjbt.sdk.utils.log.GsonUtil
 import io.reactivex.rxjava3.disposables.CompositeDisposable
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.rx3.asFlow
+import kotlinx.coroutines.rx3.collect
+import kotlinx.coroutines.withContext
 import timber.log.Timber
 
 @StringRes
@@ -110,10 +119,19 @@ class DeviceFragment : BaseFragment(R.layout.fragment_device),
                     }
                     viewBind.tvDeviceReset.visibility = View.GONE
                     if (it.state == WmConnectState.BIND_SUCCESS) {
+                        // 设备绑定成功后，检查是否为无存储设备
                         getMediaCount()
                         getStore()
                         getDeviceVideoPreviewState()
                         viewBind.tvDeviceReset.visibility = View.VISIBLE
+                        withContext(Dispatchers.Main) {
+                            delay(100)
+                            initNoStorageDeviceStatus()
+                        }
+
+                    } else {
+                        // 设备未绑定或断开连接时，重置UI状态（显示所有元素，隐藏提示）
+//                        resetStorageDeviceUI()
                     }
 
                     viewBind.layoutContent.setAllChildEnabled(it.state == WmConnectState.BIND_SUCCESS)
@@ -185,6 +203,36 @@ class DeviceFragment : BaseFragment(R.layout.fragment_device),
                         }
                     }
                 }
+            }
+
+            launch {
+                //无存储设备 开始录音后，设备会一直给APP发送录音数据
+                UNIWatchMate.wmApps.appAIAssistant.observeAudioDataOfNoStorageDevice.collect{
+                    LogUtils.eTag(tag,"收到无存储设备的录音数据 = ${it.size}")
+                    //模拟接收图片耗时，接收完照片后，退出传输模式
+
+
+                }
+            }
+            launch {
+                //无存储设备拍照后，设备会主动给APP发送 该照片的分片数量，APP拿到分片数量后，依次向设备获取每一分片的数据（代码可参考PhotoLibraryViewModel）
+                UNIWatchMate.wmApps.appPhotoLibrary.observeDeviceTakePhotoElementCount.asFlow()
+                    .collect { count ->
+                        LogUtils.e("收到无存储设备的拍照后的照片分片数量= $count")
+                        withContext(Dispatchers.Main) {
+                            delay(3000)
+                            UNIWatchMate.wmApps.appPhotoLibrary.letDeviceEndSendPhotoState()
+                                .toObservable().asFlow().catch {
+                                    withContext(Dispatchers.Main) {
+
+                                    }
+                                }.collect { result ->
+                                    LogUtils.d("End send photo state result: $result")
+                                    // 可以在此处添加结束发送状态的事件通知
+                                    // 例如：_events.emit(PhotoLibraryEvent.PhotoSendStateEnded(result == 0))
+                                }
+                        }
+                    }
             }
         }
 
@@ -415,6 +463,59 @@ class DeviceFragment : BaseFragment(R.layout.fragment_device),
 
     override fun navToBgRunSettings() {
         findNavController().navigate(DeviceFragmentDirections.toBgRunSettings())
+    }
+
+    /**
+     * 初始化无存储设备状态检查
+     * 注意：此方法需要在设备绑定成功（BIND_SUCCESS）后才能调用
+     * 如果设备无存储（noStorageDevice == 1），则隐藏照片数量和存储相关的行
+     */
+    private fun initNoStorageDeviceStatus() {
+        lifecycleScope.launch {
+            try {
+                // 获取设备功能支持状态（需要在设备绑定后才能获取）
+
+                // 判断是否为无存储设备：noStorageDevice == 1 表示无存储设备
+                val isNoStorageDevice = UNIWatchMate.getGlassesFunctionSupportState().noStorageDevice == 1
+                
+                // 根据无存储设备状态控制相关UI的显示/隐藏
+                if (isNoStorageDevice) {
+                    // 如果是无存储设备，隐藏照片数量行、存储信息行和底部操作按钮
+                    viewBind.layoutMediaCount.visibility = View.GONE
+                    viewBind.layoutStorage.visibility = View.GONE
+                    viewBind.btnVideo.visibility = View.GONE
+                    
+                    // 显示无存储设备提示文字
+                    viewBind.tvStorageDeviceStatus.visibility = View.VISIBLE
+                    viewBind.tvStorageDeviceStatus.text = getString(R.string.no_storage_device)
+                } else {
+                    // 如果不是无存储设备，显示这些行和底部操作按钮
+                    viewBind.layoutMediaCount.visibility = View.VISIBLE
+                    viewBind.layoutStorage.visibility = View.VISIBLE
+                    viewBind.btnVideo.visibility = View.VISIBLE
+                    
+                    // 隐藏无存储设备提示文字
+                    viewBind.tvStorageDeviceStatus.visibility = View.GONE
+                }
+                
+            } catch (e: Exception) {
+                // 如果获取功能支持状态失败，记录错误日志，默认显示这些行
+                Timber.e("DeviceFragment", "Failed to get function support state: ${e.message}")
+                // 发生错误时，默认显示这些行（假设设备有存储）
+                resetStorageDeviceUI()
+            }
+        }
+    }
+
+    /**
+     * 重置存储设备相关UI状态
+     * 当设备未绑定或断开连接时调用，显示所有UI元素，隐藏提示文字
+     */
+    private fun resetStorageDeviceUI() {
+        viewBind.layoutMediaCount.visibility = View.VISIBLE
+        viewBind.layoutStorage.visibility = View.VISIBLE
+        viewBind.btnVideo.visibility = View.VISIBLE
+        viewBind.tvStorageDeviceStatus.visibility = View.GONE
     }
 
 

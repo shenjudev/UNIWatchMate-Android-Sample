@@ -376,4 +376,6 @@
     <string name="input_correct_phone_number">Please enter a valid phone number!</string>
     <string name="input_phone">Mobile number</string>
     <string name="tip_device_take_photo_and_send">The device takes photos and sends them to the mobile phone</string>
+    <string name="no_storage_device">No Storage Device</string>
+    <string name="has_storage_device">Storage Device</string>
 </resources>

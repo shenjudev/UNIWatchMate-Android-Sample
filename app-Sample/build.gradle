@@ -42,8 +42,8 @@ android {
         applicationId "com.sjbt.sdk.sample"
         minSdkVersion rootProject.ext.buildConfig.minSdkVersion
         targetSdkVersion rootProject.ext.buildConfig.targetSdkVersion
-        versionCode 2
-        versionName "1.0.1"
+        versionCode 110
+        versionName "1.1.10"
         signingConfig signingConfigs.release
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"

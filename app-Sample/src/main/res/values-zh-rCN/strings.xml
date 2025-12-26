@@ -476,4 +476,6 @@
     <string name="input_correct_phone_number">请输入正确的手机号码！</string>
     <string name="input_phone">手机号码</string>
     <string name="tip_device_take_photo_and_send">设备拍照并发送给手机</string>
+    <string name="no_storage_device">无存储设备</string>
+    <string name="has_storage_device">有存储设备</string>
 </resources>

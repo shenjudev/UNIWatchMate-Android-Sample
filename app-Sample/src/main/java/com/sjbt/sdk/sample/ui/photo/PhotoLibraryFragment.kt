@@ -16,6 +16,7 @@ import android.net.Uri
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.base.api.UNIWatchMate
 import com.blankj.utilcode.util.LogUtils
 import com.sjbt.sdk.sample.R
 import com.sjbt.sdk.sample.base.BaseFragment
@@ -78,6 +79,8 @@ class PhotoLibraryFragment : BaseFragment(R.layout.fragment_photo_library) {
             viewModel.toggleSelectionMode()
         }
 
+         val isNoStorageDevice = UNIWatchMate.getGlassesFunctionSupportState().noStorageDevice == 1
+         viewBind.tvImport.visibility = if (isNoStorageDevice) View.GONE else View.VISIBLE
         // 导入按钮点击事件
         viewBind.tvImport.setOnClickListener {
             if (viewModel.importingPhoto.value) {
@@ -88,7 +91,6 @@ class PhotoLibraryFragment : BaseFragment(R.layout.fragment_photo_library) {
                 viewModel.startImport()
             }
         }
-
 
         viewBind.ivDelete.setOnClickListener {
             viewModel.deleteSelectedPhotos()
