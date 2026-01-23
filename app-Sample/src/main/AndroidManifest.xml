@@ -61,7 +61,10 @@
             android:name=".ui.fileTrans.FileTransferActivity"
             android:screenOrientation="portrait"
             android:theme="@style/MwAppTheme" />
-
+        <activity
+            android:name="com.lensmoo.business.ui.device.OtaDemoActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/MwAppTheme" />
         <service
             android:name=".DeviceService"
             android:exported="false"

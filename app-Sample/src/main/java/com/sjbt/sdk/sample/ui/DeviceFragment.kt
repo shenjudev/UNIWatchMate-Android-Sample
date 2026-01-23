@@ -1,5 +1,6 @@
 package com.sjbt.sdk.sample.ui
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -12,6 +13,7 @@ import com.base.sdk.entity.BindType
 import com.base.sdk.entity.WmBindInfo
 import com.base.sdk.entity.apps.WmConnectState
 import com.blankj.utilcode.util.LogUtils
+import com.lensmoo.business.ui.device.OtaDemoActivity
 import com.sjbt.sdk.sample.MyApplication
 import com.sjbt.sdk.sample.R
 import com.sjbt.sdk.sample.base.BaseFragment
@@ -88,6 +90,7 @@ class DeviceFragment : BaseFragment(R.layout.fragment_device),
         viewBind.itemDevicePreview.setOnClickListener(blockClick)
         viewBind.itemDeviceChat.setOnClickListener(blockClick)
         viewBind.itemDeviceChatNew.setOnClickListener(blockClick)
+        viewBind.itemOtaSdkDemo.setOnClickListener(blockClick)
 
         viewLifecycle.launchRepeatOnStarted {
             launch {
@@ -382,6 +385,11 @@ class DeviceFragment : BaseFragment(R.layout.fragment_device),
             }
             viewBind.itemPhotoLibrary -> {
                 findNavController().navigate(DeviceFragmentDirections.toPhotoLibrary())
+            }
+            // 点击 OTA SDK Demo 入口，跳转到 OtaDemoActivity
+            viewBind.itemOtaSdkDemo -> {
+                val intent = Intent(requireContext(), OtaDemoActivity::class.java)
+                startActivity(intent)
             }
         }
     }

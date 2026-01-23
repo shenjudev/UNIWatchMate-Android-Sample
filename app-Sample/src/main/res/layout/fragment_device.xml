@@ -178,6 +178,10 @@
             style="@style/Widget.Sample.PreferenceView.Item.Text"
             app:preferenceTitle="@string/ds_other_features" />
         <com.github.kilnn.tool.widget.item.PreferenceItem
+            android:id="@+id/item_ota_sdk_demo"
+            style="@style/Widget.Sample.PreferenceView.Item.Text"
+            app:preferenceTitle="OTA SDK Demo" />
+        <com.github.kilnn.tool.widget.item.PreferenceItem
             android:id="@+id/itemPhotoLibrary"
             style="@style/Widget.Sample.PreferenceView.Item.Text"
             app:preferenceTitle="@string/photo" />
