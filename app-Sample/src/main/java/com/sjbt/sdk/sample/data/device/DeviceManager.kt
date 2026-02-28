@@ -1,8 +1,12 @@
 package com.sjbt.sdk.sample.data.device
 
+import android.Manifest
 import android.content.Context
+import android.content.pm.PackageManager
+import android.os.Build
 import android.util.Log
 import androidx.annotation.IntDef
+import androidx.core.content.ContextCompat
 import com.base.api.UNIWatchMate
 import com.base.sdk.entity.BindType
 import com.base.sdk.entity.WmBindInfo
@@ -212,6 +216,10 @@ internal class DeviceManagerImpl(
                         val userInfo = userInfoRepository.getUserInfo(it)
                         userInfo?.let { userInfo ->
                             device?.let { storageDevice ->
+                                if (!hasBluetoothPermissions(MyApplication.instance)) {
+                                    Timber.w("Skip connectBtDevice: need BLUETOOTH_SCAN/BLUETOOTH_CONNECT")
+                                    return@let
+                                }
                                 Timber.i("UNIWatchMate.connect")
                                 UNIWatchMate.connectBtDevice(
                                         WmBindInfo(
@@ -239,6 +247,15 @@ internal class DeviceManagerImpl(
             }
         }
 
+    }
+
+    /**
+     * Android 12+ 需要 BLUETOOTH_SCAN、BLUETOOTH_CONNECT 才能执行扫描/连接，未授权时跳过连接避免 SecurityException。
+     */
+    private fun hasBluetoothPermissions(context: Context): Boolean {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) return true
+        return ContextCompat.checkSelfPermission(context, Manifest.permission.BLUETOOTH_SCAN) == PackageManager.PERMISSION_GRANTED &&
+                ContextCompat.checkSelfPermission(context, Manifest.permission.BLUETOOTH_CONNECT) == PackageManager.PERMISSION_GRANTED
     }
 
     private fun onConnected() {

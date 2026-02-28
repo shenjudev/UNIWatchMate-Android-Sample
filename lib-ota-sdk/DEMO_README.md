@@ -55,11 +55,7 @@ private fun createBluetoothCommunicator(): IBluetoothCommunicator {
             bluetoothSocket?.outputStream?.write(data)
             bluetoothSocket?.outputStream?.flush()
         }
-        
-        override fun clearMessageQueue() {
-            // TODO: 实现清空消息队列的逻辑
-            messageQueue.clear()
-        }
+       
     }
 }
 ```
@@ -68,22 +64,7 @@ private fun createBluetoothCommunicator(): IBluetoothCommunicator {
 
 客户需要在蓝牙接收回调中调用 `onBluetoothDataReceived()` 方法：
 
-```kotlin
-// 在蓝牙接收回调中
-fun onBluetoothDataReceived(data: ByteArray) {
-    // 解析协议包
-    val head = data[0]
-    val cmdId = parseCmdId(data)
-    
-    // 判断是否是 OTA 消息并转发给 SDK
-    if (OtaProtocolConstants.isOtaCommand(head, cmdId)) {
-        val payload = extractPayload(data)
-        otaDemoActivity.onBluetoothDataReceived(data)
-    }
-}
-```
 
-或者直接在 Activity 中实现：
 
 ```kotlin
 class OtaDemoActivity : AppCompatActivity() {
@@ -96,9 +77,6 @@ class OtaDemoActivity : AppCompatActivity() {
 }
 ```
 
-### ⚠️ 协议解析
-
-Demo 中的 `parseCmdId()` 和 `extractPayload()` 方法只是示例实现，客户需要根据自己实际的协议格式进行修改。
 
 ## UI 说明
 

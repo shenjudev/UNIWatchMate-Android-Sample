@@ -13,6 +13,7 @@ import com.base.sdk.entity.BindType
 import com.base.sdk.entity.WmBindInfo
 import com.base.sdk.entity.apps.WmConnectState
 import com.blankj.utilcode.util.LogUtils
+import com.lensmoo.business.ui.device.OtaDemo2Activity
 import com.lensmoo.business.ui.device.OtaDemoActivity
 import com.sjbt.sdk.sample.MyApplication
 import com.sjbt.sdk.sample.R
@@ -91,6 +92,7 @@ class DeviceFragment : BaseFragment(R.layout.fragment_device),
         viewBind.itemDeviceChat.setOnClickListener(blockClick)
         viewBind.itemDeviceChatNew.setOnClickListener(blockClick)
         viewBind.itemOtaSdkDemo.setOnClickListener(blockClick)
+        viewBind.itemOtaSdkDemo2.setOnClickListener(blockClick)
 
         viewLifecycle.launchRepeatOnStarted {
             launch {
@@ -389,6 +391,10 @@ class DeviceFragment : BaseFragment(R.layout.fragment_device),
             // 点击 OTA SDK Demo 入口，跳转到 OtaDemoActivity
             viewBind.itemOtaSdkDemo -> {
                 val intent = Intent(requireContext(), OtaDemoActivity::class.java)
+                startActivity(intent)
+            }
+            viewBind.itemOtaSdkDemo2 -> {
+                val intent = Intent(requireContext(), OtaDemo2Activity::class.java)
                 startActivity(intent)
             }
         }

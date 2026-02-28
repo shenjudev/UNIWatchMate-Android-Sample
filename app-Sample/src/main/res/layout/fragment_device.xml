@@ -35,7 +35,10 @@
                     app:drawableTint="?colorOnSurface" />
 
             </FrameLayout>
-
+            <com.github.kilnn.tool.widget.item.PreferenceItem
+                android:id="@+id/item_ota_sdk_demo2"
+                style="@style/Widget.Sample.PreferenceView.Item.Text"
+                app:preferenceTitle="OTA SDK Demo 通用设备 连接bt即可" />
             <RelativeLayout
                 android:id="@+id/item_device_info"
                 style="@style/Widget.Sample.PreferenceView"
@@ -181,6 +184,8 @@
             android:id="@+id/item_ota_sdk_demo"
             style="@style/Widget.Sample.PreferenceView.Item.Text"
             app:preferenceTitle="OTA SDK Demo" />
+
+
         <com.github.kilnn.tool.widget.item.PreferenceItem
             android:id="@+id/itemPhotoLibrary"
             style="@style/Widget.Sample.PreferenceView.Item.Text"

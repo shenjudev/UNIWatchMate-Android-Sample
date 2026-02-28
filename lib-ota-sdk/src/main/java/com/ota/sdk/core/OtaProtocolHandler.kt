@@ -187,7 +187,7 @@ internal class OtaProtocolHandler(
                 sendErrorMsg(errorIndex)
             } else {
                 transferEnd(true)
-                transferError(OtaError.ERROR_TIME_OUT, "数据包传输失败，重试次数超限")
+                transferError(OtaError.ERROR_TIME_OUT, "数据包传输失败，重试次数超限 transferRetryCount = $transferRetryCount")
             }
         } else {  // 成功
             transferRetryCount = 0
