@@ -82,12 +82,14 @@ class OtaTransferManager(
      * @param fileType 文件类型（OTA 或 OTA_UPEX）
      * @param files 文件列表
      * @param appendixSize 附加数据大小（默认为 0）
+     * @param bleTransmission 是否是ble传输数据、ble传输数据需要进入高速模式
      * @return Observable<OtaTransferState> 传输状态流
      */
     fun startTransfer(
         fileType: OtaFileType,
         files: List<File>,
-        appendixSize: Int = 0
+        appendixSize: Int = 0,
+        bleTransmission: Boolean = false
     ): Observable<OtaTransferState> {
         LogUtil.d(TAG, "开始 OTA 传输: fileType=$fileType, files=${files.size}, appendixSize=$appendixSize")
         
@@ -143,7 +145,7 @@ class OtaTransferManager(
         
         return Observable.create { emitter ->
             // 初始化协议处理器
-            protocolHandler.initTransferState(files, transferState, emitter)
+            protocolHandler.initTransferState(files, transferState,bleTransmission, emitter)
             
             // 计算文件 CRC（用于 OTA 传输请求）
             val firstFileBytes = fileProcessor.readFileBytes(files[0])

@@ -73,6 +73,7 @@ class DeviceFragment : BaseFragment(R.layout.fragment_device),
         super.onViewCreated(view, savedInstanceState)
 
         viewBind.itemDeviceBind.setOnClickListener(blockClick)
+        viewBind.itemBleScanConnect.setOnClickListener(blockClick)
         viewBind.itemDeviceInfo.setOnClickListener(blockClick)
         viewBind.itemDeviceConfig.setOnClickListener(blockClick)
         viewBind.itemBasicDeviceInfo.setOnClickListener(blockClick)
@@ -245,6 +246,9 @@ class DeviceFragment : BaseFragment(R.layout.fragment_device),
 
     private val blockClick: (View) -> Unit = { view ->
         when (view) {
+            viewBind.itemBleScanConnect -> {
+                findNavController().navigate(DeviceFragmentDirections.toBleScan())
+            }
             viewBind.itemDeviceBind -> {
                 findNavController().navigate(DeviceFragmentDirections.toDeviceBind())
             }

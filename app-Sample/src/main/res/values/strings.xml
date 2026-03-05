@@ -42,6 +42,8 @@
     <string name="device_bind_success">Bind success</string>
     <string name="device_connect_bg_run_settings">If the connection is unstable, try setting the option to run in the background.</string>
     <string name="device_disconnect_help">Unable to connect？</string>
+    <string name="ble_scan_connect">BLE搜索连接OTA</string>
+    <string name="ble_scan_title">蓝牙搜索</string>
 
     <string name="bg_run_settings_module">Background Running settings</string>
     <string name="bg_run_settings_des">You need to make some system settings so that APP can run in the background for a long time, for example:</string>

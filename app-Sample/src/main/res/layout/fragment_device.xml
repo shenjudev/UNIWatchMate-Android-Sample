@@ -1,25 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-    <LinearLayout
-        android:id="@+id/layout_content"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:divider="?dividerVertical"
-        android:orientation="vertical"
-        android:showDividers="end|middle">
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:fillViewport="true">
 
         <LinearLayout
+            android:id="@+id/layout_content"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:divider="?dividerVertical"
             android:orientation="vertical"
-            android:tag="ignoreParentState">
+            android:showDividers="end|middle">
 
-            <FrameLayout
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:tag="ignoreParentState">
+
+                <FrameLayout
                 android:id="@+id/item_device_bind"
                 style="@style/Widget.Sample.PreferenceBase"
                 android:visibility="visible">
@@ -241,6 +248,18 @@
             android:visibility="gone"
             tools:text="无存储设备" />
 
-    </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
 
-</ScrollView>
+    <!-- BLE搜索连接：固定在底部，不随内容滚动 -->
+    <com.google.android.material.divider.MaterialDivider
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="?android:attr/listDivider" />
+    <com.github.kilnn.tool.widget.item.PreferenceItem
+        android:id="@+id/item_ble_scan_connect"
+        style="@style/Widget.Sample.PreferenceView.Item.Text"
+        android:background="?attr/selectableItemBackground"
+        android:minHeight="48dp"
+        app:preferenceTitle="@string/ble_scan_connect" />
+</LinearLayout>

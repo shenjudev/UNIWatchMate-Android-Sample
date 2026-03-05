@@ -45,6 +45,9 @@
         <action
             android:id="@+id/toPhotoLibrary"
             app:destination="@id/PhotoLibraryFragment" />
+        <action
+            android:id="@+id/toBleScan"
+            app:destination="@id/bleScanFragment" />
     </fragment>
 
 
@@ -132,5 +135,11 @@
         android:name="com.sjbt.sdk.sample.ui.photo.PhotoLibraryFragment"
         android:label="相册"
         tools:layout="@layout/fragment_photo_library" />
+
+    <fragment
+        android:id="@+id/bleScanFragment"
+        android:name="com.sjbt.sdk.sample.ui.ble.BleScanFragment"
+        android:label="@string/ble_scan_title"
+        tools:layout="@layout/fragment_ble_scan" />
 
 </navigation>

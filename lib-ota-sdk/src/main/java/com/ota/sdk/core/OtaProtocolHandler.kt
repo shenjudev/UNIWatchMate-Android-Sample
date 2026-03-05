@@ -39,7 +39,8 @@ internal class OtaProtocolHandler(
     
     // 数据发送线程（用于取消时中断）
     private var sendDataThread: Thread? = null
-    
+     var bleTransmissionLocal = false
+
     // 状态和回调
     private var transferState: OtaTransferState? = null
     private var observableTransferEmitter: ObservableEmitter<OtaTransferState>? = null
@@ -55,6 +56,7 @@ internal class OtaProtocolHandler(
     fun initTransferState(
         files: List<File>,
         state: OtaTransferState,
+        bleTransmission: Boolean,
         emitter: ObservableEmitter<OtaTransferState>
     ) {
         transferFiles = files
@@ -67,6 +69,7 @@ internal class OtaProtocolHandler(
         transferRetryCount = 0
         otaProcess = 0
         sendDataThread = null  // 重置线程引用
+        bleTransmissionLocal = bleTransmission
     }
     
     /**
@@ -94,6 +97,12 @@ internal class OtaProtocolHandler(
             OtaProtocolConstants.CMD_ID_8006 -> {
                 handleDeviceCancelResponse(payload)
             }
+            OtaProtocolConstants.CMD_ID_8016 -> {
+                //节点协议
+                handleDeviceHighSpeedResponse(payload)
+            }
+
+            //判断是否是节点协议
         }
     }
 
@@ -114,27 +123,14 @@ internal class OtaProtocolHandler(
         LogUtil.d(TAG, "设备回复传输请求: transferEnable=$transferEnable, reason=$reason")
         
         if (transferEnable.toInt() == 1) {  // 允许传输
-            sendingFile = transferFiles!![0]
-            
-            transferState?.let {
-                it.sendingFile = sendingFile
-                it.state = State.TRANSFERRING
-                observableTransferEmitter?.onNext(it)
+            if (bleTransmissionLocal){
+                communicator.sendMessage(
+                        OtaCommandBuilder.buildHighSpeed16Cmd()
+                )
+            }else{
+                sendTransferFile02()
             }
-            
-            sendingFile?.let { file ->
-                val fileBytes = fileProcessor.readFileBytes(file)
-                if (fileBytes != null) {
-                    communicator.sendMessage(
-                        OtaCommandBuilder.buildTransferFile02Cmd(
-                            fileBytes.size,
-                            file.name
-                        )
-                    )
-                } else {
-                    transferError(OtaError.ERROR_FILE_EXCEPTION, "读取文件失败")
-                }
-            }
+
         } else {  // 不允许传输
             transferFail(reason, "设备不允许传输文件, 错误码: $reason")
         }
@@ -308,16 +304,16 @@ internal class OtaProtocolHandler(
         
         transferEnd(false)
     }
-    
+
     /**
      * 处理设备主动取消回复（0x8006）
      */
     private fun handleDeviceCancelResponse(payload: ByteArray) {
         LogUtil.e(TAG, "设备主动取消传输")
-        
+
         // 立即设置取消标志
         commonFileTransferCancel = true
-        
+
         // 中断发送数据的线程
         sendDataThread?.let {
             if (it.isAlive) {
@@ -326,14 +322,53 @@ internal class OtaProtocolHandler(
             }
         }
         sendDataThread = null
-        
+
         val reasonCancel = payload[0].toInt()
         LogUtil.e(TAG, "取消原因: $reasonCancel")
-        
+
         transferEnd(false)
         transferFail(reasonCancel, "设备主动取消传输，错误码: $reasonCancel")
     }
-    
+
+    /**
+     * 处理进入高速回复（0x8016  0B）
+     */
+    private fun handleDeviceHighSpeedResponse(payload: ByteArray) {
+        LogUtil.e(TAG, "设备主动进入高速回复")
+        val result = payload[0].toInt()
+        if (result == 1) {
+            sendTransferFile02()
+        }else{
+            transferError(OtaError.ERROR_OTHER, "设备进入高速模式失败")
+
+        }
+        LogUtil.e(TAG, "设备进入高速模式回复 result = $result")
+    }
+
+    private fun sendTransferFile02() {
+        sendingFile = transferFiles!![0]
+
+        transferState?.let {
+            it.sendingFile = sendingFile
+            it.state = State.TRANSFERRING
+            observableTransferEmitter?.onNext(it)
+        }
+
+        sendingFile?.let { file ->
+            val fileBytes = fileProcessor.readFileBytes(file)
+            if (fileBytes != null) {
+                communicator.sendMessage(
+                        OtaCommandBuilder.buildTransferFile02Cmd(
+                                fileBytes.size,
+                                file.name
+                        )
+                )
+            } else {
+                transferError(OtaError.ERROR_FILE_EXCEPTION, "读取文件失败")
+            }
+        }
+    }
+
     /**
      * 继续发送文件数据
      */
@@ -378,7 +413,7 @@ internal class OtaProtocolHandler(
                     it.state = State.TRANSFERRING
                     observableTransferEmitter?.onNext(it)
                 }
-                
+                //这个间隔需要和iOS 保持一致吗
                 Thread.sleep(MSG_INTERVAL.toLong())
                 LogUtil.d(TAG, "传输进度: $processPercent%")
                 

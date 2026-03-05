@@ -1,8 +1,17 @@
 package com.ota.sdk.command
 
 import com.ota.sdk.constants.OtaProtocolConstants
+import com.ota.sdk.constants.OtaProtocolConstants.CMD_ID_8001
+import com.ota.sdk.constants.OtaProtocolConstants.HEAD_NODE_TYPE
+import com.ota.sdk.constants.OtaProtocolConstants.URN_0
+import com.ota.sdk.constants.OtaProtocolConstants.URN_1
+import com.ota.sdk.constants.OtaProtocolConstants.URN_4
+import com.ota.sdk.constants.OtaProtocolConstants.URN_6
+import com.ota.sdk.model.DataFormat
 import com.ota.sdk.model.OtaCmdInfo
 import com.ota.sdk.model.OtaFileType
+import com.ota.sdk.model.PayloadPackage
+import com.ota.sdk.model.RequestType
 import com.ota.sdk.utils.OtaCrcUtils
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
@@ -86,10 +95,11 @@ object OtaCommandBuilder {
             newType = true
         )
     }
-    
+
+
     /**
      * 构建文件信息命令（0x8002）
-     * 
+     *
      * @param len 文件长度
      * @param name 文件名称
      * @return 完整的协议包字节数组
@@ -98,22 +108,106 @@ object OtaCommandBuilder {
         val nameByte = name.toByteArray(Charset.defaultCharset())
         val byteBuffer = ByteBuffer.allocate(4 + nameByte.size)  // len(4) + name
         byteBuffer.order(ByteOrder.LITTLE_ENDIAN)
-        
+
         byteBuffer.putInt(len)
         byteBuffer.put(nameByte)
-        
+
         byteBuffer.flip()
         val payload = byteBuffer.array()
-        
+
         return buildFinalCmd(
-            head = OtaProtocolConstants.HEAD_FILE_SPP_A_2_D,
-            cmdId = OtaProtocolConstants.CMD_ID_8002,
-            divideType = DIVIDE_N_2,
-            dividePayloadLen = 0,
-            offset = 0,
-            crc = OtaCrcUtils.getCrc(HEX_FFFF, payload, payload.size),
-            payload = payload,
-            newType = true
+                head = OtaProtocolConstants.HEAD_FILE_SPP_A_2_D,
+                cmdId = OtaProtocolConstants.CMD_ID_8002,
+                divideType = DIVIDE_N_2,
+                dividePayloadLen = 0,
+                offset = 0,
+                crc = OtaCrcUtils.getCrc(HEX_FFFF, payload, payload.size),
+                payload = payload,
+                newType = true
+        )
+    }
+
+    fun buildHighSpeed16Cmd(): ByteArray {
+
+        val payload = ByteArray(0)
+
+        return buildFinalCmd(
+                head = OtaProtocolConstants.HEAD_COMMON_SPP_A_2_D,
+                cmdId = OtaProtocolConstants.CMD_ID_8016,
+                divideType = DIVIDE_N_2,
+                dividePayloadLen = 0,
+                offset = 0,
+                crc = OtaCrcUtils.getCrc(HEX_FFFF, payload, payload.size),
+                payload = payload,
+                newType = true
+        )
+    }
+
+    /**
+     * 构建节点协议 进入高速模式命令（urn：1016）
+     */
+//    private fun buildBleHighSpeedCmd(
+//            payloadPackage: PayloadPackage,
+//            timeSafe: Boolean = true,
+//            divideType: Byte = DIVIDE_N_2,
+//            requestType: RequestType = RequestType.REQ_TYPE_EXECUTE,
+//            dataFormat: DataFormat = DataFormat.FMT_NODATA
+//    ) : ByteArray{
+//        val payloadPackage = PayloadPackage()
+//        payloadPackage.putData(getUrnId(URN_1, URN_0, URN_1, URN_6), ByteArray(0))
+//        val dataBytes =  payloadPackage.toByteArray(requestType.type, dataFormat).first()
+//            val cmdArray = buildFinalCmd(
+//                    HEAD_NODE_TYPE,
+//                    CMD_ID_8001,
+//                    divideType,
+//                    0,
+//                    0,
+//                    OtaCrcUtils.getCrc(HEX_FFFF, dataBytes, dataBytes.size),
+//                    dataBytes,
+//                    true
+//            )
+//        return cmdArray;
+//    }
+    fun getUrnId(
+            parentUrn: Byte,
+            childUrn: Byte = URN_0,
+            grandSon: Byte = URN_0,
+            grandGrandSon: Byte = URN_0
+    ): ByteArray {
+        return byteArrayOf(
+                parentUrn,
+                childUrn,
+                grandSon,
+                grandGrandSon,
+        )
+    }
+    /**
+     * 构建高速命令（0x8002）
+     *
+     * @param len 文件长度
+     * @param name 文件名称
+     * @return 完整的协议包字节数组
+     */
+    fun buildEnterBleHighSpeedCmd(len: Int, name: String): ByteArray {
+        val nameByte = name.toByteArray(Charset.defaultCharset())
+        val byteBuffer = ByteBuffer.allocate(4 + nameByte.size)  // len(4) + name
+        byteBuffer.order(ByteOrder.LITTLE_ENDIAN)
+
+        byteBuffer.putInt(len)
+        byteBuffer.put(nameByte)
+
+        byteBuffer.flip()
+        val payload = byteBuffer.array()
+
+        return buildFinalCmd(
+                head = OtaProtocolConstants.HEAD_FILE_SPP_A_2_D,
+                cmdId = OtaProtocolConstants.CMD_ID_8002,
+                divideType = DIVIDE_N_2,
+                dividePayloadLen = 0,
+                offset = 0,
+                crc = OtaCrcUtils.getCrc(HEX_FFFF, payload, payload.size),
+                payload = payload,
+                newType = true
         )
     }
     
