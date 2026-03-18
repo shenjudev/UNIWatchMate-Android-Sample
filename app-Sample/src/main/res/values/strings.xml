@@ -330,6 +330,8 @@
 
     <string name="stop_video_recording">Stop Video recording</string>
     <string name="stop_recorded">Stop Recorded</string>
+    <string name="record_saved_toast">Recording saved. Location: %s</string>
+    <string name="play_latest_record">Play last recording</string>
     <string name="ds_basic_device_chat">AI Chat</string>
     <string name="ds_basic_device_long_chat">Long AI Chat</string>
     <string name="play">play</string>
@@ -365,6 +367,7 @@
     <string name="delete">Delete</string>
     <string name="deleted">Deleted</string>
     <string name="saved_album">Saved to album</string>
+    <string name="photo_saved_go_to_album">Photo saved. View in album.</string>
     <string name="fail_save">Failed to save image to system album</string>
     <string name="sure_del_current_photo">Delete the current photo?</string>
     <string name="importing_dot">Importing...</string>

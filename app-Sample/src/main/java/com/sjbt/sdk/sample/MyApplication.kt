@@ -23,6 +23,9 @@ import com.sjbt.sdk.sample.di.Injector
 import com.sjbt.sdk.sample.dialog.CallBack
 import com.sjbt.sdk.sample.utils.*
 import com.sjbt.sdk.utils.BtUtils
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelStore
+import androidx.lifecycle.ViewModelStoreOwner
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.onCompletion
@@ -45,8 +48,19 @@ class MyApplication : Application() {
 
     val deviceType = "W600"
     val devicePrefix = "W600_"
-//    val devicePrefix = "LensMoo_"
+//    val devicePrefix = "知镜_"
     var mediaPath = ""
+
+    /** 应用级 ViewModelStore，用于全局 ViewModel */
+    private val appViewModelStore = ViewModelStore()
+    private val appViewModelStoreOwner = object : ViewModelStoreOwner {
+        override fun getViewModelStore(): ViewModelStore = appViewModelStore
+    }
+
+    /** 全局 SharedAPPPhotoViewModel，接收无存储设备拍照后设备下发的照片分片 */
+    val sharedAPPPhotoViewModel: SharedAPPPhotoViewModel
+        get() = ViewModelProvider(appViewModelStoreOwner)[SharedAPPPhotoViewModel::class.java]
+
     companion object {
         lateinit var instance: MyApplication
             private set
@@ -64,6 +78,9 @@ class MyApplication : Application() {
         Utils.init(instance)
 
         mediaPath = createDirectoryInExternalFilesDir("media")
+
+        // 初始化全局 SharedAPPPhotoViewModel，开始监听设备下发的拍照分片
+        sharedAPPPhotoViewModel
 
         UNIWatchMate.observeUniWatchChange().subscribe {
             it.setLogEnable(true)

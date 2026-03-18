@@ -431,6 +431,8 @@
 
     <string name="stop_video_recording">结束录像</string>
     <string name="stop_recorded">结束录音</string>
+    <string name="record_saved_toast">录音文件已保存，保存位置：%s</string>
+    <string name="play_latest_record">播放刚才的录音</string>
     <string name="ds_basic_device_chat">AI 聊天</string>
     <string name="ds_basic_device_long_chat">AI长对话 聊天</string>
     <string name="play">播放</string>
@@ -465,6 +467,7 @@
     <string name="delete">删除</string>
     <string name="deleted">已删除</string>
     <string name="saved_album">已保存至相册</string>
+    <string name="photo_saved_go_to_album">照片已保存，请到相册查看</string>
     <string name="fail_save">保存图片到系统相册失败</string>
     <string name="sure_del_current_photo">确定要删除当前的照片吗？</string>
     <string name="importing_dot">导入中...</string>
