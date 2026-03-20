@@ -308,7 +308,15 @@ class BleScanFragment : BaseFragment(R.layout.fragment_ble_scan) {
     override fun onStop() {
         super.onStop()
         stopScan()
+        // 不要在此处 dispose connectionDisposable：跳转到全屏 OtaDemobleActivity 时
+        // Fragment 会 onStop，若此处断开 GATT，OTA 页拿到的 BleConnectionHolder 连接已失效，
+        // setupNotification 会报 BleDisconnectedException。连接仅在换设备连接或 onDestroy 时释放。
+    }
+
+    override fun onDestroy() {
         connectionDisposable?.dispose()
         connectionDisposable = null
+        BleConnectionHolder.clear()
+        super.onDestroy()
     }
 }

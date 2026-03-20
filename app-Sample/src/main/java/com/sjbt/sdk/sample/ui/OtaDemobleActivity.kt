@@ -161,7 +161,7 @@ class OtaDemobleActivity : AppCompatActivity() {
         tvSelectedFile = findViewById(R.id.tvSelectedFileBle)
         tvStatus = findViewById(R.id.tvStatusBle)
         tvProgress = findViewById(R.id.tvProgressBle)
-        tvLog = findViewById(R.id.tvLog)
+        tvLog = findViewById(R.id.tvLogBle)
         progressBar = findViewById(R.id.progressBarBle)
     }
 

@@ -166,6 +166,7 @@ class OtaTransferManager(
             )
             
             communicator.sendMessage(requestCmd)
+            protocolHandler.notifyTransferRequestSent()
             
             LogUtil.d(TAG, "已发送 OTA 传输请求")
         }
@@ -200,9 +201,10 @@ class OtaTransferManager(
     }
     
     /**
-     * 处理超时（可选，如果客户需要自己处理超时）
-     * 
-     * @param cmdId 超时的命令ID
+     * 处理超时（一般无需调用：SDK 已在各阶段发送后自动启动等待回复的超时；
+     * 仅在需要自定义超时策略或关闭自动计时时再自行调用。）
+     *
+     * @param cmdId 当前等待回复对应的命令 ID（与 [com.ota.sdk.constants.OtaProtocolConstants] 一致）
      */
     fun handleTimeout(cmdId: Short) {
         protocolHandler.handleTimeout(cmdId)

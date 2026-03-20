@@ -1,5 +1,7 @@
 package com.ota.sdk.core
 
+import android.os.Handler
+import android.os.Looper
 import com.ota.sdk.command.OtaCommandBuilder
 import com.ota.sdk.constants.OtaProtocolConstants
 import com.ota.sdk.api.IBluetoothCommunicator
@@ -49,6 +51,40 @@ internal class OtaProtocolHandler(
     // 常量
     private val MAX_CONNECT_RETRY_COUNT = 3
     private val MSG_INTERVAL = 15
+
+    /** 等待设备回复（与 handleTimeout 各阶段一致）的超时时间 */
+    private val responseTimeoutHandler = Handler(Looper.getMainLooper())
+    private var responseTimeoutRunnable: Runnable? = null
+
+    /** 单次「发命令 → 等回复」默认超时（毫秒） */
+    private val responseTimeoutMs = 10_000L
+
+    private fun scheduleResponseTimeout(expectedCmdId: Short) {
+        cancelResponseTimeout()
+        val r = Runnable {
+            responseTimeoutRunnable = null
+            if (!commonFileTransferCancel) {
+                val emitter = observableTransferEmitter
+                if (emitter == null || emitter.isDisposed) return@Runnable
+                handleTimeout(expectedCmdId)
+            }
+        }
+        responseTimeoutRunnable = r
+        responseTimeoutHandler.postDelayed(r, responseTimeoutMs)
+        LogUtil.d(TAG, "已启动 ${responseTimeoutMs}ms 内等待回复: cmdId=0x${expectedCmdId.toString(16)}")
+    }
+
+    private fun cancelResponseTimeout() {
+        responseTimeoutRunnable?.let { responseTimeoutHandler.removeCallbacks(it) }
+        responseTimeoutRunnable = null
+    }
+
+    /**
+     * 在发送 OTA 传输请求（0x800A）成功后由 [OtaTransferManager] 调用，启动等待 0x8001/0x800A 回复的超时。
+     */
+    fun notifyTransferRequestSent() {
+        scheduleResponseTimeout(OtaProtocolConstants.CMD_ID_800A)
+    }
     
     /**
      * 初始化传输状态
@@ -70,6 +106,7 @@ internal class OtaProtocolHandler(
         otaProcess = 0
         sendDataThread = null  // 重置线程引用
         bleTransmissionLocal = bleTransmission
+        cancelResponseTimeout()
     }
     
     /**
@@ -113,6 +150,7 @@ internal class OtaProtocolHandler(
      * 处理传输请求回复（0x8001/0x800A）
      */
     private fun handleTransferRequestResponse(payload: ByteArray) {
+        cancelResponseTimeout()
         sendFileCount = 0
         errorSend = false
         commonFileTransferCancel = false
@@ -127,6 +165,7 @@ internal class OtaProtocolHandler(
                 communicator.sendMessage(
                         OtaCommandBuilder.buildHighSpeed16Cmd()
                 )
+                scheduleResponseTimeout(OtaProtocolConstants.CMD_ID_8016)
             }else{
                 sendTransferFile02()
             }
@@ -140,6 +179,7 @@ internal class OtaProtocolHandler(
      * 处理文件信息回复（0x8002）
      */
     private fun handleFileInfoResponse(payload: ByteArray) {
+        cancelResponseTimeout()
         val lenArray = ByteArray(4)
         System.arraycopy(payload, 0, lenArray, 0, lenArray.size)
         otaProcess = 0
@@ -171,6 +211,7 @@ internal class OtaProtocolHandler(
      * 处理数据包回复（0x8003）
      */
     private fun handleDataPacketResponse(payload: ByteArray) {
+        // 0x8003 数据包阶段不启响应超时（与业务约定：连续发包、不逐包等待）
         val byteBuffer = ByteBuffer.wrap(payload).order(ByteOrder.LITTLE_ENDIAN)
         errorSend = byteBuffer.get().toInt() != 1  // 1=成功, 其他=失败
         val errorIndex = byteBuffer.int
@@ -205,7 +246,7 @@ internal class OtaProtocolHandler(
     }
     
     /**
-     * 处理传输确认回复（0x8004）
+     * 处理传输确认（0x8004）：设备→APP 通知，App 无需回复，不启响应超时。
      */
     private fun handleTransferConfirmResponse(payload: ByteArray) {
         transferRetryCount = 0
@@ -244,6 +285,7 @@ internal class OtaProtocolHandler(
                             sendingFile!!.name
                         )
                     )
+                    scheduleResponseTimeout(OtaProtocolConstants.CMD_ID_8002)
                     
                     transferState?.let {
                         it.state = State.SUCCESS
@@ -280,6 +322,7 @@ internal class OtaProtocolHandler(
      * 处理用户取消回复（0x8005）
      */
     private fun handleUserCancelResponse() {
+        cancelResponseTimeout()
         LogUtil.e(TAG, "用户取消传输")
         
         // 立即设置取消标志
@@ -309,6 +352,7 @@ internal class OtaProtocolHandler(
      * 处理设备主动取消回复（0x8006）
      */
     private fun handleDeviceCancelResponse(payload: ByteArray) {
+        cancelResponseTimeout()
         LogUtil.e(TAG, "设备主动取消传输")
 
         // 立即设置取消标志
@@ -334,6 +378,7 @@ internal class OtaProtocolHandler(
      * 处理进入高速回复（0x8016  0B）
      */
     private fun handleDeviceHighSpeedResponse(payload: ByteArray) {
+        cancelResponseTimeout()
         LogUtil.e(TAG, "设备主动进入高速回复")
         val result = payload[0].toInt()
         if (result == 1) {
@@ -363,6 +408,7 @@ internal class OtaProtocolHandler(
                                 file.name
                         )
                 )
+                scheduleResponseTimeout(OtaProtocolConstants.CMD_ID_8002)
             } else {
                 transferError(OtaError.ERROR_FILE_EXCEPTION, "读取文件失败")
             }
@@ -491,6 +537,7 @@ internal class OtaProtocolHandler(
      * 传输结束
      */
     private fun transferEnd(cancelToDevice: Boolean) {
+        cancelResponseTimeout()
         try {
             if (cancelToDevice) {
                 communicator.sendMessage(OtaCommandBuilder.buildTransferCancelCmd())
@@ -525,6 +572,7 @@ internal class OtaProtocolHandler(
      * 传输错误
      */
     fun transferError(code: OtaError, errMsg: String) {
+        cancelResponseTimeout()
         LogUtil.e(TAG, errMsg)
         errorSend = true
         
@@ -547,6 +595,7 @@ internal class OtaProtocolHandler(
      * 用于用户主动取消传输时立即生效
      */
     fun stopTransferImmediately() {
+        cancelResponseTimeout()
         LogUtil.w(TAG, "立即停止传输")
         
         // 1. 设置取消标志
@@ -566,6 +615,7 @@ internal class OtaProtocolHandler(
      * 处理超时
      */
     fun handleTimeout(cmdId: Short) {
+        responseTimeoutRunnable = null
         if (commonFileTransferCancel) {
             return
         }
@@ -580,6 +630,9 @@ internal class OtaProtocolHandler(
                     OtaCommandBuilder.buildTransfer0AOtaOutTime08Cmd()
                 )
             }
+            OtaProtocolConstants.CMD_ID_8016 -> {
+                transferError(OtaError.ERROR_TIME_OUT, "0x8016 BLE 高速握手超时")
+            }
             OtaProtocolConstants.CMD_ID_8002 -> {
                 if (transferRetryCount < MAX_CONNECT_RETRY_COUNT) {
                     transferRetryCount++
@@ -592,9 +645,11 @@ internal class OtaProtocolHandler(
                                 sendingFile!!.name
                             )
                         )
+                        scheduleResponseTimeout(OtaProtocolConstants.CMD_ID_8002)
                     }
                 } else {
                     transferEnd(true)
+                    transferError(OtaError.ERROR_TIME_OUT, "0x8002 超时，重试次数用尽")
                 }
             }
             OtaProtocolConstants.CMD_ID_8003 -> {
@@ -609,12 +664,6 @@ internal class OtaProtocolHandler(
                     )
                 } else {
                     transferError(OtaError.ERROR_TIME_OUT, "0x8003 超时")
-                }
-            }
-            OtaProtocolConstants.CMD_ID_8004 -> {
-                if (transferRetryCount < MAX_CONNECT_RETRY_COUNT) {
-                    transferRetryCount++
-                    communicator.sendMessage(OtaCommandBuilder.buildTransfer04Cmd())
                 }
             }
         }
