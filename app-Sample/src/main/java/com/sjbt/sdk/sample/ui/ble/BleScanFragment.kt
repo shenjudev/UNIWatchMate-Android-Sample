@@ -37,6 +37,8 @@ class BleScanFragment : BaseFragment(R.layout.fragment_ble_scan) {
         private const val PREFS_NAME = "ble_scan_prefs"
         private const val KEY_CONNECTED_ADDRESS = "connected_device_address"
         private const val KEY_CONNECTED_NAME = "connected_device_name"
+        /** 连接成功后请求的 ATT MTU；实际值以对端与系统协商结果为准 */
+        private const val BLE_REQUESTED_MTU = 185 //247
         // 2.6.1 APP向设备发送数据 / 2.6.2 设备向APP发送数据
 
 //        private val CHAR_UUID_ERROR = UUID.fromString("0000FFF3-0000-1000-8000-00805F9B34FB")
@@ -227,7 +229,11 @@ class BleScanFragment : BaseFragment(R.layout.fragment_ble_scan) {
         connectionDisposable = rxBleDevice.establishConnection(false)
                 .flatMapSingle { connection ->
                     BleConnectionHolder.set(mac, connection)
-                    connection.discoverServices()
+                    connection.requestMtu(BLE_REQUESTED_MTU)
+                            .flatMap { negotiatedMtu ->
+                                Log.d(TAG, "BLE MTU 协商: 请求=$BLE_REQUESTED_MTU, 实际=$negotiatedMtu")
+                                connection.discoverServices()
+                            }
                 }
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

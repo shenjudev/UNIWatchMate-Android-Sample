@@ -649,6 +649,9 @@ class OtaDemobleActivity : AppCompatActivity() {
                     // 在主线程更新 UI（日志）
                     withContext(Dispatchers.Main) {
                         appendLog("✓ 收到 OTA 消息: ${rawData.size} 字节")
+                        if (rawData.size<40){
+                            appendLog("✓ 收到 OTA 消息: hex=${rawData.joinToString(" ") { "%02X".format(it) }}")
+                        }
                     }
                     Log.d(TAG, "收到 OTA 消息: ${rawData.size} 字节, hex=${rawData.joinToString(" ") { "%02X".format(it) }}")
                 } else {
