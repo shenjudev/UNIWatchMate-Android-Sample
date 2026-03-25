@@ -30,6 +30,7 @@ internal class OtaProtocolHandler(
     private var sendingFile: File? = null
     private var sendFileCount = 0
     private var selectFileCount = 0
+    /** 每包内「文件数据」字节数（已由设备单帧上限扣除 TLOCP+序号开销） */
     private var cellLength = 0
     private var otaProcess = 0
     private var packageCount = 0
@@ -51,6 +52,18 @@ internal class OtaProtocolHandler(
     // 常量
     private val MAX_CONNECT_RETRY_COUNT = 3
     private val MSG_INTERVAL = 15
+
+    companion object {
+        /** 与 OtaCommandBuilder 中 TLOCP 头长度一致 */
+//        private const val TLOCP_HEADER_LEN = 16
+//        /** 0x8003 中包序号 process，buildTransfer03Cmd 内 putInt */
+//        private const val CMD03_SEQUENCE_LEN = 4
+        /**
+         * 单条 0x8003 除「文件数据」外的固定长度：TLOCP + 序号。
+         * 设备若约定值为「整帧最大可发长度」，则每包文件字节数 = 该值 - 本开销。
+         */
+//        private const val CMD03_FRAME_OVERHEAD = TLOCP_HEADER_LEN + CMD03_SEQUENCE_LEN
+    }
 
     /** 等待设备回复（与 handleTimeout 各阶段一致）的超时时间 */
     private val responseTimeoutHandler = Handler(Looper.getMainLooper())
@@ -183,11 +196,15 @@ internal class OtaProtocolHandler(
         val lenArray = ByteArray(4)
         System.arraycopy(payload, 0, lenArray, 0, lenArray.size)
         otaProcess = 0
-        cellLength = ByteBuffer.wrap(lenArray)
-            .order(ByteOrder.LITTLE_ENDIAN).int - 4
-        
-        LogUtil.d(TAG, "设备回复分片大小: cell_length=$cellLength")
-        
+        // 固件约定：前 4 字节小端 int（沿用原逻辑 -4）；语义为「单帧 0x8003 最大总长度」
+        val maxFrameSize = ByteBuffer.wrap(lenArray).order(ByteOrder.LITTLE_ENDIAN).int - 4
+//        cellLength = 489
+        cellLength = maxFrameSize
+        LogUtil.d(
+            TAG,
+            "0x8002: 单帧最大=$maxFrameSize, 每包文件数据 cellLength=$cellLength"
+        )
+
         if (cellLength > 0 && !commonFileTransferCancel) {
             Thread {
                 val file = transferFiles!![sendFileCount]
@@ -384,7 +401,9 @@ internal class OtaProtocolHandler(
         if (result == 1) {
             sendTransferFile02()
         }else{
-            transferError(OtaError.ERROR_OTHER, "设备进入高速模式失败")
+            sendTransferFile02()
+//          transferError(OtaError.ERROR_OTHER, "设备进入高速模式失败")
+            LogUtil.e(TAG, "设备进入高速模式失败 回复 result = $result")
 
         }
         LogUtil.e(TAG, "设备进入高速模式回复 result = $result")
@@ -445,7 +464,7 @@ internal class OtaProtocolHandler(
                 val info = getOtaDataInfoNew(dataArray, i)
                 divide = OtaCommandBuilder.getDivideType(i, packageCount)
                 
-                LogUtil.d(TAG, "发送数据包: 序号=$i, 分包类型=$divide, 信息=$info")
+//                LogUtil.d(TAG, "发送数据包: 序号=$i, 分包类型=$divide, 信息=$info")
                 
                 communicator.sendMessage(
                     OtaCommandBuilder.buildTransfer03Cmd(i, info, divide)
@@ -461,7 +480,7 @@ internal class OtaProtocolHandler(
                 }
                 //这个间隔需要和iOS 保持一致吗
                 Thread.sleep(MSG_INTERVAL.toLong())
-                LogUtil.d(TAG, "传输进度: $processPercent%")
+//                LogUtil.d(TAG, "传输进度: $processPercent%")
                 
             } catch (e: InterruptedException) {
                 // 线程被中断，退出循环

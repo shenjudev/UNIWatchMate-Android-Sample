@@ -15,10 +15,21 @@ object BleConnectionHolder {
     @Volatile
     private var connection: RxBleConnection? = null
 
+    /** 最近一次 GATT 协商后的 ATT MTU（仅当前进程内有效） */
+    @Volatile
+    private var negotiatedMtu: Int? = null
+
     fun set(address: String, conn: RxBleConnection) {
         deviceAddress = address
         connection = conn
     }
+
+    /** [requestMtu] 成功后调用，供 OTA 页等展示 */
+    fun setNegotiatedMtu(mtu: Int) {
+        negotiatedMtu = mtu
+    }
+
+    fun getNegotiatedMtu(): Int? = negotiatedMtu
 
     /** 若当前保存的连接地址与给定一致则返回连接，否则返回 null */
     fun getConnection(address: String): RxBleConnection? {
@@ -28,6 +39,7 @@ object BleConnectionHolder {
     fun clear() {
         deviceAddress = null
         connection = null
+        negotiatedMtu = null
     }
 
     fun getCurrentAddress(): String? = deviceAddress

@@ -209,7 +209,6 @@ class OtaDemoActivity : AppCompatActivity() {
                 } catch (e: Exception) {
                     appendLog("✗ 发送消息失败: ${e.message}")
                     Log.e(TAG, "发送消息失败", e)
-                    LogUtils.e(TAG, "发送消息失败: ${e.message}")
                 }
             }
         }

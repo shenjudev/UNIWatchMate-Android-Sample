@@ -23,9 +23,12 @@ import io.reactivex.rxjava3.schedulers.Schedulers
 import com.blankj.utilcode.util.LogUtils
 import com.sjbt.sdk.sample.R
 import com.sjbt.sdk.sample.ui.ble.BleConnectionHolder
+import com.polidea.rxandroidble3.RxBleClient
 import com.polidea.rxandroidble3.RxBleConnection
+import com.polidea.rxandroidble3.exceptions.BleDisconnectedException
 import kotlinx.coroutines.*
 import java.io.File
+import java.util.concurrent.atomic.AtomicBoolean
 
 /**
  * OTA SDK 演示 Activity（简化版）
@@ -65,6 +68,11 @@ class OtaDemobleActivity : AppCompatActivity() {
     /** 特征通知订阅，onDestroy 时 dispose */
     private val notificationDisposables = CompositeDisposable()
 
+    private val rxBleClient: RxBleClient by lazy { RxBleClient.create(applicationContext) }
+
+    /** 防止 BLE 断开、发送失败等重复触发终止 OTA */
+    private val otaAbortHandled = AtomicBoolean(false)
+
     // UI 组件
     private lateinit var btnSelectFile: Button
     private lateinit var btnStartTransfer: Button
@@ -79,6 +87,9 @@ class OtaDemobleActivity : AppCompatActivity() {
     private var otaManager: OtaTransferManager? = null
     private var messageListener: IOtaMessageListener? = null
     private var transferDisposable: Disposable? = null
+
+    /** 上次已打印日志的传输进度（0–100），仅在整型进度变化时再次 appendLog */
+    private var lastLoggedTransferProgress: Int = -1
 
     // 选中的文件
     private var selectedFile: File? = null
@@ -106,9 +117,48 @@ class OtaDemobleActivity : AppCompatActivity() {
         }
 
         initViews()
+        when (val mtu = BleConnectionHolder.getNegotiatedMtu()) {
+            null -> appendLog("BLE 协商 MTU: 未记录")
+            else -> appendLog("BLE 协商 MTU: $mtu")
+        }
         initOtaSdk()
         setupBleNotifications()
+        setupBleConnectionStateMonitoring()
         setupClickListeners()
+    }
+
+    /**
+     * 监听 BLE 连接状态，断开后终止 OTA 并清空本地连接引用。
+     */
+    private fun setupBleConnectionStateMonitoring() {
+        val mac = deviceAddress ?: return
+        notificationDisposables.add(
+            rxBleClient.getBleDevice(mac)
+                .observeConnectionStateChanges()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { state ->
+                    if (state == RxBleConnection.RxBleConnectionState.DISCONNECTED) {
+                        onBleLinkLost()
+                    }
+                }
+        )
+    }
+
+    private fun onBleLinkLost() {
+        if (!otaAbortHandled.compareAndSet(false, true)) return
+        Log.w(TAG, "BLE 已断开，停止 OTA")
+        appendLog("✗ BLE 已断开")
+        bleConnection = null
+        otaManager?.notifyBleDisconnected()
+    }
+
+    /** GATT 写失败时终止 OTA（与 [onBleLinkLost] 共用 [otaAbortHandled]，避免重复上报） */
+    private fun onTransferSendFailed(t: Throwable) {
+        if (!otaAbortHandled.compareAndSet(false, true)) return
+        Log.e(TAG, "OTA 因发送失败终止", t)
+        appendLog("✗ OTA 发送失败，已终止: ${t.message}")
+        otaManager?.notifyTransferSendFailed(t.message ?: "未知错误")
     }
 
     /**
@@ -126,7 +176,13 @@ class OtaDemobleActivity : AppCompatActivity() {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                     { bytes -> onBluetoothDataReceived(bytes) },
-                    { t -> Log.e(TAG, "通知(设备→APP)异常", t); appendLog("通知异常: ${t.message}") }
+                    { t ->
+                        Log.e(TAG, "通知(设备→APP)异常", t)
+                        appendLog("通知异常: ${t.message}")
+                        if (t is BleDisconnectedException) {
+                            onBleLinkLost()
+                        }
+                    }
                 )
         )
 //        notificationDisposables.add(
@@ -237,6 +293,7 @@ class OtaDemobleActivity : AppCompatActivity() {
                 if (conn == null) {
                     appendLog("✗ BLE 连接已断开，无法发送")
                     Log.e(TAG, "BLE 连接为 null")
+                    onBleLinkLost()
                     return
                 }
                 val sendTime = System.currentTimeMillis()
@@ -246,16 +303,16 @@ class OtaDemobleActivity : AppCompatActivity() {
                     .subscribe(
                         {
                             val elapsed = System.currentTimeMillis() - sendTime
-                            appendLog("✓ 发送成功 ${data.size} 字节 (${elapsed}ms)")
-                            if (data.size <= 200) {
+                            if (data.size <= 50) {
+                                appendLog("✓ 发送成功 ${data.size} 字节 (${elapsed}ms)")
                                 appendLog("→ ${data.joinToString(" ") { "%02X".format(it) }}")
+                            }else{
+                                Log.i(TAG,"✓ 发送成功 ${data.size} 字节 (${elapsed}ms)")
                             }
-                            LogUtils.d(TAG, "发送消息成功: ${data.size} 字节")
                         },
                         { t ->
-                            appendLog("✗ 发送失败: ${t.message}")
                             Log.e(TAG, "发送消息失败", t)
-                            LogUtils.e(TAG, "发送消息失败: ${t.message}")
+                            onTransferSendFailed(t)
                         }
                     )
             }
@@ -439,6 +496,7 @@ class OtaDemobleActivity : AppCompatActivity() {
         appendLog("开始 OTA 传输...")
         appendLog("文件: ${file.name}")
         appendLog("类型: $fileType")
+        lastLoggedTransferProgress = -1
 
         // 更新 UI
         btnStartTransfer.isEnabled = false
@@ -474,7 +532,10 @@ class OtaDemobleActivity : AppCompatActivity() {
                 tvStatus.text = "传输中..."
                 progressBar.progress = state.progress
                 tvProgress.text = "${state.progress}%"
-                appendLog("状态: 传输中 - ${state.progress}%")
+                if (state.progress != lastLoggedTransferProgress) {
+                    lastLoggedTransferProgress = state.progress
+                    appendLog("状态: 传输中 - ${state.progress}%")
+                }
             }
             State.SUCCESS -> {
                 if (state.index >= state.total) {
@@ -648,12 +709,10 @@ class OtaDemobleActivity : AppCompatActivity() {
                 if (isOtaMessage) {
                     // 在主线程更新 UI（日志）
                     withContext(Dispatchers.Main) {
-                        appendLog("✓ 收到 OTA 消息: ${rawData.size} 字节")
-                        if (rawData.size<40){
-                            appendLog("✓ 收到 OTA 消息: hex=${rawData.joinToString(" ") { "%02X".format(it) }}")
-                        }
+//                        appendLog("✓ 收到 OTA 消息: ${rawData.size} 字节")
+                            appendLog("✓ 收到 OTA 消息:  ${rawData.size} 字节 hex=${rawData.joinToString(" ") { "%02X".format(it) }}")
+//                            Log.d(TAG, "收到 OTA 消息: ${rawData.size} 字节, hex=${rawData.joinToString(" ") { "%02X".format(it) }}")
                     }
-                    Log.d(TAG, "收到 OTA 消息: ${rawData.size} 字节, hex=${rawData.joinToString(" ") { "%02X".format(it) }}")
                 } else {
                     // 不是 OTA 消息，使用者可以自行处理
                     Log.d(TAG, "收到非 OTA 消息: ${rawData.size} 字节")
@@ -684,7 +743,7 @@ class OtaDemobleActivity : AppCompatActivity() {
                 scrollView.fullScroll(android.view.View.FOCUS_DOWN)
             }
         }
-        LogUtils.e(TAG,message)
+        Log.i(TAG,message)
     }
 
     /**

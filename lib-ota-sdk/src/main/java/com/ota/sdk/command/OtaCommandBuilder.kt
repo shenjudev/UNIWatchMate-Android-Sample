@@ -1,5 +1,6 @@
 package com.ota.sdk.command
 
+import android.util.Log
 import com.ota.sdk.constants.OtaProtocolConstants
 import com.ota.sdk.constants.OtaProtocolConstants.CMD_ID_8001
 import com.ota.sdk.constants.OtaProtocolConstants.HEAD_NODE_TYPE
@@ -235,6 +236,7 @@ object OtaCommandBuilder {
         
         // 更新 otaCmdInfo 的 payload 和 crc
         otaCmdInfo.payload = newPayload
+        Log.d(TAG, "发送数据包: buildTransfer03Cmd 序号=$process, 分包类型=$divideType, newPayload=${newPayload.size}")
         otaCmdInfo.crc = OtaCrcUtils.getCrc(HEX_FFFF, newPayload, newPayload.size)
         
         return buildFinalCmd(

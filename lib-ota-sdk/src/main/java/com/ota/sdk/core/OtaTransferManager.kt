@@ -189,6 +189,25 @@ class OtaTransferManager(
             communicator.sendMessage(OtaCommandBuilder.buildTransferCancelCmd())
         }
     }
+
+    /**
+     * BLE 等链路已断开时调用：立即停止发送，并向进行中的传输流上报 [OtaError.ERROR_DISCONNECT]。
+     * 不向设备发送取消命令（链路已不可用）。
+     */
+    fun notifyBleDisconnected() {
+        LogUtil.d(TAG, "OTA: BLE 已断开，终止传输")
+        protocolHandler.stopTransferImmediately()
+        protocolHandler.transferError(OtaError.ERROR_DISCONNECT, "BLE 已断开")
+    }
+
+    /**
+     * GATT 写特征等发送失败时调用：立即停止发送，并向进行中的传输流上报 [OtaError.ERROR_OTHER]。
+     */
+    fun notifyTransferSendFailed(detail: String) {
+        LogUtil.d(TAG, "OTA: 发送失败，终止传输: $detail")
+        protocolHandler.stopTransferImmediately()
+        protocolHandler.transferError(OtaError.ERROR_OTHER, "BLE 发送失败: $detail")
+    }
     
     /**
      * 获取消息监听器
